@@ -1,0 +1,68 @@
+{
+  "alias": ["pmndrs.vercel.app", "poimandres.vercel.app"],
+  "github": {
+    "silent": true
+  },
+  "headers": [
+    {
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "base-uri 'self'; connect-src 'self' cdn.jsdelivr.net; default-src 'none'; font-src 'self' cdn.jsdelivr.net; form-action 'self'; frame-ancestors 'none'; frame-src 'self'; img-src 'self' data:; manifest-src 'self'; media-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'; upgrade-insecure-requests;"
+        },
+        {
+          "key": "Expect-CT",
+          "value": "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'self'; camera 'self'; document-domain 'self'; encrypted-media 'self'; fullscreen 'self'; geolocation 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; payment 'self'; picture-in-picture 'self'; speaker 'self'; sync-xhr 'self'; usb 'self'; vr / xr 'self';"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31557600; includesubdomains; preload"
+        },
+        {
+          "key": "Vary",
+          "value": "Accept-Encoding"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "deny"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ],
+      "source": "/(.*)"
+    }
+  ],
+  "redirects": [
+    {
+      "destination": "https://discord.gg/ZZjjNvJ",
+      "source": "/discord"
+    },
+    {
+      "destination": "https://github.com/pmndrs",
+      "source": "/github"
+    },
+    {
+      "destination": "https://twitter.com/pmndrs",
+      "source": "/twitter"
+    }
+  ],
+  "scope": "pmndrs"
+}

@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "next": "9.5.3",
+    "next-pwa": "3.1.4",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "sass": "1.26.10"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "export": "next build && next export",
+    "start": "next start"
+  }
+}

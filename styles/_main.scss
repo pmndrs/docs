@@ -1,0 +1,53 @@
+@mixin no-select {
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html,
+body {
+  @include no-select;
+  background-color: $c005;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+a,
+a:active,
+a:hover,
+a:visited {
+  color: currentColor;
+  outline: 0;
+}
+
+main {
+  height: 90vh;
+
+  h1 {
+    font-size: 5rem;
+    font-weight: 400;
+  }
+}
+
+footer {
+  height: 10vh;
+}
+
+main,
+footer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
