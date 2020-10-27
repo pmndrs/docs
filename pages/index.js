@@ -7,6 +7,7 @@ export default function Index() {
         <a href="https://github.com/pmndrs">
           <h1>Poimandres</h1>
         </a>
+        <div className="video"></div>
       </Layout>
     </>
   );
