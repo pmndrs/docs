@@ -4,7 +4,7 @@ export default function Footer() {
       <footer>
         <div className="footer__content">
           <div className="footer__left">
-            <a href="" target="_blank" rel="noopener">
+            <a href="https://twitter.com/u29dc" target="_blank" rel="noopener">
               <div className="iinfin">
                 <svg width="15" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill="#fff" d="M0 0h15v15H0z" />
@@ -29,6 +29,7 @@ export default function Footer() {
                 <svg width="18" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.78 0l8.779 15H0L8.78 0z" fill="#fff" />
                 </svg>
+                <span className="vercel__title">Powered by Vercel</span>
               </div>
             </a>
           </div>

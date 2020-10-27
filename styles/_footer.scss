@@ -28,4 +28,18 @@ footer {
 
 .footer__right {
   text-align: right;
+
+  .vercel__title {
+    margin-left: 1rem;
+  }
+}
+
+.footer__left,
+.footer__right {
+  opacity: 0.5;
+  transition: opacity 100ms ease-in;
+
+  &:hover {
+    opacity: 1;
+  }
 }
