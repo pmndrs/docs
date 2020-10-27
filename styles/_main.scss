@@ -10,9 +10,10 @@
 html,
 body {
   @include no-select;
-  background-color: $c005;
+  background-color: $c095;
   margin: 0;
   padding: 0;
+  color: $c000;
 }
 
 * {
@@ -32,22 +33,14 @@ a:visited {
 }
 
 main {
-  height: 90vh;
-
-  h1 {
-    font-size: 5rem;
-    font-weight: 400;
-  }
-}
-
-footer {
-  height: 10vh;
-}
-
-main,
-footer {
   align-items: center;
   display: flex;
+  height: 90vh;
   justify-content: center;
   width: 100%;
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 600;
+  }
 }

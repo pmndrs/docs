@@ -1,0 +1,31 @@
+footer {
+  height: 10vh;
+  width: 100%;
+}
+
+.footer__content {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  > * {
+    flex: 1;
+    margin: 0 3rem;
+  }
+}
+
+.footer__left {
+  text-align: left;
+}
+
+.footer__center {
+  text-align: center;
+
+  .link {
+    margin: 0 1rem;
+  }
+}
+
+.footer__right {
+  text-align: right;
+}
