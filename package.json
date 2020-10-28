@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "next": "9.5.4",
-    "next-pwa": "3.1.4",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "sass": "1.26.10"
+    "next": "10.0.0",
+    "next-pwa": "3.1.5",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "sass": "1.27.0"
   },
   "license": "MIT",
   "scripts": {
