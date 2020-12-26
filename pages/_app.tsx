@@ -78,8 +78,8 @@ function Layout (props) {
                 <LibSwitcher />
               </div>
 
+              {/* Extract this to a component */}
               <h3>Getting started</h3>
-
               <ul className="font-light">
                 <li>Installation</li>
                 <li>Creating a store</li>
@@ -97,11 +97,12 @@ function Layout (props) {
 
             <div className="hidden xl:text-sm xl:block flex-none w-64 pl-8 mr-8">
               <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pt-10 pb-6 top-16">
-              <h3>On this page</h3>
-
-              <p>
-                This will contain page navigation
-              </p>
+              <h3 className="font-bold text-xs uppercase">On this page</h3>
+              {/* Extract this to a component */}
+              <ul>
+                <li>Recipes</li>
+                <li>TypeScript</li>
+              </ul>
                 
               </div>
             </div>
