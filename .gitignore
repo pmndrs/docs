@@ -1,5 +1,22 @@
-node_modules
-.next
+# editor settings
+.vscode/
+
+# dependencies
+.pnp
+.pnp.js
+node_modules/
+
+# dependency lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# other
+.next/
 .DS_Store
-yarn-error.log
-dist
+
+build/
+dist/
+logs/
+out/
+tmp/
