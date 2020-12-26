@@ -1,0 +1,50 @@
+import Callout from 'nextra-theme-docs/callout'
+
+# Installation
+
+```bash
+yarn add three react-three-fiber
+# or
+npm install three react-three-fiber
+```
+
+> Fiber is compatible with React v16.8+ and works with ReactDOM and React Native.
+
+Getting started with React Three Fiber is simple, but various frameworks may require particular attention.
+We've put together guides for getting started with each popular framework:
+
+- Create React App
+- Next.js
+- Gatsby
+
+<Callout>
+  If you just want to give it a try, fork this [simple example on codesandbox]()!
+</Callout>
+
+## Create React App
+
+`create-react-app` will work out of the box, nothing special here!
+
+*Add mention of official create-react-app template*
+
+## Next.js
+
+You can use Fiber on next by installing the `next-transpile-modules` module:
+
+```bash
+yarn add next-transpile-modules -D
+# or
+npm install next-transpile-modules --save-dev
+```
+
+Then, add this to your `next.config.js`
+
+```js
+const withTM = require('next-transpile-modules')(['three'])
+
+module.exports = withTM()
+```
+
+<Callout>
+  Check out the [official next.js example](https://github.com/vercel/next.js/tree/canary/examples/with-three-js) for react-three-fiber.
+</Callout>

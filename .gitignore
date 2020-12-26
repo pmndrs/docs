@@ -1,39 +1,5 @@
-# dependencies
-.pnp
-.pnp.js
 node_modules
-package-lock.json
-yarn.lock
-
-# testing
-coverage
-
-# next.js
 .next
-build
-out
-
-# debug
-debug.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env.development.local
-.env.local
-.env.production.local
-.env.test.local
-
-# vercel
-.vercel
-
-# misc
 .DS_Store
-*.pem
-tmp
-
-# service worker
-public/sw.js
-public/workbox*.js
-public/*.js.map
+yarn-error.log
+dist
