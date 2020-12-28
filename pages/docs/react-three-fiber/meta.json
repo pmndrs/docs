@@ -1,5 +1,7 @@
 {
-  "index": "React Three Fiber",
+  "index": "Introduction",
+  "installation": "Installation",
   "getting-started": "Getting Started",
-  "advanced": "Advanced"
+  "advanced": "Advanced",
+  "testing": "Testing"
 }

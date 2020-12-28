@@ -1,28 +1,37 @@
-import LibSwitcher from 'components/LibSwitcher'
-import { AppProps } from 'next/app'
-import '../css/main.css'
+import LibSwitcher from "components/LibSwitcher";
+import { AppProps } from "next/app";
+import "../css/main.css";
+import Link from "next/link";
 
-function Layout (props) {
-  return <>
-    <div className="sticky top-0 z-40 lg:z-50 w-full max-w-8xl mx-auto bg-white flex-none flex">
-      <div className="flex-none pl-4 sm:pl-6 xl:pl-8 flex items-center border-b border-gray-200 lg:border-b-0 lg:w-60 xl:w-72">
-        <span className="font-bold">
-        Pmdnrs 
-        </span>
-        <span className="font-normal">
-        .docs
-        </span>
-      </div>
-      <div className="flex-auto border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:mx-6 lg:px-0 xl:mx-8">
-        Quick search [⌘ + K]
-      </div>
-    </div>
+import makeNav, { getAllFiles } from "lib/getSidebarNav";
 
-    <div className="w-full max-w-8xl mx-auto">
-      <div className="lg:flex">
-        <div 
-          id="sidebar" 
-          className="
+type NavItem = {
+  children?: NavItem[],
+  label: string,
+  fileName: string,
+  href: string,
+};
+
+function Layout(props) {
+  const { nav } = props;
+
+  return (
+    <>
+      <div className="sticky top-0 z-40 lg:z-50 w-full max-w-8xl mx-auto bg-white flex-none flex">
+        <div className="flex-none pl-4 sm:pl-6 xl:pl-8 flex items-center border-b border-gray-200 lg:border-b-0 lg:w-60 xl:w-72">
+          <span className="font-bold">Pmdnrs</span>
+          <span className="font-normal">.docs</span>
+        </div>
+        <div className="flex-auto border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:mx-6 lg:px-0 xl:mx-8">
+          Quick search [⌘ + K]
+        </div>
+      </div>
+
+      <div className="w-full max-w-8xl mx-auto">
+        <div className="lg:flex">
+          <div
+            id="sidebar"
+            className="
             fixed 
             z-40 
             inset-0 
@@ -40,10 +49,10 @@ function Layout (props) {
             xl:w-72 
             lg:block hidden
           "
-        >
-          <div 
-            id="nav-wrapper" 
-            className="
+          >
+            <div
+              id="nav-wrapper"
+              className="
               h-full
               overflow-y-auto
               scrolling-touch
@@ -58,8 +67,10 @@ function Layout (props) {
               mr-24
               lg:mr-0
             "
-          >
-            <div id="nav" className="
+            >
+              <div
+                id="nav"
+                className="
               px-1 
               pt-6 
               overflow-y-auto 
@@ -72,51 +83,72 @@ function Layout (props) {
               lg:pt-10 
               lg:pb-14 
               sticky?lg:h-(screen-16)
-            ">
+            "
+              >
+                <div className="mb-4">
+                  <LibSwitcher />
+                </div>
 
-              <div className="mb-4">
-                <LibSwitcher />
+                <ul>
+                  {Object.entries(nav["react-three-fiber"]).map(
+                    ([key, children]) => (
+                      <>
+                        <h3 className="mb-2 mt-8 text-gray-900 uppercase text-xs">
+                          {key}
+                        </h3>
+                        {Object.entries(children).map(([key, route]) => (
+                          <li className="mb-3 text-gray-500">
+                            <Link
+                              href={`/docs${route.href.replace("index", "")}`}
+                            >
+                              <a>{key}</a>
+                            </Link>
+                          </li>
+                        ))}
+                      </>
+                    )
+                  )}
+                </ul>
               </div>
-
-              {/* Extract this to a component */}
-              <h3>Getting started</h3>
-              <ul className="font-light">
-                <li>Installation</li>
-                <li>Creating a store</li>
-              </ul>
             </div>
           </div>
-        </div>
-        <div id="content-wrapper" className="flex-auto">
-          <div className="w-full flex">
-            <div className="min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10 pb-24 lg:pb-16">
-              <div className="prose max-w-none">
-                {props.children}
+          <div id="content-wrapper" className="flex-auto">
+            <div className="w-full flex">
+              <div className="min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10 pb-24 lg:pb-16">
+                <div className="prose max-w-none">{props.children}</div>
               </div>
-            </div>
 
-            <div className="hidden xl:text-sm xl:block flex-none w-64 pl-8 mr-8">
-              <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pt-10 pb-6 top-16">
-              <h3 className="font-bold text-xs uppercase">On this page</h3>
-              {/* Extract this to a component */}
-              <ul>
-                <li>Recipes</li>
-                <li>TypeScript</li>
-              </ul>
-                
+              <div className="hidden xl:text-sm xl:block flex-none w-64 pl-8 mr-8">
+                <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pt-10 pb-6 top-16">
+                  <h3 className="font-bold text-xs uppercase">On this page</h3>
+                  {/* Extract this to a component */}
+                  <ul>
+                    <li>Recipes</li>
+                    <li>TypeScript</li>
+                  </ul>
+
+                  {/* Link to the markdown file on github */}
+                  <div className="font-bold mt-4">
+                    <a href="#">🐙 Edit on Github</a>
+                  </div>
+                </div>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
-    </div>
-
-  </>
+    </>
+  );
 }
+
+const nav = makeNav(getAllFiles());
 
 function App({ Component, pageProps }: AppProps) {
-  return <Layout><Component {...pageProps} /></Layout>
+  return (
+    <Layout nav={nav}>
+      <Component {...pageProps} />
+    </Layout>
+  );
 }
 
-export default App
+export default App;
