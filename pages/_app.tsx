@@ -5,15 +5,20 @@ import Link from "next/link";
 
 import makeNav, { getAllFiles } from "lib/getSidebarNav";
 
-type NavItem = {
-  children?: NavItem[],
-  label: string,
-  fileName: string,
-  href: string,
-};
+import pathMatch from 'path-match'
+import { useRouter } from 'next/router';
+
+const match = pathMatch({
+  // path-to-regexp options
+  sensitive: false,
+  strict: false,
+  end: false,
+})('/docs/:lib')
 
 function Layout(props) {
   const { nav } = props;
+  const x = useRouter()
+  const { lib } = match(x.pathname)
 
   return (
     <>
@@ -90,7 +95,7 @@ function Layout(props) {
                 </div>
 
                 <ul>
-                  {Object.entries(nav["react-three-fiber"]).map(
+                  {Object.entries(nav[lib]).map(
                     ([key, children]) => (
                       <>
                         <h3 className="mb-2 mt-8 text-gray-900 uppercase text-xs">

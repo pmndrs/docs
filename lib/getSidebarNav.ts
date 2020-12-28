@@ -1,6 +1,7 @@
 
 import setValue from 'set-value'
 
+// TODO Add link to original code
 export function importAll(r) {
   return r.keys().map((fileName) => ({
     fileName,
@@ -23,17 +24,8 @@ export function createPageList(files) {
 }
 
 export function getAllFiles() {
-  // @ts-ignore
+  // @ts-ignore This is ignored because of `context`
   return createPageList( require.context(`../pages/docs/`, true, /\.mdx$/) )
-}
-
-export function groupByTopic(files) {
-  
-  const final = {}
-  
-  
-  return final
-  
 }
 
 type Files = Record<string, {
