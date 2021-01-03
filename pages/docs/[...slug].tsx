@@ -3,31 +3,21 @@ import matter from 'gray-matter'
 import hydrate from 'next-mdx-remote/hydrate'
 import renderToString from 'next-mdx-remote/render-to-string'
 import path from 'path'
-import { getDocsPaths, DOCS_PATH } from 'utils/mdxUtils'
-import recursiveReaddir from 'recursive-readdir'
-import makeNav from 'lib/getSidebarNav'
-import Layout from 'components/Layout'
 import slugify from '@sindresorhus/slugify'
+
+import makeNav from 'lib/getSidebarNav'
+import { getDocsPaths, DOCS_PATH } from 'utils/mdxUtils'
+
+import Layout from 'components/Layout'
+import Codesandbox from 'components/Codesandbox'
+
+import withCodesandbox from 'remark/withCodesandbox'
 
 const components = {
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
   Link: () => <a href="#">hey</a>,
-  Codesandbox: ({ url }) => (
-    <iframe
-      src={url}
-      style={{
-        width: '100%',
-        height: 600,
-        overflow: 'hidden',
-        borderRadius: 4,
-        border: '0px',
-        marginTop: 16,
-      }}
-      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-    />
-  ),
+  Codesandbox,
   Heading: ({ children, id }) => {
     return (
       <a href={`#${id}`}>
@@ -65,22 +55,7 @@ export const getStaticProps = async ({ params }) => {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [
-        () =>
-          function test(tree) {
-            // @ts-ignore
-            for (let i = 0; i < tree.children.length; i++) {
-              const node = tree.children[i]
-              if (
-                node.type === 'jsx' &&
-                node.value.match(/iframe/) &&
-                node.value.match(/codesandbox/)
-              ) {
-                const url = node.value.match(/(?<=src=").*?(?=[\"])/)[0]
-
-                node.value = `<Codesandbox url={"${url}"} />`
-              }
-            }
-          },
+        withCodesandbox,
         () =>
           function makeTOC(tree) {
             // @ts-ignore
