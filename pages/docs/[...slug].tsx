@@ -13,7 +13,7 @@ const components = {
   Callout: ({children}) => children,
   Bleed: ({children}) => children,
   Heading: ({children, id}) => {
-    return <a href={`#${id}`}><h2>{children}</h2></a>
+    return <a href={`#${id}`}><h2 id={id}>{children}</h2></a>
   }
 }
 
