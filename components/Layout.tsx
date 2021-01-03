@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from 'next/router';
 
 function Layout(props) {
-  const { nav } = props;
+  const { nav, toc } = props;
   const { query: { slug }} = useRouter()
 
   const [lib] = slug as string[]
@@ -115,11 +115,11 @@ function Layout(props) {
               <div className="hidden xl:text-sm xl:block flex-none w-64 pl-8 mr-8">
                 <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pt-10 pb-6 top-16">
                   <h3 className="font-bold text-xs uppercase">On this page</h3>
+                  
                   {/* Extract this to a component */}
-                  <ul>
-                    <li>Recipes</li>
-                    <li>TypeScript</li>
-                  </ul>
+                  {toc.map(item => (
+                    <h3><a href={`#${item.slug}`}>{item.title}</a></h3>
+                  ))}
 
                   {/* Link to the markdown file on github */}
                   <div className="font-bold mt-4">

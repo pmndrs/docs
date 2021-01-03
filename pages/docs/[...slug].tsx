@@ -7,16 +7,21 @@ import { getDocsPaths, DOCS_PATH } from 'utils/mdxUtils'
 import recursiveReaddir from 'recursive-readdir';
 import makeNav from 'lib/getSidebarNav'
 import Layout from 'components/Layout'
+import slugify from '@sindresorhus/slugify'
 
 const components = {
   Callout: ({children}) => children,
-  Bleed: ({children}) => children
+  Bleed: ({children}) => children,
+  Heading: ({children, id}) => {
+    return <a href={`#${id}`}><h2>{children}</h2></a>
+  }
 }
 
-export default function PostPage({ source, nav, frontMatter }) {
+export default function PostPage({ toc, source, nav, frontMatter }) {
   const content = hydrate(source, { components })
+  
   return (
-    <Layout nav={nav}>
+    <Layout nav={nav} toc={toc}>
       <div className="post-header">
         <h1>{frontMatter.title}</h1>
         {frontMatter.description && (
@@ -34,11 +39,43 @@ export const getStaticProps = async ({ params }) => {
   const { content, data } = matter(source)
   const nav = makeNav((await getDocsPaths()).map(x => x.replace('/docs/', '').replace('.mdx', '')))
 
+  const toc = []
   const mdxSource = await renderToString(content, {
     components,
     // Optionally pass remark/rehype plugins
     mdxOptions: {
-      remarkPlugins: [],
+      remarkPlugins: [ () => function test(tree) {
+        // @ts-ignore
+        for (let i = 0; i < tree.children.length; i++) {
+          
+          let node = tree.children[i]
+          if(node.type === "heading" && [2].includes(node.depth)) {
+            const title = node.children
+              .filter((n) => n.type === 'text')
+              .map((n) => n.value)
+              .join('')
+            
+            const slug = slugify(title)
+
+            node.type = 'jsx'
+            node.value = `<Heading id={"${slug}"}>${title}</Heading>`
+
+            toc.push({ slug, title })
+          }
+
+        }
+
+        // (tree.children as Record<string, any>[]).push({
+        //   type: 'export',
+        //   default: true,
+        //   value: `export default {
+        //     toc: ${JSON.stringify(content)}
+        //   }`
+        // })
+        
+        return tree
+      }
+      ],
       rehypePlugins: [],
     },
     scope: data,
@@ -47,6 +84,7 @@ export const getStaticProps = async ({ params }) => {
   return {
     props: {
       nav,
+      toc,
       source: mdxSource,
       frontMatter: data,
     },
