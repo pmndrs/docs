@@ -161,7 +161,7 @@ mesh.scale.set(3, 4, 5)
 
 ## Pointer Events
 
-[Pointer Events](/docs/events) are transparently handled by Fiber. On startup, it will create a [`raycaster`](https://threejs.org/docs/#api/en/core/Raycaster) for mouse picking.
+[Pointer Events](/docs/events) are transparently handled by Fiber. On startup, it will create a [raycaster](https://threejs.org/docs/#api/en/core/Raycaster) for mouse picking.
 
 Every object wih `onPointer*` props, will be added to the array of objects checked every frame by the raycaster:
 
@@ -183,9 +183,9 @@ import { useCamera } from 'react-three-fiber'
 
 ## Render Loop
 
-By default, Fiber will setup a simple render loop that renders the default `scene` from the default `camera` to a [`WebGLRenderer`](https://threejs.org/docs/#api/en/renderers/WebGLRenderer).
+By default, Fiber will setup a simple render loop that renders the default `scene` from the default `camera` to a [WebGLRenderer](https://threejs.org/docs/#api/en/renderers/WebGLRenderer).
 
-The loop is setup using [`setAnimationLoop`](https://threejs.org/docs/#api/en/renderers/WebGLRenderer.setAnimationLoop), which will execute its callback every time a new frame is renderable. This is what will happen every render:
+The loop is setup using [setAnimationLoop](https://threejs.org/docs/#api/en/renderers/WebGLRenderer.setAnimationLoop), which will execute its callback every time a new frame is renderable. This is what will happen every render:
 
 1. all [global before effects](docs/recipes/effects) are executed
 2. clock [delta](docs/time) is saved - implying all `useFrame` calls will share the same `delta`

@@ -12,6 +12,22 @@ import slugify from '@sindresorhus/slugify'
 const components = {
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
+  Link: () => <a href="#">hey</a>,
+  Codesandbox: ({ url }) => (
+    <iframe
+      src={url}
+      style={{
+        width: '100%',
+        height: 600,
+        overflow: 'hidden',
+        borderRadius: 4,
+        border: '0px',
+        marginTop: 16,
+      }}
+      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+    />
+  ),
   Heading: ({ children, id }) => {
     return (
       <a href={`#${id}`}>
@@ -30,7 +46,7 @@ export default function PostPage({ toc, source, nav, frontMatter }) {
         <h1>{frontMatter.title}</h1>
         {frontMatter.description && <p className="description">{frontMatter.description}</p>}
       </div>
-      <main>{content}</main>
+      <main className="max-w-3xl mx-auto">{content}</main>
     </Layout>
   )
 }
@@ -53,7 +69,23 @@ export const getStaticProps = async ({ params }) => {
           function test(tree) {
             // @ts-ignore
             for (let i = 0; i < tree.children.length; i++) {
-              let node = tree.children[i]
+              const node = tree.children[i]
+              if (
+                node.type === 'jsx' &&
+                node.value.match(/iframe/) &&
+                node.value.match(/codesandbox/)
+              ) {
+                const url = node.value.match(/(?<=src=").*?(?=[\"])/)[0]
+
+                node.value = `<Codesandbox url={"${url}"} />`
+              }
+            }
+          },
+        () =>
+          function makeTOC(tree) {
+            // @ts-ignore
+            for (let i = 0; i < tree.children.length; i++) {
+              const node = tree.children[i]
               if (node.type === 'heading' && [2].includes(node.depth)) {
                 const title = node.children
                   .filter((n) => n.type === 'text')

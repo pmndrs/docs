@@ -6,22 +6,7 @@ This guide will help you setup your first React Three Fiber scene and introduce 
 
 Every scene starts with the `<Canvas />` component, which we can import from `react-three-fiber`:
 
-<Bleed>
-  <iframe
-    src="https://codesandbox.io/embed/12q81?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=2,8,13&hidedevtools=1"
-    style={{
-      width: '100%',
-      height: 600,
-      overflow: 'hidden',
-      borderRadius: 4,
-      border: '0px',
-      marginTop: 16,
-    }}
-    title="getting-started-01"
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-  ></iframe>
-</Bleed>
+<iframe src="https://codesandbox.io/embed/12q81?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=2,8,13&hidedevtools=1" />
 
 In the example above, we can start getting familiar with some of the **basic concepts** of React Three Fiber:
 
@@ -29,11 +14,10 @@ In the example above, we can start getting familiar with some of the **basic con
 
 2. We added a `<color />` component with `args` and `attach` props. This means that a new `THREE.Color` object will be created and set as the `background` property of the main `scene`.
 
-<Bleed>
-  ```js const color = new THREE.Color('black') // args is the arguments array, passed to the
-  constructor scene.background = color // set the property on a three.js object parent[attach] =
-  object ```
-</Bleed>
+````js const color = new THREE.Color('black') // args is the arguments array, passed to the
+constructor scene.background = color // set the property on a three.js object parent[attach] =
+object ```
+
 
 3. We added a `<mesh />` component with a `<boxBufferGeometry />` child. Any component with `geometry` or `material` in its name, will automatically attach to the corresponding property of its parent:
 
@@ -42,7 +26,7 @@ const myMesh = new THREE.Mesh() // <mesh />
 const myGeometry = new THREE.BoxBufferGeometry() // <boxBufferGeometry />
 
 myMesh.geometry = myGeometry // set the `geometry` property on our mesh
-```
+````
 
 <Callout>
   The `Canvas` will fill its parent element (try changing the width and height of `.App` in
@@ -70,24 +54,9 @@ mesh.geometry = geometry
 scene.add(mesh)
 ```
 
-We can add materials in the same way, let's say we want to use [`THREE.MeshNormalMaterial`](), we will have to use a camel-case version of the name, in this case `<meshPhysicalMaterial />`:
+We can add materials in the same way, let's say we want to use [THREE.MeshNormalMaterial](), we will have to use a camel-case version of the name, in this case `<meshPhysicalMaterial />`:
 
-<Bleed>
-  <iframe
-    src="https://codesandbox.io/embed/cvxpd?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=9&hidedevtools=1"
-    style={{
-      width: '100%',
-      height: 600,
-      overflow: 'hidden',
-      borderRadius: 4,
-      border: '0px',
-      marginTop: 16,
-    }}
-    title="getting-started-01"
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-  ></iframe>
-</Bleed>
+<iframe src="https://codesandbox.io/embed/cvxpd?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=9&hidedevtools=1" />
 
 **Exercise:**
 
@@ -100,22 +69,7 @@ We will now add a simple [`texture`](https://threejs.org/docs/index.html#api/en/
 
 This example will introduce you to the concept of three's **Loaders**, Fiber's [**useLoader**](/api/useloader) hook and a sprinkle of React's **Suspense**.
 
-<Bleed>
-  <iframe
-    src="https://codesandbox.io/embed/xxrlt?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=6,7,8,9,22,24&hidedevtools=1"
-    style={{
-      width: '100%',
-      height: 600,
-      overflow: 'hidden',
-      borderRadius: 4,
-      border: '0px',
-      marginTop: 16,
-    }}
-    title="getting-started-01"
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-  ></iframe>
-</Bleed>
+<iframe src="https://codesandbox.io/embed/xxrlt?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=6,7,8,9,22,24&hidedevtools=1" />
 
 Let's take a closer look:
 
@@ -168,22 +122,7 @@ Boxes are boring, we all know that. Let's load a `gltf` file, and get introduced
 We will add a new dependency to our project, [`@react-three/drei`](https://github.com/pmndrs/drei).
 Drei is a collection of useful helpers and abstractions for Fiber, and we will use a few of its components to improve our example.
 
-<Bleed>
-  <iframe
-    src="https://codesandbox.io/embed/kmdi5?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=6,7,8,9,22,24&hidedevtools=1"
-    style={{
-      width: '100%',
-      height: 600,
-      overflow: 'hidden',
-      borderRadius: 4,
-      border: '0px',
-      marginTop: 16,
-    }}
-    title="getting-started-01"
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-  ></iframe>
-</Bleed>
+<iframe src="https://codesandbox.io/embed/kmdi5?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=6,7,8,9,22,24&hidedevtools=1" />
 
 - we put our files in `public/model`, so that our resource will be served by the web server
 - we load our model with drei's [`useGLTF`](https://github.com/pmndrs/drei#usetexture). Here's what's happening, in detail:
@@ -206,21 +145,6 @@ Phew, that's a lot to unpack. We will make this process easier later, when we'll
 
 We will now refactor our previous example to better use React's strong suite, components!
 
-<Bleed>
-  <iframe
-    src="https://codesandbox.io/embed/wudry?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=5,6,7,8,9,10,11,12&hidedevtools=1"
-    style={{
-      width: '100%',
-      height: 600,
-      overflow: 'hidden',
-      borderRadius: 4,
-      border: '0px',
-      marginTop: 16,
-    }}
-    title="getting-started-01"
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-  ></iframe>
-</Bleed>
+<iframe src="https://codesandbox.io/embed/wudry?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=5,6,7,8,9,10,11,12&hidedevtools=1" />
 
 In the example, we created a new `MyBox` component that will render a new `mesh`, and we reuse it twice, with different `position` and `color` props.
