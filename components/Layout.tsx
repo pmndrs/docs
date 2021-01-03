@@ -1,11 +1,13 @@
-import LibSwitcher from "components/LibSwitcher";
-import Link from "next/link";
+import LibSwitcher from 'components/LibSwitcher'
+import Link from 'next/link'
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
 function Layout(props) {
-  const { nav, toc } = props;
-  const { query: { slug }} = useRouter()
+  const { nav, toc } = props
+  const {
+    query: { slug },
+  } = useRouter()
 
   const [lib] = slug as string[]
 
@@ -84,24 +86,18 @@ function Layout(props) {
                 </div>
 
                 <ul>
-                  {Object.entries(nav[lib]).map(
-                    ([key, children]) => (
-                      <>
-                        <h3 className="mb-2 mt-8 text-gray-900 uppercase text-xs">
-                          {key}
-                        </h3>
-                        {Object.entries(children).map(([key, route]) => (
-                          <li className="mb-3 text-gray-500">
-                            <Link
-                              href={`/docs/${route.replace("index", "")}`}
-                            >
-                              <a>{key}</a>
-                            </Link>
-                          </li>
-                        ))}
-                      </>
-                    )
-                  )}
+                  {Object.entries(nav[lib]).map(([key, children]) => (
+                    <>
+                      <h3 className="mb-2 mt-8 text-gray-900 uppercase text-xs">{key}</h3>
+                      {Object.entries(children).map(([key, route]) => (
+                        <li className="mb-3 text-gray-500">
+                          <Link href={`/docs/${route.replace('index', '')}`}>
+                            <a>{key}</a>
+                          </Link>
+                        </li>
+                      ))}
+                    </>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -115,10 +111,12 @@ function Layout(props) {
               <div className="hidden xl:text-sm xl:block flex-none w-64 pl-8 mr-8">
                 <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pt-10 pb-6 top-16">
                   <h3 className="font-bold text-xs uppercase">On this page</h3>
-                  
+
                   {/* Extract this to a component */}
-                  {toc.map(item => (
-                    <h3><a href={`#${item.slug}`}>{item.title}</a></h3>
+                  {toc.map((item) => (
+                    <h3>
+                      <a href={`#${item.slug}`}>{item.title}</a>
+                    </h3>
                   ))}
 
                   {/* Link to the markdown file on github */}
@@ -132,7 +130,7 @@ function Layout(props) {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default Layout;
+export default Layout

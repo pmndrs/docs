@@ -20,15 +20,15 @@ npm install zustand
 
 ### First create a store
 
-Your store is a hook! You can put anything in it: primitives, objects, functions. The `set` function *merges* state.
+Your store is a hook! You can put anything in it: primitives, objects, functions. The `set` function _merges_ state.
 
 ```jsx
 import create from 'zustand'
 
-const useStore = create(set => ({
+const useStore = create((set) => ({
   bears: 0,
-  increasePopulation: () => set(state => ({ bears: state.bears + 1 })),
-  removeAllBears: () => set({ bears: 0 })
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
 }))
 ```
 
@@ -38,22 +38,22 @@ Use the hook anywhere, no providers needed. Select your state and the component 
 
 ```jsx
 function BearCounter() {
-  const bears = useStore(state => state.bears)
+  const bears = useStore((state) => state.bears)
   return <h1>{bears} around here ...</h1>
 }
 
 function Controls() {
-  const increasePopulation = useStore(state => state.increasePopulation)
+  const increasePopulation = useStore((state) => state.increasePopulation)
   return <button onClick={increasePopulation}>one up</button>
 }
 ```
 
 #### Why zustand over react-redux?
 
-* Simple and un-opinionated
-* Makes hooks the primary means of consuming state
-* Doesn't wrap your app in context providers
-* [Can inform components transiently (without causing render)](#transient-updates-for-often-occuring-state-changes)
+- Simple and un-opinionated
+- Makes hooks the primary means of consuming state
+- Doesn't wrap your app in context providers
+- [Can inform components transiently (without causing render)](#transient-updates-for-often-occuring-state-changes)
 
 ---
 
@@ -72,8 +72,8 @@ const state = useStore()
 It detects changes with strict-equality (old === new) by default, this is efficient for atomic state picks.
 
 ```jsx
-const nuts = useStore(state => state.nuts)
-const honey = useStore(state => state.honey)
+const nuts = useStore((state) => state.nuts)
+const honey = useStore((state) => state.honey)
 ```
 
 If you want to construct a single object with multiple state-picks inside, similar to redux's mapStateToProps, you can tell zustand that you want the object to be diffed shallowly by passing an alternative equality function.
@@ -82,13 +82,13 @@ If you want to construct a single object with multiple state-picks inside, simil
 import shallow from 'zustand/shallow'
 
 // Object pick, re-renders the component when either state.nuts or state.honey change
-const { nuts, honey } = useStore(state => ({ nuts: state.nuts, honey: state.honey }), shallow)
+const { nuts, honey } = useStore((state) => ({ nuts: state.nuts, honey: state.honey }), shallow)
 
 // Array pick, re-renders the component when either state.nuts or state.honey change
-const [nuts, honey] = useStore(state => [state.nuts, state.honey], shallow)
+const [nuts, honey] = useStore((state) => [state.nuts, state.honey], shallow)
 
 // Mapped picks, re-renders the component when state.treats changes in order, count or keys
-const treats = useStore(state => Object.keys(state.treats), shallow)
+const treats = useStore((state) => Object.keys(state.treats), shallow)
 ```
 
 ## Fetching from multiple stores
@@ -96,8 +96,8 @@ const treats = useStore(state => Object.keys(state.treats), shallow)
 Since you can create as many stores as you like, forwarding results to succeeding selectors is as natural as it gets.
 
 ```jsx
-const currentBear = useCredentialsStore(state => state.currentBear)
-const bear = useBearStore(state => state.bears[currentBear])
+const currentBear = useCredentialsStore((state) => state.currentBear)
+const bear = useBearStore((state) => state.bears[currentBear])
 ```
 
 ## Memoizing selectors
@@ -105,7 +105,7 @@ const bear = useBearStore(state => state.bears[currentBear])
 It is generally recommended to memoize selectors with useCallback. This will prevent unnecessary computations each render. It also allows React to optimize performance in concurrent mode.
 
 ```jsx
-const fruit = useStore(useCallback(state => state.fruits[id], [id]))
+const fruit = useStore(useCallback((state) => state.fruits[id], [id]))
 ```
 
 If a selector doesn't depend on scope, you can define it outside the render function to obtain a fixed reference without useCallback.
@@ -122,13 +122,13 @@ function Component() {
 The `set` function has a second argument, `false` by default. Instead of merging, it will replace the state model. Be careful not to wipe out parts you rely on, like actions.
 
 ```jsx
-import omit from "lodash-es/omit"
+import omit from 'lodash-es/omit'
 
-const useStore = create(set => ({
+const useStore = create((set) => ({
   salmon: 1,
   tuna: 2,
-  deleteEverything: () => set({ }, true), // clears the entire store, actions included
-  deleteTuna: () => set(state => omit(state, ['tuna']), true)
+  deleteEverything: () => set({}, true), // clears the entire store, actions included
+  deleteTuna: () => set((state) => omit(state, ['tuna']), true),
 }))
 ```
 
@@ -137,12 +137,12 @@ const useStore = create(set => ({
 Just call `set` when you're ready, zustand doesn't care if your actions are async or not.
 
 ```jsx
-const useStore = create(set => ({
+const useStore = create((set) => ({
   fishies: {},
-  fetch: async pond => {
+  fetch: async (pond) => {
     const response = await fetch(pond)
     set({ fishies: await response.json() })
-  }
+  },
 }))
 ```
 
@@ -224,7 +224,7 @@ function Component() {
   const scratchRef = useRef(useStore.getState().scratches)
   // Connect to the store on mount, disconnect on unmount, catch state-changes in a reference
   useEffect(() => useStore.subscribe(
-    scratches => (scratchRef.current = scratches), 
+    scratches => (scratchRef.current = scratches),
     state => state.scratches
   ), [])
 ```
@@ -236,13 +236,13 @@ Reducing nested structures is tiresome. Have you tried [immer](https://github.co
 ```jsx
 import produce from 'immer'
 
-const useStore = create(set => ({
-  lush: { forrest: { contains: { a: "bear" } } },
-  set: fn => set(produce(fn)),
+const useStore = create((set) => ({
+  lush: { forrest: { contains: { a: 'bear' } } },
+  set: (fn) => set(produce(fn)),
 }))
 
-const set = useStore(state => state.set)
-set(state => {
+const set = useStore((state) => state.set)
+set((state) => {
   state.lush.forrest.contains = null
 })
 ```
@@ -253,47 +253,53 @@ You can functionally compose your store any way you like.
 
 ```jsx
 // Log every time state is changed
-const log = config => (set, get, api) => config(args => {
-  console.log("  applying", args)
-  set(args)
-  console.log("  new state", get())
-}, get, api)
+const log = (config) => (set, get, api) =>
+  config(
+    (args) => {
+      console.log('  applying', args)
+      set(args)
+      console.log('  new state', get())
+    },
+    get,
+    api
+  )
 
 // Turn the set method into an immer proxy
-const immer = config => (set, get, api) => config(fn => set(produce(fn)), get, api)
+const immer = (config) => (set, get, api) => config((fn) => set(produce(fn)), get, api)
 
 const useStore = create(
   log(
     immer((set) => ({
       bees: false,
       setBees: (input) => set((state) => void (state.bees = input)),
-    })),
-  ),
+    }))
+  )
 )
 ```
-
 
 <overview>
 <summary>How to pipe middlewares</summary>
 <details>
 
 ```js
-import create from "zustand"
-import produce from "immer"
-import pipe from "ramda/es/pipe"
+import create from 'zustand'
+import produce from 'immer'
+import pipe from 'ramda/es/pipe'
 
 /* log and immer functions from previous example */
 /* you can pipe as many middlewares as you want */
 const createStore = pipe(log, immer, create)
 
-const useStore = createStore(set => ({
+const useStore = createStore((set) => ({
   bears: 1,
-  increasePopulation: () => set(state => ({ bears: state.bears + 1 }))
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
 }))
 
 export default useStore
 ```
+
 For a TS example see the following [discussion](https://github.com/pmndrs/zustand/discussions/224#discussioncomment-118208)
+
 </details>
 </overview>
 
@@ -319,39 +325,43 @@ const immer = <T extends State>(
 You can persist you store's data using any kind of storage.
 
 ```jsx
-import create from "zustand"
-import { persist } from "zustand/middleware"
+import create from 'zustand'
+import { persist } from 'zustand/middleware'
 
-export const useStore = create(persist(
-  (set, get) => ({
-    fish: 0,
-    addAFish: () => set({ fish: get().fish + 1 })
-  }),
-  {
-    name: "food-storage", // unique name
-    storage: sessionStorage, // (optional) default is 'localStorage'
-  }
-))
+export const useStore = create(
+  persist(
+    (set, get) => ({
+      fish: 0,
+      addAFish: () => set({ fish: get().fish + 1 }),
+    }),
+    {
+      name: 'food-storage', // unique name
+      storage: sessionStorage, // (optional) default is 'localStorage'
+    }
+  )
+)
 ```
 
 ## Can't live without redux-like reducers and action types?
 
 ```jsx
-const types = { increase: "INCREASE", decrease: "DECREASE" }
+const types = { increase: 'INCREASE', decrease: 'DECREASE' }
 
 const reducer = (state, { type, by = 1 }) => {
   switch (type) {
-    case types.increase: return { grumpiness: state.grumpiness + by }
-    case types.decrease: return { grumpiness: state.grumpiness - by }
+    case types.increase:
+      return { grumpiness: state.grumpiness + by }
+    case types.decrease:
+      return { grumpiness: state.grumpiness - by }
   }
 }
 
-const useStore = create(set => ({
+const useStore = create((set) => ({
   grumpiness: 0,
-  dispatch: args => set(state => reducer(state, args)),
+  dispatch: (args) => set((state) => reducer(state, args)),
 }))
 
-const dispatch = useStore(state => state.dispatch)
+const dispatch = useStore((state) => state.dispatch)
 dispatch({ type: types.increase, by: 2 })
 ```
 
@@ -384,9 +394,9 @@ type State = {
   increase: (by: number) => void
 }
 
-const useStore = create<State>(set => ({
+const useStore = create<State>((set) => ({
   bears: 0,
-  increase: (by) => set(state => ({ bears: state.bears + by })),
+  increase: (by) => set((state) => ({ bears: state.bears + by })),
 }))
 ```
 
@@ -396,9 +406,8 @@ Or, use `combine` and let tsc infer types.
 import { combine } from 'zustand/middleware'
 
 const useStore = create(
-  combine(
-    { bears: 0 }, 
-    (set) => ({ increase: (by: number) => set((state) => ({ bears: state.bears + by })) })
-  ),
+  combine({ bears: 0 }, (set) => ({
+    increase: (by: number) => set((state) => ({ bears: state.bears + by })),
+  }))
 )
 ```

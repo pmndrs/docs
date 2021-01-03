@@ -1,12 +1,13 @@
 # How does it work?
 
 <Callout emoji="⚠️">
-This is an advanced guide on the inner workings of Fiber, if you are just getting started, take a look at our introduction!
+  This is an advanced guide on the inner workings of Fiber, if you are just getting started, take a
+  look at our introduction!
 </Callout>
 
 React Three Fiber is a React <a href="https://reactjs.org/docs/codebase-overview.html#renderers">renderer</a> for **three.js**.
 
-This means that each Fiber component will effectively create a new THREE object that will be added to a `scene`. 
+This means that each Fiber component will effectively create a new THREE object that will be added to a `scene`.
 Understanding how this works is not necessarily needed to use Fiber, but it will better arm you to deal with anything that you might need in your projects, reading other people's Fiber code and even help you contribute.
 
 Let's take a simple React example:
@@ -51,19 +52,16 @@ scene.add(group)
 Our `Canvas` element will create a new scene, and Fiber will instantiate new objects for each component and correctly compose them together in a scene graph!
 
 <Callout>
-Additionally, Fiber will:
-- Setup a new perspective camera at [0, 0, 0] and set it as default
-- Setup a **render loop** with automatic render to screen
-- Setup pointer events via raycasting on all meshes with `onPointer*` props
-- Setup tone mapping
-- Automatically handle window resize
+  Additionally, Fiber will: - Setup a new perspective camera at [0, 0, 0] and set it as default -
+  Setup a **render loop** with automatic render to screen - Setup pointer events via raycasting on
+  all meshes with `onPointer*` props - Setup tone mapping - Automatically handle window resize
 </Callout>
 
 **Let's break this down!**
 
 ## Creating THREE objects
 
-In three.js, we can create new object using the classic js API: 
+In three.js, we can create new object using the classic js API:
 
 ```js
 const myBox = new THREE.BoxBufferGeometry(1, 2, 3)
@@ -106,7 +104,7 @@ With the `attach` prop, we can precisely tell the renderer what property to atta
 </mesh>
 ```
 
-This will *explicitly* tell Fiber to render like this:
+This will _explicitly_ tell Fiber to render like this:
 
 ```js
 mesh.material = new THREE.MeshNormalMaterial()
@@ -116,12 +114,14 @@ mesh.geometry = new THREE.BoxBufferGeometry()
 As you can see, the `attach` prop is telling Fiber to set the parent's "material" property to a reference to our `<meshNormalMaterial />` object.
 
 <Callout>
-  Note that while we used geometry and material for this example, Fiber also infers the attach property from the constructor name, so anything with `material` or `geometry` will automatically get attached to the correct property of its parent.
+  Note that while we used geometry and material for this example, Fiber also infers the attach
+  property from the constructor name, so anything with `material` or `geometry` will automatically
+  get attached to the correct property of its parent.
 </Callout>
 
 The same is true for `attachArray` which, instead of setting the property, will push to an existing array:
 
-*Add example*
+_Add example_
 
 ## Props
 
@@ -135,7 +135,7 @@ is equivalent to:
 
 ```jsx
 const material = new THREE.MeshBasicMaterial()
-material.color = "red"
+material.color = 'red'
 ```
 
 Fiber will check the type of the property value and either:
@@ -166,9 +166,7 @@ mesh.scale.set(3, 4, 5)
 Every object wih `onPointer*` props, will be added to the array of objects checked every frame by the raycaster:
 
 ```jsx
-<mesh onPointerDown={console.log}>
-   ...
-</mesh>
+<mesh onPointerDown={console.log}>...</mesh>
 ```
 
 The ray's `origin` and `direction` are updated every time the mouse moves on the `<Canvas />` element or the window is resized.
@@ -178,8 +176,7 @@ When using the `raycast` prop, the object will instead be picked using a custom 
 
 ```jsx
 import { useCamera } from 'react-three-fiber'
- 
-<mesh raycast={useCamera(anotherCamera)} />
+;<mesh raycast={useCamera(anotherCamera)} />
 ```
 
 [See this recipe for more info about this.](/docs/recipes/raycasting)
@@ -196,4 +193,4 @@ The loop is setup using [`setAnimationLoop`](https://threejs.org/docs/#api/en/re
 4. `renderer.render(scene, camera)` is called, effectively rendering the scene to screen
 5. all [global after effects](docs/recipes/effects) are executed
 
-*Add about opting out of render*
+_Add about opting out of render_
