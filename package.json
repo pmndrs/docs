@@ -25,6 +25,7 @@
     "prismjs": "^1.22.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-lazyload": "^3.1.0",
     "recursive-readdir": "^2.2.2",
     "set-value": "^3.0.2"
   },

@@ -7,9 +7,12 @@ function Layout(props) {
   const { nav, toc } = props
   const {
     query: { slug },
+    ...x
   } = useRouter()
 
   const [lib] = slug as string[]
+
+  console.log(nav, x)
 
   return (
     <>
