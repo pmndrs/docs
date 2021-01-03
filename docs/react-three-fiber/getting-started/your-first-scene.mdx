@@ -14,10 +14,10 @@ In the example above, we can start getting familiar with some of the **basic con
 
 2. We added a `<color />` component with `args` and `attach` props. This means that a new `THREE.Color` object will be created and set as the `background` property of the main `scene`.
 
-````js const color = new THREE.Color('black') // args is the arguments array, passed to the
-constructor scene.background = color // set the property on a three.js object parent[attach] =
-object ```
-
+```jsx
+const color = new THREE.Color('black') // args is the arguments array, passed to the constructor
+scene.background = color // set the property on a three.js object parent[attach] = object
+```
 
 3. We added a `<mesh />` component with a `<boxBufferGeometry />` child. Any component with `geometry` or `material` in its name, will automatically attach to the corresponding property of its parent:
 
@@ -26,7 +26,7 @@ const myMesh = new THREE.Mesh() // <mesh />
 const myGeometry = new THREE.BoxBufferGeometry() // <boxBufferGeometry />
 
 myMesh.geometry = myGeometry // set the `geometry` property on our mesh
-````
+```
 
 <Callout>
   The `Canvas` will fill its parent element (try changing the width and height of `.App` in
@@ -54,7 +54,7 @@ mesh.geometry = geometry
 scene.add(mesh)
 ```
 
-We can add materials in the same way, let's say we want to use [THREE.MeshNormalMaterial](), we will have to use a camel-case version of the name, in this case `<meshPhysicalMaterial />`:
+We can add materials in the same way, let's say we want to use [`THREE.MeshNormalMaterial`](), we will have to use a camel-case version of the name, in this case `<meshPhysicalMaterial />`:
 
 <iframe src="https://codesandbox.io/embed/cvxpd?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=9&hidedevtools=1" />
 

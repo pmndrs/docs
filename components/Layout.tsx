@@ -12,8 +12,6 @@ function Layout(props) {
 
   const [lib] = slug as string[]
 
-  console.log(nav, x)
-
   return (
     <>
       <div className="sticky top-0 z-40 lg:z-50 w-full max-w-8xl mx-auto bg-white flex-none flex">
