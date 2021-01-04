@@ -1,16 +1,33 @@
+import clsx from 'clsx'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+
+type NavRoute = {
+  url: string
+  title: string
+}
 
 type NavProps = {
-  nav: Record<
-    string,
-    Record<
-      string,
-      {
-        url: string
-        title: string
-      }
+  nav: Record<string, Record<string, NavRoute>>
+}
+
+function NavItem({ route }) {
+  const { asPath } = useRouter()
+
+  const isActive = route.url === asPath
+
+  return (
+    <li
+      className={clsx(
+        'px-6 py-3 text-gray-800 capitalize font-light hover:bg-gray-100 cursor-pointer',
+        isActive && 'bg-gray-200'
+      )}
     >
-  >
+      <Link href={`${route.url.replace('index', '')}`}>
+        <a>{route.title}</a>
+      </Link>
+    </li>
+  )
 }
 
 function Nav({ nav }: NavProps) {
@@ -18,13 +35,11 @@ function Nav({ nav }: NavProps) {
     <ul>
       {Object.entries(nav).map(([key, children]) => (
         <>
-          <h3 className="mt-8 mb-2 text-xs text-gray-900 uppercase">{key.split('-').join(' ')}</h3>
+          <h3 className="px-6 mt-8 mb-2 text-lg text-gray-900 capitalize">
+            {key.split('-').join(' ')}
+          </h3>
           {Object.entries(children).map(([key, route]) => (
-            <li className="mb-3 text-gray-500">
-              <Link href={`${route.url.replace('index', '')}`}>
-                <a>{route.title}</a>
-              </Link>
-            </li>
+            <NavItem route={route} />
           ))}
         </>
       ))}

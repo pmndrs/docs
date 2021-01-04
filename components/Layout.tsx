@@ -45,13 +45,10 @@ function Layout(props) {
               <div
                 id="nav"
                 className="
-              px-1 
               pt-6 
               overflow-y-auto 
               font-medium 
               text-base 
-              sm:px-3 
-              xl:px-5 
               lg:text-sm 
               pb-10 
               lg:pt-10 
