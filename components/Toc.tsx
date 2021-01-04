@@ -16,11 +16,10 @@ function Toc({ toc }: TocProps) {
     <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
       <h3 className="mt-8 mb-2 text-lg font-medium text-gray-900 capitalize">On This Page</h3>
 
-      {/* Extract this to a component */}
       {toc.map((item) => (
         <h3 className={clsx(item.depth === 3 && 'ml-4')}>
           <a
-            className="block py-2 text-lg font-light text-gray-400 hover:underline"
+            className="block py-2 text-base font-light leading-6 text-gray-500 hover:underline"
             href={`#${item.slug}`}
           >
             {item.title}
