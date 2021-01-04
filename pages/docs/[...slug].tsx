@@ -40,8 +40,8 @@ const components = {
       </a>
     )
   },
-  ul: ({ children }) => <ul className="px-4">{children}</ul>,
-  ol: ({ children }) => <ol className="px-4">{children}</ol>,
+  ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
+  ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-8 text-lg leading-8 text-gray-700">{children}</li>,
   inlineCode: ({ children }) => {
     return <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
@@ -61,9 +61,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
           <div className="pb-6 mb-12 border-b post-header">
             <h1 className="mb-4 text-5xl font-bold">{frontMatter.title}</h1>
             {frontMatter.description && (
-              <p className="text-xl font-light leading-8 text-gray-500">
-                {frontMatter.description}
-              </p>
+              <p className="text-2xl leading-8 text-gray-400">{frontMatter.description}</p>
             )}
           </div>
         )}
