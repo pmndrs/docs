@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 type TocItem = {
   depth: number
   slug: string
@@ -12,20 +13,20 @@ type TocProps = {
 
 function Toc({ toc }: TocProps) {
   return (
-    <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pt-10 pb-6 top-16">
-      <h3 className="text-xs font-bold uppercase">On this page</h3>
+    <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
+      <h3 className="mt-8 mb-2 text-lg font-medium text-gray-900 capitalize">On This Page</h3>
 
       {/* Extract this to a component */}
       {toc.map((item) => (
-        <h3 className={item.depth === 3 && 'ml-4'}>
-          <a href={`#${item.slug}`}>{item.title}</a>
+        <h3 className={clsx(item.depth === 3 && 'ml-4')}>
+          <a
+            className="block py-2 text-lg font-light text-gray-400 hover:underline"
+            href={`#${item.slug}`}
+          >
+            {item.title}
+          </a>
         </h3>
       ))}
-
-      {/* Link to the markdown file on github */}
-      <div className="mt-4 font-bold">
-        <a href="#">🐙 Edit on Github</a>
-      </div>
     </div>
   )
 }
