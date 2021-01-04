@@ -10,8 +10,15 @@ import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 import Layout from 'components/Layout'
 import Codesandbox from 'components/Codesandbox'
 
+import PrismCode from 'react-prism'
+import 'prismjs'
+import 'prismjs/components/prism-jsx.min'
+import 'prismjs/themes/prism-okaidia.css'
+
 import withCodesandbox from 'remark/withCodesandbox'
 import setValue from 'set-value'
+import withPrismHighlighting from '../../remark/withPrismHighlighting'
+import clsx from 'clsx'
 
 const components = {
   Callout: ({ children }) => children,
@@ -22,13 +29,25 @@ const components = {
     const Comp = level === 2 ? 'h2' : 'h3'
 
     return (
-      <a href={`#${id}`}>
+      <a
+        href={`#${id}`}
+        className={clsx(
+          level === 2 ? 'text-3xl mb-10 font-bold' : 'text-xl mb-3 font-bold',
+          'block '
+        )}
+      >
         <Comp id={id}>{children}</Comp>
       </a>
     )
   },
+  ul: ({ children }) => <ul className="px-4">{children}</ul>,
+  ol: ({ children }) => <ol className="px-4">{children}</ol>,
+  li: ({ children }) => <li className="mb-8 text-lg leading-8 text-gray-700">{children}</li>,
   inlineCode: ({ children }) => {
-    return <code className="text-purple-300 bg-purple-100">{children}</code>
+    return <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
+  },
+  p: ({ children }) => {
+    return <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>
   },
 }
 
@@ -40,13 +59,15 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
       <main className="max-w-3xl mx-auto">
         {frontMatter.title && (
           <div className="pb-6 mb-12 border-b post-header">
-            <h1 className="mb-4 text-4xl font-bold">{frontMatter.title}</h1>
+            <h1 className="mb-4 text-5xl font-bold">{frontMatter.title}</h1>
             {frontMatter.description && (
-              <p className="text-xl font-light text-gray-400">{frontMatter.description}</p>
+              <p className="text-xl font-light leading-8 text-gray-500">
+                {frontMatter.description}
+              </p>
             )}
           </div>
         )}
-        <div className="prose max-w-none">{content}</div>
+        <div className="content-container">{content}</div>
       </main>
     </Layout>
   )

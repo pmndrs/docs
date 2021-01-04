@@ -6,10 +6,22 @@ nav: 0
 
 ## Hello world
 
-How are you
+An Enum is similar to a scalar type, but it can only be one of several values defined in the schema. Enums are most useful in a situation where the user must pick from a prescribed list of options. Additionally enums improve development velocity, since they will auto-complete in tools like GraphQL Playground.
+
+## A section
 
 ### Another section for you
 
-hi `hello`
+Responses whose overall cache policy scope is `PRIVATE` are shared only among sessions with the same session ID. Private responses are not cached if the `sessionId` hook is not defined or returns null.
 
-## Hewwo
+Responses whose overall cache policy scope is `PUBLIC` are shared separately among all sessions with `sessionId` null and among all sessions with non-null `sessionId`. Caching these separately allows you to have different caches for all logged-in users vs all logged-out users, if there is easily cacheable data that should only be visible to logged-in users.
+
+Responses containing GraphQL errors or no data are never cached.
+
+The plugin allows you to define a few more hooks to affect cache behavior for a specific request. All hooks take in a `GraphQLRequestContext`.
+
+- `extraCacheKeyData`: this hook can return any JSON-stringifiable object which is added to the cache key. For example, if your API includes translatable text, this hook can return a string derived from `requestContext.request.http.headers.get('Accept-Language')`.
+- `shouldReadFromCache`: if this hook returns false, the plugin will not read responses from the cache.
+- `shouldWriteToCache`: if this hook returns false, the plugin will not write responses to the cache.
+
+In addition to the [`Cache-Control` HTTP header](#serving-http-cache-headers), the response cache plugin will also set the `Age` HTTP header to the number of seconds the value has been sitting in the cache.

@@ -23,10 +23,11 @@
     "next-mdx-remote": "^2.0.1",
     "path-match": "^1.2.4",
     "pretty-quick": "^3.1.0",
-    "prismjs": "^1.22.0",
+    "prismjs": "^1.23.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-lazyload": "^3.1.0",
+    "react-prism": "^4.3.2",
     "recursive-readdir": "^2.2.2",
     "set-value": "^3.0.2"
   },

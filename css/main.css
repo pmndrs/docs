@@ -8,7 +8,7 @@
 
 /* Write your own custom component styles here */
 .btn-blue {
-  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+  @apply px-4 py-2 font-bold text-white bg-blue-500 rounded;
 }
 
 /* Start purging... */
@@ -25,4 +25,16 @@
       height: calc(100vh - theme('spacing.16'));
     }
   }
+}
+
+.content-container ul > li {
+  @apply my-2;
+}
+.content-container ul > li:before {
+  content: '—';
+  @apply inline-block mr-3 text-gray-300;
+}
+
+.content-container pre {
+  @apply p-4 mb-8 text-sm bg-gray-900 rounded;
 }
