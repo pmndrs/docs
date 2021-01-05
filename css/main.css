@@ -40,5 +40,13 @@
 }
 
 .content-container pre {
-  @apply p-4 mb-8 text-sm bg-gray-900 rounded;
+  @apply p-4 mb-8 overflow-hidden overflow-x-auto text-sm bg-gray-900 rounded;
+}
+
+.content-container a {
+  @apply text-purple-400 underline;
+}
+
+.content-container .heading {
+  @apply block font-bold text-gray-900 no-underline hover:text-gray-600 hover:underline;
 }

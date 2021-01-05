@@ -4,11 +4,157 @@ description: This guide will help you setup your first React Three Fiber scene a
 nav: 1
 ---
 
-## The Canvas
+This tutorial will assume some React knowledge, and will be based on [this starter codesandbox](), so just fork it and follow along!
 
-Every scene starts with the `<Canvas />` component, which we can import from `react-three-fiber`:
+## Setting up the Canvas
+
+We'll start by importing the `<Canvas />` component from `react-three-fiber` and putting it in our React tree:
+
+```jsx
+import { Canvas } from 'react-three-fiber'
+
+function App() {
+  return (
+    <div id="canvas-container">
+      <Canvas />
+    </div>
+  )
+}
+
+export default App
+```
+
+The Canvas component does some important setup work behind the scenes:
+
+- It sets up a **Scene** and a **Camera**, the basic building blocks necessary for rendering
+- It automatically handles window resizing
+- It renders our scene every frame
+
+To actually _render_ something in our scene, we'll add a `mesh` component. In Fiber, every THREE.js object has an equivalent component:
+
+```js
+const myMesh = new THREE.Mesh()
+// is equivalent to
+<mesh />
+```
+
+Note that the Canvas will be resized to fit the parent div, so you can control how big it is by just changing the `width` and `height` of `#canvas-container` in your css.
+
+## Adding a Mesh
+
+A [`Mesh`](https://threejs.org/docs/#api/en/objects/Mesh) is a basic object in THREE.js, and it's used to hold the polygons and the material that are needed to represent the object in 3D space.
+We'll create a new mesh using a **BoxBufferGeometry** as the geometry and a **MeshPhongMaterial** as the material.
+
+To actually add these objects to our scene, we mount them inside the `<Canvas />` component.
+
+Note that we don't need to import anything, _THREE objects will be treated as native JSX elements_, just like you can just write `<div>` or `<span />` in regular React.
+The general rule is that the _Fiber components are available with the [camel-case](https://en.wikipedia.org/wiki/Camel_case) version of their name in THREE.js_.
+
+```jsx
+import { Canvas } from 'react-three-fiber'
+
+function App() {
+  return (
+    <div id="canvas-container">
+      <Canvas>
+        <mesh>
+          <boxBufferGeometry attach="geometry" />
+          <meshPhongMaterial attach="material" />
+        </mesh>
+      </Canvas>
+    </div>
+  )
+}
+
+export default App
+```
+
+It's worth pausing a moment to understand exactly what is happening here. The code we just wrote, is the equivalent to this THREE.js code:
+
+```jsx
+const myMesh = new THREE.Mesh()
+const myGeometry = new THREE.BoxBufferGeometry()
+const myMaterial = new THREE.MeshPhongMaterial()
+
+myMesh.geometry = myGeometry
+myMesh.material = myMaterial
+
+scene.add(myMesh)
+```
+
+When you mount a `mesh` component, Fiber is creating a new `THREE.Mesh` object, and the same is done for geometry and material.
+Then, geometry and material are _attached_ to their parent, by assigning its `geometry` and `material` properties to the newly created objects.
+
+## Changing the camera
+
+### Attach and Args
+
+The `attach` prop is used to make this relationship explicit, effectively _telling Fiber what property of the parent to attach the newly created object to_.
+
+The `args` prop is used to pass constructor arguments to THREE.js.
+To better understand this, we can take a look at the [documentation for THREE's `BoxBufferGeometry`](https://threejs.org/docs/#api/en/geometries/BoxBufferGeometry), that tells us how the geometry is constructed:
+
+```js
+const geometry = new THREE.BoxBufferGeometry(2, 2, 2)
+```
+
+Looking at the docs, we understand that `(2, 2, 2)` are the width, height and depth of our box. These 3 values, make the `arguments` array of the BoxBufferGeoemtry constructor.
+
+We can make use of this info in Fiber:
+
+```jsx
+<boxBufferGeometry args={[2, 2, 2]} />
+```
+
+The value of `args` is always an array, and it's equivalent to the values we used in the THREE.js example to construct our geometry.
+
+## Adding lights
+
+Next, we will add some lights to our scene, by putting these components as children of `<Canvas />`
+
+```jsx
+<Canvas>
+  ...
+  <ambientLight args={[0xff0000]} intensity={0.4} />
+  <directionalLight position={[0, 0, 5]} intensity={0.1} />
+</Canvas>
+```
+
+This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. Let's focus on `ambientLight`:
+
+```jsx
+<ambientLight // we are using a THREE.js AmbientLight
+  args={[0xff0000]} // we are passing this color to the constructor
+  intensity={0.1} // we are setting the light's intensity to 0.1
+/>
+```
+
+From the [`AmbientLight` documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) we learn that it is constructed with a color value (`0xff0000` in our case) and has an `intensity` property, that defines how strong the light is.
+When you set any prop on a Fiber component, it will set the property of the same name on the THREE.js object, like you could do manually:
+
+```
+const myLight = new THREE.AmbientLight(0xff0000)
+
+// when the `intensity` prop changes
+myLight.intensity = 0.1
+```
+
+Our `directionalLight` doesn't have an `args` prop, meaning that the default arguments will be used when creating the object. It does have a `position` prop that, as you can imagine, will set the `position` property of the DirectionalLight object.
+
+Here's our final result, a simple box with a Phong material:
 
 <iframe src="https://codesandbox.io/embed/12q81?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=2,8,13&hidedevtools=1" />
+
+**Exercise:**
+
+- try different materials, like [`<meshNormalMaterial />`](https://threejs.org/docs/#api/en/materials/MeshNormalMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial)
+- try different geometries, like [`<sphereBufferGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereBufferGeometry) or [`<octahedronBufferGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronBufferGeometry)
+- try changing the `position` on our `mesh` component, by setting the prop with the same name
+- try extracting our mesh to a new component
+
+<!--
+Every scene starts with the `<Canvas />` component, which we can import from `react-three-fiber`:
+
 
 In the example above, we can start getting familiar with some of the **basic concepts** of React Three Fiber:
 
@@ -30,10 +176,8 @@ const myGeometry = new THREE.BoxBufferGeometry() // <boxBufferGeometry />
 myMesh.geometry = myGeometry // set the `geometry` property on our mesh
 ```
 
-<Callout>
-  The `Canvas` will fill its parent element (try changing the width and height of `.App` in
-  `src/styles.css`)
-</Callout>
+The `Canvas` will fill its parent element (try changing the width and height of `.App` in
+`src/styles.css`)
 
 **React Three Fiber can render any object from three.js**, using these simple rules:
 
@@ -112,10 +256,8 @@ myTexture.wrapS = myTexture.wrapT = THREE.RepeatWrapping
 
 You can just add these lines right after assigning `myTexture` (line 10).
 
-<Callout>
-  We can also simplify our texture loading by using drei's
-  [`useTexture`](https://github.com/pmndrs/drei#usetexture)
-</Callout>
+We can also simplify our texture loading by using drei's
+[`useTexture`](https://github.com/pmndrs/drei#usetexture)
 
 ## Loading 3D Models
 
@@ -134,7 +276,8 @@ Drei is a collection of useful helpers and abstractions for Fiber, and we will u
   - Suspense is resolved and our component can now finally render
 - we destructure nodes (the model's objects) and materials and assign them to a mesh's geometry and material
 
-BONUS: we can add [OrbitControls](https://threejs.org/docs/index.html#examples/en/controls/OrbitControls) by using drei's `<OrbitControls />` component - try dragging and scrolling in the scene
+BONUS: we can add [OrbitControls](https://threejs.org/docs/index.html#examples/en/controls/OrbitControls)
+by using drei's `<OrbitControls />` component - try dragging and scrolling in the scene
 
 Phew, that's a lot to unpack. We will make this process easier later, when we'll introduce the [**gltfjsx**](https://github.com/pmndrs/gltfjsx) utility.
 
@@ -149,4 +292,4 @@ We will now refactor our previous example to better use React's strong suite, co
 
 <iframe src="https://codesandbox.io/embed/wudry?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=5,6,7,8,9,10,11,12&hidedevtools=1" />
 
-In the example, we created a new `MyBox` component that will render a new `mesh`, and we reuse it twice, with different `position` and `color` props.
+In the example, we created a new `MyBox` component that will render a new `mesh`, and we reuse it twice, with different `position` and `color` props. -->
