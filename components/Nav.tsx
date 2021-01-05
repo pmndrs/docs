@@ -17,14 +17,16 @@ function NavItem({ route }) {
   const isActive = route.url === asPath
 
   return (
-    <li
-      className={clsx(
-        'px-6 py-3 text-gray-800 capitalize font-light hover:bg-gray-100 cursor-pointer',
-        isActive && 'bg-gray-200'
-      )}
-    >
+    <li>
       <Link href={`${route.url.replace('index', '')}`}>
-        <a>{route.title}</a>
+        <a
+          className={clsx(
+            'block px-6 py-3 text-gray-800 capitalize font-light hover:bg-gray-100 cursor-pointer',
+            isActive && 'bg-gray-200'
+          )}
+        >
+          {route.title}
+        </a>
       </Link>
     </li>
   )
