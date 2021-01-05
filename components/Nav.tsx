@@ -18,7 +18,7 @@ function NavItem({ route }) {
 
   return (
     <li>
-      <Link href={`${route.url.replace('index', '')}`}>
+      <Link href={`/${route.url.replace('index', '')}`}>
         <a
           className={clsx(
             'block px-6 py-3 text-gray-800 capitalize font-normal hover:bg-gray-100 cursor-pointer',

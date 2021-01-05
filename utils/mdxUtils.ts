@@ -16,7 +16,7 @@ export async function getAllDocs() {
   const files = (await recursiveReaddir(DOCS_PATH))
     .filter((x) => x.indexOf('.mdx') > -1)
     .map((filePath) => {
-      const url = filePath.replace(process.cwd(), '').replace('.mdx', '')
+      const url = filePath.replace(process.cwd(), '').replace('.mdx', '').replace('/docs/', '')
       const source = fs.readFileSync(filePath)
       const { data } = matter(source)
 

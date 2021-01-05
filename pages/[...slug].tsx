@@ -17,7 +17,7 @@ import 'prismjs/themes/prism-okaidia.css'
 
 import withCodesandbox from 'remark/withCodesandbox'
 import setValue from 'set-value'
-import withPrismHighlighting from '../../remark/withPrismHighlighting'
+import withPrismHighlighting from '../remark/withPrismHighlighting'
 import clsx from 'clsx'
 
 const components = {
