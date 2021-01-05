@@ -21,7 +21,7 @@ function NavItem({ route }) {
       <Link href={`${route.url.replace('index', '')}`}>
         <a
           className={clsx(
-            'block px-6 py-3 text-gray-800 capitalize font-light hover:bg-gray-100 cursor-pointer',
+            'block px-6 py-3 text-gray-800 capitalize font-normal hover:bg-gray-100 cursor-pointer',
             isActive && 'bg-gray-200'
           )}
         >

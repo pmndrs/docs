@@ -19,7 +19,7 @@ function Toc({ toc }: TocProps) {
       {toc.map((item) => (
         <h3 className={clsx(item.depth === 3 && 'ml-4')}>
           <a
-            className="block py-2 text-base font-light leading-6 text-gray-500 hover:underline"
+            className="block py-2 text-base font-normal leading-6 text-gray-500 hover:underline"
             href={`#${item.slug}`}
           >
             {item.title}
