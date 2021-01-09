@@ -1,3 +1,6 @@
+import clsx from 'clsx'
+import { useSpring, animated as a } from 'react-spring'
+
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import Toc from 'components/Toc'
@@ -5,6 +8,7 @@ import Toc from 'components/Toc'
 import Link from 'next/link'
 
 import { useRouter } from 'next/router'
+import { useSwitcher } from 'store/switcher'
 
 function Layout(props) {
   const { nav, toc, allDocs } = props
@@ -12,6 +16,14 @@ function Layout(props) {
     query: { slug },
     asPath,
   } = useRouter()
+  const { isSwitcherOpen } = useSwitcher()
+  const { opacity } = useSpring({
+    opacity: isSwitcherOpen ? 0 : 1,
+    config: {
+      tension: 280,
+      friction: 28,
+    },
+  })
 
   const [lib] = slug as string[]
 
@@ -22,11 +34,20 @@ function Layout(props) {
 
   return (
     <>
-      <div className="sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl">
-        <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
+      <div id="modal" />
+      <div
+        className={clsx(
+          'sticky top-0 flex flex-none w-full mx-auto bg-white max-w-8xl',
+          isSwitcherOpen ? 'z-30 lg:z-30' : 'z-40 lg:z-50'
+        )}
+      >
+        <a.div
+          style={{ opacity }}
+          className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72"
+        >
           <span className="font-bold">Pmdnrs</span>
           <span className="font-normal">.docs</span>
-        </div>
+        </a.div>
         <div className="flex items-center justify-between flex-auto h-16 px-4 border-b border-gray-200 sm:px-6 lg:mx-6 lg:px-0 xl:mx-8">
           Quick search [⌘ + K]
         </div>

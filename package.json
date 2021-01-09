@@ -28,8 +28,10 @@
     "react-dom": "^17.0.1",
     "react-lazyload": "^3.1.0",
     "react-prism": "^4.3.2",
+    "react-spring": "8.0.27",
     "recursive-readdir": "^2.2.2",
-    "set-value": "^3.0.2"
+    "set-value": "^3.0.2",
+    "zustand": "^3.3.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.8",
