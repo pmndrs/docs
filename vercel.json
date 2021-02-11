@@ -16,7 +16,7 @@
         },
         {
           "key": "Expect-CT",
-          "value": "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+          "value": "max-age=604800, report-uri=\"https://pmndrs.report-uri.com/r/d/ct/reportOnly\""
         },
         {
           "key": "Permissions-Policy",
@@ -52,7 +52,7 @@
   ],
   "redirects": [
     {
-      "destination": "https://discord.gg/ZZjjNvJ",
+      "destination": "https://discord.gg/poimandres",
       "source": "/discord"
     },
     {
