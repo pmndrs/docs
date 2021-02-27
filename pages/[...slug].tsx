@@ -11,8 +11,6 @@ import Layout from 'components/Layout'
 import Codesandbox from 'components/Codesandbox'
 
 import prism from 'remark-prism'
-import 'prismjs'
-import 'prismjs/components/prism-jsx.min'
 import 'prismjs/themes/prism-okaidia.css'
 
 import withCodesandbox from 'remark/withCodesandbox'
