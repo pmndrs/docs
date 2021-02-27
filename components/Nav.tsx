@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { Fragment } from 'react'
 
 type NavRoute = {
   url: string
@@ -35,15 +36,17 @@ function NavItem({ route }) {
 function Nav({ nav }: NavProps) {
   return (
     <ul>
-      {Object.entries(nav).map(([key, children]) => (
-        <>
+      {Object.entries(nav).map(([key, children], index) => (
+        <Fragment key={`${key}-${index}`}>
           <h3 className="px-6 mt-8 mb-2 text-lg text-gray-900 capitalize">
             {key.split('-').join(' ')}
           </h3>
-          {Object.entries(children).map(([, route]) => (
-            <NavItem route={route} />
+          {Object.entries(children).map(([key, route], index) => (
+            <Fragment key={`${key}-${index}`}>
+              <NavItem route={route} />
+            </Fragment>
           ))}
-        </>
+        </Fragment>
       ))}
     </ul>
   )
