@@ -69,17 +69,21 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const postFilePath = path.join(DOCS_PATH, `${params.slug.join('/')}.mdx`)
+  const postFilePath = path.join(DOCS_PATH, `${path.join(...params.slug)}.mdx`)
   const source = fs.readFileSync(postFilePath)
   const { content, data } = matter(source)
 
   const allDocs = await getAllDocs()
 
   const nav = allDocs.reduce((nav, file) => {
-    const [lib, ...rest] = file.url.replace('/docs', '').split('/')
+    const [lib, ...rest] = file.url
+      .replace(/[/\\]?docs/i, '')
+      .split(path.sep)
+      .filter(Boolean)
     const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
 
     setValue(nav, _path, file)
+
     return nav
   }, {})
 
@@ -130,18 +134,12 @@ export const getStaticProps = async ({ params }) => {
 }
 
 export const getStaticPaths = async () => {
-  const paths = (await getDocsPaths())
-    // Remove file extensions for page paths
-    .map((path) => path.replace(/\.mdx?$/, ''))
-    .map((path) => path.replace('/docs/', ''))
-    // Map the path into the static paths object required by Next.js
-    .map((path) => {
-      return {
-        params: {
-          slug: path.split('/'),
-        },
-      }
-    })
+  // Map the path into the static paths object required by Next.js
+  const paths = (await getDocsPaths()).map((slug) => ({
+    params: {
+      slug: slug.split(path.sep).filter(Boolean),
+    },
+  }))
 
   return {
     paths,

@@ -18,7 +18,7 @@ function NavItem({ route }) {
 
   return (
     <li>
-      <Link href={`/${route.url.replace('index', '')}`}>
+      <Link href={route.url.replace('index', '')}>
         <a
           className={clsx(
             'block px-6 py-3 text-gray-800 capitalize font-normal hover:bg-gray-100 cursor-pointer',
@@ -40,7 +40,7 @@ function Nav({ nav }: NavProps) {
           <h3 className="px-6 mt-8 mb-2 text-lg text-gray-900 capitalize">
             {key.split('-').join(' ')}
           </h3>
-          {Object.entries(children).map(([key, route]) => (
+          {Object.entries(children).map(([, route]) => (
             <NavItem route={route} />
           ))}
         </>
