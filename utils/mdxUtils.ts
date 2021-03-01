@@ -20,7 +20,7 @@ export const getDocsPaths = async () => {
     // Remove file extensions for page paths
     .map((path) => path.replace(/\.mdx?$/, ''))
     // Remove redundant docs prefix
-    .map((path) => path.replace(/[/\\]?docs/i, ''))
+    .map((path) => path.replace(/[\/\\]?docs/i, ''))
 
   return paths
 }
@@ -34,9 +34,11 @@ export const getAllDocs = async () => {
       const source = fs.readFileSync(path.join(DOCS_PATH, `${url}.mdx`))
       const { data } = matter(source)
 
+      const pathname = url.split(path.sep).pop()
+
       return {
-        url: url.replace(/[/\\]+/g, '/'),
-        title: data.title || url.split(path.sep).pop().split('-').join(' '),
+        url: url.replace(/\/|\\/g, '/'),
+        title: data.title || pathname.replace('-', ' '),
         nav: data.nav ?? Infinity,
       }
     })

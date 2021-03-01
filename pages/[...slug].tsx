@@ -3,7 +3,6 @@ import matter from 'gray-matter'
 import hydrate from 'next-mdx-remote/hydrate'
 import renderToString from 'next-mdx-remote/render-to-string'
 import path from 'path'
-import slugify from '@sindresorhus/slugify'
 
 import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 
@@ -14,6 +13,7 @@ import prism from 'remark-prism'
 import 'prismjs/themes/prism-okaidia.css'
 
 import withCodesandbox from 'remark/withCodesandbox'
+import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import clsx from 'clsx'
 
@@ -37,12 +37,10 @@ const components = {
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-8 text-lg leading-8 text-gray-700">{children}</li>,
-  inlineCode: ({ children }) => {
-    return <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
-  },
-  p: ({ children }) => {
-    return <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>
-  },
+  inlineCode: ({ children }) => (
+    <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
+  ),
+  p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
 }
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
@@ -86,32 +84,7 @@ export const getStaticProps = async ({ params }) => {
     components,
     // Optionally pass remark/rehype plugins
     mdxOptions: {
-      remarkPlugins: [
-        prism,
-        withCodesandbox,
-        () =>
-          function makeTOC(tree) {
-            // @ts-ignore
-            for (let i = 0; i < tree.children.length; i++) {
-              const node = tree.children[i]
-              if (node.type === 'heading' && [2, 3].includes(node.depth)) {
-                const title = node.children
-                  .filter((n) => n.type === 'text')
-                  .map((n) => n.value)
-                  .join('')
-
-                const slug = slugify(title)
-
-                node.type = 'jsx'
-                node.value = `<Heading id={"${slug}"} level={${node.depth}}>${title}</Heading>`
-
-                toc.push({ slug, title, depth: node.depth })
-              }
-            }
-
-            return tree
-          },
-      ],
+      remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
       rehypePlugins: [],
     },
     scope: data,
