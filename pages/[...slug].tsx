@@ -10,14 +10,11 @@ import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 import Layout from 'components/Layout'
 import Codesandbox from 'components/Codesandbox'
 
-import PrismCode from 'react-prism'
-import 'prismjs'
-import 'prismjs/components/prism-jsx.min'
+import prism from 'remark-prism'
 import 'prismjs/themes/prism-okaidia.css'
 
 import withCodesandbox from 'remark/withCodesandbox'
 import setValue from 'set-value'
-import withPrismHighlighting from '../remark/withPrismHighlighting'
 import clsx from 'clsx'
 
 const components = {
@@ -90,6 +87,7 @@ export const getStaticProps = async ({ params }) => {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [
+        prism,
         withCodesandbox,
         () =>
           function makeTOC(tree) {
