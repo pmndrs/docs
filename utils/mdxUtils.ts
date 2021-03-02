@@ -48,7 +48,7 @@ export const getAllDocs = async () => {
 
       return {
         url,
-        title: data.title || pathname.replace('-', ' '),
+        title: data.title || pathname.replace(/\-/g, ' '),
         nav: data.nav ?? Infinity,
       }
     })
