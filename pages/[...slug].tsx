@@ -11,7 +11,6 @@ import Layout from 'components/Layout'
 import Codesandbox from 'components/Codesandbox'
 
 import prism from 'remark-prism'
-import 'prismjs/themes/prism-okaidia.css'
 
 import withCodesandbox from 'remark/withCodesandbox'
 import setValue from 'set-value'

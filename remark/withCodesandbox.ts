@@ -5,7 +5,6 @@ const withCodesandbox = () =>
       const node = tree.children[i]
       if (node.type === 'jsx' && node.value.match(/iframe/) && node.value.match(/codesandbox/)) {
         const url = node.value.match(/(?<=src=").*?(?=[\"])/)[0]
-
         node.value = `<Codesandbox url={"${url}"} />`
       }
     }
