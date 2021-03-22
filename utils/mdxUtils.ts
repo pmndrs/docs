@@ -1,12 +1,17 @@
-import path from 'path'
-import fs from 'fs'
+import { join, sep } from 'path'
+import { readFileSync } from 'fs'
 import matter from 'gray-matter'
 import recursiveReaddir from 'recursive-readdir'
 
 /**
+ * Checks for the MDX file extension
+ */
+export const MARKDOWN_REGEX = /\.mdx?$/
+
+/**
  * Useful when you want to get the path to a specific file
  */
-export const DOCS_PATH = path.join(process.cwd(), 'docs')
+export const DOCS_PATH = join(process.cwd(), 'docs')
 
 /**
  * Gets a list of all mdx files inside the `DOCS_PATH` directory
@@ -14,13 +19,13 @@ export const DOCS_PATH = path.join(process.cwd(), 'docs')
 export const getDocsPaths = async () => {
   const paths = ((await recursiveReaddir(DOCS_PATH)) as string[])
     // Filter to only doc markdown
-    .filter((path) => /\.mdx?$/.test(path))
+    .filter((path) => MARKDOWN_REGEX.test(path))
     // Get local path
     .map((path) => path.replace(process.cwd(), ''))
     // Remove file extensions for page paths
-    .map((path) => path.replace(/\.mdx?$/, ''))
+    .map((path) => path.replace(MARKDOWN_REGEX, ''))
     // Remove redundant docs prefix
-    .map((path) => path.replace(/[/\\]?docs/i, ''))
+    .map((path) => path.replace(`${sep}docs`, ''))
 
   return paths
 }
@@ -30,13 +35,20 @@ export const getDocsPaths = async () => {
  */
 export const getAllDocs = async () => {
   const docs = (await getDocsPaths())
-    .map((url) => {
-      const source = fs.readFileSync(path.join(DOCS_PATH, `${url}.mdx`))
+    .map((path) => {
+      // Get frontMatter from markdown
+      const source = readFileSync(join(DOCS_PATH, `${path}.mdx`))
       const { data } = matter(source)
 
+      // Normalize paths for web
+      const url = path.replace(/\\/g, '/')
+
+      // Get URL pathname
+      const pathname = url.split('/').pop()
+
       return {
-        url: url.replace(/[/\\]+/g, '/'),
-        title: data.title || url.split(path.sep).pop().split('-').join(' '),
+        url,
+        title: data.title || pathname.replace(/\-/g, ' '),
         nav: data.nav ?? Infinity,
       }
     })
