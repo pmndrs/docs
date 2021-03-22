@@ -77,7 +77,7 @@ pre[class*='language-'] {
 }
 
 .token.selector,
-.token.attr-name,
+.token.attr-value,
 .token.string,
 .token.char,
 .token.builtin,
@@ -85,6 +85,7 @@ pre[class*='language-'] {
   color: #5de4c7;
 }
 
+.token.attr-name,
 .token.operator,
 .token.entity,
 .token.url,
@@ -95,7 +96,6 @@ pre[class*='language-'] {
 }
 
 .token.atrule,
-.token.attr-value,
 .token.function,
 .token.class-name {
   color: #fcc5e9;

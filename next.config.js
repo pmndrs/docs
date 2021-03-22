@@ -3,7 +3,7 @@ module.exports = {
     return [
       {
         source: '/',
-        destination: '/react-three-fiber/getting-started/installation',
+        destination: '/react-three-fiber/getting-started/introduction',
         permanent: true,
       },
       {
