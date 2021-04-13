@@ -35,7 +35,7 @@ From this we can see that what we need to do is use the old `onClick` event we u
 Let's add it then:
 
 ```jsx
-<mesh onClick={() => alert('Helooo')} ref={myMesh}>
+<mesh onClick={() => alert('Hellooo')} ref={myMesh}>
   <boxBufferGeometry />
   <meshPhongMaterial color="royalblue" />
 </mesh>
@@ -43,13 +43,13 @@ Let's add it then:
 
 We did it! We created the most boring interaction in the story of 3D and we made an alert show up. Now let's make it actually animate our mesh.
 
-Let's start by setting some step to check if the mesh is active:
+Let's start by setting some state to check if the mesh is active:
 
 ```jsx
 const [active, setActive] = useState(false)
 ```
 
-After we have this we can change the scale with a ternary operator like so:
+After we have this we can set the scale with a ternary operator like so:
 
 ```jsx
 <mesh scale={active ? 1.5 : 1} onClick={() => setActive(!active)} ref={myMesh}>
