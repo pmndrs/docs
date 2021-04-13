@@ -30,7 +30,7 @@ Any mesh in react three fiber has a big number of events, 13 to be more precise:
 />
 ```
 
-From this we can see that what we need to do is use the old `onClick` method we use on any DOM element to react to a user clicking the mesh.
+From this we can see that what we need to do is use the old `onClick` event we use on any DOM element to react to a user clicking the mesh.
 
 Let's add it then:
 
@@ -58,7 +58,7 @@ After we have this we can change the scale with a ternary operator like so:
 </mesh>
 ```
 
-If you try to click on your mesh now, it scales up and down. We just made our first animation!
+If you try to click on your mesh now, it scales up and down. We just made our first interactive 3D mesh!
 
 What we did in this chapter was:
 
@@ -70,9 +70,9 @@ What we did in this chapter was:
 
 ** Exercises **
 
-- Animate other props of the mesh like the `position` or even the `color` of the material.
-- Use `onPointerOver` and `onPointerOut` to animate on hover events.
+- Change other props of the mesh like the `position` or even the `color` of the material.
+- Use `onPointerOver` and `onPointerOut` to change the props of the mesh on hover events.
 
 ## Next steps
 
-We just created an animation but it looks pretty bland without any transition so in the next chapter let's integrate react spring into our project to make the animation look much better.
+We just made our mesh react to user interaction but it looks pretty bland without any transition so in the next chapter let's integrate react spring into our project to make this into an actual animation.
