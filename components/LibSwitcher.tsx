@@ -5,7 +5,7 @@ function LibSwitcherModal() {
 function LibSwitcher() {
   return (
     <>
-      <div className="text-white rounded-md bg-black p-2 px-3">React Three Fiber</div>
+      <div className="pl-6">React Three Fiber</div>
     </>
   )
 }
