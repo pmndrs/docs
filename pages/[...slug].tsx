@@ -27,7 +27,7 @@ const components = {
     return (
       <a
         href={`#${id}`}
-        className={clsx('heading', level === 2 ? 'text-3xl mb-10' : 'text-xl mb-3')}
+        className={clsx('heading', level === 2 ? 'text-3xl mb-10 mt-4' : 'text-xl mb-3')}
       >
         <Comp id={id}>{children}</Comp>
       </a>
