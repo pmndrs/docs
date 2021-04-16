@@ -26,7 +26,7 @@ const Item = ({ title, active, href, onMouseOver, search, onClick }) => {
   )
 }
 
-const Search = ({ directories }) => {
+const Search = ({ allDocs }) => {
   const router = useRouter()
   const [show, setShow] = useState(false)
   const [search, setSearch] = useState('')
@@ -35,11 +35,10 @@ const Search = ({ directories }) => {
 
   const results: { title: string; url: string }[] = useMemo(() => {
     if (!search) return []
-    console.log(directories, search, { keys: ['title'] })
     // Will need to scrape all the headers from each page and search through them here
     // (similar to what we already do to render the hash links in sidebar)
     // We could also try to search the entire string text from each page
-    return matchSorter(directories, search, { keys: ['title'] })
+    return matchSorter(allDocs, search, { keys: ['title'] })
   }, [search])
 
   const handleKeyDown = useCallback(

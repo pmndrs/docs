@@ -28,7 +28,7 @@ function Layout(props) {
           <span className="font-bold">Pmdnrs</span>
           <span className="font-normal">.docs</span>
         </div>
-        <Search directories={props.allDocs} />
+        <Search allDocs={props.allDocs} />
       </div>
 
       <div className="w-full mx-auto max-w-8xl">
