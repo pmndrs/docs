@@ -43,7 +43,6 @@ const components = {
   blockquote: ({ children }) => (
     <blockquote className="mb-8 text-lg leading-8 pl-4 border-l-4 border-gray-600">
       {children}
-      {console.log(children)}
     </blockquote>
   ),
 }
