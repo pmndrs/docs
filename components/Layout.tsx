@@ -1,6 +1,7 @@
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import Toc from 'components/Toc'
+import Search from 'components/Search'
 
 import Link from 'next/link'
 
@@ -27,9 +28,7 @@ function Layout(props) {
           <span className="font-bold">Pmdnrs</span>
           <span className="font-normal">.docs</span>
         </div>
-        <div className="flex items-center justify-between flex-auto h-16 px-4 border-b border-gray-200 sm:px-6 lg:mx-6 lg:px-0 xl:mx-8">
-          Quick search [⌘ + K]
-        </div>
+        <Search directories={props.allDocs} />
       </div>
 
       <div className="w-full mx-auto max-w-8xl">

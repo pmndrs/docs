@@ -15,6 +15,7 @@ import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import clsx from 'clsx'
+import Link from 'next/link'
 
 const components = {
   Callout: ({ children }) => children,
@@ -40,6 +41,17 @@ const components = {
     <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
   ),
   p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
+  a: (props) => {
+    if (props.href.startsWith('https://')) {
+      return (
+        <a href={props.href} target="_blank" rel="noopener noreferrer">
+          {props.children}
+        </a>
+      )
+    }
+
+    return <a href={props.href}>{props.children}</a>
+  },
 }
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
