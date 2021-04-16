@@ -108,31 +108,18 @@ You can play with the sandbox here:
 
 ## Loading OBJ models
 
-In the case we will use the trusted `useLoader` but this time with two different extensions as OBJ files contain the mesh in an OBJ file and also the materials in a seperate file called an `MTL` file, this means we will need both these loaders from `three.js`
+In the case we will use the trusted `useLoader` but in combination with `three.js` `OBJLoader`.
 
 ```js
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { useLoader } from '@react-three/fiber'
 ```
 
-To create it we will need to first load the material and then set the materials on the OBJ file so we can start by getting the materials:
+With these imported let's get the mesh into our scene:
 
 ```jsx
 const Scene = () => {
-  const materials = useLoader(MTLLoader, 'Poimandres.mtl')
-}
-```
-
-When this done we can get the mesh and also set the materials as part of the mesh like so:
-
-```jsx
-const Scene = () => {
-  const materials = useLoader(MTLLoader, 'Poimandres.mtl')
-  const obj = useLoader(OBJLoader, 'Poimandres.obj', (loader) => {
-    materials.preload()
-    loader.setMaterials(materials)
-  })
+  const obj = useLoader(OBJLoader, 'Poimandres.obj')
 
   return <primitive object={obj} />
 }
