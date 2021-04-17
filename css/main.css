@@ -51,6 +51,10 @@
   @apply block font-bold text-gray-900 no-underline hover:text-gray-600 hover:underline;
 }
 
+blockquote p {
+  @apply text-gray-400 !important;
+}
+
 table {
   min-width: 600px;
 }

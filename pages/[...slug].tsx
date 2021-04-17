@@ -41,6 +41,11 @@ const components = {
     <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
   ),
   p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
+  blockquote: ({ children }) => (
+    <blockquote className="mb-8 text-lg leading-8 pl-4 border-l-4 border-gray-600">
+      {children}
+    </blockquote>
+  ),
   table: ({ children }) => {
     return (
       <div className="flex flex-col my-6">
