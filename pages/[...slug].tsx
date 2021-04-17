@@ -15,6 +15,7 @@ import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import clsx from 'clsx'
+import Link from 'next/link'
 
 const components = {
   Callout: ({ children }) => children,
@@ -27,7 +28,7 @@ const components = {
     return (
       <a
         href={`#${id}`}
-        className={clsx('heading', level === 2 ? 'text-3xl mb-10' : 'text-xl mb-3')}
+        className={clsx('heading', level === 2 ? 'text-3xl mb-10 mt-4' : 'text-xl mb-3')}
       >
         <Comp id={id}>{children}</Comp>
       </a>
@@ -52,6 +53,16 @@ const components = {
         </div>
       </div>
     )
+  },
+  a: (props) => {
+    if (props.href.startsWith('https://')) {
+      return (
+        <a href={props.href} target="_blank" rel="noopener noreferrer">
+          {props.children}
+        </a>
+      )
+    }
+    return <a href={props.href}>{props.children}</a>
   },
 }
 
