@@ -41,6 +41,19 @@ const components = {
     <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
   ),
   p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
+  table: ({ children }) => {
+    return (
+      <div className="flex flex-col my-6">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="divide-y divide-gray-200"> {children}</table>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
   a: (props) => {
     if (props.href.startsWith('https://')) {
       return (
@@ -49,7 +62,6 @@ const components = {
         </a>
       )
     }
-
     return <a href={props.href}>{props.children}</a>
   },
 }
