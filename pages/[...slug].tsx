@@ -15,12 +15,10 @@ import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import clsx from 'clsx'
-import Link from 'next/link'
 
 const components = {
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
-  Link: () => <a href="#">hey</a>,
   Codesandbox,
   Heading: ({ children, id, level }) => {
     const Comp = level === 2 ? 'h2' : 'h3'
