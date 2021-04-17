@@ -1,0 +1,54 @@
+---
+title: Canvas
+description: 'The Canvas object is your portal into Threejs.'
+nav: 0
+---
+
+The `Canvas` object is where you start to define your React Three Fiber Scene.
+
+```jsx
+import React from 'react'
+import { Canvas } from '@react-three/fiber'
+
+const App = () => (
+  <Canvas>
+    <pointLight position={[10, 10, 10]} />
+    <mesh>
+      <sphereBufferGeometry />
+      <meshStandardMaterial color="hotpink" />
+    </mesh>
+  </Canvas>
+)
+```
+
+The props available for the canvas are:
+
+| Prop         | Type                                  | Default                                                  |
+| ------------ | ------------------------------------- | -------------------------------------------------------- |
+| children     | ThreeeJS elements or React Components |                                                          |
+| gl           | Object                                | `{}`                                                     |
+| camera       | Object                                | `{fov: 75, near: 0.1, far: 1000, z: 5, lookAt: [0,0,0]}` |
+| shadows      | boolean or object                     | `false`                                                  |
+| raycaster    | Object                                | `true`                                                   |
+| vr           | boolean                               | `false`                                                  |
+| mode         | legacy , blocking , concurrent        | `blocking`                                               |
+| resize       | Object                                | `{}`                                                     |
+| orthographic | boolean                               | `false`                                                  |
+| dpr          | [min, max]                            | `undefined`                                              |
+| vr           | boolean                               | `false`                                                  |
+| linear       | boolean                               | `true`                                                   |
+| frameloop    | always , demand , never               | `always`                                                 |
+| onCreated    | function                              | `() => {}`                                               |
+| linear       | function                              | `() => {}`                                               |
+
+### Other Canvas defaults:
+
+Canvas will create a translucent WebGL-renderer with the following properties:
+
+- pixelratio=1
+- antialias=true
+- alpha=true
+- powerPreference="high-performance"
+- setClearAlpha(0)
+- The canvas stretches to 100% of the next relative/absolute parent-container
+- The default orthographic camera if Canvas.orthographic is true is: `{near: 0.1, far: 1000, z: 5, lookAt: [0,0,0]}`

@@ -15,6 +15,7 @@ import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import clsx from 'clsx'
+import Link from 'next/link'
 
 const components = {
   Callout: ({ children }) => children,
@@ -45,6 +46,29 @@ const components = {
       {children}
     </blockquote>
   ),
+  table: ({ children }) => {
+    return (
+      <div className="flex flex-col my-6">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="divide-y divide-gray-200"> {children}</table>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  a: (props) => {
+    if (props.href.startsWith('https://')) {
+      return (
+        <a href={props.href} target="_blank" rel="noopener noreferrer">
+          {props.children}
+        </a>
+      )
+    }
+    return <a href={props.href}>{props.children}</a>
+  },
 }
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {

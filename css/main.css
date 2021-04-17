@@ -54,3 +54,28 @@
 blockquote p {
   @apply text-gray-400 !important;
 }
+
+table {
+  min-width: 600px;
+}
+
+th {
+  @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide;
+}
+
+thead {
+  @apply bg-gray-50;
+}
+
+tbody tr:nth-child(even) {
+  @apply bg-white;
+}
+
+tbody tr:nth-child(odd) {
+  @apply bg-gray-50;
+}
+
+td {
+  @apply px-6 py-4 text-sm font-medium text-gray-900;
+  max-width: 150px;
+}
