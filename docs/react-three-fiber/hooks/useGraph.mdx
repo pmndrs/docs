@@ -1,0 +1,17 @@
+---
+title: useGraph
+nav: 17
+---
+
+```jsx
+const { nodes, materials } = useGraph((object: THREE.Object3D))
+```
+
+Convenience hook which creates a memoized, named object/material collection from any Object3D.
+
+```jsx
+function Asset({ url }) {
+  const scene = useLoader(OBJLoader, url)
+  const { nodes, materials } = useGraph(scene)
+  return <mesh geometry={nodes.robot.geometry} material={materials.metal} />
+```

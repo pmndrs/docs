@@ -45,6 +45,7 @@ export const getAllDocs = async () => {
 
       // Get URL pathname
       const pathname = url.split('/').pop()
+      const folder = url.split('/')[2]
 
       return {
         url,
@@ -53,6 +54,5 @@ export const getAllDocs = async () => {
       }
     })
     .sort((a, b) => (a.nav > b.nav ? 1 : -1))
-
   return docs
 }
