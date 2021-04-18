@@ -4,7 +4,7 @@ description: This guide will help you setup your first React Three Fiber scene a
 nav: 2
 ---
 
-This tutorial will assume some React knowledge, and will be based on [this starter codesandbox](), so just fork it and follow along!
+This tutorial will assume some React knowledge.
 
 ## Setting up the Canvas
 
@@ -41,10 +41,10 @@ const myMesh = new THREE.Mesh()
 <mesh />
 ```
 
-## Adding a Mesh
+## Adding a Mesh Component
 
 A [`Mesh`](https://threejs.org/docs/#api/en/objects/Mesh) is a basic object in THREE.js, and it's used to hold the polygons and the material that are needed to represent the object in 3D space.
-We'll create a new mesh using a **BoxBufferGeometry** as the geometry and a **MeshPhongMaterial** as the material.
+We'll create a new mesh using a **BoxGeometry** component for the geometry and a **MeshPhongMaterial** component for the material.
 
 To actually add these objects to our scene, we mount them inside the `<Canvas />` component.
 

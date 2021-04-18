@@ -4,7 +4,7 @@ description: 'All the effective ways of using React Three Fiber'
 nav: 9
 ---
 
-You can use [Threejs's entire object catalogue and all properties](https://threejs.org/docs). When in doubt, always consult the docs.
+You can use [three.js's entire object catalogue and all properties](https://threejs.org/docs). When in doubt, always consult the docs.
 
 ❌ You could lay out an object like this:
 
@@ -30,7 +30,7 @@ You can use [Threejs's entire object catalogue and all properties](https://three
 
 ### Constructor arguments
 
-In threejs objects are classes that are instantiated. These classes can receive one-time constructor arguments (`new THREE.SphereGeometry(1, 32)`), and properties (`someObject.visible = true`). In three-fiber constructor arguments are always passed as an array via `args`. If args change later on, the object must naturally get re-constructed from scratch!
+In `three.js` objects are classes that are instantiated. These classes can receive one-time constructor arguments (`new THREE.SphereGeometry(1, 32)`), and properties (`someObject.visible = true`). In three-fiber constructor arguments are always passed as an array via `args`. If args change later on, the object must naturally get re-constructed from scratch!
 
 ```jsx
 <sphereGeometry args={[1, 32]} />
@@ -106,7 +106,7 @@ If you want to reach into nested attributes (for instance: `mesh.rotation.x`), j
 
 ### Putting already existing objects into the scene-graph
 
-You can use the `primitive` placeholder for that. You can still give it properties or attach nodes to it. Never add the same object multiple times, this is not allowed in Threejs! Primitives will not dispose of the object they carry on unmount, you are responsible for disposing of it!
+You can use the `primitive` placeholder for that. You can still give it properties or attach nodes to it. Never add the same object multiple times, this is not allowed in `three.js`! Primitives will not dispose of the object they carry on unmount, you are responsible for disposing of it!
 
 ```jsx
 const mesh = new THREE.Mesh(geometry, material)
