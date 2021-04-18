@@ -46,9 +46,9 @@ const components = {
     return (
       <div className="flex flex-col my-6">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="divide-y divide-gray-200"> {children}</table>
+          <div className="py-6 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow-lg overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="divide-y divide-gray-200 w-full"> {children}</table>
             </div>
           </div>
         </div>
