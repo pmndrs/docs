@@ -44,7 +44,7 @@
 }
 
 .content-container a {
-  @apply text-purple-400 underline;
+  @apply text-blue-400;
 }
 
 .content-container .heading {

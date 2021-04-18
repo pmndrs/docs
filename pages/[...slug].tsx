@@ -36,7 +36,7 @@ const components = {
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-8 text-lg leading-8 text-gray-700">{children}</li>,
   inlineCode: ({ children }) => (
-    <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
+    <code className="px-1 font-mono text-sm text-gray-800 bg-gray-100">{children}</code>
   ),
   p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
   blockquote: ({ children }) => (
@@ -60,12 +60,16 @@ const components = {
   a: (props) => {
     if (props.href.startsWith('https://')) {
       return (
-        <a href={props.href} target="_blank" rel="noopener noreferrer">
+        <a className="text-lg" href={props.href} target="_blank" rel="noopener noreferrer">
           {props.children}
         </a>
       )
     }
-    return <a href={props.href}>{props.children}</a>
+    return (
+      <a className="text-lg" href={props.href}>
+        {props.children}
+      </a>
+    )
   },
 }
 

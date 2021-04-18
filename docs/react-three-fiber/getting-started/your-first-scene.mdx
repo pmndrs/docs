@@ -123,16 +123,19 @@ Next, we will add some lights to our scene, by putting these components as child
 This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. Let's focus on `ambientLight`:
 
 ```jsx
-<ambientLight // we are using a THREE.js AmbientLight
-  args={[0xff0000]} // we are passing this color to the constructor
-  intensity={0.1} // we are setting the light's intensity to 0.1
+// we are using a THREE.js AmbientLight
+<ambientLight
+  // we are passing this color to the constructor
+  args={[0xff0000]}
+  // we are setting the light's intensity to 0.1
+  intensity={0.1}
 />
 ```
 
 From the [`AmbientLight` documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) we learn that it is constructed with a color value (`0xff0000` in our case) and has an `intensity` property, that defines how strong the light is.
 When you set any prop on a Fiber component, it will set the property of the same name on the THREE.js object, like you could do manually:
 
-```
+```jsx
 const myLight = new THREE.AmbientLight(0xff0000)
 
 // when the `intensity` prop changes
