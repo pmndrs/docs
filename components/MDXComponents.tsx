@@ -36,11 +36,9 @@ const components = {
       {children}
     </code>
   ),
-  p: ({ children }) => <p className="mb-4 text-base leading-8 text-gray-700">{children}</p>,
+  p: ({ children }) => <p className="mb-4 text-base text-gray-700">{children}</p>,
   blockquote: ({ children }) => (
-    <blockquote className="mb-8 text-base leading-8 pl-4 border-l-4 border-gray-600">
-      {children}
-    </blockquote>
+    <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>
   ),
   table: ({ children }) => {
     return (

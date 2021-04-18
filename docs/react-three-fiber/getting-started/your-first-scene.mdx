@@ -71,39 +71,48 @@ export default function App() {
 }
 ```
 
-It's worth pausing a moment to understand exactly what is happening here. The code we just wrote, is the equivalent to this THREE.js code:
+Let's pause for a moment to understand exactly what is happening here. The code we just wrote is the equivalent to this THREE.js code:
 
 ```jsx
-const myMesh = new THREE.Mesh()
-myMesh.geometry = new THREE.BoxGeometry()
-myMesh.material = new THREE.MeshPhongMaterial()
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
 
-scene.add(myMesh)
+const renderer = new THREE.WebGLRenderer()
+renderer.setSize(width, height)
+document.querySelector('#canvas-container').appendChild(renderer.domElement)
+
+const mesh = new THREE.Mesh()
+mesh.geometry = new THREE.BoxGeometry()
+mesh.material = new THREE.MeshPhongMaterial()
+
+scene.add(mesh)
+
+function animate() {
+  requestAnimationFrame(animate)
+  renderer.render(scene, camera)
+}
+
+animate()
 ```
 
 When you mount a `mesh` component, Fiber is creating a new `THREE.Mesh` object, and the same is done for geometry and material.
-Then, geometry and material are _attached_ to their parent, by assigning its `geometry` and `material` properties to the newly created objects.
+Then, geometry and material are _attached_ to their parent.
 
-### Attach and Args
+### Constructor arguments
 
-The `attach` prop is used to make this relationship explicit, effectively _telling Fiber what property of the parent to attach the newly created object to_.
-
-The `args` prop is used to pass constructor arguments to THREE.js.
-To better understand this, we can take a look at the [documentation for THREE's `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry), that tells us how the geometry is constructed:
+If we consult the [documentation for THREE's `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry) we see can can optionally pass three arguments for: width, length and depth:
 
 ```js
 const geometry = new THREE.BoxGeometry(2, 2, 2)
 ```
 
-Looking at the docs, we understand that `(2, 2, 2)` are the width, height and depth of our box. These 3 values, make the `arguments` array of the BoxBufferGeoemtry constructor.
-
-We can make use of this info in Fiber:
+In order to do this in Fiber we use the `args` prop, which _always_ takes an array whose items represent constructor argument.
 
 ```jsx
 <boxGeometry args={[2, 2, 2]} />
 ```
 
-The value of `args` is always an array, and it's equivalent to the values we used in the THREE.js example to construct our geometry.
+<Hint>Note that every time you change these, the object must be re-constructed!</Hint>
 
 ## Adding lights
 
@@ -112,40 +121,79 @@ Next, we will add some lights to our scene, by putting these components as child
 ```jsx
 <Canvas>
   ...
-  <ambientLight args={[0xff0000]} intensity={0.4} />
-  <directionalLight position={[0, 0, 5]} intensity={0.1} />
+  <ambientLight intensity={0.1} />
+  <directionalLight color="red" position={[0, 0, 5]} />
 </Canvas>
 ```
 
-This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. Let's focus on `ambientLight`:
+### Props
+
+This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. When you set any prop on a Fiber component, it will set the property of the same name on the THREE.js object.
+
+Let's focus on our `ambientLight`, whose [documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) tells us that we can optionally construct it with a color, but can also receive props.
 
 ```jsx
 // we are using a THREE.js AmbientLight
 <ambientLight
-  // we are passing this color to the constructor
-  args={[0xff0000]}
-  // we are setting the light's intensity to 0.1
+  // we are setting the lights intensity to 0.1
   intensity={0.1}
 />
 ```
 
-From the [`AmbientLight` documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) we learn that it is constructed with a color value (`0xff0000` in our case) and has an `intensity` property, that defines how strong the light is.
-When you set any prop on a Fiber component, it will set the property of the same name on the THREE.js object, like you could do manually:
+Which is the equivalent to:
 
 ```jsx
-const myLight = new THREE.AmbientLight(0xff0000)
-
-// when the `intensity` prop changes
-myLight.intensity = 0.1
+const light = new THREE.AmbientLight()
+light.intensity = 0.1
 ```
 
-Our `directionalLight` doesn't have an `args` prop, meaning that the default arguments will be used when creating the object. It does have a `position` prop that, as you can imagine, will set the `position` property of the DirectionalLight object.
+### Shortcuts
 
-Here's our final result, a box with a Phong material:
+There are a few shortcuts for _classes_ that have a `.set()` method (colors, vectors, ect).
+
+```jsx
+const light = new THREE.DirectionalLight()
+light.position.set(0, 0, 5)
+light.color.set('red')
+```
+
+Which is the same as the following in JSX:
+
+```jsx
+<directionalLight
+  // we are setting the position
+  position={[0, 0, 5]}
+  // we are setting the color
+  color="red"
+/>
+```
+
+Please refer to the API for [a deeper explanation](/react-three-fiber/API/objects).
+
+## The result
+
+```jsx
+import { Canvas } from '@react-three/fiber'
+
+export default function App() {
+  return (
+    <div id="canvas-container">
+      <Canvas>
+        <ambientLight intensity={0.1} />
+        <directionalLight color="red" position={[0, 0, 5]} />
+        <mesh>
+          <boxGeometry />
+          <meshPhongMaterial />
+        </mesh>
+      </Canvas>
+    </div>
+  )
+}
+```
 
 <Codesandbox id="12q81" />
 
-**Exercise:**
+## Exercise
 
 - try different materials, like [`<meshNormalMaterial />`](https://threejs.org/docs/#api/en/materials/MeshNormalMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial)
 - try different geometries, like [`<sphereGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereGeometry) or [`<octahedronGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronGeometry)
