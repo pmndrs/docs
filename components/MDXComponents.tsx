@@ -2,6 +2,9 @@ import Codesandbox from './Codesandbox'
 import clsx from 'clsx'
 
 const components = {
+  Grid: ({ children }) => (
+    <ul className="grid grid-cols-3 gap-4 text-sm text-gray-700 grid-list">{children}</ul>
+  ),
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
   Codesandbox,
