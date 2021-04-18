@@ -86,7 +86,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
           <div className="pb-6 mb-12 border-b post-header">
             <h1 className="mb-4 text-6xl font-bold tracking-tighter">{frontMatter.title}</h1>
             {frontMatter.description && (
-              <p className="text-xl leading-8 text-gray-400">{frontMatter.description}</p>
+              <p className="text-lg leading-8 text-gray-400">{frontMatter.description}</p>
             )}
           </div>
         )}
