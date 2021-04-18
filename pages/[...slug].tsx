@@ -3,73 +3,13 @@ import matter from 'gray-matter'
 import hydrate from 'next-mdx-remote/hydrate'
 import renderToString from 'next-mdx-remote/render-to-string'
 import path from 'path'
-
 import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
-
 import Layout from 'components/Layout'
-import Codesandbox from 'components/Codesandbox'
-
+import components from 'components/MDXComponents'
 import prism from 'remark-prism'
-
 import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
-import clsx from 'clsx'
-import Link from 'next/link'
-
-const components = {
-  Callout: ({ children }) => children,
-  Bleed: ({ children }) => children,
-  Link: () => <a href="#">hey</a>,
-  Codesandbox,
-  Heading: ({ children, id, level }) => {
-    const Comp = level === 2 ? 'h2' : 'h3'
-
-    return (
-      <a
-        href={`#${id}`}
-        className={clsx('heading', level === 2 ? 'text-3xl mb-10 mt-4' : 'text-xl mb-3')}
-      >
-        <Comp id={id}>{children}</Comp>
-      </a>
-    )
-  },
-  ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
-  ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
-  li: ({ children }) => <li className="mb-8 text-lg leading-8 text-gray-700">{children}</li>,
-  inlineCode: ({ children }) => (
-    <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
-  ),
-  p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
-  blockquote: ({ children }) => (
-    <blockquote className="mb-8 text-lg leading-8 pl-4 border-l-4 border-gray-600">
-      {children}
-    </blockquote>
-  ),
-  table: ({ children }) => {
-    return (
-      <div className="flex flex-col my-6">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="divide-y divide-gray-200"> {children}</table>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  },
-  a: (props) => {
-    if (props.href.startsWith('https://')) {
-      return (
-        <a href={props.href} target="_blank" rel="noopener noreferrer">
-          {props.children}
-        </a>
-      )
-    }
-    return <a href={props.href}>{props.children}</a>
-  },
-}
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const content = hydrate(source, { components })

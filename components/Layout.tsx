@@ -6,8 +6,10 @@ import Search from 'components/Search'
 import Link from 'next/link'
 
 import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
 
 function Layout(props) {
+  const [menu, setMenu] = useState(false)
   const { nav, toc, allDocs } = props
   const {
     query: { slug },
@@ -21,6 +23,11 @@ function Layout(props) {
   const previousPage = currentPageIndex > 0 && allDocs[currentPageIndex - 1]
   const nextPage = currentPageIndex < allDocs.length - 1 && allDocs[currentPageIndex + 1]
 
+  useEffect(() => {
+    if (menu) {
+      document.body.classList.add('overflow-hidden')
+    }
+  }, [menu])
   return (
     <>
       <div className="sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl">
@@ -29,17 +36,35 @@ function Layout(props) {
           <span className="font-normal">.docs</span>
         </div>
         <Search allDocs={props.allDocs} />
+        <button className="block md:hidden p-2 mr-2 ml-2" onClick={() => setMenu(!menu)}>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
 
       <div className="w-full mx-auto max-w-8xl">
         <div className="lg:flex">
           <div
             id="sidebar"
-            className="fixed inset-0 z-40 flex-none hidden w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block"
+            className={`fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block ${
+              menu ? '' : 'hidden'
+            }`}
           >
             <div
               id="nav-wrapper"
-              className="h-full mr-24 overflow-hidden overflow-y-auto scrolling-touch bg-white lg:h-auto lg:block lg:relative lg:sticky lg:bg-transparent lg:top-16 lg:mr-0"
+              className="h-full mr-24 overflow-hidden overflow-y-auto scrolling-touch bg-white lg:h-auto lg:block lg:relative lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 relative z-10"
             >
               <div
                 id="nav"
@@ -62,11 +87,28 @@ function Layout(props) {
                 <Nav nav={nav[lib]} />
               </div>
             </div>
+            <div
+              onClick={() => setMenu(false)}
+              className={`w-screen h-screen z-0 fixed top-0 right-0 opacity-40 bg-gray-900 ${
+                menu ? '' : 'hidden'
+              }`}
+            ></div>
           </div>
           <div id="content-wrapper" className="flex-auto">
             <div className="flex w-full">
               <div className="flex-auto min-w-0 px-4 pt-10 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{props.children}</div>
+
+                <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
+                    href={`https://github.com/pmndrs/website/tree/docs/docs${allDocs[currentPageIndex].url}.mdx`}
+                  >
+                    Edit this page on GitHub
+                  </a>
+                </div>
 
                 {(previousPage || nextPage) && (
                   <div className="flex justify-between w-full max-w-3xl pb-24 mx-auto mt-24">
@@ -99,9 +141,11 @@ function Layout(props) {
                 )}
               </div>
 
-              <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                <Toc toc={toc} />
-              </div>
+              {toc.length ? (
+                <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
+                  <Toc toc={toc} />
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

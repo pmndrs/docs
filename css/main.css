@@ -79,3 +79,26 @@ td {
   @apply px-6 py-4 text-sm font-medium text-gray-900;
   max-width: 150px;
 }
+
+.grid-list li {
+  @apply text-base text-gray-700;
+}
+
+.grid-list li a {
+  @apply mb-2 block;
+}
+
+ul.grid-list > li:before {
+  display: none;
+}
+
+@layer utilities {
+  @responsive {
+    .scrolling-touch {
+      -webkit-overflow-scrolling: touch;
+    }
+    .scrolling-auto {
+      -webkit-overflow-scrolling: auto;
+    }
+  }
+}
