@@ -5,9 +5,5 @@ export default async function handler({ query: { id } }, res) {
     .then((rsp) => rsp.json())
     .then((rsp) => rsp.data)
 
-  res.status(200).json({
-    ...data,
-    description: 'omg test',
-    tags: ['one', 'twp'],
-  })
+  res.status(200).json(data)
 }
