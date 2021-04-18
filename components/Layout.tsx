@@ -6,10 +6,9 @@ import Search from 'components/Search'
 import Link from 'next/link'
 
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function Layout(props) {
-  const [menu, setMenu] = useState(false)
   const { nav, toc, allDocs } = props
   const {
     query: { slug },
@@ -17,6 +16,7 @@ function Layout(props) {
   } = useRouter()
 
   const [lib] = slug as string[]
+  const [menu, setMenu] = useState(false)
 
   const currentPageIndex = allDocs.findIndex((item) => item.url === asPath)
 
@@ -105,17 +105,6 @@ function Layout(props) {
               <div className="flex-auto min-w-0 px-4 pt-10 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{props.children}</div>
 
-                <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                    href={`https://github.com/pmndrs/website/tree/docs/docs${allDocs[currentPageIndex].url}.mdx`}
-                  >
-                    Edit this page on GitHub
-                  </a>
-                </div>
-
                 {(previousPage || nextPage) && (
                   <div className="flex justify-between w-full max-w-3xl pb-24 mx-auto mt-24">
                     {previousPage && (
@@ -147,11 +136,9 @@ function Layout(props) {
                 )}
               </div>
 
-              {toc.length ? (
-                <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                  <Toc toc={toc} />
-                </div>
-              ) : null}
+              <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
+                <Toc toc={toc} />
+              </div>
             </div>
           </div>
         </div>
