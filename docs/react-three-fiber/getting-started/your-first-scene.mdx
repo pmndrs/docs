@@ -146,7 +146,7 @@ Our `directionalLight` doesn't have an `args` prop, meaning that the default arg
 
 Here's our final result, a box with a Phong material:
 
-<iframe src="https://codesandbox.io/embed/12q81?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=2,8,13&hidedevtools=1" />
+<Codesandbox id="12q81" />
 
 **Exercise:**
 
@@ -205,7 +205,7 @@ scene.add(mesh)
 
 We can add materials in the same way, let's say we want to use [`THREE.MeshNormalMaterial`](), we will have to use a camel-case version of the name, in this case `<meshPhysicalMaterial />`:
 
-<iframe src="https://codesandbox.io/embed/cvxpd?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=9&hidedevtools=1" />
+<Codesandbox id="cvxpd" />
 
 **Exercise:**
 
@@ -218,7 +218,7 @@ We will now add a simple [`texture`](https://threejs.org/docs/index.html#api/en/
 
 This example will introduce you to the concept of three's **Loaders**, Fiber's [**useLoader**](/api/useloader) hook and a sprinkle of React's **Suspense**.
 
-<iframe src="https://codesandbox.io/embed/xxrlt?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=6,7,8,9,22,24&hidedevtools=1" />
+<Codesandbox id="xxrlt" />
 
 Let's take a closer look:
 
@@ -269,7 +269,7 @@ Boxes are boring, we all know that. Let's load a `gltf` file, and get introduced
 We will add a new dependency to our project, [`@react-three/drei`](https://github.com/pmndrs/drei).
 Drei is a collection of useful helpers and abstractions for Fiber, and we will use a few of its components to improve our example.
 
-<iframe src="https://codesandbox.io/embed/kmdi5?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=6,7,8,9,22,24&hidedevtools=1" />
+<Codesandbox id="kmdi5" />
 
 - we put our files in `public/model`, so that our resource will be served by the web server
 - we load our model with drei's [`useGLTF`](https://github.com/pmndrs/drei#usetexture). Here's what's happening, in detail:
@@ -293,6 +293,6 @@ Phew, that's a lot to unpack. We will make this process easier later, when we'll
 
 We will now refactor our previous example to better use React's strong suite, components!
 
-<iframe src="https://codesandbox.io/embed/wudry?codemirror=1&fontsize=14&hidenavigation=1&theme=dark&highlights=5,6,7,8,9,10,11,12&hidedevtools=1" />
+<Codesandbox id="wudry" />
 
 In the example, we created a new `MyBox` component that will render a new `mesh`, and we reuse it twice, with different `position` and `color` props. -->

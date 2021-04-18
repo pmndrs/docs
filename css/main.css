@@ -80,6 +80,18 @@ td {
   max-width: 150px;
 }
 
+.grid-list li {
+  @apply text-base text-gray-700;
+}
+
+.grid-list li a {
+  @apply mb-2 block;
+}
+
+ul.grid-list > li:before {
+  display: none;
+}
+
 @layer utilities {
   @responsive {
     .scrolling-touch {
