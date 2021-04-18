@@ -18,10 +18,10 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
     <Layout nav={nav} toc={toc} allDocs={allDocs}>
       <main className="max-w-3xl mx-auto">
         {frontMatter.title && (
-          <div className="pb-6 mb-12 border-b post-header">
-            <h1 className="mb-4 text-6xl font-bold tracking-tighter">{frontMatter.title}</h1>
+          <div className="pb-6 mb-4 border-b post-header">
+            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{frontMatter.title}</h1>
             {frontMatter.description && (
-              <p className="text-lg leading-8 text-gray-400">{frontMatter.description}</p>
+              <p className="text-base leading-4 text-gray-400">{frontMatter.description}</p>
             )}
           </div>
         )}

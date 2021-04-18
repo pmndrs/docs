@@ -1,7 +1,7 @@
 ---
 title: Your first scene
 description: This guide will help you setup your first React Three Fiber scene and introduce you to its core concepts.
-nav: 1
+nav: 2
 ---
 
 This tutorial will assume some React knowledge, and will be based on [this starter codesandbox](), so just fork it and follow along!
@@ -11,24 +11,27 @@ This tutorial will assume some React knowledge, and will be based on [this start
 We'll start by importing the `<Canvas />` component from `react-three-fiber` and putting it in our React tree:
 
 ```jsx
-import { Canvas } from 'react-three-fiber'
+import { Canvas } from '@react-three/fiber'
 
-function App() {
+export default function App() {
   return (
     <div id="canvas-container">
       <Canvas />
     </div>
   )
 }
-
-export default App
 ```
 
 The Canvas component does some important setup work behind the scenes:
 
 - It sets up a **Scene** and a **Camera**, the basic building blocks necessary for rendering
-- It automatically handles window resizing
+- It automatically handles resizing
 - It renders our scene every frame
+
+<Hint>
+  Note that the Canvas will be resized to fit the parent div, so you can control how big it is by
+  just changing the `width` and `height` of `#canvas-container` in your css.
+</Hint>
 
 To actually _render_ something in our scene, we'll add a `mesh` component. In Fiber, every THREE.js object has an equivalent component:
 
@@ -37,8 +40,6 @@ const myMesh = new THREE.Mesh()
 // is equivalent to
 <mesh />
 ```
-
-Note that the Canvas will be resized to fit the parent div, so you can control how big it is by just changing the `width` and `height` of `#canvas-container` in your css.
 
 ## Adding a Mesh
 
@@ -51,33 +52,28 @@ Note that we don't need to import anything, _THREE objects will be treated as na
 The general rule is that the _Fiber components are available with the [camel-case](https://en.wikipedia.org/wiki/Camel_case) version of their name in THREE.js_.
 
 ```jsx
-import { Canvas } from 'react-three-fiber'
+import { Canvas } from '@react-three/fiber'
 
-function App() {
+export default function App() {
   return (
     <div id="canvas-container">
       <Canvas>
         <mesh>
-          <boxBufferGeometry attach="geometry" />
-          <meshPhongMaterial attach="material" />
+          <boxGeometry />
+          <meshPhongMaterial />
         </mesh>
       </Canvas>
     </div>
   )
 }
-
-export default App
 ```
 
 It's worth pausing a moment to understand exactly what is happening here. The code we just wrote, is the equivalent to this THREE.js code:
 
 ```jsx
 const myMesh = new THREE.Mesh()
-const myGeometry = new THREE.BoxBufferGeometry()
-const myMaterial = new THREE.MeshPhongMaterial()
-
-myMesh.geometry = myGeometry
-myMesh.material = myMaterial
+myMesh.geometry = new THREE.BoxGeometry()
+myMesh.material = new THREE.MeshPhongMaterial()
 
 scene.add(myMesh)
 ```
@@ -85,17 +81,15 @@ scene.add(myMesh)
 When you mount a `mesh` component, Fiber is creating a new `THREE.Mesh` object, and the same is done for geometry and material.
 Then, geometry and material are _attached_ to their parent, by assigning its `geometry` and `material` properties to the newly created objects.
 
-## Changing the camera
-
 ### Attach and Args
 
 The `attach` prop is used to make this relationship explicit, effectively _telling Fiber what property of the parent to attach the newly created object to_.
 
 The `args` prop is used to pass constructor arguments to THREE.js.
-To better understand this, we can take a look at the [documentation for THREE's `BoxBufferGeometry`](https://threejs.org/docs/#api/en/geometries/BoxBufferGeometry), that tells us how the geometry is constructed:
+To better understand this, we can take a look at the [documentation for THREE's `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry), that tells us how the geometry is constructed:
 
 ```js
-const geometry = new THREE.BoxBufferGeometry(2, 2, 2)
+const geometry = new THREE.BoxGeometry(2, 2, 2)
 ```
 
 Looking at the docs, we understand that `(2, 2, 2)` are the width, height and depth of our box. These 3 values, make the `arguments` array of the BoxBufferGeoemtry constructor.
@@ -103,7 +97,7 @@ Looking at the docs, we understand that `(2, 2, 2)` are the width, height and de
 We can make use of this info in Fiber:
 
 ```jsx
-<boxBufferGeometry args={[2, 2, 2]} />
+<boxGeometry args={[2, 2, 2]} />
 ```
 
 The value of `args` is always an array, and it's equivalent to the values we used in the THREE.js example to construct our geometry.
@@ -151,7 +145,7 @@ Here's our final result, a box with a Phong material:
 **Exercise:**
 
 - try different materials, like [`<meshNormalMaterial />`](https://threejs.org/docs/#api/en/materials/MeshNormalMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial)
-- try different geometries, like [`<sphereBufferGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereBufferGeometry) or [`<octahedronBufferGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronBufferGeometry)
+- try different geometries, like [`<sphereGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereGeometry) or [`<octahedronGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronGeometry)
 - try changing the `position` on our `mesh` component, by setting the prop with the same name
 - try extracting our mesh to a new component
 
@@ -170,11 +164,11 @@ const color = new THREE.Color('black') // args is the arguments array, passed to
 scene.background = color // set the property on a three.js object parent[attach] = object
 ```
 
-3. We added a `<mesh />` component with a `<boxBufferGeometry />` child. Any component with `geometry` or `material` in its name, will automatically attach to the corresponding property of its parent:
+3. We added a `<mesh />` component with a `<boxGeometry />` child. Any component with `geometry` or `material` in its name, will automatically attach to the corresponding property of its parent:
 
 ```js
 const myMesh = new THREE.Mesh() // <mesh />
-const myGeometry = new THREE.BoxBufferGeometry() // <boxBufferGeometry />
+const myGeometry = new THREE.BoxGeometry() // <boxGeometry />
 
 myMesh.geometry = myGeometry // set the `geometry` property on our mesh
 ```
@@ -184,20 +178,20 @@ The `Canvas` will fill its parent element (try changing the width and height of 
 
 **React Three Fiber can render any object from three.js**, using these simple rules:
 
-- components will be camel-case, so `THREE.Mesh` will be `<mesh />` and `THREE.BoxBufferGeometry` will be `<boxBufferGeometry />`
+- components will be camel-case, so `THREE.Mesh` will be `<mesh />` and `THREE.BoxGeometry` will be `<boxGeometry />`
 - constructor arguments will be passed via the `args` prop, so `new THREE.Color("red")` will become `<color args={["red"]} />`
 
 This gives you an initial idea of how React Three Fiber will work, but let's dive deeper!
 
 ## Meshes, Geometries and Materials
 
-In the previous example, we created a `<mesh />` component with a `<boxBufferGeometry />` child.
+In the previous example, we created a `<mesh />` component with a `<boxGeometry />` child.
 
 This is equivalent to creating those objects in three.js, putting them together and adding them to the scene:
 
 ```js
 const mesh = new THREE.Mesh()
-const geometry = new THREE.BoxBufferGeometry()
+const geometry = new THREE.BoxGeometry()
 
 mesh.geometry = geometry
 scene.add(mesh)
@@ -210,7 +204,7 @@ We can add materials in the same way, let's say we want to use [`THREE.MeshNorma
 **Exercise:**
 
 - try different materials, like [`<meshPhongMaterial />`](https://threejs.org/docs/#api/en/materials/MeshPhongMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial)
-- try different geometries, like [`<sphereBufferGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereBufferGeometry) or [`<octahedronBufferGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronBufferGeometry)
+- try different geometries, like [`<sphereGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereGeometry) or [`<octahedronGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronGeometry)
 
 ## Loading Textures
 

@@ -1,0 +1,48 @@
+---
+title: Installation
+description: Learn how to install react-three-fiber
+nav: 1
+---
+
+```bash
+yarn add three @react-three/fiber
+# or
+npm install three @react-three/fiber
+```
+
+> Fiber is compatible with React v16.8+ and works with ReactDOM and React Native.
+
+Getting started with React Three Fiber is not nearly has hard as you might have thought, but various frameworks may require particular attention.
+We've put together guides for getting started with each popular framework:
+
+- Create React App
+- Next.js
+- Gatsby
+
+If you just want to give it a try, fork this [example on codesandbox](https://codesandbox.io/s/rrppl0y8l4?file=/src/App.js)!
+
+## Create React App
+
+`create-react-app` will work out of the box, nothing special here!
+
+_Add mention of official create-react-app template_
+
+## Next.js
+
+You can use Fiber on next by installing the `next-transpile-modules` module:
+
+```bash
+yarn add next-transpile-modules -D
+# or
+npm install next-transpile-modules --save-dev
+```
+
+Then, add this to your `next.config.js`
+
+```js
+const withTM = require('next-transpile-modules')(['three'])
+
+module.exports = withTM()
+```
+
+Check out the [official next.js example](https://github.com/pmndrs/react-three-next) for react-three-fiber.

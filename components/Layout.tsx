@@ -2,24 +2,16 @@ import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import Toc from 'components/Toc'
 import Search from 'components/Search'
-
 import Link from 'next/link'
-
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
-function Layout(props) {
+export default function Layout(props) {
   const [menu, setMenu] = useState(false)
   const { nav, toc, allDocs } = props
-  const {
-    query: { slug },
-    asPath,
-  } = useRouter()
-
+  const { query: { slug }, asPath } = useRouter() // prettier-ignore
   const [lib] = slug as string[]
-
   const currentPageIndex = allDocs.findIndex((item) => item.url === asPath)
-
   const previousPage = currentPageIndex > 0 && allDocs[currentPageIndex - 1]
   const nextPage = currentPageIndex < allDocs.length - 1 && allDocs[currentPageIndex + 1]
 
@@ -162,5 +154,3 @@ function Layout(props) {
     </>
   )
 }
-
-export default Layout
