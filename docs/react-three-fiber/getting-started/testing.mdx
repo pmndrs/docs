@@ -67,7 +67,6 @@ Our first test case looks like this:
 test('mesh to have two children', async () => {
   const renderer = await ReactThreeTestRenderer.create(<MyRotatingBox />)
   const mesh = renderer.scene.children[0].allChildren
-
   expect(mesh.length).toBe(2)
 })
 ```

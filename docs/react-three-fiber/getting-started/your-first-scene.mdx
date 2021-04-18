@@ -48,8 +48,11 @@ We'll create a new mesh using a **BoxBufferGeometry** as the geometry and a **Me
 
 To actually add these objects to our scene, we mount them inside the `<Canvas />` component.
 
-Note that we don't need to import anything, _THREE objects will be treated as native JSX elements_, just like you can just write `<div>` or `<span />` in regular React.
-The general rule is that the _Fiber components are available with the [camel-case](https://en.wikipedia.org/wiki/Camel_case) version of their name in THREE.js_.
+<Hint>
+  Note that we don't need to import anything, THREE objects will be treated as native JSX elements,
+  just like you can just write &lt;div /&gt; or &lt;span /&gt; in regular React. The general rule is
+  that Fiber components are available under the camel-case version of their name in THREE.js.
+</Hint>
 
 ```jsx
 import { Canvas } from '@react-three/fiber'

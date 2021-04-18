@@ -32,7 +32,9 @@ const components = {
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>,
   inlineCode: ({ children }) => (
-    <code className="px-1 px-2 py-1 font-mono text-sm text-gray-800 bg-gray-100">{children}</code>
+    <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
+      {children}
+    </code>
   ),
   p: ({ children }) => <p className="mb-4 text-base leading-8 text-gray-700">{children}</p>,
   blockquote: ({ children }) => (

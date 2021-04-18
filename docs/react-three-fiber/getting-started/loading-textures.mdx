@@ -25,13 +25,12 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 function Scene() {
   const [colorMap] = useLoader(TextureLoader, ['PavingStones092_1K_Color.jpg'])
-
   return (
     <>
       <ambientLight intensity={0.2} />
       <directionalLight />
       <mesh>
-        <sphereBufferGeometry args={[1, 100, 100]} />
+        <sphereGeometry args={[1, 100, 100]} />
         <meshStandardMaterial />
       </mesh>
     </>
@@ -54,7 +53,7 @@ export default function App() {
 If everything went according to plan you should now be able top apply this texture to the sphere like so:
 
 ```jsx
-<sphereBufferGeometry args={[1, 100, 100]} map={colorMap} />
+<sphereGeometry args={[1, 100, 100]} map={colorMap} />
 ```
 
 Awesome! That works but we have a lot more textures to import and do we have to create a diffent useLoader for each of them?
@@ -98,7 +97,7 @@ const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] = useLoader(Te
     <>
       <mesh>
         {/* Width and height segments for displacementMap */}
-        <sphereBufferGeometry args={[1, 100, 100]} />
+        <sphereGeometry args={[1, 100, 100]} />
         <meshStandardMaterial
           displacementScale={0.2}
           map={colorMap}

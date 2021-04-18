@@ -25,9 +25,7 @@ This is not how `react-spring` works, it instead works with `springs` and what t
 Let's start by installing it:
 
 ```bash
-yarn add three react-spring
-# or
-npm install three react-spring
+npm install three @react-spring/three
 ```
 
 After that we will importing everything from `react-spring/three` as that is the components that were created specifically for React Three Fiber.
@@ -35,7 +33,7 @@ After that we will importing everything from `react-spring/three` as that is the
 We will need to import two things from `react-spring`:
 
 ```js
-import { useSpring, animated } from 'react-spring/three'
+import { useSpring, animated } from '@react-spring/three'
 ```
 
 Let's go over them yes?
@@ -46,9 +44,7 @@ Let's go over them yes?
 Let's create our first spring and attach it to our mesh when the user clicks.
 
 ```js
-const springs = useSpring({
-  scale: active ? 1.5 : 1,
-})
+const springs = useSpring({ scale: active ? 1.5 : 1 })
 ```
 
 What we did here is create a constant called `springs` and this constant will hold the animated values.
@@ -58,16 +54,14 @@ What we did here is create a constant called `springs` and this constant will ho
 We can also deconstruct the return value of `useSpring` and just get the value we want, like so:
 
 ```js
-const { active } = useSpring({
-  scale: active ? 1.5 : 1,
-})
+const { active } = useSpring({ scale: active ? 1.5 : 1 })
 ```
 
 Now that we have this animated value let's place it in our mesh:
 
 ```jsx
 <animated.mesh scale={scale} onClick={() => setActive(!active)} ref={myMesh}>
-  <boxBufferGeometry />
+  <boxGeometry />
   <meshPhongMaterial color="royalblue" />
 </animated.mesh>
 ```

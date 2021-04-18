@@ -36,7 +36,7 @@ Let's add it then:
 
 ```jsx
 <mesh onClick={() => alert('Hellooo')} ref={myMesh}>
-  <boxBufferGeometry />
+  <boxGeometry />
   <meshPhongMaterial color="royalblue" />
 </mesh>
 ```
@@ -53,7 +53,7 @@ After we have this we can set the scale with a ternary operator like so:
 
 ```jsx
 <mesh scale={active ? 1.5 : 1} onClick={() => setActive(!active)} ref={myMesh}>
-  <boxBufferGeometry />
+  <boxGeometry />
   <meshPhongMaterial color="royalblue" />
 </mesh>
 ```

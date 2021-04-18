@@ -45,12 +45,18 @@ Also notice the `onPointerMissed` on the canvas element, which fires on clicks t
 }) => ...
 ```
 
-<details>
-<summary>How the event-system works, bubbling and capture</summary>
-  
-Note 1: the pointerenter and pointerleave events work exactly the same as pointerover and pointerout. The pointerenter and pointerleave semantics are not implemented.
+### How the event-system works, bubbling and capture
 
-Note 2: Some events (such as pointerout) happen when there is no intersection between `eventObject` and the ray. When this happens, the event will contain intersection data from a previous event with this object.
+<Hint>
+  the pointerenter and pointerleave events work exactly the same as pointerover and pointerout. The
+  pointerenter and pointerleave semantics are not implemented.
+</Hint>
+
+<Hint>
+  Some events (such as pointerout) happen when there is no intersection between `eventObject` and
+  the ray. When this happens, the event will contain intersection data from a previous event with
+  this object.
+</Hint>
 
 ### Event propagation (bubbling)
 
@@ -89,5 +95,3 @@ onPointerUp={e => {
   e.target.releasePointerCapture(e.pointerId)
 }}
 ```
-
-</details>

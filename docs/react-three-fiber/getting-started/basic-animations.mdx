@@ -15,16 +15,15 @@ We will build a really small, continuos animation loop, that will be the basic b
 It's important to remember that **Fiber hooks can only be called inside a `<Canvas />` parent**!
 
 ```jsx
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 
 function MyAnimatedBox() {
   useFrame(() => {
     console.log("Hey, I'm executing every frame!")
   })
-
   return (
     <mesh>
-      <boxBufferGeometry />
+      <boxGeometry />
       <meshBasicMaterial color="royalblue" />
     </mesh>
   )
@@ -54,10 +53,9 @@ import React from 'react'
 
 function MyAnimatedBox() {
   const myMesh = React.useRef()
-
   return (
     <mesh ref={myMesh}>
-      <boxBufferGeometry />
+      <boxGeometry />
       <meshBasicMaterial color="royalblue" />
     </mesh>
   )

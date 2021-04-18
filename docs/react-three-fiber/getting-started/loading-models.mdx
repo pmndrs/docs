@@ -24,7 +24,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 With this we can create a Model component and place it in our scene like so:
 
 ```jsx
-const Scene = () => {
+function Scene() {
   const gltf = useLoader(GLTFLoader, './Poimandres.gltf')
   return (
     <Suspense fallback={null}>
@@ -119,9 +119,8 @@ import { useLoader } from '@react-three/fiber'
 With these imported let's get the mesh into our scene:
 
 ```jsx
-const Scene = () => {
+function Scene() {
   const obj = useLoader(OBJLoader, 'Poimandres.obj')
-
   return <primitive object={obj} />
 }
 ```
@@ -144,9 +143,8 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 To create our scene we can get the fbx as a return value of the useLoader by passing the `FBX` loader and the location of our file like so:
 
 ```jsx
-const Scene = () => {
+function Scene() {
   const fbx = useLoader(FBXLoader, 'Poimandres.fbx')
-
   return <primitive object={fbx} />
 }
 ```
@@ -160,7 +158,7 @@ You can play with the sandbox here:
 [@react-three/drei](https://github.com/pmndrs/drei) exports a very useful helper when it comes to loading fbx models and it's called `useFBX`, in this case there is no need to import anything from `three.js` as it is all done behind the scenes and we can just pass the location of the file to `useFBX` like so:
 
 ```jsx
-const Scene = () => {
+function Scene() {
   const fbx = useFBX('Poimandres.fbx')
   return <primitive object={fbx} />
 }
