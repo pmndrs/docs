@@ -154,11 +154,10 @@ export default function Layout(props) {
                 )}
               </div>
 
-              {toc.length ? (
-                <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                  <Toc toc={toc} />
-                </div>
-              ) : null}
+              <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
+                {' '}
+                {toc.length ? <Toc toc={toc} /> : null}
+              </div>
             </div>
           </div>
         </div>
