@@ -4,8 +4,14 @@ export default function Index() {
 
 async function getInitialProps({ res }) {
   const targetURL = '/react-three-fiber/getting-started/introduction'
-  res.writeHead(307, { Location: targetURL })
-  res.end()
+  if (res) {
+    res.writeHead(307, { Location: targetURL })
+    res.end()
+  } else {
+    // @ts-ignore
+    window.location = targetURL
+    await new Promise((resolve) => {})
+  }
   return {}
 }
 

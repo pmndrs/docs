@@ -14,7 +14,7 @@ Understanding how this works is not necessarily needed to use Fiber, but it will
 Let's take a small React example:
 
 ```jsx
-import { Canvas } from 'react-three-fiber'
+import { Canvas } from '@react-three/fiber'
 
 function MyApp() {
   return (
@@ -176,8 +176,9 @@ Fiber also handles camera switching, meaning that the raycaster will always use 
 When using the `raycast` prop, the object will instead be picked using a custom ray:
 
 ```jsx
-import { useCamera } from 'react-three-fiber'
-;<mesh raycast={useCamera(anotherCamera)} />
+import { useCamera } from '@react-three/fiber'
+
+return <mesh raycast={useCamera(anotherCamera)} />
 ```
 
 [See this recipe for more info about this.](/docs/recipes/raycasting)
