@@ -32,7 +32,7 @@ function MyAnimatedBox() {
 
 This loop is the basic building block of our animation, the callback we pass to `useFrame` will be executed every frame and it will be passed an object containing the state of our Fiber scene:
 
-For example, we might extract clock information, to know how much time has elapsed in our application, and use that time to animate a value:
+For example, we can extract time information from the `clock` parameter, to know how much time has elapsed in our application, and use that time to animate a value:
 
 ```jsx
 useFrame(({ clock }) => {

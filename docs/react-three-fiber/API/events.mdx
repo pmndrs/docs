@@ -48,14 +48,15 @@ Also notice the `onPointerMissed` on the canvas element, which fires on clicks t
 ### How the event-system works, bubbling and capture
 
 <Hint>
-  the pointerenter and pointerleave events work exactly the same as pointerover and pointerout. The
-  pointerenter and pointerleave semantics are not implemented.
+  the <InlineCode>pointerenter</InlineCode> and <InlineCode>pointerleave</InlineCode> events work
+  exactly the same as pointerover and pointerout. The
+  <InlineCode>pointerenter</InlineCode> and <InlineCode>pointerleave</InlineCode> semantics are not implemented.
 </Hint>
 
 <Hint>
-  Some events (such as pointerout) happen when there is no intersection between `eventObject` and
-  the ray. When this happens, the event will contain intersection data from a previous event with
-  this object.
+  Some events (such as pointerout) happen when there is no intersection between
+  <InlineCode>eventObject</InlineCode> and the ray. When this happens, the event will contain intersection
+  data from a previous event with this object.
 </Hint>
 
 ### Event propagation (bubbling)

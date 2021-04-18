@@ -2,10 +2,16 @@ import Codesandbox from './Codesandbox'
 import clsx from 'clsx'
 import Sandbox from './Sandbox'
 
+const InlineCode = ({ children }) => (
+  <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
+    {children}
+  </code>
+)
+
 const components = {
   Sandbox,
   Hint: ({ children }) => (
-    <div className="shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 mb-6">
+    <div className="shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 leading-7 mb-6">
       {children}
     </div>
   ),
@@ -35,11 +41,8 @@ const components = {
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>,
-  inlineCode: ({ children }) => (
-    <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
-      {children}
-    </code>
-  ),
+  inlineCode: InlineCode,
+  InlineCode,
   p: ({ children }) => <p className="mb-4 text-base text-gray-700">{children}</p>,
   blockquote: ({ children }) => (
     <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>

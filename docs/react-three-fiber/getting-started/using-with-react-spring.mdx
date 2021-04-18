@@ -36,7 +36,7 @@ We will need to import two things from `react-spring`:
 import { useSpring, animated } from '@react-spring/three'
 ```
 
-Let's go over them yes?
+Let's go over them, shall we?
 
 - `useSpring` - A hook to transform values into animated-values
 - `animated` - A component that is used instead of your DOM or mesh, so instead of using `mesh` you will `animated.mesh` if you want it to be affected by `react-spring`
@@ -49,7 +49,7 @@ const springs = useSpring({ scale: active ? 1.5 : 1 })
 
 What we did here is create a constant called `springs` and this constant will hold the animated values.
 
-`useSpring` itself takes one argument and that is an object with all the things you want to animate and in this case we just want to animate the scale and we want to hop between the value 1 and the value 1.5 depending on the active state.
+`useSpring` itself takes one argument, and that is an object with all the things you want to animate. In this case, we just want to animate the scale and to hop between the value of 1 and the value of 1.5 depending on the active state.
 
 We can also deconstruct the return value of `useSpring` and just get the value we want, like so:
 
