@@ -10,7 +10,9 @@ const components = {
     </div>
   ),
   Grid: ({ children }) => (
-    <ul className="grid grid-cols-3 gap-4 text-sm text-gray-700 grid-list">{children}</ul>
+    <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm text-gray-700 grid-list">
+      {children}
+    </ul>
   ),
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
