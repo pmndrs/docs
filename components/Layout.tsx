@@ -18,8 +18,16 @@ export default function Layout(props) {
   useEffect(() => {
     if (menu) {
       document.body.classList.add('overflow-hidden')
+    } else {
+      document.body.classList.remove('overflow-hidden')
     }
   }, [menu])
+
+  useEffect(() => {
+    if (menu) {
+      setMenu(!menu)
+    }
+  }, [asPath])
 
   return (
     <>
@@ -27,8 +35,12 @@ export default function Layout(props) {
         className={`px-2 sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl`}
       >
         <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
-          <span className="font-bold">Pmdnrs</span>
-          <span className="font-normal">.docs</span>
+          <Link href="/">
+            <a>
+              <span className="font-bold">Pmdnrs</span>
+              <span className="font-normal">.docs</span>
+            </a>
+          </Link>
         </div>
         <Search allDocs={props.allDocs} />
         <button className="block md:hidden p-2 mr-2 ml-2" onClick={() => setMenu(!menu)}>
@@ -112,7 +124,7 @@ export default function Layout(props) {
                 ) : null}
 
                 {(previousPage || nextPage) && (
-                  <div className="flex justify-between w-full max-w-3xl pb-24 mx-auto mt-24">
+                  <div className="flex justify-between w-full max-w-3xl  mx-auto mt-12">
                     {previousPage && (
                       <div className="">
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
