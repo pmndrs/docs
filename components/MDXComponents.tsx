@@ -2,19 +2,19 @@ import Codesandbox from './Codesandbox'
 import clsx from 'clsx'
 
 const components = {
-  Grid: ({ children }) => (
-    <ul className="grid grid-cols-3 gap-4 text-sm text-gray-700 grid-list">{children}</ul>
-  ),
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
   Codesandbox,
   Heading: ({ children, id, level }) => {
     const Comp = level === 2 ? 'h2' : 'h3'
-
     return (
       <a
         href={`#${id}`}
-        className={clsx('heading', level === 2 ? 'text-3xl mb-10 mt-4' : 'text-xl mb-3')}
+        className={clsx(
+          'heading',
+          level === 2 ? 'text-3xl mb-6 mt-8' : 'text-xl mb-4 mt-6',
+          'tracking-tight'
+        )}
       >
         <Comp id={id}>{children}</Comp>
       </a>
@@ -22,13 +22,13 @@ const components = {
   },
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
-  li: ({ children }) => <li className="mb-8 text-lg leading-8 text-gray-700">{children}</li>,
+  li: ({ children }) => <li className="mb-4 text-lg leading-6 text-gray-700">{children}</li>,
   inlineCode: ({ children }) => (
-    <code className="px-1 font-mono text-sm text-purple-800 bg-purple-100">{children}</code>
+    <code className="px-1 px-2 py-1 font-mono text-sm text-gray-800 bg-gray-100">{children}</code>
   ),
-  p: ({ children }) => <p className="mb-8 text-lg leading-8 text-gray-700">{children}</p>,
+  p: ({ children }) => <p className="mb-4 text-lg leading-8 text-gray-700">{children}</p>,
   blockquote: ({ children }) => (
-    <blockquote className="mb-8 text-lg leading-8 pl-4 border-l-4 border-gray-600">
+    <blockquote className="mb-8 text-base leading-8 pl-4 border-l-4 border-gray-600">
       {children}
     </blockquote>
   ),
@@ -48,12 +48,16 @@ const components = {
   a: (props) => {
     if (props.href.startsWith('https://')) {
       return (
-        <a href={props.href} target="_blank" rel="noopener noreferrer">
+        <a className="text-lg" href={props.href} target="_blank" rel="noopener noreferrer">
           {props.children}
         </a>
       )
     }
-    return <a href={props.href}>{props.children}</a>
+    return (
+      <a className="text-lg" href={props.href}>
+        {props.children}
+      </a>
+    )
   },
 }
 
