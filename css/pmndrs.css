@@ -10,7 +10,7 @@ pre[class*='language-'] {
   background: none;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
   font-family: Menlo, Monaco, 'Courier New', monospace;
-  font-size: 1em;
+  font-size: 0.95em;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -30,10 +30,10 @@ pre[class*='language-'] {
 
 /* Code blocks */
 pre[class*='language-'] {
-  padding: 1em;
-  margin: 0.5em 0;
+  padding: 1.75em;
+  margin: 1.5em 0;
   overflow: auto;
-  border-radius: 0.3em;
+  border-radius: 0.75em;
 }
 
 :not(pre) > code[class*='language-'],
@@ -68,7 +68,7 @@ pre[class*='language-'] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  color: #fae4fc;
+  color: #e4f0fb;
 }
 
 .token.boolean,
@@ -98,7 +98,7 @@ pre[class*='language-'] {
 .token.atrule,
 .token.function,
 .token.class-name {
-  color: #fcc5e9;
+  color: #5de4c7;
 }
 
 .token.keyword {

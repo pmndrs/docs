@@ -28,9 +28,12 @@ function Layout(props) {
       document.body.classList.add('overflow-hidden')
     }
   }, [menu])
+
   return (
     <>
-      <div className="sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl">
+      <div
+        className={` sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl`}
+      >
         <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
           <span className="font-bold">Pmdnrs</span>
           <span className="font-normal">.docs</span>
@@ -64,9 +67,10 @@ function Layout(props) {
           >
             <div
               id="nav-wrapper"
-              className="h-full mr-24 overflow-hidden overflow-y-auto scrolling-touch bg-white lg:h-auto lg:block lg:relative lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 relative z-10"
+              className="h-full mr-24 overflow-hidden overflow-y-auto scrolling-touch bg-white lg:h-auto lg:block lg:relative lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10
+              relative"
             >
-              <div
+              <nav
                 id="nav"
                 className="
               pt-6 
@@ -78,6 +82,8 @@ function Layout(props) {
               lg:pt-10 
               lg:pb-14 
               sticky?lg:h-(screen-16)
+              z-10
+              relative
             "
               >
                 <div className="mb-4">
@@ -85,7 +91,7 @@ function Layout(props) {
                 </div>
 
                 <Nav nav={nav[lib]} />
-              </div>
+              </nav>
             </div>
             <div
               onClick={() => setMenu(false)}
@@ -94,7 +100,7 @@ function Layout(props) {
               }`}
             ></div>
           </div>
-          <div id="content-wrapper" className="flex-auto">
+          <div id="content-wrapper" className={`flex-auto ${menu ? 'overflow-hidden' : ''}`}>
             <div className="flex w-full">
               <div className="flex-auto min-w-0 px-4 pt-10 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{props.children}</div>

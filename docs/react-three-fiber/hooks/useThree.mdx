@@ -1,0 +1,69 @@
+---
+title: useThree
+nav: 14
+---
+
+```jsx
+useThree(selector) => state
+```
+
+This hook gives you access to all the basic objects that are kept internally, like the default renderer, scene, camera. It also gives you the current size of the canvas in screen and viewport coordinates. The hook is reactive, if you resize the browser for instance, you get fresh measurements, same applies to any of the defaults that may change.
+
+```jsx
+import { useThree } from '@react-three/fiber'
+
+const {
+  gl, // THREE.WebGLRenderer
+  scene, // THREE.Scene
+  camera, // Camera
+  raycaster, // Raycaster
+  mouse, // THREE.Vector2
+  clock, // THREE.Clock
+  vr, // boolean
+  linear, // Colorspace, boolean
+  frameloop, // 'always' | 'demand' | 'never'
+  performance: {
+    current, // Current performance status, must be between min and max, number
+    min, // Performance lower bounds, number
+    max, // Performance upper bounds, number
+    debounce, // Debounce timeout, number
+    regress, // Flag regression, () => void
+  },
+  size: {
+    width, // Canvas width in pixels, number;
+    height, // Canvas height in pixels, number;
+  },
+  viewport: {
+    width, // Viewport width in units, number;
+    height, // Viewport height in units, number;
+    initialDpr, // Initial pixel-ratio, number
+    dpr, // Current pixel-ratio, number
+    factor, // Size.width / Viewport.width, number
+    distance, // Distance from camera, number
+    aspect, // Size.width / Size.height, number
+    getCurrentViewport, // (camera?: Camera, target?: THREE.Vector3, size?: Size) => Viewport
+  },
+  set, // Allows you to set any state property, SetState<RootState>
+  get, // Allows you to retrieve any state property non-rteactively, GetState<RootState>
+  invalidate, // Request a new render, given that frameloop === 'demand', () => void
+  advance, // Advance one tick, given that frameloop === 'never', (timestamp: number, runGlobalEffects?: boolean) => void
+  setSize, // Resize the canvs, (width: number, height: number) => void
+  setDpr, // Reset the pixel-ratio, (dpr: Dpr) => void
+  onPointerMissed, // () => void
+  events: {
+    connected, // Event-target (for instance a dom node), TTarget | boolean
+    handlers, // Pointer-event handlers (pointermove, up, down, etc), Events
+    connect, // Re-connect to a new target, (target: TTarget) => void
+    disconnect, // Dis-connect handlers, () => void
+  },
+} = useThree()
+```
+
+You can also select properties, this allows you to avoid needless re-render for components that are interested only in particulars.
+
+```jsx
+// Will only trigger re-render when the default camera is exchanged
+const camera = useThree((state) => state.camera)
+// Will only re-render on resize changes
+const viewport = useThree((state) => state.viewport)
+```

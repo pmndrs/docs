@@ -44,11 +44,15 @@
 }
 
 .content-container a {
-  @apply text-purple-400 underline;
+  @apply text-blue-400;
 }
 
 .content-container .heading {
   @apply block font-bold text-gray-900 no-underline hover:text-gray-600 hover:underline;
+}
+
+nav {
+  @apply px-2;
 }
 
 blockquote p {

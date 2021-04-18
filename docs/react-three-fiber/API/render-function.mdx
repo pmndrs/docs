@@ -1,0 +1,31 @@
+---
+title: Render Function
+description: 'React Three Fiber without the React part'
+nav: 9
+---
+
+As of version 6 you may use a render function, similar to how react-dom and all the other React renderers work. This allows you to shave off react-dom (~40kb), react-use-measure + resize-observer-polyfill (~5kb) and, if you don't need them, pointer-events (~7kb) (you need to explictely import `events` and add them to the config otherwise).
+
+The render functions config has the same options and properties as `Canvas`, but you are responsible for resizing it. It requires an existing dom `<canvas>` object into which it renders.
+
+```jsx
+import React from 'react'
+import { render, events } from '@react-three/fiber'
+
+window.addEventListener('resize', () =>
+  render(<mesh />, document.querySelector('canvas'), {
+    events,
+    size: { width: window.innerWidth, height: window.innerHeight },
+  })
+)
+
+window.dispatchEvent(new Event('resize'))
+```
+
+To unmount and dispose of all the memory that has been acquired:
+
+```jsx
+import { unmountComponentAtNode } from '@react-three/fiber'
+
+unmountComponentAtNode(document.querySelector('canvas'))
+```
