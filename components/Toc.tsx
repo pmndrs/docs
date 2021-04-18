@@ -14,17 +14,18 @@ type TocProps = {
 function Toc({ toc }: TocProps) {
   return (
     <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
-      <h3 className="mt-8 mb-2 text-lg font-medium text-gray-900 capitalize">On This Page</h3>
-
+      <h5 className="text-gray-900 uppercase tracking-wide font-semibold mt-8 mb-2 text-sm lg:text-xs">
+        On This Page
+      </h5>
       {toc.map((item) => (
-        <h3 key={item.slug} className={clsx(item.depth === 3 && 'ml-4')}>
+        <h4 key={item.slug} className={clsx(item.depth === 3 && 'ml-4')}>
           <a
-            className="block py-2 text-base font-normal leading-6 text-gray-500 hover:underline"
+            className="block py-1 text-sm font-normal leading-6 text-gray-500 hover:underline"
             href={`#${item.slug}`}
           >
             {item.title}
           </a>
-        </h3>
+        </h4>
       ))}
     </div>
   )

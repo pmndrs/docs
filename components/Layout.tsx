@@ -32,7 +32,7 @@ function Layout(props) {
   return (
     <>
       <div
-        className={` sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl`}
+        className={`px-2 sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl`}
       >
         <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
           <span className="font-bold">Pmdnrs</span>
@@ -73,6 +73,7 @@ function Layout(props) {
               <nav
                 id="nav"
                 className="
+              px-4
               pt-6 
               overflow-y-auto 
               font-medium 

@@ -100,15 +100,12 @@ export const getStaticProps = async ({ params }) => {
   const postFilePath = path.join(DOCS_PATH, `${path.join(...params.slug)}.mdx`)
   const source = fs.readFileSync(postFilePath)
   const { content, data } = matter(source)
-
   const allDocs = await getAllDocs()
 
   const nav = allDocs.reduce((nav, file) => {
     const [lib, ...rest] = file.url.split('/').filter(Boolean)
     const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
-
     setValue(nav, _path, file)
-
     return nav
   }, {})
 

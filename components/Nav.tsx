@@ -14,16 +14,14 @@ type NavProps = {
 
 function NavItem({ route }) {
   const { asPath } = useRouter()
-
   const isActive = route.url === asPath
-
   return (
     <li>
       <Link href={route.url.replace('index', '')}>
         <a
           className={clsx(
-            'block px-6 py-3 text-gray-800 capitalize font-normal hover:bg-gray-100 cursor-pointer',
-            isActive && 'bg-gray-200'
+            'rounded-md block px-6 py-2 text-gray-800 capitalize font-normal hover:bg-gray-50 cursor-pointer',
+            isActive && 'bg-gray-100'
           )}
         >
           {route.title}
@@ -38,7 +36,7 @@ function Nav({ nav }: NavProps) {
     <ul>
       {Object.entries(nav).map(([key, children], index) => (
         <Fragment key={`${key}-${index}`}>
-          <h3 className="px-6 mt-8 mb-2 text-lg text-gray-900 capitalize">
+          <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold">
             {key.split('-').join(' ')}
           </h3>
           {Object.entries(children).map(([key, route], index) => (
