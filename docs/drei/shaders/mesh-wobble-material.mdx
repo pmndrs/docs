@@ -1,0 +1,20 @@
+---
+title: MeshWobbleMaterial
+---
+
+This material makes your geometry wobble and wave around. It was taken from the [threejs-examples](https://threejs.org/examples/#webgl_materials_modified) and adapted into a self-contained material.
+
+```jsx
+<mesh>
+  <boxBufferGeometry attach="geometry" />
+  <MeshWobbleMaterial
+    attach="material"
+    factor={1} // Strength, 0 disables the effect (default=1)
+    speed={10} // Speed (default=1)
+  />
+</mesh>
+```
+
+<StoryBookLink link="shaders-meshwobblematerial--mesh-wobble-material-st" />
+
+<StoryBookEmbed id="shaders-meshwobblematerial--mesh-wobble-material-st" />

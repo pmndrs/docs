@@ -1,0 +1,20 @@
+---
+title: MeshDistortMaterial
+---
+
+This material makes your geometry distort following noise.
+
+```jsx
+<mesh>
+  <boxBufferGeometry attach="geometry" />
+  <MeshDistortMaterial
+    attach="material"
+    distort={1} // Strength, 0 disables the effect (default=1)
+    speed={10} // Speed (default=1)
+  />
+</mesh>
+```
+
+<StoryBookLink link="shaders-meshdistortmaterial--mesh-distort-material-st" />
+
+<StoryBookEmbed id="shaders-meshdistortmaterial--mesh-distort-material-st" />
