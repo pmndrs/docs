@@ -1,0 +1,19 @@
+---
+title: Environment
+---
+
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+
+```jsx
+<Environment
+  background={false} // Whether to affect scene.background
+  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} // Array of cubemap files OR single equirectangular file
+  path={'/'} // Path to the above file(s)
+  preset={null} // Preset string (overrides files and path)
+  scene={undefined} // adds the ability to pass a custom THREE.Scene
+/>
+```
+
+<StoryBookLink link="abstractions-environment--environment-st" />
+
+<StoryBookEmbed id="abstractions-environment--environment-st" />

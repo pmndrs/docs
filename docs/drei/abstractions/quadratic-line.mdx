@@ -1,0 +1,23 @@
+---
+title: QuadraticBezierLine
+---
+
+Renders a [THREE.Line2](https://threejs.org/docs/#api/en/objects/Line) using THREE.QuadraticBezierCurve3 for interpolation.
+
+```jsx
+<QuadraticBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  mid={[5, 0, 5]}                 // Optional control point
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+<StoryBookLink link="abstractions-line--quadratic-bezier" />
+
+<StoryBookEmbed id="abstractions-line--quadratic-bezier" />

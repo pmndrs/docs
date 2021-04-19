@@ -1,0 +1,19 @@
+---
+title: useAnimations
+---
+
+A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
+
+```jsx
+const { nodes, materials, animations } = useGLTF(url)
+const { ref, mixer, names, actions, clips } = useAnimations(animations)
+useEffect(() => {
+  actions.jump.play()
+})
+return (
+  <mesh ref={ref} />
+```
+
+<StoryBookLink link="abstractions-useanimations--use-animations-st" />
+
+<StoryBookEmbed id="abstractions-useanimations--use-animations-st" />
