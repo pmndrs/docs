@@ -20,7 +20,11 @@ export default ({ id }) => {
   return (
     <div>
       <a href={`https://codesandbox.io/s/${data.alias}`} target="_blank">
-        <img className="rounded shadow-lg" src={data.screenshot_url} alt={data.title} />{' '}
+        <img
+          className="rounded shadow-lg"
+          src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
+          alt={data.title}
+        />{' '}
       </a>
       <h6 className="text-gray-700 font-bold capitalize mt-4">{data.title}</h6>
       <p className="text-gray-700">{data.description}</p>
