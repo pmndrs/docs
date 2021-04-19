@@ -1,0 +1,21 @@
+---
+title: useSimplification
+---
+
+This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html).
+
+👉 The simplification code is based on [this algorithm](http://www.melax.com/polychop/).
+
+```jsx
+const meshRef = useSimplification(0.5) // the vertices will be halved
+
+return (
+  <mesh ref={meshRef}>
+    <octahedronBufferGeometry args={[2, 5]} />
+  </mesh>
+)
+```
+
+<StoryBookLink link="modifiers-usesimplification" />
+
+<StoryBookEmbed id="modifiers-usesimplification" />

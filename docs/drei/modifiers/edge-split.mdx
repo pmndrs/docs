@@ -1,0 +1,19 @@
+---
+title: useEdgeSplit
+---
+
+This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
+
+```jsx
+const meshRef = useEdgeSplit(Math.PI / 2)
+
+return (
+  <mesh ref={meshRef}>
+    <boxBufferGeometry args={[10, 10]} />
+  </mesh>
+)
+```
+
+<StoryBookLink link="modifiers-useedgesplit" />
+
+<StoryBookEmbed id="modifiers-useedgesplit" />
