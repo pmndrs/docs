@@ -1,0 +1,28 @@
+---
+title: useNormalTexture
+---
+
+Loads normal textures from this repository: [https://github.com/emmelleppi/normal-maps](https://github.com/emmelleppi/normal-maps)
+
+```jsx
+const [normalMap, url] = useNormalTexture(
+  1, // index of the normal texture - https://github.com/emmelleppi/normal-maps/blob/master/normals.json
+  // second argument is texture attributes
+  {
+    offset: [0, 0],
+    repeat: [normRepeat, normRepeat],
+    anisotropy: 8
+  }
+)
+
+return (
+  ...
+  <meshStandardMaterial normalMap={normalMap} />
+  ...
+)
+
+```
+
+<StoryBookLink link="prototyping-usenormaltexture" />
+
+<StoryBookEmbed id="prototyping-usenormaltexture" />

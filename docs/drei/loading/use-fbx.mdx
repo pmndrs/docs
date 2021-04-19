@@ -1,0 +1,19 @@
+---
+title: useFBX
+---
+
+A convenience hook that uses `useLoader` and `FBXLoader`:
+
+```jsx
+useFBX(url)
+
+function SuzanneFBX() {
+  let fbx = useFBX('suzanne/suzanne.fbx')
+  // wrap fbx in primitive.
+  return <primitive object={fbx} dispose={null} />
+}
+```
+
+<StoryBookLink link="loaders-fbx" />
+
+<StoryBookEmbed id="loaders-fbx" />
