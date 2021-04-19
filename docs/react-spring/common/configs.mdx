@@ -1,6 +1,6 @@
-import { CodeBlock } from '../../components/CodeBlock'
-
-# Configs
+---
+title: Configs
+---
 
 Spring are configurable and can be tuned. If you want to adjust these settings, you should provide a `config` property to `useSpring`:
 
@@ -41,10 +41,7 @@ And we've added the following properties `frequency`, `dampening`, `round`, `bou
 | bounce       | undefined | When above zero, the spring will bounce instead of overshooting when exceeding its goal value.                                                                                                                    |
 | restVelocity | undefined | The smallest velocity before the animation is considered to be "not moving". When undefined, `precision` is used instead.                                                                                         |
 
-<CodeBlock
-  live
-  url="https://codesandbox.io/embed/flamboyant-agnesi-x1vjb?fontsize=14&hidenavigation=1&theme=dark&view=preview&hidedevtools=1&hidenavigation=1"
-/>
+<Codesandbox id="x1vjb" />
 
 ## Presets
 
@@ -65,7 +62,4 @@ useSpring({ ..., config: config.default })
 | config.slow     | { mass: 1, tension: 280, friction: 60 }  |
 | config.molasses | { mass: 1, tension: 280, friction: 120 } |
 
-<CodeBlock
-  live
-  url="https://codesandbox.io/embed/react-spring-preset-configs-kdv7r?fontsize=14&hidenavigation=1&theme=dark&view=preview&hidedevtools=1&hidenavigation=1"
-/>
+<Codesandbox id="kdv7r" />

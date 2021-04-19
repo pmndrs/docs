@@ -1,6 +1,11 @@
 import Codesandbox from './Codesandbox'
 import clsx from 'clsx'
 import Sandbox from './Sandbox'
+import { TweetGrid } from './TweetGrid'
+import { YouTubeEmbed } from './YoutubeEmbed'
+import { GridUsedBy } from './GridUsedBy'
+import { Demo } from './Demo'
+import { DemoGrid } from './DemoGrid'
 
 const InlineCode = ({ children }) => (
   <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
@@ -9,7 +14,12 @@ const InlineCode = ({ children }) => (
 )
 
 const components = {
+  Demo,
+  DemoGrid,
+  YouTubeEmbed,
+  GridUsedBy,
   Sandbox,
+  TweetGrid,
   Hint: ({ children }) => (
     <div className="shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 leading-7 mb-6">
       {children}
@@ -63,16 +73,12 @@ const components = {
   a: (props) => {
     if (props.href.startsWith('https://')) {
       return (
-        <a className="text-base" href={props.href} target="_blank" rel="noopener noreferrer">
+        <a href={props.href} target="_blank" rel="noopener noreferrer">
           {props.children}
         </a>
       )
     }
-    return (
-      <a className="text-base" href={props.href}>
-        {props.children}
-      </a>
-    )
+    return <a href={props.href}>{props.children}</a>
   },
 }
 
