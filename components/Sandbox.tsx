@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default ({ id }) => {
+export default function Sandbox({ id }) {
   const [data, setData] = useState<{
     alias: string
     screenshot_url: string
