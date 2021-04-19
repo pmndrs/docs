@@ -107,6 +107,7 @@ const Search = ({ allDocs }) => {
           }}
           className="appearance-none w-full h-full p-4"
           type="search"
+          id="algolia-search"
           placeholder='Quick search ("/" to focus)'
           onKeyDown={handleKeyDown}
           onFocus={() => setShow(true)}
