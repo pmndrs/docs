@@ -31,9 +31,15 @@
   }
 }
 
+.content-container :target {
+  /* <Search />'s h-16 + more spacing */
+  scroll-margin-top: theme('spacing.20');
+}
+
 .content-container ul > li {
   @apply my-2;
 }
+
 .content-container ul > li:before {
   content: '—';
   @apply inline-block mr-3 text-gray-300;
