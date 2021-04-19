@@ -37,7 +37,7 @@ export default function Layout(props) {
         <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
           <Link href="/">
             <a>
-              <span className="font-bold">Pmdnrs</span>
+              <span className="font-bold">Pmndrs</span>
               <span className="font-normal">.docs</span>
             </a>
           </Link>
