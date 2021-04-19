@@ -8,7 +8,7 @@ nav: 20
 
 This is the best overview I could find: https://discoverthreejs.com/tips-and-tricks
 
-The most important gotcha in Threejs is that creating objects can be expensive, think twice before you mount/unmnount things! Every material or light that you put into the scene has to compile, every geometry you create will be processed. Share materials and geometries if you can, either in global scope or locally:
+The most important gotcha in `three.js` is that creating objects can be expensive, think twice before you mount/unmnount things! Every material or light that you put into the scene has to compile, every geometry you create will be processed. Share materials and geometries if you can, either in global scope or locally:
 
 ```jsx
 const geom = useMemo(() => new BoxBufferGeometry(), [])
@@ -36,7 +36,7 @@ useFrame(() => setX((x) => x + 0.01))
 return <mesh position-x={x} />
 ```
 
-#### ✅ Instead, use refs and mutate! This is totally fine and that's how you would do it in plain Threejs as well
+#### ✅ Instead, use refs and mutate! This is totally fine and that's how you would do it in plain three.js as well
 
 ```jsx
 const ref = useRef()
@@ -111,7 +111,7 @@ return <mesh ref={ref} />
 
 ---
 
-In Threejs it is very common to not re-mount at all, see the ["disposing of things"](https://discoverthreejs.com/tips-and-tricks/) section in discover-three. This is because materials get re-compiled, etc.
+In `three.js` it is very common to not re-mount at all, see the ["disposing of things"](https://discoverthreejs.com/tips-and-tricks/) section in discover-three. This is because materials get re-compiled, etc.
 
 #### ✅ Use concurrent mode
 
@@ -148,7 +148,7 @@ useFrame(() => {
 
 ---
 
-Threejs loaders give you the ability to load async assets (models, textures, etc), but they are probablic.
+`three.js` loaders give you the ability to load async assets (models, textures, etc), but they are probablic.
 
 #### ❌ This re-fetches, re-parses for every component instance
 
