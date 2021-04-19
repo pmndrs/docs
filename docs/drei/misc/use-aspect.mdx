@@ -1,0 +1,21 @@
+---
+title: useAspect
+---
+
+This hook calculates aspect ratios (for now only what in css would be `image-size: cover` is supported). You can use it to make an image fill the screen. It is responsive and adapts to viewport resize. Just give the hook the image bounds in pixels. It returns an array: `[width, height, 1]`.
+
+```jsx
+const scale = useAspect(
+  1024,                     // Pixel-width
+  512,                      // Pixel-height
+  1                         // Optional scaling factor
+)
+return (
+  <mesh scale={scale}>
+    <planeBufferGeometry />
+    <meshBasicMaterial map={imageTexture} />
+```
+
+<StoryBookLink link="misc-useaspect--default-story" />
+
+<StoryBookEmbed id="misc-useaspect--default-story" />
