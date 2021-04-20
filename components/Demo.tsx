@@ -3,18 +3,13 @@ import styled from 'styled-components'
 
 import { ErrorBoundary } from './ErrorBoundary'
 import { useObserver } from 'hooks/useObserver'
-import {
-  SandpackRunner,
-  SandpackLayout,
-  Sandpack,
-  SandpackCodeEditor,
-  SandpackPreview,
-} from '@codesandbox/sandpack-react'
+import { SandpackRunner } from '@codesandbox/sandpack-react'
 import '@codesandbox/sandpack-react/dist/index.css'
 
 interface DemoProps {
   title: string
   description?: string
+  url: string
 }
 
 export const Demo: FC<DemoProps> = ({ url, title, description }) => {
