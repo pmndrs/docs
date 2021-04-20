@@ -37,8 +37,8 @@ The props available for the canvas are:
 | dpr             | Pixel-ratio, use window.devicePixelRatio, or automatic: [min, max] | `undefined`                                              |
 | linear          | Switch off automatic sRGB encoding and gamma correction            | `false`                                                  |
 | flat            | Use THREE.NoToneMapping instead of THREE.ACESFilmicToneMapping     | `false`                                                  |
-| onCreated       | Callback after the canvas has rendered (but not yet committed)     | `() => {}`                                               |
-| onPointerMissed | Response for pointer clicks that have missed any target            | `() => {}`                                               |
+| onCreated       | Callback after the canvas has rendered (but not yet committed)     | `(state) => {}`                                          |
+| onPointerMissed | Response for pointer clicks that have missed any target            | `(event) => {}`                                          |
 
 ### Defaults that the canvas component sets up
 
