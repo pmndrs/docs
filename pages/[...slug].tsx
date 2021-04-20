@@ -1,4 +1,5 @@
 import fs from 'fs'
+import Head from 'next/head'
 import matter from 'gray-matter'
 import hydrate from 'next-mdx-remote/hydrate'
 import renderToString from 'next-mdx-remote/render-to-string'
@@ -10,12 +11,26 @@ import prism from 'remark-prism'
 import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
+import { useRouter } from 'next/router'
+
+function titleCase(query) {
+  const str = query.slug[0].split('-').join(' ')
+  var splitStr = str.toLowerCase().split(' ')
+  for (var i = 0; i < splitStr.length; i++) {
+    splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
+  }
+  return splitStr.join(' ')
+}
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const content = hydrate(source, { components })
+  const { query } = useRouter()
 
   return (
     <Layout nav={nav} toc={toc} allDocs={allDocs}>
+      <Head>
+        <title> {titleCase(query)} Documentation</title>
+      </Head>
       <main className="max-w-3xl mx-auto">
         {frontMatter.title && (
           <div className="pb-6 mb-4 border-b post-header">
