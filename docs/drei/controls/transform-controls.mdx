@@ -1,0 +1,19 @@
+---
+title: TransformControls
+---
+
+This class can be used to transform objects in 3D space by adapting a similar interaction model of DCC tools like Blender. Unlike other controls, it is not intended to transform the scene's camera.
+
+TransformControls expects that its attached 3D object is part of the scene graph.
+
+```jsx
+<TransformControls>
+  <Box>
+    <meshBasicMaterial attach="material" />
+  </Box>
+</TransformControls>
+```
+
+<StoryBookLink link="controls-transformcontrols--transform-controls-story" />
+
+<StoryBookEmbed id="controls-transformcontrols--transform-controls-story" />
