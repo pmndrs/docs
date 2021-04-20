@@ -54,7 +54,7 @@ What we did here is create a constant called `springs` and this constant will ho
 We can also deconstruct the return value of `useSpring` and just get the value we want, like so:
 
 ```js
-const { active } = useSpring({ scale: active ? 1.5 : 1 })
+const { scale } = useSpring({ scale: active ? 1.5 : 1 })
 ```
 
 Now that we have this animated value let's place it in our mesh:
