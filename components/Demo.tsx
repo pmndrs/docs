@@ -1,43 +1,102 @@
 import { useState, FC, useRef, useEffect } from 'react'
 import styled from 'styled-components'
-
+import prettier from 'prettier/standalone'
+import parserBabel from 'prettier/parser-babel'
 import { ErrorBoundary } from './ErrorBoundary'
 import { useObserver } from 'hooks/useObserver'
-import { SandpackRunner } from '@codesandbox/sandpack-react'
+import { SandpackRunner, Sandpack } from '@codesandbox/sandpack-react'
 import '@codesandbox/sandpack-react/dist/index.css'
 
 interface DemoProps {
   title: string
   description?: string
-  url: string
+  url?: string
+  name?: string
+  onlyView: boolean
 }
 
-export const Demo: FC<DemoProps> = ({ url, title, description }) => {
+export const Demo: FC<DemoProps> = ({ url, title, description, name, onlyView }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [inViewport, setInViewport] = useState(false)
 
   const [data, setData] = useState<{}>()
+  const [code, setCode] = useState('')
 
   useEffect(() => {
-    fetch(`/api/get-sandbox?id=${url}`)
-      .then((rsp) => rsp.json())
-      .then(({ modules, directories }) => {
-        const files = modules.reduce((acc, curr) => {
-          const dir = curr.directory_shortid
-            ? '/' + directories.find((d) => d.shortid === curr.directory_shortid)?.title
-            : ''
-          acc[dir + '/' + curr.title] = curr.code
-          return acc
-        }, {})
+    if (url) {
+      fetch(`/api/get-sandbox?id=${url}`)
+        .then((rsp) => rsp.json())
+        .then(({ modules, directories }) => {
+          const files = modules.reduce((acc, curr) => {
+            const dir = curr.directory_shortid
+              ? '/' + directories.find((d) => d.shortid === curr.directory_shortid)?.title
+              : ''
+            acc[dir + '/' + curr.title] = curr.code
+            return acc
+          }, {})
 
-        setData(files)
-      })
+          setData(files)
+        })
+    }
   }, [])
 
   useObserver(containerRef, (entry) => {
     setInViewport(entry.isIntersecting)
   })
 
+  if (name) {
+    console.log(name)
+    import(`../demos/${name}`).then((code) => {
+      const formatted = prettier.format(code.default, {
+        parser: 'babel',
+        plugins: [parserBabel],
+      })
+
+      setCode(formatted)
+    })
+
+    const opts = {
+      dependencies: {
+        '@react-spring/web': 'latest',
+        'react-use-measure': 'latest',
+      },
+      files: {
+        '/styles.css': `body {
+font-family: sans-serif;
+text-align: center;
+letter-spacing: -0.05em;
+font-size: 3rem;
+line-height: 1;
+font-family: "Inter Var", "Inter", sans-serif;
+font-weight: bold;
+}
+`,
+        '/App.js': code,
+      },
+    }
+
+    return code ? (
+      <DemoContainer ref={containerRef}>
+        {onlyView ? (
+          <SandpackRunner
+            template="react"
+            customSetup={opts}
+            options={{
+              showNavigator: false,
+            }}
+          />
+        ) : (
+          <Sandpack
+            template="react"
+            customSetup={opts}
+            options={{
+              showTabs: false,
+            }}
+          />
+        )}
+      </DemoContainer>
+    ) : null
+  }
   return (
     <DemoContainer ref={containerRef}>
       <DemoHeader>
@@ -76,7 +135,6 @@ export const Demo: FC<DemoProps> = ({ url, title, description }) => {
         <ErrorBoundary>
           {inViewport && data ? (
             <SandpackRunner
-              template="react"
               customSetup={{
                 files: data,
                 entry: `/${JSON.parse(data['/package.json']).main}`,
