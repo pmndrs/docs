@@ -1,6 +1,12 @@
+import LazyLoad from 'react-lazyload'
 import Codesandbox from './Codesandbox'
 import clsx from 'clsx'
 import Sandbox from './Sandbox'
+import { TweetGrid } from './TweetGrid'
+import { YouTubeEmbed } from './YoutubeEmbed'
+import { GridUsedBy } from './GridUsedBy'
+import { Demo } from './Demo'
+import { DemoGrid } from './DemoGrid'
 
 const InlineCode = ({ children }) => (
   <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
@@ -9,7 +15,39 @@ const InlineCode = ({ children }) => (
 )
 
 const components = {
+  StoryBookLink: ({ link }) => {
+    return (
+      <a
+        href={`https://drei.vercel.app/?path=/story/${link}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://camo.githubusercontent.com/f0831c0be48497774dcc0781d24cccbc7eb95aeb4a6477be3cd9e208d7256a97/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d73746f7279626f6f6b2d253233666636396234"
+          alt="storybook"
+        ></img>
+      </a>
+    )
+  },
+  StoryBookEmbed: ({ id }) => (
+    <LazyLoad height={400} once>
+      <h3 className="text-xl mb-4 tracking-tight mt-6 heading">Example</h3>
+      <iframe
+        style={{
+          width: '100%',
+          height: 400,
+        }}
+        className="my-6"
+        src={`https://drei.pmnd.rs/iframe.html?id=${id}&viewMode=story`}
+      />
+    </LazyLoad>
+  ),
+  Demo,
+  DemoGrid,
+  YouTubeEmbed,
+  GridUsedBy,
   Sandbox,
+  TweetGrid,
   Hint: ({ children }) => (
     <div className="shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 leading-7 mb-6">
       {children}
@@ -63,16 +101,12 @@ const components = {
   a: (props) => {
     if (props.href.startsWith('https://')) {
       return (
-        <a className="text-base" href={props.href} target="_blank" rel="noopener noreferrer">
+        <a href={props.href} target="_blank" rel="noopener noreferrer">
           {props.children}
         </a>
       )
     }
-    return (
-      <a className="text-base" href={props.href}>
-        {props.children}
-      </a>
-    )
+    return <a href={props.href}>{props.children}</a>
   },
 }
 

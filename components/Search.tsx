@@ -32,13 +32,17 @@ const Search = ({ allDocs }) => {
   const [search, setSearch] = useState('')
   const [active, setActive] = useState(0)
   const input = useRef(null)
-
+  const folder = router.query.slug[0]
   const results: { title: string; url: string }[] = useMemo(() => {
     if (!search) return []
     // Will need to scrape all the headers from each page and search through them here
     // (similar to what we already do to render the hash links in sidebar)
     // We could also try to search the entire string text from each page
-    return matchSorter(allDocs, search, { keys: ['title'] })
+    return matchSorter(
+      allDocs.filter((doc) => doc.url.includes(`/${folder}/`)),
+      search,
+      { keys: ['title'] }
+    )
   }, [search])
 
   const handleKeyDown = useCallback(
