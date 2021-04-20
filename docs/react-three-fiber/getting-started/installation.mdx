@@ -25,7 +25,7 @@ If you just want to give it a try, fork this [example on codesandbox](https://co
 
 ## Next.js
 
-You can use Fiber on `Next.js` by installing the `next-transpile-modules` module:
+It should work ootb but you will encounter untranspiled add-ons in the Three.js exo system, in that case you can install the `next-transpile-modules` module:
 
 ```bash
 npm install next-transpile-modules --save-dev
@@ -35,14 +35,63 @@ Then, add this to your `next.config.js`
 
 ```js
 const withTM = require('next-transpile-modules')(['three'])
-
 module.exports = withTM()
 ```
 
-Check out the [official next.js example](https://github.com/pmndrs/react-three-next) for react-three-fiber.
+Make sure to check out our [official next.js starter](https://github.com/pmndrs/react-three-next), too!
 
-## No Build Step
+## Without build tools
 
-You can try React Three Fiber with browser-ready ES Modules from [skypack.dev](https://skypack.dev) and a JSX-like syntax powered by [htm](https://github.com/developit/htm).
+You can use Fiber with browser-ready ES Modules from [skypack.dev](https://skypack.dev) and a JSX-like syntax powered by [htm](https://github.com/developit/htm).
 
-See an [example on codepen](https://codepen.io/mattrossman/pen/mdRGJBy).
+```jsx
+import ReactDOM from 'https://cdn.skypack.dev/react-dom'
+import React, { useRef, useState } from 'https://cdn.skypack.dev/react'
+import { Canvas, useFrame } from 'https://cdn.skypack.dev/@react-three/fiber'
+import htm from 'https://cdn.skypack.dev/htm'
+
+const html = htm.bind(React.createElement)
+ReactDOM.render(html`<${Canvas}>...<//>`, document.getElementById('root'))
+```
+
+<details>
+<summary>Full example</summary>
+
+```jsx
+import ReactDOM from 'https://cdn.skypack.dev/react-dom'
+import React, { useRef, useState } from 'https://cdn.skypack.dev/react'
+import { Canvas, useFrame } from 'https://cdn.skypack.dev/@react-three/fiber'
+import htm from 'https://cdn.skypack.dev/htm'
+
+const html = htm.bind(React.createElement)
+
+function Box(props) {
+  const mesh = useRef()
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+  useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01))
+  return html` <mesh
+    ...${props}
+    ref=${mesh}
+    scale=${active ? 1.5 : 1}
+    onClick=${() => setActive(!active)}
+    onPointerOver=${() => setHover(true)}
+    onPointerOut=${() => setHover(false)}
+  >
+    <boxGeometry args=${[1, 1, 1]} />
+    <meshStandardMaterial color=${hovered ? 'hotpink' : 'orange'} />
+  </mesh>`
+}
+
+ReactDOM.render(
+  html` <${Canvas}>
+    <ambientLight />
+    <pointLight position=${[10, 10, 10]} />
+    <${Box} position=${[-1.2, 0, 0]} />
+    <${Box} position=${[1.2, 0, 0]} />
+  <//>`,
+  document.getElementById('root')
+)
+```
+
+</details>
