@@ -34,8 +34,6 @@ export const Demo: FC<DemoProps> = ({ url, title, description }) => {
       })
   }, [])
 
-  console.log(data)
-
   useObserver(containerRef, (entry) => {
     setInViewport(entry.isIntersecting)
   })
@@ -79,9 +77,13 @@ export const Demo: FC<DemoProps> = ({ url, title, description }) => {
           {inViewport && data ? (
             <SandpackRunner
               template="react"
-              customSetup={{ files: data }}
+              customSetup={{
+                files: data,
+                entry: `/${JSON.parse(data['/package.json']).main}`,
+                main: `/${JSON.parse(data['/package.json']).main}`,
+              }}
               options={{
-                showNavigator: false, // this will show a top navigator bar instead of the refresh button
+                showNavigator: false,
               }}
             />
           ) : null}
