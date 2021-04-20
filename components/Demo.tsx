@@ -45,7 +45,6 @@ export const Demo: FC<DemoProps> = ({ url, title, description, name, onlyView })
   })
 
   if (name) {
-    console.log(name)
     import(`../demos/${name}`).then((code) => {
       const formatted = prettier.format(code.default, {
         parser: 'babel',
