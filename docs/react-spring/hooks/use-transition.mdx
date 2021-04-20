@@ -12,99 +12,15 @@ An animated TransitionGroup. Feed it your items and lifecycles. Whenever items a
 
 ### You can transition arrays
 
-```jsx render=true edit=true
-function TransitionArray() {
-  const [items, setItems] = useState(NUM_TRANS)
-
-  const transitions = useTransition(items, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    delay: 200,
-    config: config.molasses,
-    onRest: () => setItems([]),
-  })
-
-  useEffect(() => {
-    if (items.length === 0) {
-      setTimeout(() => {
-        setItems(NUM_TRANS)
-      }, 2000)
-    }
-  }, [items])
-
-  return (
-    <div style={{ display: 'flex' }}>
-      {transitions(({ opacity }, item) => (
-        <animated.div
-          style={{
-            opacity: opacity.to(item.op),
-            transform: opacity.to(item.trans).to((y) => `translate3d(0,${y}px,0)`),
-          }}
-        >
-          {item.fig}
-        </animated.div>
-      ))}
-    </div>
-  )
-}
-```
+<Demo name="chain-use-transition" />
 
 ### Toggle between components
 
-```jsx render=true edit=true
-function Toggle() {
-  const [toggle, set] = useState(false)
-  const transitions = useTransition(toggle, {
-    from: { position: 'absolute', opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    reverse: toggle,
-    delay: 200,
-    config: config.molasses,
-    onRest: () => set(!toggle),
-  })
-  return transitions(({ opacity }, item) =>
-    item ? (
-      <animated.div
-        style={{
-          position: 'absolute',
-          opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
-        }}
-      >
-        😄
-      </animated.div>
-    ) : (
-      <animated.div
-        style={{
-          position: 'absolute',
-          opacity: opacity.to({ range: [1.0, 0.0], output: [0, 1] }),
-        }}
-      >
-        🤪
-      </animated.div>
-    )
-  )
-}
-```
+<Demo name="components-use-transition" />
 
 ### Mount/Unmount single-component reveals
 
-```jsx render=true edit=true
-function Mount() {
-  const [show, set] = useState(false)
-  const transitions = useTransition(show, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    reverse: show,
-    delay: 200,
-    config: config.molasses,
-    onRest: () => set(!show),
-  })
-  return transitions((styles, item) => item && <animated.div style={styles}>✌️</animated.div>)
-}
-```
+<Demo name="mount-use-transition" />
 
 The `transition` function accepts a callback that receives four arguments: the animated values,
 the item, the `Transition` object, and the sibling position.
