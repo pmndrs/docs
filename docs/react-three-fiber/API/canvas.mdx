@@ -23,32 +23,43 @@ const App = () => (
 
 The props available for the canvas are:
 
-| Prop         | Type                                  | Default                                                  |
-| ------------ | ------------------------------------- | -------------------------------------------------------- |
-| children     | ThreeeJS elements or React components |                                                          |
-| gl           | Object                                | `{}`                                                     |
-| camera       | Object                                | `{fov: 75, near: 0.1, far: 1000, z: 5, lookAt: [0,0,0]}` |
-| shadows      | boolean or object                     | `false`                                                  |
-| raycaster    | Object                                | `true`                                                   |
-| vr           | boolean                               | `false`                                                  |
-| mode         | legacy , blocking , concurrent        | `blocking`                                               |
-| resize       | Object                                | `{}`                                                     |
-| orthographic | boolean                               | `false`                                                  |
-| dpr          | [min, max]                            | `undefined`                                              |
-| vr           | boolean                               | `false`                                                  |
-| linear       | boolean                               | `true`                                                   |
-| frameloop    | always , demand , never               | `always`                                                 |
-| onCreated    | function                              | `() => {}`                                               |
-| linear       | function                              | `() => {}`                                               |
+| Prop            | Description                                                             | Default                                                  |
+| --------------- | ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| children        | Threejs jsx elements or regular components                              |                                                          |
+| gl              | Props that go into the default renderer, or your own renderer           | `{}`                                                     |
+| camera          | Props that go into the default camera, or your own THREE.Camera         | `{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }` |
+| shadows         | Props that go into gl.shadowMap, can also be set true for PCFsoft       | `false`                                                  |
+| raycaster       | Props that go into the default raycaster                                | `true`                                                   |
+| vr              | Switches renderer to VR mode, then uses gl.setAnimationLoop             | `false`                                                  |
+| mode            | React mode: legacy, blocking, concurrent                                | `blocking`                                               |
+| resize          | Resize config, see react-use-measure's options                          | `{}`                                                     |
+| orthographic    | Creates an orthographic camera if true                                  | `false`                                                  |
+| dpr             | Pixel-ratio, use window.devicePixelRatio, or automatic: [min, max]      | `undefined`                                              |
+| linear          | True by default for automatic sRGB encoding and gamma correction        | `false`                                                  |
+| flat            | If true uses THREE.NoToneMapping, otherwise THREE.ACESFilmicToneMapping | `false`                                                  |
+| onCreated       | Callback when vdom is ready                                             | `() => {}`                                               |
+| onPointerMissed | Response for pointer clicks that have missed a target                   | `() => {}`                                               |
 
-### Other Canvas defaults:
+### Defaults that the canvas component sets up
 
-Canvas will create a translucent WebGL-renderer with the following properties:
+Canvas will create a _translucent WebGL-renderer_ with the following properties:
 
 - pixelratio=1
 - antialias=true
 - alpha=true
 - powerPreference="high-performance"
 - setClearAlpha(0)
-- The canvas stretches to 100% of the next relative/absolute parent-container
-- The default orthographic camera if Canvas.orthographic is true is: `{near: 0.1, far: 1000, z: 5, lookAt: [0,0,0]}`
+- A perspective cam: `fov: 75, near: 0.1, far: 1000, z: 5, lookAt(0,0,0)`
+- A orthographic cam if `orthographic` is true: `near: 0.1, far: 1000, z: 5, lookAt(0,0,0)`
+- A shadowMap if `shadowMap` is true: `type: PCFSoftShadowMap`
+- A scene (into which all the JSX is rendered) and a raycaster
+- A [resize observer](https://github.com/react-spring/react-use-measure): `scroll: true, debounce: { scroll: 50, resize: 0 }`
+
+<Hint>
+  The colorspace will be set to sRGB (unless "linear" is true), all colors and textures will be
+  auto-converted. Consult https://www.donmccurdy.com/2020/06/17/color-management-in-threejs for more
+  information about this. Unless "flat" is true it will set up THREE.ACESFilmicToneMapping for
+  slightly more contrast.
+</Hint>
+
+<Hint>Consider polyfills for Safari. We recommend https://github.com/juggle/resize-observer</Hint>
