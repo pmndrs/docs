@@ -1,3 +1,6 @@
+import clsx from 'clsx'
+import { useSpring, animated as a } from 'react-spring'
+
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import Toc from 'components/Toc'
@@ -5,11 +8,24 @@ import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import { useSwitcher } from 'store/switcher'
 
 export default function Layout(props) {
   const [menu, setMenu] = useState(false)
   const { nav, toc, allDocs } = props
-  const { query: { slug }, asPath } = useRouter() // prettier-ignore
+  const {
+    query: { slug },
+    asPath,
+  } = useRouter()
+  const { isSwitcherOpen } = useSwitcher()
+  const { opacity } = useSpring({
+    opacity: isSwitcherOpen ? 0 : 1,
+    config: {
+      tension: 280,
+      friction: 28,
+    },
+  })
+
   const [lib] = slug as string[]
   const folder = slug[0]
   const currentDocs = allDocs.filter((doc) => doc.url.includes(`/${folder}/`))
@@ -33,17 +49,22 @@ export default function Layout(props) {
 
   return (
     <>
+      <div id="modal" />
       <div
-        className={`px-2 sticky top-0 z-40 flex flex-none w-full mx-auto bg-white lg:z-50 max-w-8xl`}
+        className={clsx(
+          'sticky top-0 flex flex-none w-full mx-auto bg-white max-w-8xl',
+          isSwitcherOpen ? 'z-30 lg:z-30' : 'z-40 lg:z-50'
+        )}
       >
-        <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
-          <Link href="/">
-            <a>
-              <span className="font-bold">Pmndrs</span>
-              <span className="font-normal">.docs</span>
-            </a>
-          </Link>
-        </div>
+        <Link href="/">
+          <a.div
+            style={{ opacity }}
+            className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72"
+          >
+            <span className="font-bold">Pmdnrs</span>
+            <span className="font-normal">.docs</span>
+          </a.div>
+        </Link>
         <Search allDocs={props.allDocs} />
         <button className="block md:hidden p-2 mr-2 ml-2" onClick={() => setMenu(!menu)}>
           <svg
