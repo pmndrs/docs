@@ -11,9 +11,11 @@ export default function Layout(props) {
   const { nav, toc, allDocs } = props
   const { query: { slug }, asPath } = useRouter() // prettier-ignore
   const [lib] = slug as string[]
-  const currentPageIndex = allDocs.findIndex((item) => item.url === asPath)
-  const previousPage = currentPageIndex > 0 && allDocs[currentPageIndex - 1]
-  const nextPage = currentPageIndex < allDocs.length - 1 && allDocs[currentPageIndex + 1]
+  const folder = slug[0]
+  const currentDocs = allDocs.filter((doc) => doc.url.includes(`/${folder}/`))
+  const currentPageIndex = currentDocs.findIndex((item) => item.url === asPath)
+  const previousPage = currentPageIndex > 0 && currentDocs[currentPageIndex - 1]
+  const nextPage = currentPageIndex < currentDocs.length - 1 && currentDocs[currentPageIndex + 1]
 
   useEffect(() => {
     if (menu) {
@@ -37,7 +39,7 @@ export default function Layout(props) {
         <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
           <Link href="/">
             <a>
-              <span className="font-bold">Pmdnrs</span>
+              <span className="font-bold">Pmndrs</span>
               <span className="font-normal">.docs</span>
             </a>
           </Link>
