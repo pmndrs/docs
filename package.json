@@ -12,6 +12,7 @@
   "author": "Poimandres",
   "license": "MIT",
   "dependencies": {
+    "@codesandbox/sandpack-react": "^0.0.3",
     "@mdx-js/loader": "^1.6.22",
     "@next/mdx": "^10.0.4",
     "@react-spring/web": "^9.1.1",

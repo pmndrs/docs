@@ -1,17 +1,45 @@
-import { useState, FC, useRef } from 'react'
+import { useState, FC, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { ErrorBoundary } from './ErrorBoundary'
 import { useObserver } from 'hooks/useObserver'
+import {
+  SandpackRunner,
+  SandpackLayout,
+  Sandpack,
+  SandpackCodeEditor,
+  SandpackPreview,
+} from '@codesandbox/sandpack-react'
+import '@codesandbox/sandpack-react/dist/index.css'
 
 interface DemoProps {
   title: string
   description?: string
 }
 
-export const Demo: FC<DemoProps> = ({ children, title, description }) => {
+export const Demo: FC<DemoProps> = ({ url, title, description }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [inViewport, setInViewport] = useState(false)
+
+  const [data, setData] = useState<{}>()
+
+  useEffect(() => {
+    fetch(`/api/get-sandbox?id=${url}`)
+      .then((rsp) => rsp.json())
+      .then(({ modules, directories }) => {
+        const files = modules.reduce((acc, curr) => {
+          const dir = curr.directory_shortid
+            ? '/' + directories.find((d) => d.shortid === curr.directory_shortid)?.title
+            : ''
+          acc[dir + '/' + curr.title] = curr.code
+          return acc
+        }, {})
+
+        setData(files)
+      })
+  }, [])
+
+  console.log(data)
 
   useObserver(containerRef, (entry) => {
     setInViewport(entry.isIntersecting)
@@ -52,7 +80,17 @@ export const Demo: FC<DemoProps> = ({ children, title, description }) => {
         </DemoLink>
       </DemoHeader>
       <DemoContent>
-        <ErrorBoundary>{inViewport && children}</ErrorBoundary>
+        <ErrorBoundary>
+          {inViewport && data ? (
+            <SandpackRunner
+              template="react"
+              customSetup={{ files: data }}
+              options={{
+                showNavigator: false, // this will show a top navigator bar instead of the refresh button
+              }}
+            />
+          ) : null}
+        </ErrorBoundary>
       </DemoContent>
     </DemoContainer>
   )
