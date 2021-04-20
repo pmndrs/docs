@@ -59,6 +59,7 @@ export const Demo: FC<DemoProps> = ({ url, title, description, name, onlyView })
       dependencies: {
         '@react-spring/web': 'latest',
         'react-use-measure': 'latest',
+        'react-spring': 'latest',
       },
       files: {
         '/styles.css': `body {

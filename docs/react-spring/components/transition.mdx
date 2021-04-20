@@ -12,150 +12,15 @@ An animated TransitionGroup. Feed it your items and lifecycles. Whenever items a
 
 ### You can transition arrays
 
-```jsx render=true edit=true
-class TransitionArray extends PureComponent {
-  constructor() {
-    super()
-
-    this.state = {
-      items: NUM_TRANS,
-    }
-  }
-
-  componentDidUpdate(_, prevState) {
-    const { items: currItems } = this.state
-    const { items: prevItems } = prevState
-
-    if (currItems.length === 0 && prevItems.length !== currItems.length) {
-      setTimeout(() => {
-        this.setState({
-          items: NUM_TRANS,
-        })
-      }, 2000)
-    }
-  }
-
-  render() {
-    return (
-      <div style={{ display: 'flex' }}>
-        <Transition
-          items={this.state.items}
-          from={{ opacity: 0 }}
-          enter={{ opacity: 1 }}
-          leave={{ opacity: 0 }}
-          delay={200}
-          config={config.molasses}
-          onRest={() => this.setState({ items: [] })}
-        >
-          {({ opacity }, item) => (
-            <animated.div
-              style={{
-                opacity: opacity.to(item.op),
-                transform: opacity.to(item.trans).to((y) => `translate3d(0,${y}px,0)`),
-              }}
-            >
-              {item.fig}
-            </animated.div>
-          )}
-        </Transition>
-      </div>
-    )
-  }
-}
-```
+<Demo name="transition-array" />
 
 ### Toggle between components
 
-```jsx render=true edit=true
-class Toggle extends PureComponent {
-  constructor() {
-    super()
-
-    this.state = {
-      toggle: false,
-    }
-  }
-
-  render() {
-    const { toggle } = this.state
-    return (
-      <Transition
-        items={toggle}
-        from={{ opacity: 0 }}
-        enter={{ opacity: 1 }}
-        leave={{ opacity: 0 }}
-        reverse={toggle}
-        delay={200}
-        config={config.molasses}
-        onRest={() =>
-          this.setState({
-            toggle: !toggle,
-          })
-        }
-      >
-        {({ opacity }, item) =>
-          item ? (
-            <animated.div
-              style={{
-                position: 'absolute',
-                opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
-              }}
-            >
-              😄
-            </animated.div>
-          ) : (
-            <animated.div
-              style={{
-                position: 'absolute',
-                opacity: opacity.to({ range: [1.0, 0.0], output: [0, 1] }),
-              }}
-            >
-              🤪
-            </animated.div>
-          )
-        }
-      </Transition>
-    )
-  }
-}
-```
+<Demo name="transition-component" />
 
 ### Mount/Unmount single-component reveals
 
-```jsx render=true edit=true
-class Mount extends PureComponent {
-  constructor() {
-    super()
-
-    this.state = {
-      show: false,
-    }
-  }
-
-  render() {
-    const { show } = this.state
-
-    return (
-      <Transition
-        items={show}
-        from={{ opacity: 0 }}
-        enter={{ opacity: 1 }}
-        leave={{ opacity: 0 }}
-        reverse={show}
-        delay={200}
-        config={config.molasses}
-        onRest={() =>
-          this.setState({
-            show: !show,
-          })
-        }
-      >
-        {(styles, item) => item && <animated.div style={styles}>✌️</animated.div>}
-      </Transition>
-    )
-  }
-}
-```
+<Demo name="mount-component" />
 
 The `transition` function accepts a callback that receives four arguments: the animated values,
 the item, the `Transition` object, and the sibling position.
