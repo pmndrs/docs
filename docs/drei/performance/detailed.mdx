@@ -1,0 +1,20 @@
+---
+title: Detailed
+---
+
+A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
+
+```jsx
+<Detailed
+  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
+  {...props} // All THREE.LOD props are valid
+>
+  <mesh geometry={highDetail} />
+  <mesh geometry={mediumDetail} />
+  <mesh geometry={lowDetail} />
+</Detailed>
+```
+
+<StoryBookLink link="abstractions-detailed--detailed-st" />
+
+<StoryBookEmbed id="abstractions-detailed--detailed-st" />
