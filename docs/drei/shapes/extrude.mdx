@@ -1,0 +1,32 @@
+---
+title: Extrude
+---
+
+[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cut for Extrude that creates extruded geometry from a path shape.
+
+```jsx
+const extrudeSettings = React.useMemo(
+  () => ({
+    steps: 2,
+    depth: 16,
+    bevelEnabled: true,
+    bevelThickness: 1,
+    bevelSize: 1,
+    bevelOffset: 0,
+    bevelSegments: 1,
+  }),
+  []
+)
+
+return (
+  <>
+    <Extrude args={[shape, extrudeSettings]}>
+      <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
+    </Extrude>
+  </>
+)
+```
+
+<StoryBookLink link="shapes-extrude--extrude-st" />
+
+<StoryBookEmbed id="shapes-extrude--extrude-st" />

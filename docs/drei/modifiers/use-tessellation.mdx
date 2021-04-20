@@ -1,0 +1,22 @@
+---
+title: useTessellation
+---
+
+This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
+
+```jsx
+const meshRef = useTessellation(
+  2, // passes - number of times the geometry will be subdivided
+  8 // maxEdgeLength - faces with edges longer than this number will be broken up
+)
+
+return (
+  <mesh ref={meshRef}>
+    <octahedronBufferGeometry args={[2, 2]} />
+  </mesh>
+)
+```
+
+<StoryBookLink link="modifiers-usetessellation" />
+
+<StoryBookEmbed id="modifiers-usetessellation" />

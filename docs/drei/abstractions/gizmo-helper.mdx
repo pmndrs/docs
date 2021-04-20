@@ -1,0 +1,19 @@
+---
+title: GizmoHelper
+---
+
+Used by widgets that visualize and control camera position.
+
+Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
+
+```jsx
+<GizmoHelper
+  alignment="bottom-right" // widget alignment within scene
+  margin={[80, 80]} // widget margins (X, Y)
+  onUpdate={/* called during camera animation  */}
+  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+>
+  <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+  {/* alternative: <GizmoViewcube /> */}
+</GizmoHelper>
+```
