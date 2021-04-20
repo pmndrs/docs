@@ -21,33 +21,7 @@ And while this was really good, it's not the best API, having the imperative API
 
 However, if you're really set on loving the old `set`, from `9.1.0` we have aliased the second arg to call `api.start` which is the v9 equivalent of `set`. This will give you a depreceation notice:
 
-```jsx render=true edit=true
-function BackwardsCompatability() {
-  const [styles, api] = useSpring(() => ({
-    from: { x: -50, opacity: 1 },
-  }))
-
-  useEffect(() => {
-    api({
-      x: 50,
-      opacity: 1,
-      loop: { reverse: true },
-    })
-  }, [])
-
-  return (
-    <animated.div
-      style={{
-        width: 80,
-        height: 80,
-        backgroundColor: '#46e891',
-        borderRadius: 16,
-        ...styles,
-      }}
-    />
-  )
-}
-```
+<Demo name="backwardsCompatability" />
 
 ### The `from` prop
 

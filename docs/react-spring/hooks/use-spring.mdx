@@ -78,20 +78,7 @@ function AsyncExample() {
 
 #### And this is how you create a chain
 
-```jsx render=true edit=true
-function ChainExample() {
-  const styles = useSpring({
-    loop: true,
-    to: [
-      { opacity: 1, color: '#ffaaee' },
-      { opacity: 0, color: 'rgb(14,26,19)' },
-    ],
-    from: { opacity: 0, color: 'red' },
-  })
-  // ...
-  return <animated.div style={styles}>I will fade in and out</animated.div>
-}
-```
+<Demo name="chain-use-spring" />
 
 When using an async `to` function inside a component that renders frequently,
 you'll need to memoize your `to` function to prevent an unintended restart.
