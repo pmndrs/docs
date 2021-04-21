@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useSpring, animated as a, config } from 'react-spring'
+import { useSpring, animated as a } from 'react-spring'
 
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
