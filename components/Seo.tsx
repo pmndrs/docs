@@ -17,13 +17,19 @@ const sites = {
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber.',
   },
+  zustand: {
+    title: 'Zustand',
+    description:
+      'Zustand is a small, fast and scalable bearbones state-management solution. Has a comfy api based on hooks',
+    image: 'https://docs.pmnd.rs/zustand/bear.png',
+  },
 }
 
 export default function SEO({ query }) {
   const name = query.slug[0]
   const currentSeo = sites[name]
 
-  return (
+  return currentSeo ? (
     <Head>
       <title> {currentSeo.title} Documentation</title>
       <meta property="og:site_name" content={`${currentSeo.title} Documentation`} />
@@ -41,5 +47,5 @@ export default function SEO({ query }) {
       <meta property="twitter:description" content={currentSeo.description} />
       <meta property="twitter:image" content={currentSeo.image} />
     </Head>
-  )
+  ) : null
 }
