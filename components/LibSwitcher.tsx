@@ -147,7 +147,7 @@ export default function LibSwitcher() {
           left: boundingClientRect.x,
         }}
         className={clsx(
-          'fixed z-50 text-white rounded-md font-semibold bg-black cursor-pointer capitalize',
+          'z-50 text-white rounded-md font-semibold bg-black cursor-pointer capitalize',
           labelSizeClasses
         )}
         onClick={toggleSwitcher}

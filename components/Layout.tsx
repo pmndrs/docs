@@ -98,13 +98,11 @@ export default function Layout(props) {
                 id="nav"
                 className="
               px-4
-              pt-6 
               overflow-y-auto 
               font-medium 
               text-base 
               lg:text-sm 
               pb-10 
-              lg:pt-10 
               lg:pb-14 
               sticky?lg:h-(screen-16)
               z-10
@@ -127,7 +125,7 @@ export default function Layout(props) {
           </div>
           <div id="content-wrapper" className={`flex-auto ${isMenuOpen ? 'overflow-hidden' : ''}`}>
             <div className="flex w-full">
-              <div className="flex-auto min-w-0 px-4 pt-10 pb-24 sm:px-6 xl:px-8 lg:pb-16">
+              <div className="flex-auto min-w-0 px-4 pt-8 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{props.children}</div>
 
                 {allDocs[currentPageIndex] ? (
