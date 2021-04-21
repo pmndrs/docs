@@ -3,7 +3,7 @@ import Head from 'next/head'
 const sites = {
   'react-spring': {
     title: 'React Spring',
-    image: 'https://docs.pmnd.rs/react-spring/share,jpg',
+    image: 'https://docs.pmnd.rs/react-spring/share.jpg',
     description: 'Bring your components to life with simple spring animation primitives for React',
   },
   'react-three-fiber': {
