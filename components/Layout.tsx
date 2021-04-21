@@ -7,11 +7,12 @@ import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSwitcher } from 'store/switcher'
+import { useMenu } from 'store/menu'
 
 export default function Layout(props) {
-  const [menu, setMenu] = useState(false)
+  const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { nav, toc, allDocs } = props
   const {
     query: { slug },
@@ -34,18 +35,14 @@ export default function Layout(props) {
   const nextPage = currentPageIndex < currentDocs.length - 1 && currentDocs[currentPageIndex + 1]
 
   useEffect(() => {
-    if (menu) {
+    if (isMenuOpen) {
       document.body.classList.add('overflow-hidden')
     } else {
       document.body.classList.remove('overflow-hidden')
     }
-  }, [menu])
+  }, [isMenuOpen])
 
-  useEffect(() => {
-    if (menu) {
-      setMenu(!menu)
-    }
-  }, [asPath])
+  useEffect(() => closeMenu(), [asPath])
 
   return (
     <>
@@ -66,7 +63,7 @@ export default function Layout(props) {
           </a.div>
         </Link>
         <Search allDocs={props.allDocs} />
-        <button className="block md:hidden p-2 mr-2 ml-2" onClick={() => setMenu(!menu)}>
+        <button className="block md:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
           <svg
             width="24"
             height="24"
@@ -89,7 +86,7 @@ export default function Layout(props) {
           <div
             id="sidebar"
             className={`fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block ${
-              menu ? '' : 'hidden'
+              isMenuOpen ? '' : 'hidden'
             }`}
           >
             <div
@@ -122,13 +119,13 @@ export default function Layout(props) {
               </nav>
             </div>
             <div
-              onClick={() => setMenu(false)}
+              onClick={closeMenu}
               className={`w-screen h-screen z-0 fixed top-0 right-0 opacity-40 bg-gray-900 ${
-                menu ? '' : 'hidden'
+                isMenuOpen ? '' : 'hidden'
               }`}
             ></div>
           </div>
-          <div id="content-wrapper" className={`flex-auto ${menu ? 'overflow-hidden' : ''}`}>
+          <div id="content-wrapper" className={`flex-auto ${isMenuOpen ? 'overflow-hidden' : ''}`}>
             <div className="flex w-full">
               <div className="flex-auto min-w-0 px-4 pt-10 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{props.children}</div>
