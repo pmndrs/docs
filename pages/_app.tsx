@@ -28,14 +28,11 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="msapplication-tileimage" content="/mstile-144x144.png" />
         <meta name="msapplication-tooltip" content="PMNDRS" />
 
-        <meta name="description" content="Poimandres" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@pmndrs" />
         <meta name="twitter:site" content="@pmndrs" />
         <meta property="og:locale" content="en_us" />
-        <meta property="og:site_name" content="Poimandres" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pmnd.rs" />
       </Head>
       <Component {...pageProps} />
     </>

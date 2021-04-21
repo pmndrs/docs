@@ -2,7 +2,7 @@ import { useState, FC, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import prettier from 'prettier/standalone'
 import parserBabel from 'prettier/parser-babel'
-import { ErrorBoundary } from './ErrorBoundary'
+import { ErrorBoundary } from '../ErrorBoundary'
 import { useObserver } from 'hooks/useObserver'
 import { SandpackRunner, Sandpack } from '@codesandbox/sandpack-react'
 import '@codesandbox/sandpack-react/dist/index.css'
@@ -45,7 +45,7 @@ export const Demo: FC<DemoProps> = ({ url, title, description, name, onlyView })
   })
 
   if (name) {
-    import(`../demos/${name}`).then((code) => {
+    import(`../../demos/${name}`).then((code) => {
       const formatted = prettier.format(code.default, {
         parser: 'babel',
         plugins: [parserBabel],

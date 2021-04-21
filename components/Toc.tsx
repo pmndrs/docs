@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+
 type TocItem = {
   depth: number
   slug: string
