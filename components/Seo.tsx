@@ -28,8 +28,18 @@ export default function SEO({ query }) {
       <title> {currentSeo.title} Documentation</title>
       <meta property="og:site_name" content={`${currentSeo.title} Documentation`} />
       <meta name="description" content={currentSeo.description} />
-      <meta property="og:url" content={`https://docs.pmnd.rs/${query.slug[0]}`}></meta>
+
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={`https://docs.pmnd.rs/${query.slug[0]}`} />
+      <meta property="og:title" content={`${currentSeo.title} Documentation`} />
+      <meta property="og:description" content={currentSeo.description} />
       <meta property="og:image" content={currentSeo.image} />
+
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:url" content={`https://docs.pmnd.rs/${query.slug[0]}`} />
+      <meta property="twitter:title" content={`${currentSeo.title} Documentation`} />
+      <meta property="twitter:description" content={currentSeo.description} />
+      <meta property="twitter:image" content={currentSeo.image} />
     </Head>
   )
 }
