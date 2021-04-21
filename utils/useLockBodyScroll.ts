@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react'
 
 function useLockBodyScroll(active = false) {
+  // @ts-ignore
   useLayoutEffect(() => {
     if (!active) return
     // Get original body overflow
