@@ -1,18 +1,33 @@
-# [Nextra](https://nextra.vercel.app)
+# Pmndrs libraries docs
 
-_Warning: this project is not production ready, use it on your own risk._
+## Current libraries
 
-[![](https://vercel.com/button)](https://vercel.com/import/git?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra&c=1)
+- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
+- [React Spring](https://docs.pmnd.rs/react-spring)
+- [Drei](https://docs.pmnd.rs/drei)
 
-**Nextra** is a [Next.js](https://nextjs.org) and [MDX](https://mdxjs.com) based site generator. 0 line of code needed to setup, just write pure Markdown.
+## How to run locally
 
-![](/public/demo.png)
+```sh
+git clone git@github.com:pmndrs/website.git
+cd website
+git checkout docs
+yarn
+yarn dev
+```
 
-## Development
+## How to add a library
 
-The code of Nextra is under the [`core`](https://github.com/shuding/nextra/tree/core) branch.
+- Add all the docs in `/docs/your-library`
+- Add the menu item for it in [components/LibSwitcher](https://github.com/pmndrs/website/blob/docs/components/LibSwitcher.tsx#L21)
+- Add SEO and share images in [components/Seo](https://github.com/pmndrs/website/blob/docs/components/Seo.tsx)
+- Add any redirects by creating a new page at `your-library/index.jsx` and placing the redirect in it.
+  - You should redirect to the first chapter of your docs.
+  - You can see an example [here](https://github.com/pmndrs/website/blob/docs/pages/react-spring/index.tsx)
 
-## Themes
+## Stack
 
-- [nextra-theme-docs](https://github.com/vercel/swr-site) ([demo](https://swr.vercel.app))
-- [nextra-theme-blog](https://github.com/shuding/site) ([demo](https://shud.in))
+- Next.js
+- Tailwind
+- MDX
+- React Spring
