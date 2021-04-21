@@ -1,5 +1,4 @@
 import fs from 'fs'
-import Head from 'next/head'
 import matter from 'gray-matter'
 import hydrate from 'next-mdx-remote/hydrate'
 import renderToString from 'next-mdx-remote/render-to-string'
@@ -7,46 +6,20 @@ import path from 'path'
 import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 import Layout from 'components/Layout'
 import components from 'components/mdx'
+import Seo from 'components/Seo'
 import prism from 'remark-prism'
 import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import { useRouter } from 'next/router'
-import titleCase from 'utils/titleCase'
-
-const SEO = {
-  'react-spring': {
-    title: 'React Spring',
-    image: 'https://docs.pmnd.rs/react-spring/share,jpg',
-    description: 'Bring your components to life with simple spring animation primitives for React',
-  },
-  'react-three-fiber': {
-    title: 'React Three Fiber',
-    // image: "https://docs.pmnd.rs/react-spring/share,jpg",
-    description: 'React-three-fiber is a React renderer for three.js.',
-  },
-  drei: {
-    title: 'Drei',
-    image: 'https://docs.pmnd.rs/logo-drei.jpg',
-    description:
-      'Drei is a growing collection of useful helpers and abstractions for react-three-fiber.',
-  },
-}
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const content = hydrate(source, { components })
   const { query } = useRouter()
-  const currentSeo = SEO[query.slug[0]]
 
   return (
     <Layout nav={nav} toc={toc} allDocs={allDocs}>
-      <Head>
-        <title> {currentSeo.title} Documentation</title>
-        <meta property="og:site_name" content={`${currentSeo.title} Documentation`} />
-        <meta name="description" content={currentSeo.description} />
-        <meta property="og:url" content={`https://docs.pmnd.rs/${query.slug[0]}`}></meta>
-        <meta property="og:image" content={currentSeo.image} />
-      </Head>
+      <Seo query={query} />
       <main className="max-w-3xl mx-auto">
         {frontMatter.title && (
           <div className="pb-6 mb-4 border-b post-header">
