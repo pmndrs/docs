@@ -5,6 +5,7 @@
 - [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
 - [React Spring](https://docs.pmnd.rs/react-spring)
 - [Drei](https://docs.pmnd.rs/drei)
+- [Zustand](https://docs.pmnd.rs/zustand)
 
 ## How to run locally
 
