@@ -10,6 +10,7 @@ import {
 } from 'store/switcher'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useMenu } from 'store/menu'
 
 const deafultBoundingClientRect = {
   height: 0,
@@ -60,21 +61,22 @@ function SwitcherContent({ open, callback }) {
   })
 
   return (
-    <div className="space-y-4 pb-4">
+    <div className="space-y-4 pb-4 mx-4">
       {transitions.map(({ item, props, key }) => (
-        <Link href={item.id}>
-          <a>
-            {' '}
-            <a.div
-              key={key}
-              style={props}
-              className="bg-gray-200 font-bold text-center text-2xl rounded-md p-16 cursor-pointer hover:bg-black hover:text-white"
-              onClick={callback}
-            >
-              {item.label}
-            </a.div>{' '}
-          </a>
-        </Link>
+        <div key={key}>
+          <Link href={item.id}>
+            <a>
+              {' '}
+              <a.div
+                style={props}
+                className="bg-gray-200 font-bold text-center text-2xl rounded-md p-16 cursor-pointer hover:bg-black hover:text-white"
+                onClick={callback}
+              >
+                {item.label}
+              </a.div>{' '}
+            </a>
+          </Link>
+        </div>
       ))}
     </div>
   )
@@ -86,6 +88,7 @@ export default function LibSwitcher() {
   const localIsOpenRef = useRef(localIsOpen)
   const [boundingClientRect, setBoundingClientRect] = useState(deafultBoundingClientRect)
   const { isSwitcherOpen, setIsSwitcherOpen } = useSwitcher()
+  const { isMenuOpen } = useMenu()
   const labelSizeClasses = 'p-2 px-3'
   const { query } = useRouter()
 
@@ -94,9 +97,11 @@ export default function LibSwitcher() {
   const { top } = useSpring({
     ref: switcherWrapperRef,
     top: localIsOpen ? 10 : boundingClientRect.y,
+    immediate: !isSwitcherOpen && !localIsOpen,
     onRest: () =>
       !localIsOpenRef.current && isSwitcherOpen && setIsSwitcherOpen(localIsOpenRef.current),
   })
+
   useChain(
     localIsOpen
       ? [switcherWrapperRef, switcherModalRef, switcherContentRef]
@@ -104,7 +109,10 @@ export default function LibSwitcher() {
     [0, 0.35]
   )
 
-  useEffect(() => setBoundingClientRect(ref.current.getBoundingClientRect()), [])
+  useEffect(() => setBoundingClientRect(ref.current.getBoundingClientRect()), [
+    isMenuOpen,
+    setBoundingClientRect,
+  ])
 
   useEffect(() => {
     localIsOpenRef.current = localIsOpen
@@ -118,7 +126,7 @@ export default function LibSwitcher() {
       <SimpleModal open={localIsOpen}>
         <SwitcherContent open={localIsOpen} callback={toggleSwitcher} />
       </SimpleModal>
-      <div ref={ref} className={clsx('opacity-0 mx-1', labelSizeClasses)}>
+      <div ref={ref} className={clsx('opacity-0 mx-1 capitalize', labelSizeClasses)}>
         {query.slug[0].split('-').join(' ')}
       </div>
       <a.div
@@ -129,7 +137,7 @@ export default function LibSwitcher() {
           left: boundingClientRect.x,
         }}
         className={clsx(
-          'fixed z-50 text-white rounded-md font-semibold bg-black cursor-pointer',
+          'fixed z-50 text-white rounded-md font-semibold bg-black cursor-pointer capitalize',
           labelSizeClasses
         )}
         onClick={toggleSwitcher}
