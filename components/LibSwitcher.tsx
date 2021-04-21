@@ -9,7 +9,6 @@ import {
   useSwitcher,
 } from 'store/switcher'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { useMenu } from 'store/menu'
 
 const deafultBoundingClientRect = {
@@ -47,6 +46,8 @@ const data = [
 ]
 
 function SwitcherContent({ open, callback }) {
+  const router = useRouter()
+
   const transitions = useTransition(open ? data : [], (item) => item.id, {
     ref: switcherContentRef,
     unique: true,
@@ -60,23 +61,32 @@ function SwitcherContent({ open, callback }) {
     },
   })
 
+  const handleClick = useCallback(
+    (path) => {
+      if (router.query.slug[0] !== path) {
+        router.push(`/${path}`)
+      }
+      callback()
+    },
+    [router, callback]
+  )
+
   return (
     <div className="space-y-4 pb-4 mx-4">
       {transitions.map(({ item, props, key }) => (
-        <div key={key}>
-          <Link href={item.id}>
-            <a>
-              {' '}
-              <a.div
-                style={props}
-                className="bg-gray-200 font-bold text-center text-2xl rounded-md p-16 cursor-pointer hover:bg-black hover:text-white"
-                onClick={callback}
-              >
-                {item.label}
-              </a.div>{' '}
-            </a>
-          </Link>
-        </div>
+        <a.div
+          key={key}
+          style={props}
+          className={clsx(
+            'font-bold text-center text-2xl rounded-md p-16',
+            router.query.slug[0] === key
+              ? 'text-white bg-black hover:bg-black'
+              : 'font-bold cursor-pointer bg-gray-200 hover:bg-black hover:text-white'
+          )}
+          onClick={() => handleClick(item.id)}
+        >
+          {item.label}
+        </a.div>
       ))}
     </div>
   )
