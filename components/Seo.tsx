@@ -21,7 +21,7 @@ const sites = {
     title: 'Zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution. Has a comfy api based on hooks',
-    image: 'https://docs.pmnd.rs/zustand/bear.png',
+    image: 'https://docs.pmnd.rs/zustand-bear.png',
   },
 }
 
