@@ -1,11 +1,40 @@
 import Link from 'next/link'
 import titleCase from 'utils/titleCase'
 
-const Item = ({ title, href, search, multipleLibs }) => {
-  const highlight = title.toLowerCase().indexOf(search.toLowerCase())
-  const name = titleCase(href.split('/')[1].split('-').join(' '))
+const getHighlight = ({ title, search, description, content }) => {
+  const s = search.toLowerCase()
+
+  if (title.toLowerCase().includes(s)) {
+    return {
+      type: 'title',
+      highlight: title.toLowerCase().indexOf(s),
+    }
+  }
+  console.log(description)
+  if (description.toLowerCase().includes(s)) {
+    return {
+      type: 'description',
+      highlight: description.toLowerCase().indexOf(s),
+    }
+  }
+
+  if (content.toLowerCase().includes(s)) {
+    return {
+      type: 'content',
+      highlight: content.toLowerCase().indexOf(s),
+    }
+  }
+
+  return {}
+}
+
+const Item = ({ title, url, search, multipleLibs, description, content }) => {
+  const { type, highlight } = getHighlight({ search, title, description, content })
+  const name = titleCase(url.split('/')[1].split('-').join(' '))
+
+  console.log(highlight)
   return (
-    <Link href={href}>
+    <Link href={url}>
       <a className="block no-underline search-item outline-none">
         <li className={'px-2 py-1'}>
           <div className="  p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200  flex justify-between items-center transition-all">
@@ -13,28 +42,50 @@ const Item = ({ title, href, search, multipleLibs }) => {
               {multipleLibs ? (
                 <span className="text-xs font-light text-gray-500 block pb-1">{name}</span>
               ) : null}
-              {highlight !== -1 ? (
+              {highlight !== -1 && type === 'title' ? (
                 <>
                   {title.substring(0, highlight)}
                   <span className="font-bold">
                     {title.substring(highlight, highlight + search.length)}
                   </span>
                   {title.substring(highlight + search.length)}
+                  <span className="block  text-sm text-gray-600 pt-2">
+                    {description.substring(0, 100)}
+                  </span>
                 </>
               ) : (
                 title
               )}
+
+              {highlight !== -1 && type === 'description' ? (
+                <span className="block  text-sm text-gray-600 pt-2">
+                  {description.substring(highlight - 20, highlight)}
+                  <span className="font-bold">
+                    {description.substring(highlight, highlight + search.length)}
+                  </span>
+                  {description.substring(highlight + search.length, highlight + search.length + 20)}
+                </span>
+              ) : null}
+
+              {highlight !== -1 && type === 'content' ? (
+                <span className="block  text-sm text-gray-600 pt-2">
+                  {content.substring(highlight - 20, highlight)}
+                  <span className="font-bold">
+                    {content.substring(highlight, highlight + search.length)}
+                  </span>
+                  {content.substring(highlight + search.length, highlight + search.length + 20)}
+                </span>
+              ) : null}
             </span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="h-5 w-5 text-gray-400"
             >
               <polyline points="9 10 4 15 9 20"></polyline>

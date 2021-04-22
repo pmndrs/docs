@@ -17,7 +17,7 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
       className="absolute top-0 left-0 bottom-0 right-0 h-screen"
       style={{ zIndex: 99, opacity: opacity }}
     >
-      <button className="opacity-50 bg-gray-900 w-screen h-screen" onClick={close}></button>
+      <button className="opacity-50 bg-gray-900 w-full h-screen" onClick={close}></button>
       <div
         className="absolute top-20 left-2/4"
         style={{ maxWidth: '90%', width: 500, transform: 'translateX(-50%)', zIndex: 100 }}
@@ -55,13 +55,7 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
             <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
               {results.map((res, i) => {
                 return (
-                  <Item
-                    key={`search-item-${i}`}
-                    title={res.title}
-                    href={res.url}
-                    search={search}
-                    multipleLibs={isThreeD}
-                  />
+                  <Item key={`search-item-${i}`} search={search} multipleLibs={isThreeD} {...res} />
                 )
               })}
             </ul>

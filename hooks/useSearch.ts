@@ -4,12 +4,7 @@ export type Result = { title: string; url: string; content: string }
 
 const threeD = ['react-three-fiber', 'drei']
 
-export default function useSearch({
-  search,
-  folder,
-  allDocs,
-  showSearchModal,
-}): [Result[], boolean] {
+export default function useSearch({ search, folder, allDocs }): [Result[], boolean] {
   const isThreeD = threeD.includes(folder)
   const results = useMemo(() => {
     if (!search) return []
@@ -34,6 +29,6 @@ export default function useSearch({
       return re.slice(0, 4)
     }
   }, [search])
-
+  console.log(results)
   return [results, isThreeD]
 }
