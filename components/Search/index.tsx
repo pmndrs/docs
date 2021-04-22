@@ -1,63 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpring, animated as a } from 'react-spring'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
-import titleCase from 'utils/titleCase'
 import useSearch, { Result } from 'hooks/useSearch'
-import useKeyboardSearch from 'hooks/useKeyboardSearch'
 import useKeyPress from 'hooks/useKeyPress'
 import useLockBodyScroll from 'utils/useLockBodyScroll'
-import { config } from '@react-spring/core'
-
-const Item = ({ title, href, onMouseOver, search, onClick, multipleLibs }) => {
-  const highlight = title.toLowerCase().indexOf(search.toLowerCase())
-  const name = titleCase(href.split('/')[1].split('-').join(' '))
-  return (
-    <Link href={href}>
-      <a
-        className="block no-underline search-item outline-none"
-        onMouseOver={onMouseOver}
-        onClick={onClick}
-      >
-        <li className={'px-2 py-1'}>
-          <div className="  p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200  flex justify-between items-center transition-all">
-            <span>
-              {multipleLibs ? (
-                <span className="text-xs font-light text-gray-500 block pb-1">{name}</span>
-              ) : null}
-              {highlight !== -1 ? (
-                <>
-                  {title.substring(0, highlight)}
-                  <span className="font-bold">
-                    {title.substring(highlight, highlight + search.length)}
-                  </span>
-                  {title.substring(highlight + search.length)}
-                </>
-              ) : (
-                title
-              )}
-            </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              className="h-5 w-5 text-gray-400"
-            >
-              <polyline points="9 10 4 15 9 20"></polyline>
-              <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
-            </svg>
-          </div>
-        </li>
-      </a>
-    </Link>
-  )
-}
+import Item from './item'
 
 const Search = ({ allDocs }) => {
   const router = useRouter()
@@ -65,14 +12,15 @@ const Search = ({ allDocs }) => {
   const [search, setSearch] = useState('')
   const input = useRef(null)
   const folder = router.query.slug[0]
-  const [results, isThreeD]: [Result[], boolean] = useSearch({ search, folder, allDocs })
-  const [handleKeyDown, show, setShow, active, setActive] = useKeyboardSearch({
+  const [results, isThreeD]: [Result[], boolean] = useSearch({
     search,
-    results,
-    input,
+    folder,
+    allDocs,
+    showSearchModal,
   })
-  const renderList = show && results.length > 0
+  const renderList = results.length > 0
   const escPressed = useKeyPress('Escape')
+  const slashPressed = useKeyPress('/')
   const { opacity } = useSpring({
     opacity: showSearchModal ? 1 : 0,
     config: {
@@ -83,10 +31,20 @@ const Search = ({ allDocs }) => {
   useLockBodyScroll(showSearchModal)
 
   useEffect(() => {
+    setSearch('')
+  }, [showSearchModal])
+
+  useEffect(() => {
     if (escPressed && showSearchModal) {
       setShowSearchModal(false)
     }
   }, [escPressed])
+
+  useEffect(() => {
+    if (slashPressed && !showSearchModal) {
+      setShowSearchModal(true)
+    }
+  }, [slashPressed])
 
   useEffect(() => setShowSearchModal(false), [router.asPath])
 
@@ -134,7 +92,6 @@ const Search = ({ allDocs }) => {
                 placeholder="Search the docs"
                 onChange={(e) => {
                   setSearch(e.target.value)
-                  setShow(true)
                 }}
               />
               {renderList && (
@@ -146,8 +103,6 @@ const Search = ({ allDocs }) => {
                         title={res.title}
                         href={res.url}
                         search={search}
-                        onClick={() => setShow(false)}
-                        onMouseOver={() => setActive(i)}
                         multipleLibs={isThreeD}
                       />
                     )
@@ -159,17 +114,15 @@ const Search = ({ allDocs }) => {
         </a.div>
       ) : null}
       <div className="relative w-full">
-        {renderList && <div className="search-overlay z-1" onClick={() => setShow(false)} />}
         <div className="flex items-center justify-between flex-auto h-16 px-4 border-b border-gray-200">
           <input
             className="appearance-none w-full h-full p-4"
             type="search"
             onClick={() => setShowSearchModal(true)}
             placeholder='Quick search ("/" to focus)'
-            onKeyDown={handleKeyDown}
-            onFocus={() => setShow(true)}
+            onFocus={() => setShowSearchModal(true)}
             ref={input}
-          />{' '}
+          />
         </div>
       </div>
     </>
