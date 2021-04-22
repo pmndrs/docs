@@ -43,42 +43,64 @@ function Foo() {
   const state = useThree()
 ```
 
-The hook is reactive, if you resize the browser for instance, you get fresh measurements, same applies to any of the state objects that may change. Reactivity does not include deeper threejs internals!
+The hook is reactive, if you resize the browser for instance, you get fresh measurements, same applies to any of the state objects that may change.
 
 ### State properties
 
-| Prop            | Description                                               | Type                                                                                                                                                                                                                         |
-| --------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| gl              | Renderer                                                  | `THREE.WebGLRenderer`                                                                                                                                                                                                        |
-| scene           | Scene                                                     | `THREE.Scene`                                                                                                                                                                                                                |
-| camera          | Camera                                                    | `THREE.PerspectiveCamera`                                                                                                                                                                                                    |
-| mouse           | Contains updated, normalized, centric pointer coordinates | `THREE.Vector2`                                                                                                                                                                                                              |
-| clock           | Running system clock                                      | `THREE.Clock`                                                                                                                                                                                                                |
-| vr              | True when the system is in VR mode                        | `boolean`                                                                                                                                                                                                                    |
-| linear          | True when the colorspace is linear                        | `boolean`                                                                                                                                                                                                                    |
-| flat            | True when no tonemapping is used                          | `boolean`                                                                                                                                                                                                                    |
-| frameloop       | React render-mode                                         | `always`, `demand`, `never`                                                                                                                                                                                                  |
-| performance     | System regression                                         | `{ current: number, min: number, max: number, debounce: number, regress: () => void }`                                                                                                                                       |
-| size            | Canvas size in pixels                                     | `{ width: number, height: number }`                                                                                                                                                                                          |
-| viewport        | Viewport size in Threejs units                            | `{ SetState<RootState>: number, height: number, initialDpr: number, dpr: number, factor: number, distance: number, aspect: number, getCurrentViewport: (camera?: Camera, target?: THREE.Vector3, size?: Size) => Viewport }` |
-| get             | Allows you to set any state property                      | `() => GetState<RootState>`                                                                                                                                                                                                  |
-| set             | Allows you to retrieve any state property non-rteactively | `(state: SetState<RootState>) => void`                                                                                                                                                                                       |
-| invalidate      | Request a new render, given that frameloop === 'demand'   | `() => void`                                                                                                                                                                                                                 |
-| advance         | Advance one tick, given that frameloop === 'never'        | `(timestamp: number, runGlobalEffects?: boolean) => void`                                                                                                                                                                    |
-| setSize         | Resize the canvas                                         | `(width: number, height: number) => void`                                                                                                                                                                                    |
-| setDpr          | Set the pixel-ratio                                       | `(dpr: number) => void`                                                                                                                                                                                                      |
-| onPointerMissed | Response for pointer clicks that have missed a target     | `() => void`                                                                                                                                                                                                                 |
-| events          | Pointer-event handling                                    | `{ connected: TargetNode / boolean, handlers: Events, connect: (target: TargetNode) => void, disconnect: () => void }`                                                                                                       |     |
+| Prop            | Description                                               | Type                                                                                                                                                                                                           |
+| --------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| gl              | Renderer                                                  | `THREE.WebGLRenderer`                                                                                                                                                                                          |
+| scene           | Scene                                                     | `THREE.Scene`                                                                                                                                                                                                  |
+| camera          | Camera                                                    | `THREE.PerspectiveCamera`                                                                                                                                                                                      |
+| mouse           | Contains updated, normalized, centric pointer coordinates | `THREE.Vector2`                                                                                                                                                                                                |
+| clock           | Running system clock                                      | `THREE.Clock`                                                                                                                                                                                                  |
+| vr              | True when the system is in VR mode                        | `boolean`                                                                                                                                                                                                      |
+| linear          | True when the colorspace is linear                        | `boolean`                                                                                                                                                                                                      |
+| flat            | True when no tonemapping is used                          | `boolean`                                                                                                                                                                                                      |
+| frameloop       | React render-mode                                         | `always`, `demand`, `never`                                                                                                                                                                                    |
+| performance     | System regression                                         | `{ current: number, min: number, max: number, debounce: number, regress: () => void }`                                                                                                                         |
+| size            | Canvas size in pixels                                     | `{ width: number, height: number }`                                                                                                                                                                            |
+| viewport        | Viewport size in Threejs units                            | `{ width: number, height: number, initialDpr: number, dpr: number, factor: number, distance: number, aspect: number, getCurrentViewport: (camera?: Camera, target?: THREE.Vector3, size?: Size) => Viewport }` |
+| get             | Allows you to set any state property                      | `() => GetState<RootState>`                                                                                                                                                                                    |
+| set             | Allows you to retrieve any state property non-rteactively | `(state: SetState<RootState>) => void`                                                                                                                                                                         |
+| invalidate      | Request a new render, given that frameloop === 'demand'   | `() => void`                                                                                                                                                                                                   |
+| advance         | Advance one tick, given that frameloop === 'never'        | `(timestamp: number, runGlobalEffects?: boolean) => void`                                                                                                                                                      |
+| setSize         | Resize the canvas                                         | `(width: number, height: number) => void`                                                                                                                                                                      |
+| setDpr          | Set the pixel-ratio                                       | `(dpr: number) => void`                                                                                                                                                                                        |
+| onPointerMissed | Response for pointer clicks that have missed a target     | `() => void`                                                                                                                                                                                                   |
+| events          | Pointer-event handling                                    | `{ connected: TargetNode, handlers: Events, connect: (target: TargetNode) => void, disconnect: () => void }`                                                                                                   |     |
 
 ### Selector
 
-You can also select properties, this allows you to avoid needless re-render for components that are interested only in particulars.
+You can also select properties, this allows you to avoid needless re-render for components that are interested only in particulars. Reactivity does not include deeper threejs internals!
 
 ```jsx
 // Will only trigger re-render when the default camera is exchanged
 const camera = useThree((state) => state.camera)
 // Will only re-render on resize changes
 const viewport = useThree((state) => state.viewport)
+// ❌ You cannot expect reactivity from Threejs internals!
+const zoom = useThree((state) => state.camera.zoom)
+```
+
+### Reading state from outside of the component cycle
+
+```jsx
+function Foo() {
+  const get = useThree((state) => state.get)
+  ...
+  get() // Get fresh state from anywhere you want
+```
+
+### Exchanging defaults
+
+```jsx
+function Foo() {
+  const set = useThree((state) => state.set)
+  ...
+  useEffect(() => {
+    set({ camera: new THREE.OrthographicCamera(...) })
+  }, [])
 ```
 
 ## useFrame
