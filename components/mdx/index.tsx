@@ -8,11 +8,13 @@ import { GridUsedBy } from './GridUsedBy'
 import { Demo } from './Demo'
 import { DemoGrid } from './DemoGrid'
 
-const InlineCode = ({ children }) => (
-  <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
-    {children}
-  </code>
-)
+const InlineCode = ({ children }) => {
+  return (
+    <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
+      {children}
+    </code>
+  )
+}
 
 const components = {
   StoryBookLink: ({ link }) => {
