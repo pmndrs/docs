@@ -77,7 +77,13 @@ font-weight: bold;
     }
 
     return code ? (
-      <DemoContainer ref={containerRef}>
+      <div
+        ref={containerRef}
+        className="relative w-full grid"
+        style={{
+          height: 400,
+        }}
+      >
         {onlyView ? (
           <SandpackRunner
             template="react"
@@ -95,32 +101,36 @@ font-weight: bold;
             }}
           />
         )}
-      </DemoContainer>
+      </div>
     ) : null
   }
   return (
-    <DemoContainer ref={containerRef}>
+    <div
+      ref={containerRef}
+      className="relative w-full grid"
+      style={{
+        height: 400,
+      }}
+    >
       <DemoHeader>
         <h3>{title}</h3>
         {description ? <span>{description}</span> : null}
         <DemoLink
           target="_blank"
           rel="nofollow noopener noreferrer"
-          href={`https://codesandbox.io/s/github/pmndrs/react-spring/tree/master/demo/src/sandboxes/${title
-            .split(' ')
-            .join('-')
-            .toLowerCase()}`}
+          href={`https://codesandbox.io/s/${url}`}
         >
           <CodeSandboxIcon /> Try it on CodeSandbox
         </DemoLink>
       </DemoHeader>
-      <DemoContent>
+
+      <div className="relative h-full overflow-hidden">
         <ErrorBoundary>
           {inViewport && data ? (
             <SandpackRunner
               customSetup={{
                 files: data,
-                entry: `/${JSON.parse(data['/package.json']).main}`,
+                entry: `/ ${JSON.parse(data['/package.json']).main}`,
                 main: `/${JSON.parse(data['/package.json']).main}`,
               }}
               options={{
@@ -129,18 +139,10 @@ font-weight: bold;
             />
           ) : null}
         </ErrorBoundary>
-      </DemoContent>
-    </DemoContainer>
+      </div>
+    </div>
   )
 }
-
-const DemoContainer = styled.section`
-  position: relative;
-  width: 100%;
-  height: 400px;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-`
 
 const DemoHeader = styled.header`
   margin-bottom: 10px;
@@ -165,19 +167,5 @@ const DemoLink = styled.a`
 
   & > svg {
     margin-right: 4px;
-  }
-`
-
-const DemoContent = styled.div`
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-
-  & > div {
-    position: relative;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 7px;
-    background: #f0f0f0;
   }
 `
