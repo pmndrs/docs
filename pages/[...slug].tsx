@@ -12,14 +12,23 @@ import withCodesandbox from 'remark/withCodesandbox'
 import withTableofContents from 'remark/withTableofContents'
 import setValue from 'set-value'
 import { useRouter } from 'next/router'
+import { useDocs } from 'store/docs'
+import { useEffect } from 'react'
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const content = hydrate(source, { components })
   const { query } = useRouter()
+  const { setDocs, setCurrentDocs } = useDocs()
+  const name = query.slug[0]
+
+  useEffect(() => {
+    setDocs(allDocs)
+    setCurrentDocs(name)
+  }, [])
 
   return (
-    <Layout nav={nav} toc={toc} allDocs={allDocs}>
-      <Seo query={query} />
+    <Layout nav={nav} toc={toc}>
+      <Seo name={name} />
       <main className="max-w-3xl mx-auto">
         {frontMatter.title && (
           <div className="pb-6 mb-4 border-b post-header">

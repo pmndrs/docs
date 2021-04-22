@@ -4,18 +4,19 @@ import useSearch, { Result } from 'hooks/useSearch'
 import useKeyPress from 'hooks/useKeyPress'
 import useLockBodyScroll from 'utils/useLockBodyScroll'
 import SearchModal from './SearchModal'
+import { useDocs } from 'store/docs'
 
-const Search = ({ allDocs }) => {
-  const router = useRouter()
+const Search = () => {
+  const { query, asPath } = useRouter()
+  const { docs } = useDocs()
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [search, setSearch] = useState('')
-  const input = useRef(null)
-  const folder = router.query.slug[0]
+  // @ts-ignore
+  const [folder] = query.slug
   const [results, isThreeD]: [Result[], boolean] = useSearch({
     search,
     folder,
-    allDocs,
-    showSearchModal,
+    docs,
   })
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('/')
@@ -37,7 +38,7 @@ const Search = ({ allDocs }) => {
     }
   }, [slashPressed])
 
-  useEffect(() => setShowSearchModal(false), [router.asPath])
+  useEffect(() => setShowSearchModal(false), [asPath])
 
   return (
     <>
@@ -60,7 +61,6 @@ const Search = ({ allDocs }) => {
             onClick={() => setShowSearchModal(true)}
             placeholder='Quick search ("/" to focus)'
             onFocus={() => setShowSearchModal(true)}
-            ref={input}
           />
         </div>
       </div>

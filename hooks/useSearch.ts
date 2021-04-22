@@ -4,13 +4,13 @@ export type Result = { title: string; url: string; content: string }
 
 const threeD = ['react-three-fiber', 'drei']
 
-export default function useSearch({ search, folder, allDocs }): [Result[], boolean] {
+export default function useSearch({ search, folder, docs }): [Result[], boolean] {
   const isThreeD = threeD.includes(folder)
   const results = useMemo(() => {
     if (!search) return []
     if (isThreeD) {
       const results: Result[] = matchSorter(
-        allDocs.filter((doc) => threeD.includes(doc.url.split('/')[1])),
+        docs.filter((doc) => threeD.includes(doc.url.split('/')[1])),
         search,
         { keys: ['title', 'description', 'content'], threshold: matchSorter.rankings.CONTAINS }
       )
@@ -22,7 +22,7 @@ export default function useSearch({ search, folder, allDocs }): [Result[], boole
         .slice(0, 4)
     } else {
       const re: Result[] = matchSorter(
-        allDocs.filter((doc: Result) => doc.url.includes(`/${folder}/`)),
+        docs.filter((doc: Result) => doc.url.includes(`/${folder}/`)),
         search,
         { keys: ['title', 'description', 'content'], threshold: matchSorter.rankings.CONTAINS }
       )

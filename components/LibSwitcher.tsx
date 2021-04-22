@@ -11,7 +11,7 @@ import {
 import { useRouter } from 'next/router'
 import { useMenu } from 'store/menu'
 
-const deafultBoundingClientRect = {
+const defaultBoundingClientRect = {
   height: 0,
   width: 0,
   x: 0,
@@ -96,7 +96,7 @@ export default function LibSwitcher() {
   const [localIsOpen, setLocalIsOpen] = useState(false)
   const ref = useRef<HTMLDivElement>()
   const localIsOpenRef = useRef(localIsOpen)
-  const [boundingClientRect, setBoundingClientRect] = useState(deafultBoundingClientRect)
+  const [boundingClientRect, setBoundingClientRect] = useState(defaultBoundingClientRect)
   const { isSwitcherOpen, setIsSwitcherOpen } = useSwitcher()
   const { isMenuOpen } = useMenu()
   const labelSizeClasses = 'p-2 px-3'
