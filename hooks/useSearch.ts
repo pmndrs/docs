@@ -29,6 +29,6 @@ export default function useSearch({ search, folder, allDocs }): [Result[], boole
       return re.slice(0, 4)
     }
   }, [search])
-  console.log(results)
+
   return [results, isThreeD]
 }
