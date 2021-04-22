@@ -19,14 +19,14 @@ export default function useSearch({ search, folder, allDocs }): [Result[], boole
           const highlightedMore = (a: Result) => a.title.toLowerCase().indexOf(search.toLowerCase())
           return highlightedMore(b) - highlightedMore(a)
         })
-        .slice(0, 10)
+        .slice(0, 4)
     } else {
       const re: Result[] = matchSorter(
         allDocs.filter((doc: Result) => doc.url.includes(`/${folder}/`)),
         search,
         { keys: ['title', 'description', 'content'], threshold: matchSorter.rankings.CONTAINS }
       )
-      return re.slice(0, 10)
+      return re.slice(0, 4)
     }
   }, [search])
 

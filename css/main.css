@@ -172,3 +172,7 @@ ul.grid-list > li:before {
 #intro-demos .demo-cell img.phone {
   max-width: 90px;
 }
+
+.search-item.focus-visible li > div {
+  @apply bg-gray-800 text-gray-200;
+}

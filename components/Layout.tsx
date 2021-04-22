@@ -15,8 +15,6 @@ export default function Layout(props) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { nav, toc, allDocs } = props
 
-  console.log(toc)
-
   const {
     query: { slug },
     asPath,
