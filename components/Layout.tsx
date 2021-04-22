@@ -3,6 +3,7 @@ import { useSpring, animated as a } from 'react-spring'
 
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
+import { MenuIcon } from 'components/Icons'
 import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
@@ -10,6 +11,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useSwitcher } from 'store/switcher'
 import { useMenu } from 'store/menu'
+import useLockBodyScroll from 'utils/useLockBodyScroll'
 
 export default function Layout(props) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
@@ -37,14 +39,7 @@ export default function Layout(props) {
   const animationConfig = { mass: 1, tension: 180, friction: 20 }
   const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
   const overlayStyles = useSpring({ opacity: isMenuOpen ? 1 : 0.4, config: animationConfig })
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.classList.add('overflow-hidden')
-    } else {
-      document.body.classList.remove('overflow-hidden')
-    }
-  }, [isMenuOpen])
+  useLockBodyScroll(isMenuOpen)
 
   useEffect(() => closeMenu(), [asPath])
 
@@ -68,20 +63,7 @@ export default function Layout(props) {
         </Link>
         <Search allDocs={props.allDocs} />
         <button className="block md:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
+          <MenuIcon />
         </button>
       </div>
 

@@ -11,7 +11,7 @@ function useLockBodyScroll(active = false) {
     return () => {
       document.body.style.overflow = originalStyle
     }
-  }, []) // Empty array ensures effect is only run on mount and unmount
+  }, [active]) // Empty array ensures effect is only run on mount and unmount
 }
 
 export default useLockBodyScroll
