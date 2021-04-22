@@ -1,12 +1,15 @@
-import React, { useMemo, useCallback, useRef, useState, useEffect } from 'react'
-import { matchSorter } from 'match-sorter'
+import React, { useRef, useState } from 'react'
+
 import cn from 'classnames'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import titleCase from 'utils/titleCase'
+import useSearch, { Result } from 'hooks/useSearch'
+import useKeyboardSearch from 'hooks/useKeyboardSearch'
 
-const Item = ({ title, active, href, onMouseOver, search, onClick }) => {
+const Item = ({ title, active, href, onMouseOver, search, onClick, multipleLibs }) => {
   const highlight = title.toLowerCase().indexOf(search.toLowerCase())
-
+  const name = titleCase(href.split('/')[1].split('-').join(' '))
   return (
     <Link href={href}>
       <a className="block no-underline" onMouseOver={onMouseOver} onClick={onClick}>
@@ -15,11 +18,18 @@ const Item = ({ title, active, href, onMouseOver, search, onClick }) => {
             'bg-gray-100': active,
           })}
         >
-          {title.substring(0, highlight)}
-          <span className="bg-yellow-300">
-            {title.substring(highlight, highlight + search.length)}
-          </span>
-          {title.substring(highlight + search.length)}
+          {multipleLibs ? name : null} -
+          {highlight !== -1 ? (
+            <>
+              {title.substring(0, highlight)}
+              <span className="bg-yellow-300">
+                {title.substring(highlight, highlight + search.length)}
+              </span>
+              {title.substring(highlight + search.length)}
+            </>
+          ) : (
+            title
+          )}
         </li>
       </a>
     </Link>
@@ -28,76 +38,15 @@ const Item = ({ title, active, href, onMouseOver, search, onClick }) => {
 
 const Search = ({ allDocs }) => {
   const router = useRouter()
-  const [show, setShow] = useState(false)
   const [search, setSearch] = useState('')
-  const [active, setActive] = useState(0)
   const input = useRef(null)
   const folder = router.query.slug[0]
-  const results: { title: string; url: string }[] = useMemo(() => {
-    if (!search) return []
-    // Will need to scrape all the headers from each page and search through them here
-    // (similar to what we already do to render the hash links in sidebar)
-    // We could also try to search the entire string text from each page
-    return matchSorter(
-      allDocs.filter((doc) => doc.url.includes(`/${folder}/`)),
-      search,
-      { keys: ['title'] }
-    )
-  }, [search])
-
-  const handleKeyDown = useCallback(
-    (e) => {
-      switch (e.key) {
-        case 'ArrowDown': {
-          e.preventDefault()
-          if (active + 1 < results.length) {
-            setActive(active + 1)
-          }
-          break
-        }
-        case 'ArrowUp': {
-          e.preventDefault()
-          if (active - 1 >= 0) {
-            setActive(active - 1)
-          }
-          break
-        }
-        case 'Enter': {
-          router.push(results[active].url)
-          setShow(false)
-          break
-        }
-      }
-    },
-    [active, results, router]
-  )
-
-  useEffect(() => {
-    setActive(0)
-  }, [search])
-
-  useEffect(() => {
-    const inputs = ['input', 'select', 'button', 'textarea']
-
-    const down = (e) => {
-      if (
-        document.activeElement &&
-        // @ts-ignore
-        inputs.indexOf(document.activeElement.tagName.toLowerCase() !== -1)
-      ) {
-        if (e.key === '/') {
-          e.preventDefault()
-          input.current.focus()
-        } else if (e.key === 'Escape') {
-          setShow(false)
-        }
-      }
-    }
-
-    window.addEventListener('keydown', down)
-    return () => window.removeEventListener('keydown', down)
-  }, [])
-
+  const [results, isThreeD]: [Result[], boolean] = useSearch({ search, folder, allDocs })
+  const [handleKeyDown, show, setShow, active, setActive] = useKeyboardSearch({
+    search,
+    results,
+    input,
+  })
   const renderList = show && results.length > 0
 
   return (
@@ -132,6 +81,7 @@ const Search = ({ allDocs }) => {
                 search={search}
                 onClick={() => setShow(false)}
                 onMouseOver={() => setActive(i)}
+                multipleLibs={isThreeD}
               />
             )
           })}

@@ -33,6 +33,9 @@ export default function Layout(props) {
   const currentPageIndex = currentDocs.findIndex((item) => item.url === asPath)
   const previousPage = currentPageIndex > 0 && currentDocs[currentPageIndex - 1]
   const nextPage = currentPageIndex < currentDocs.length - 1 && currentDocs[currentPageIndex + 1]
+  const animationConfig = { mass: 1, tension: 180, friction: 20 }
+  const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
+  const overlayStyles = useSpring({ opacity: isMenuOpen ? 1 : 0.4, config: animationConfig })
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -89,39 +92,29 @@ export default function Layout(props) {
               isMenuOpen ? '' : 'hidden'
             }`}
           >
-            <div
+            <a.div
               id="nav-wrapper"
               className="h-full mr-24 overflow-hidden overflow-y-auto scrolling-touch bg-white lg:h-auto lg:block lg:relative lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10
               relative"
+              style={navStyles}
             >
               <nav
                 id="nav"
-                className="
-              px-4
-              overflow-y-auto 
-              font-medium 
-              text-base 
-              lg:text-sm 
-              pb-10 
-              lg:pb-14 
-              sticky?lg:h-(screen-16)
-              z-10
-              relative
-            "
+                className=" px-4 overflow-y-auto  font-medium  text-base  lg:text-sm  pb-10  lg:pb-14  sticky?lg:h-(screen-16) z-10 relative"
               >
                 <div className="mb-4">
                   <LibSwitcher />
                 </div>
-
                 <Nav nav={nav[lib]} />
               </nav>
-            </div>
-            <div
+            </a.div>
+            <a.button
               onClick={closeMenu}
-              className={`w-screen h-screen z-0 fixed top-0 right-0 opacity-40 bg-gray-900 ${
+              className={`w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 ${
                 isMenuOpen ? '' : 'hidden'
               }`}
-            ></div>
+              style={overlayStyles}
+            ></a.button>
           </div>
           <div id="content-wrapper" className={`flex-auto ${isMenuOpen ? 'overflow-hidden' : ''}`}>
             <div className="flex w-full">
@@ -173,7 +166,6 @@ export default function Layout(props) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {' '}
                 {toc.length ? <Toc toc={toc} /> : null}
               </div>
             </div>
