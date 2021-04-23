@@ -6,6 +6,7 @@ import { ErrorBoundary } from '../ErrorBoundary'
 import { useObserver } from 'hooks/useObserver'
 import { SandpackRunner, Sandpack } from '@codesandbox/sandpack-react'
 import '@codesandbox/sandpack-react/dist/index.css'
+import { CodeSandboxIcon } from 'components/Icons'
 
 interface DemoProps {
   title: string
@@ -76,7 +77,13 @@ font-weight: bold;
     }
 
     return code ? (
-      <DemoContainer ref={containerRef}>
+      <div
+        ref={containerRef}
+        className="relative w-full grid"
+        style={{
+          height: 400,
+        }}
+      >
         {onlyView ? (
           <SandpackRunner
             template="react"
@@ -94,44 +101,30 @@ font-weight: bold;
             }}
           />
         )}
-      </DemoContainer>
+      </div>
     ) : null
   }
   return (
-    <DemoContainer ref={containerRef}>
+    <div
+      ref={containerRef}
+      className="relative w-full grid"
+      style={{
+        height: 400,
+      }}
+    >
       <DemoHeader>
         <h3>{title}</h3>
         {description ? <span>{description}</span> : null}
         <DemoLink
           target="_blank"
           rel="nofollow noopener noreferrer"
-          href={`https://codesandbox.io/s/github/pmndrs/react-spring/tree/master/demo/src/sandboxes/${title
-            .split(' ')
-            .join('-')
-            .toLowerCase()}`}
+          href={`https://codesandbox.io/s/${url}`}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-            <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
-            <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
-            <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-          </svg>{' '}
-          Try it on CodeSandbox
+          <CodeSandboxIcon /> Try it on CodeSandbox
         </DemoLink>
       </DemoHeader>
-      <DemoContent>
+
+      <div className="relative h-full overflow-hidden">
         <ErrorBoundary>
           {inViewport && data ? (
             <SandpackRunner
@@ -146,18 +139,10 @@ font-weight: bold;
             />
           ) : null}
         </ErrorBoundary>
-      </DemoContent>
-    </DemoContainer>
+      </div>
+    </div>
   )
 }
-
-const DemoContainer = styled.section`
-  position: relative;
-  width: 100%;
-  height: 400px;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-`
 
 const DemoHeader = styled.header`
   margin-bottom: 10px;
@@ -182,19 +167,5 @@ const DemoLink = styled.a`
 
   & > svg {
     margin-right: 4px;
-  }
-`
-
-const DemoContent = styled.div`
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-
-  & > div {
-    position: relative;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 7px;
-    background: #f0f0f0;
   }
 `

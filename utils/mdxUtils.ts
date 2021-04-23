@@ -44,11 +44,11 @@ export const getAllDocs = async () => {
 
       // Get URL pathname
       const pathname = url.split('/').pop()
-      const folder = url.split('/')[2]
 
       return {
         url,
         title: data.title || pathname.replace(/\-/g, ' '),
+        description: data.description || '',
         nav: data.nav ?? Infinity,
         content,
       }

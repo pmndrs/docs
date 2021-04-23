@@ -31,8 +31,7 @@ const sites = {
   },
 }
 
-export default function SEO({ query }) {
-  const name = query.slug[0]
+export default function SEO({ name }: { name: string }) {
   const currentSeo = sites[name]
 
   return currentSeo ? (
@@ -42,13 +41,13 @@ export default function SEO({ query }) {
       <meta name="description" content={currentSeo.description} />
 
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={`https://docs.pmnd.rs/${query.slug[0]}`} />
+      <meta property="og:url" content={`https://docs.pmnd.rs/${name}`} />
       <meta property="og:title" content={`${currentSeo.title} Documentation`} />
       <meta property="og:description" content={currentSeo.description} />
       <meta property="og:image" content={currentSeo.image} />
 
       <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={`https://docs.pmnd.rs/${query.slug[0]}`} />
+      <meta property="twitter:url" content={`https://docs.pmnd.rs/${name}`} />
       <meta property="twitter:title" content={`${currentSeo.title} Documentation`} />
       <meta property="twitter:description" content={currentSeo.description} />
       <meta property="twitter:image" content={currentSeo.image} />

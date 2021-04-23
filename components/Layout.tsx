@@ -3,6 +3,7 @@ import { useSpring, animated as a } from 'react-spring'
 
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
+import { MenuIcon } from 'components/Icons'
 import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
@@ -10,12 +11,12 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useSwitcher } from 'store/switcher'
 import { useMenu } from 'store/menu'
+import useLockBodyScroll from 'utils/useLockBodyScroll'
+import { useDocs } from 'store/docs'
 
-export default function Layout(props) {
+export default function Layout({ nav, toc, children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
-  const { nav, toc, allDocs } = props
-
-  console.log(toc)
+  const { docs, getPrevAndNext } = useDocs()
 
   const {
     query: { slug },
@@ -31,23 +32,11 @@ export default function Layout(props) {
   })
 
   const [lib] = slug as string[]
-  const folder = slug[0]
-  const currentDocs = allDocs.filter((doc) => doc.url.includes(`/${folder}/`))
-  const currentPageIndex = currentDocs.findIndex((item) => item.url === asPath)
-  const previousPage = currentPageIndex > 0 && currentDocs[currentPageIndex - 1]
-  const nextPage = currentPageIndex < currentDocs.length - 1 && currentDocs[currentPageIndex + 1]
+  const { nextPage, previousPage, currentPageIndex } = getPrevAndNext(asPath)
   const animationConfig = { mass: 1, tension: 180, friction: 20 }
   const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
   const overlayStyles = useSpring({ opacity: isMenuOpen ? 1 : 0.4, config: animationConfig })
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.classList.add('overflow-hidden')
-    } else {
-      document.body.classList.remove('overflow-hidden')
-    }
-  }, [isMenuOpen])
-
+  useLockBodyScroll(isMenuOpen)
   useEffect(() => closeMenu(), [asPath])
 
   return (
@@ -68,22 +57,9 @@ export default function Layout(props) {
             <span className="font-normal cursor-pointer">.docs</span>
           </a.div>
         </Link>
-        <Search allDocs={props.allDocs} />
+        <Search />
         <button className="block md:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
+          <MenuIcon />
         </button>
       </div>
 
@@ -122,15 +98,15 @@ export default function Layout(props) {
           <div id="content-wrapper" className={`flex-auto ${isMenuOpen ? 'overflow-hidden' : ''}`}>
             <div className="flex w-full">
               <div className="flex-auto min-w-0 px-4 pt-8 pb-24 sm:px-6 xl:px-8 lg:pb-16">
-                <div className="">{props.children}</div>
+                <div className="">{children}</div>
 
-                {allDocs[currentPageIndex] ? (
+                {docs[currentPageIndex] ? (
                   <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                      href={`https://github.com/pmndrs/website/tree/docs/docs${allDocs[currentPageIndex].url}.mdx`}
+                      href={`https://github.com/pmndrs/website/tree/docs/docs${docs[currentPageIndex].url}.mdx`}
                     >
                       Edit this page on GitHub
                     </a>
