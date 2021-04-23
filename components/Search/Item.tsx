@@ -4,7 +4,7 @@ import getHighlight from 'utils/getHighlight'
 import titleCase from 'utils/titleCase'
 
 const Item = ({ title, url, search, multipleLibs, description, content }) => {
-  const { type, result } = getHighlight({ search, title, description, content })
+  const { type, results } = getHighlight({ search, title, description, content })
   const name = titleCase(url.split('/')[1].split('-').join(' '))
 
   return (
@@ -16,11 +16,11 @@ const Item = ({ title, url, search, multipleLibs, description, content }) => {
               {multipleLibs && (
                 <span className="text-xs font-light text-gray-500 block pb-1">{name}</span>
               )}
-              {result && type === 'title' ? (
+              {results && type === 'title' ? (
                 <>
-                  {result[0]}
-                  <span className="font-bold">{result[1]}</span>
-                  {result[2]}
+                  {results[0]}
+                  <span className="font-bold">{results[1]}</span>
+                  {results[2]}
                   {type === 'title' ? (
                     <span className="block text-sm text-gray-600 pt-2">
                       {description.substring(0, 100)}
@@ -31,11 +31,11 @@ const Item = ({ title, url, search, multipleLibs, description, content }) => {
                 title
               )}
 
-              {result && type !== 'title' ? (
+              {results && type !== 'title' ? (
                 <span className="block  text-sm text-gray-600 pt-2">
-                  {result[0]}
-                  <span className="font-bold">{result[1]}</span>
-                  {result[2]}
+                  {results[0]}
+                  <span className="font-bold">{results[1]}</span>
+                  {results[2]}
                 </span>
               ) : null}
             </span>

@@ -1,5 +1,5 @@
-import LazyLoad from 'react-lazyload'
 import Codesandbox from './Codesandbox'
+import StoryBook from './Storybook'
 import clsx from 'clsx'
 import Sandbox from './Sandbox'
 import { TweetGrid } from './TweetGrid'
@@ -10,40 +10,14 @@ import { DemoGrid } from './DemoGrid'
 
 const InlineCode = ({ children }) => {
   return (
-    <code className="px-1 px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
+    <code className="px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
       {children}
     </code>
   )
 }
 
 const components = {
-  StoryBookLink: ({ link }) => {
-    return (
-      <a
-        href={`https://drei.vercel.app/?path=/story/${link}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img
-          src="https://camo.githubusercontent.com/f0831c0be48497774dcc0781d24cccbc7eb95aeb4a6477be3cd9e208d7256a97/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d73746f7279626f6f6b2d253233666636396234"
-          alt="storybook"
-        ></img>
-      </a>
-    )
-  },
-  StoryBookEmbed: ({ id }) => (
-    <LazyLoad height={400} once>
-      <h3 className="text-xl mb-4 tracking-tight mt-6 heading">Example</h3>
-      <iframe
-        style={{
-          width: '100%',
-          height: 400,
-        }}
-        className="my-6"
-        src={`https://drei.pmnd.rs/iframe.html?id=${id}&viewMode=story`}
-      />
-    </LazyLoad>
-  ),
+  StoryBook,
   Demo,
   DemoGrid,
   YouTubeEmbed,
