@@ -6,6 +6,7 @@
 - [React Spring](https://docs.pmnd.rs/react-spring)
 - [Drei](https://docs.pmnd.rs/drei)
 - [Zustand](https://docs.pmnd.rs/zustand)
+- [Jotai](https://docs.pmnd.rs/jotai)
 
 ## How to run locally
 
