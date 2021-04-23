@@ -63,6 +63,13 @@ const components = {
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
   Codesandbox,
+  h4: ({ children, id, level }) => {
+    return (
+      <a href={`#${id}`} className="heading text-base mb-4 mt-4 tracking-tight">
+        <h4 id={id}>{children}</h4>
+      </a>
+    )
+  },
   Heading: ({ children, id, level }) => {
     const Comp = level === 2 ? 'h2' : 'h3'
     return (
@@ -80,7 +87,18 @@ const components = {
   },
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
-  li: ({ children }) => <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>,
+  li: ({ children }) => (
+    <li
+      className="mb-4 text-base leading-6 text-gray-700"
+      css={`
+        &:first-child {
+          display: inline-blokc;
+        }
+      `}
+    >
+      {children}
+    </li>
+  ),
   inlineCode: InlineCode,
   InlineCode,
   p: ({ children }) => <p className="mb-4 text-base text-gray-700">{children}</p>,
