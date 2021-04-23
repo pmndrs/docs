@@ -1,12 +1,13 @@
-const Image = (props) => {
+const Image = ({ size = 'contain', url, ...rest }) => {
   return (
     <a
-      style={{
-        backgroundImage: ` url(${props.url})`,
-        backgroundSize: props.size || 'contain',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: ' center center',
-      }}
+      {...rest}
+      css={`
+        background-image: ' url(${url})';
+        background-size: ${size};
+        background-repeat: no-repeat;
+        background-position: center center;
+      `}
     ></a>
   )
 }
@@ -15,10 +16,10 @@ export const GridUsedBy = () => {
   return (
     <div
       className="grid w-full gap-0"
-      style={{
-        gridTemplateColumns: ' repeat(auto-fill, minmax(200px, 1fr))',
-        gridAutoRows: ' minmax(200px, auto)',
-      }}
+      css={`
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-auto-rows: minmax(200px, auto);
+      `}
     >
       <Image
         title="Aragon"

@@ -8,10 +8,10 @@ export default function Codesandbox({ id, tests }) {
           src={`https://codesandbox.io/embed/${id}?codemirror=1&fontsize=14&hidenavigation=1&theme=light&hidedevtools=1${
             tests ? '&previewwindow=tests' : ''
           }`}
-          style={{
-            width: '100%',
-            height: 400,
-          }}
+          css={`
+            width: 100%,
+            height: 400px,
+          `}
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
         />

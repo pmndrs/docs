@@ -79,9 +79,9 @@ font-weight: bold;
       <div
         ref={containerRef}
         className="relative w-full grid"
-        style={{
-          height: 400,
-        }}
+        css={`
+          height: 400px;
+        `}
       >
         {onlyView ? (
           <SandpackRunner
@@ -107,9 +107,9 @@ font-weight: bold;
     <div
       ref={containerRef}
       className="relative w-full grid"
-      style={{
-        height: 400,
-      }}
+      css={`
+        height: 400px;
+      `}
     >
       <div className="mb-2">
         {title ? <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3> : null}
