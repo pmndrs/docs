@@ -111,8 +111,12 @@ font-weight: bold;
         height: 400px;
       `}
     >
-      <div className="mb-2">
-        {title ? <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3> : null}
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          {title ? (
+            <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3>
+          ) : null}
+        </div>
         {description ? <span>{description}</span> : null}
         <a
           className="flex mt-3 items-center opacity-60 text-xs text-gray-700"
