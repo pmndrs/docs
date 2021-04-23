@@ -113,11 +113,9 @@ font-weight: bold;
     >
       <div className="flex justify-between items-center mb-2">
         <div>
-          {title ? (
-            <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3>
-          ) : null}
+          {title && <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3>}
         </div>
-        {description ? <span>{description}</span> : null}
+        {description && <span>{description}</span>}
         <a
           className="flex mt-3 items-center opacity-60 text-xs text-gray-700"
           target="_blank"
