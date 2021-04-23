@@ -34,10 +34,12 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
             className={`outline-none focus:ring-gray-200 focus:border-gray-200 block w-full pl-10 sm:text-sm border-gray-300  bg-white px-4 py-6 text-gray-700 ${
               renderList ? 'rounded-t-md' : 'rounded-md'
             }`}
+            autoComplete="off"
             autoFocus
             placeholder="Search the docs"
             onChange={onChange}
           />
+
           {renderList && (
             <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
               {results.map((res, i) => {
