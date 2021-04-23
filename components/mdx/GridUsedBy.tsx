@@ -3,7 +3,7 @@ const Image = ({ size = 'contain', url, ...rest }) => {
     <a
       {...rest}
       css={`
-        background-image: ' url(${url})';
+        background-image: url(${url});
         background-size: ${size};
         background-repeat: no-repeat;
         background-position: center center;
