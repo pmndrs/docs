@@ -37,7 +37,7 @@ export default function SEO({ name }: { name: string }) {
   return currentSeo ? (
     <Head>
       <title> {currentSeo.title} Documentation</title>
-      <meta property="og:site_name" content={`${currentSeo.title} Documentation`} />
+      <meta property="og:site_name" content={`${currentSeo.title} documentation`} />
       <meta name="description" content={currentSeo.description} />
 
       <meta property="og:type" content="website" />

@@ -33,6 +33,14 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="twitter:site" content="@pmndrs" />
         <meta property="og:locale" content="en_us" />
         <meta property="og:type" content="website" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com/" />
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossOrigin="true" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700"
+          rel="stylesheet"
+        />
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code" rel="stylesheet"></link>
       </Head>
       <Component {...pageProps} />
     </>
