@@ -23,6 +23,12 @@ const sites = {
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     image: 'https://docs.pmnd.rs/zustand-bear.png',
   },
+  jotai: {
+    title: 'Jotai',
+    description:
+      'Jotai is a primitive, flexible, and spooky state management library for React. 👻',
+    // image: 'https://docs.pmnd.rs/jotai-ghost.png',
+  },
 }
 
 export default function SEO({ query }) {

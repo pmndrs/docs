@@ -35,6 +35,10 @@ const data = [
     id: 'zustand',
     label: 'Zustand',
   },
+  {
+    id: 'jotai',
+    label: 'Jotai',
+  },
   // {
   //   id: 'Component Material',
   //   label: 'Component Material',
