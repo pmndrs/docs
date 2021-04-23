@@ -12,7 +12,7 @@ const getHighlight = ({ title, search, description, content }: getHighlightProps
     const highlight = title.toLowerCase().indexOf(s)
     return {
       type: 'title',
-      result: [
+      results: [
         title.substring(0, highlight),
         title.substring(highlight, getSearchedWord(highlight)),
         title.substring(getSearchedWord(highlight)),
@@ -23,7 +23,7 @@ const getHighlight = ({ title, search, description, content }: getHighlightProps
     const highlight = description.toLowerCase().indexOf(s)
     return {
       type: 'description',
-      result: [
+      results: [
         description.substring(highlight - extraChars, highlight),
         description.substring(highlight, getSearchedWord(highlight)),
         description.substring(getSearchedWord(highlight), getSearchedWord(highlight) + extraChars),
@@ -35,7 +35,7 @@ const getHighlight = ({ title, search, description, content }: getHighlightProps
     const highlight = content.toLowerCase().indexOf(s)
     return {
       type: 'content',
-      result: [
+      results: [
         removeMarkdown(content.substring(highlight - extraChars, highlight)),
         removeMarkdown(content.substring(highlight, getSearchedWord(highlight))),
         removeMarkdown(
