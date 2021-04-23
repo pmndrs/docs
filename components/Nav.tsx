@@ -15,12 +15,13 @@ type NavProps = {
 function NavItem({ route }) {
   const { asPath } = useRouter()
   const isActive = route.url === asPath
+
   return (
     <li>
       <Link href={route.url.replace('index', '')}>
         <a
           className={clsx(
-            'rounded-md block px-6 py-2 text-gray-800 capitalize font-normal hover:bg-gray-50 cursor-pointer',
+            'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer',
             isActive && 'bg-gray-100'
           )}
         >
