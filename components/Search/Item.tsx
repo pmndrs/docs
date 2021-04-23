@@ -1,5 +1,6 @@
 import { EnterIcon } from 'components/Icons'
 import Link from 'next/link'
+import removeMarkdown from 'utils/removeMarkdown'
 import titleCase from 'utils/titleCase'
 
 const getHighlight = ({ title, search, description, content }) => {
@@ -11,7 +12,6 @@ const getHighlight = ({ title, search, description, content }) => {
       highlight: title.toLowerCase().indexOf(s),
     }
   }
-  console.log(description)
   if (description.toLowerCase().includes(s)) {
     return {
       type: 'description',
@@ -33,7 +33,6 @@ const Item = ({ title, url, search, multipleLibs, description, content }) => {
   const { type, highlight } = getHighlight({ search, title, description, content })
   const name = titleCase(url.split('/')[1].split('-').join(' '))
 
-  console.log(highlight)
   return (
     <Link href={url}>
       <a className="block no-underline search-item outline-none">
@@ -70,11 +69,13 @@ const Item = ({ title, url, search, multipleLibs, description, content }) => {
 
               {highlight !== -1 && type === 'content' ? (
                 <span className="block  text-sm text-gray-600 pt-2">
-                  {content.substring(highlight - 20, highlight)}
+                  {removeMarkdown(content.substring(highlight - 20, highlight))}
                   <span className="font-bold">
-                    {content.substring(highlight, highlight + search.length)}
+                    {removeMarkdown(content.substring(highlight, highlight + search.length))}
                   </span>
-                  {content.substring(highlight + search.length, highlight + search.length + 20)}
+                  {removeMarkdown(
+                    content.substring(highlight + search.length, highlight + search.length + 20)
+                  )}
                 </span>
               ) : null}
             </span>

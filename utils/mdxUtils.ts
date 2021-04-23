@@ -2,7 +2,6 @@ import { join, sep } from 'path'
 import { readFileSync } from 'fs'
 import matter from 'gray-matter'
 import recursiveReaddir from 'recursive-readdir'
-import stripMarkdown from './removeMarkdnow'
 
 /**
  * Checks for the MDX file extension
@@ -51,7 +50,7 @@ export const getAllDocs = async () => {
         title: data.title || pathname.replace(/\-/g, ' '),
         description: data.description || '',
         nav: data.nav ?? Infinity,
-        content: stripMarkdown(content),
+        content: content,
       }
     })
     .sort((a, b) => (a.nav > b.nav ? 1 : -1))
