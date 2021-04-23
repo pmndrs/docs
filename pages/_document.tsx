@@ -1,4 +1,5 @@
 import Document from 'next/document'
+// @ts-ignore
 import { ServerStyleSheet } from 'styled-components'
 
 export default class Doc extends Document {
