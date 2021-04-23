@@ -130,7 +130,7 @@ font-weight: bold;
             <SandpackRunner
               customSetup={{
                 files: data,
-                entry: `/ ${JSON.parse(data['/package.json']).main}`,
+                entry: `/${JSON.parse(data['/package.json']).main}`,
                 main: `/${JSON.parse(data['/package.json']).main}`,
               }}
               options={{
