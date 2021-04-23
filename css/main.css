@@ -11,8 +11,14 @@
   @apply px-4 py-2 font-bold text-white bg-blue-500 rounded;
 }
 
-*:not(pre, code, code span) {
+* {
   font-family: 'Inter Var', 'Inter', sans-serif;
+}
+
+pre,
+code,
+code span {
+  font-family: 'Fira Code', monospace !important;
 }
 
 /* Start purging... */
