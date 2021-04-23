@@ -50,7 +50,7 @@ export const getAllDocs = async () => {
         title: data.title || pathname.replace(/\-/g, ' '),
         description: data.description || '',
         nav: data.nav ?? Infinity,
-        content: content,
+        content,
       }
     })
     .sort((a, b) => (a.nav > b.nav ? 1 : -1))
