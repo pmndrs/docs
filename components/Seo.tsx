@@ -8,7 +8,7 @@ const sites = {
   },
   'react-three-fiber': {
     title: 'React Three Fiber',
-    // image: "https://docs.pmnd.rs/react-spring/share,jpg",
+    image: 'https://docs.pmnd.rs/react-three-fiber/share.jpg',
     description: 'React-three-fiber is a React renderer for three.js.',
   },
   drei: {
