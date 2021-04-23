@@ -26,7 +26,7 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
         className="absolute top-20 left-2/4"
         css={`
           max-width: 90%;
-          width: 500;
+          width: 500px;
           transform: translateX(-50%);
           z-index: 100;
         `}
