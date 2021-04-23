@@ -4,8 +4,8 @@ import getHighlight from 'utils/getHighlight'
 import titleCase from 'utils/titleCase'
 
 const Item = ({ title, url, search, multipleLibs, description, content }) => {
-  const { type, result } = getHighlight({ search, title, description, content })
-  const name = titleCase(url.split('/')[1].split('-').join(' '))
+  const highlight = getHighlight({ search, title, description, content })
+  const name = titleCase(url.split('/')[1].replaceAll('-', ' '))
 
   return (
     <Link href={url}>
@@ -16,28 +16,13 @@ const Item = ({ title, url, search, multipleLibs, description, content }) => {
               {multipleLibs && (
                 <span className="text-xs font-light text-gray-500 block pb-1">{name}</span>
               )}
-              {result && type === 'title' ? (
-                <>
-                  {result[0]}
-                  <span className="font-bold">{result[1]}</span>
-                  {result[2]}
-                  {type === 'title' ? (
-                    <span className="block text-sm text-gray-600 pt-2">
-                      {description.substring(0, 100)}
-                    </span>
-                  ) : null}
-                </>
-              ) : (
-                title
+              {highlight && (
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: highlight,
+                  }}
+                />
               )}
-
-              {result && type !== 'title' ? (
-                <span className="block  text-sm text-gray-600 pt-2">
-                  {result[0]}
-                  <span className="font-bold">{result[1]}</span>
-                  {result[2]}
-                </span>
-              ) : null}
             </span>
             <EnterIcon />
           </div>

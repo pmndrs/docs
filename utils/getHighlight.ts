@@ -1,51 +1,44 @@
 import removeMarkdown from 'utils/removeMarkdown'
 
-type getHighlightProps = { title: string; search: string; description: string; content: string }
+export interface IHighlightProps {
+  title: string
+  search: string
+  description: string
+  content: string
+}
 
-const getHighlight = ({ title, search, description, content }: getHighlightProps) => {
-  const s = search.toLowerCase()
-  const extraChars = 20
+const PREVIEW_LENGTH = 100
 
-  const getSearchedWord = (highlight: number) => highlight + search.length
+/**
+ * Traverses a search item, returning highlighted HTML.
+ */
+const getHighlight = ({ search, title, description, content }: IHighlightProps) => {
+  // Case-insensitive match expression
+  const match = new RegExp(search, 'gi')
 
-  if (title.toLowerCase().includes(s)) {
-    const highlight = title.toLowerCase().indexOf(s)
-    return {
-      type: 'title',
-      result: [
-        title.substring(0, highlight),
-        title.substring(highlight, getSearchedWord(highlight)),
-        title.substring(getSearchedWord(highlight)),
-      ],
-    }
-  }
-  if (description.toLowerCase().includes(s)) {
-    const highlight = description.toLowerCase().indexOf(s)
-    return {
-      type: 'description',
-      result: [
-        description.substring(highlight - extraChars, highlight),
-        description.substring(highlight, getSearchedWord(highlight)),
-        description.substring(getSearchedWord(highlight), getSearchedWord(highlight) + extraChars),
-      ],
-    }
-  }
+  // Traverse meta for matching content
+  const { type, result } = Object.entries({ title, description, content }).reduce(
+    (previous, [type, value]) => {
+      // Early return if match found or if not matching
+      if (previous.result || !match.test(value)) return previous
 
-  if (content.toLowerCase().includes(s)) {
-    const highlight = content.toLowerCase().indexOf(s)
-    return {
-      type: 'content',
-      result: [
-        removeMarkdown(content.substring(highlight - extraChars, highlight)),
-        removeMarkdown(content.substring(highlight, getSearchedWord(highlight))),
-        removeMarkdown(
-          content.substring(getSearchedWord(highlight), getSearchedWord(highlight) + extraChars)
-        ),
-      ],
-    }
-  }
+      // Insert highlights around matching text
+      const preview = removeMarkdown(value)
+      const result = preview
+        .substring(0, PREVIEW_LENGTH)
+        .replace(match, (target: string) => `<span class="font-bold">${target}</span>`)
 
-  return {}
+      return { type, result: preview.length > PREVIEW_LENGTH ? `${result}...` : result }
+    },
+    { type: null, result: null }
+  )
+
+  return `
+    ${type === 'title' ? result : title}
+    <span class="block text-sm text-gray-600 pt-2">
+      ${type === 'title' ? description.substring(0, PREVIEW_LENGTH) : result}
+    </span>
+  `
 }
 
 export default getHighlight
