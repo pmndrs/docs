@@ -18,7 +18,7 @@
 pre,
 code,
 code span {
-  font-family: 'Fira Code', monospace !important;
+  font-family: 'Menlo', 'Fira Code', monospace !important;
 }
 
 /* Start purging... */
