@@ -10,6 +10,7 @@ import {
 } from 'store/switcher'
 import { useRouter } from 'next/router'
 import { useMenu } from 'store/menu'
+import useKeyPress from 'hooks/useKeyPress'
 
 const defaultBoundingClientRect = {
   height: 0,
@@ -105,6 +106,7 @@ export default function LibSwitcher() {
   const { isMenuOpen } = useMenu()
   const labelSizeClasses = 'p-2 px-3'
   const { query } = useRouter()
+  const escPressed = useKeyPress('Escape')
 
   const toggleSwitcher = useCallback(() => setLocalIsOpen((s) => !s), [setLocalIsOpen])
 
@@ -134,6 +136,13 @@ export default function LibSwitcher() {
       setIsSwitcherOpen(true)
     }
   }, [localIsOpen, setIsSwitcherOpen])
+
+  useEffect(() => {
+    if (escPressed) {
+      setIsSwitcherOpen(false)
+      setLocalIsOpen(false)
+    }
+  }, [escPressed])
 
   return (
     <>

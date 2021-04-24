@@ -27,8 +27,7 @@ const derivedAtom = focusAtom(baseAtom, (optic) => optic.prop('a')) // Primitive
 ```
 
 So basically, we started with a `PrimitiveAtom<{a: number}>`, which has a getter and a setter, and then used `focusAtom` to zoom in on the `a`-property of
-the `baseAtom`, and got a `PrimitiveAtom<number>`. What is noteworthy here is that this `derivedAtom` is not only a getter, it is also a setter. If `derivedAtom` is updated, then
-then equivalent update is done on the `baseAtom`.
+the `baseAtom`, and got a `PrimitiveAtom<number>`. What is noteworthy here is that this `derivedAtom` is not only a getter, it is also a setter. If `derivedAtom` is updated, then equivalent update is done on the `baseAtom`.
 
 The example below is simple, but it's a starting point. `focusAtom` supports many kinds of optics, including `Lens`, `Prism`, `Isomorphism`.
 

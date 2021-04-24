@@ -16,12 +16,20 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
   return (
     <a.div
       className="absolute top-0 left-0 bottom-0 right-0 h-screen"
-      style={{ zIndex: 99, opacity: opacity }}
+      css={`
+        z-index: 99;
+      `}
+      style={{ opacity }}
     >
       <button className="opacity-50 bg-gray-900 w-full h-screen" onClick={close}></button>
       <div
         className="absolute top-20 left-2/4"
-        style={{ maxWidth: '90%', width: 500, transform: 'translateX(-50%)', zIndex: 100 }}
+        css={`
+          max-width: 90%;
+          width: 500px;
+          transform: translateX(-50%);
+          z-index: 100;
+        `}
       >
         <div className="mt-1 relative rounded-md shadow-sm">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
