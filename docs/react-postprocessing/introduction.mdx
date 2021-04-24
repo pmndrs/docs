@@ -1,6 +1,7 @@
 ---
 title: Introduction
 description: What is React Postprocessing and how you can use it
+nav: 0
 ---
 
 `react-postprocessing` is a [postprocessing](https://github.com/vanruesc/postprocessing) wrapper for [@react-three/fiber](https://github.com/pmndrs/@react-three/fiber). This is not (yet) meant for complex orchestration of effects, but can save you [hundreds of LOC](https://twitter.com/0xca0a/status/1289501594698960897) for a straight forward effects-chain.
@@ -10,13 +11,14 @@ npm install @react-three/postprocessing
 ```
 
 [![Bubbles](/react-postprocessing-images/bubbles.jpg)](https://m94xb.csb.app)
+
 [![Control](/react-postprocessing-images/control.jpg)](https://5jgjz.csb.app)
 
 <p align="middle">
   <i>These demos are real, you can click them! They contain the full code, too. 📦</i>
 </p>
 
-#### Why postprocessing and not three/examples/jsm/postprocessing?
+## Why postprocessing and not three/examples/jsm/postprocessing?
 
 From [https://github.com/vanruesc/postprocessing](https://github.com/vanruesc/postprocessing#performance)
 
@@ -26,7 +28,7 @@ From [https://github.com/vanruesc/postprocessing](https://github.com/vanruesc/po
 
 Postprocessing also supports srgb-encoding out of the box, as well as WebGL2 MSAA (multi sample anti aliasing), which is react-postprocessing's default, you get high performance crisp results w/o jagged edges.
 
-#### What does it look like?
+## What does it look like?
 
 Well, you can do pretty much anything, but here's an example combining a couple of effects ([live demo](https://codesandbox.io/s/vigorous-currying-3r6l2)).
 

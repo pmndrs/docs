@@ -1,0 +1,28 @@
+---
+title: Noise
+---
+
+A noise effect.
+
+```jsx
+import { Noise } from 'react-postprocessing'
+import { BlendFunction } from 'postprocessing'
+
+return (
+  <Noise
+    premultiply // enables or disables noise premultiplication
+    blendFunction={BlendFunction.ADD} // blend mode
+  />
+)
+```
+
+## Example
+
+<Demo showCode mainFile="/src/App.js" title="Noise" url="6whxh" />
+
+## Props
+
+| Name          | Type          | Default              | Description                                                  |
+| ------------- | ------------- | -------------------- | ------------------------------------------------------------ |
+| premultiply   | Boolean       | false                | Whether the noise should be multiplied with the input color. |
+| blendFunction | BlendFunction | BlendFunction.SCREEN | The blend function of this effect.                           |

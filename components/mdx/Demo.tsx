@@ -13,9 +13,19 @@ interface DemoProps {
   url?: string
   name?: string
   onlyView: boolean
+  showCode: boolean
+  mainFile?: string
 }
 
-export const Demo: FC<DemoProps> = ({ url, title, description, name, onlyView }) => {
+export const Demo: FC<DemoProps> = ({
+  url,
+  title,
+  description,
+  name,
+  onlyView,
+  showCode,
+  mainFile,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [inViewport, setInViewport] = useState(false)
 
@@ -116,18 +126,31 @@ font-weight: bold;
 
       <div className="relative h-full overflow-hidden">
         <ErrorBoundary>
-          {inViewport && data ? (
-            <SandpackRunner
-              customSetup={{
-                files: data,
-                entry: `/${JSON.parse(data['/package.json']).main}`,
-                main: `/${JSON.parse(data['/package.json']).main}`,
-              }}
-              options={{
-                showNavigator: false,
-              }}
-            />
-          ) : null}
+          {inViewport &&
+            data &&
+            (showCode ? (
+              <Sandpack
+                customSetup={{
+                  files: data,
+                  entry: `/${JSON.parse(data['/package.json']).main}`,
+                  main: mainFile || `/${JSON.parse(data['/package.json']).main}`,
+                }}
+                options={{
+                  showTabs: false,
+                }}
+              />
+            ) : (
+              <SandpackRunner
+                customSetup={{
+                  files: data,
+                  entry: `/${JSON.parse(data['/package.json']).main}`,
+                  main: mainFile || `/${JSON.parse(data['/package.json']).main}`,
+                }}
+                options={{
+                  showNavigator: false,
+                }}
+              />
+            ))}
         </ErrorBoundary>
       </div>
     </div>
