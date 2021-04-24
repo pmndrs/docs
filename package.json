@@ -17,6 +17,7 @@
     "@next/mdx": "^10.0.4",
     "@react-spring/web": "^9.1.1",
     "@sindresorhus/slugify": "^1.1.0",
+    "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/typography": "^0.4.0",
     "clsx": "^1.1.1",
     "gray-matter": "^4.0.2",
