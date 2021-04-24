@@ -150,7 +150,7 @@ export default function LibSwitcher() {
         <SwitcherContent open={localIsOpen} callback={toggleSwitcher} />
       </SimpleModal>
       <div ref={ref} className={clsx('opacity-0 mx-1 capitalize', labelSizeClasses)}>
-        {query.slug[0].replaceAll('-', '')}
+        {query.slug[0].replace(/\-/g, '')}
       </div>
       <a.div
         style={{
@@ -165,7 +165,7 @@ export default function LibSwitcher() {
         )}
         onClick={toggleSwitcher}
       >
-        {query.slug[0].replaceAll('-', ' ')}
+        {query.slug[0].replace(/\-/g, ' ')}
       </a.div>
     </>
   )

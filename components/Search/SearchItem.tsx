@@ -11,7 +11,7 @@ const trimPreview = (preview: string) =>
 
 const SearchItem = ({ title, url, search, multipleLibs, description, content }) => {
   // Name of lib in multi-lib search
-  const lib = titleCase(url.split('/')[1].replaceAll('-', ' '))
+  const lib = titleCase(url.split('/')[1].replace(/\-/g, ' '))
 
   // Case-insensitive search match expression
   const match = new RegExp(search, 'gi')
