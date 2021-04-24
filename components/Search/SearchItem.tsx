@@ -1,11 +1,25 @@
 import { EnterIcon } from 'components/Icons'
 import Link from 'next/link'
-import { getHighlight } from 'utils/highlight'
 import titleCase from 'utils/titleCase'
+import removeMarkdown from 'utils/removeMarkdown'
+import highlight from 'utils/highlight'
+
+// Trim search preview text
+const PREVIEW_LENGTH = 100
+const trimPreview = (preview: string) =>
+  preview.length > PREVIEW_LENGTH ? `${preview.substring(0, PREVIEW_LENGTH)}...` : preview
 
 const SearchItem = ({ title, url, search, multipleLibs, description, content }) => {
-  const highlight = getHighlight({ search, title, description, content })
-  const name = titleCase(url.split('/')[1].replaceAll('-', ' '))
+  // Name of lib in multi-lib search
+  const lib = titleCase(url.split('/')[1].replaceAll('-', ' '))
+
+  // Search match expression
+  const match = new RegExp(search, 'gi')
+  const isMatch = (text) => match.test(trimPreview(removeMarkdown(text)))
+
+  // Show content if description does not match search
+  const showContent = isMatch(content) && !isMatch(description)
+  const preview = showContent ? content : description
 
   return (
     <Link href={url}>
@@ -14,9 +28,18 @@ const SearchItem = ({ title, url, search, multipleLibs, description, content }) 
           <div className="p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200 flex justify-between items-center transition-all">
             <span>
               {multipleLibs && (
-                <span className="text-xs font-light text-gray-500 block pb-1">{name}</span>
+                <span className="text-xs font-light text-gray-500 block pb-1">{lib}</span>
               )}
-              {highlight && <span dangerouslySetInnerHTML={highlight} />}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    ${highlight(title, match)}
+                    <span class="block text-sm text-gray-600 pt-2">
+                      ${trimPreview(highlight(preview, match))}
+                    </span>
+                  `,
+                }}
+              />
             </span>
             <EnterIcon />
           </div>
