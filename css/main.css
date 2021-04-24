@@ -15,15 +15,24 @@
   font-family: 'Inter Var', 'Inter', sans-serif;
 }
 
+body {
+  font-size: 15px;
+}
+
 pre,
 code,
 code span {
-  font-family: 'Fira Code', monospace !important;
+  font-family: Menlo, 'Fira Code', Monaco, monospace !important;
 }
 
 /* Start purging... */
 @tailwind utilities;
 /* Stop purging. */
+
+.text-base {
+  font-size: 0.9375rem;
+  line-height: 1.35rem;
+}
 
 /* Your own custom utilities */
 @supports (position: sticky) {
