@@ -26,7 +26,7 @@ const Controls = () => {
 }
 ```
 
-https://codesandbox.io/s/react-typescript-forked-3q11k
+<Codesandbox id="3q11k" />
 
 ## useAtomValue
 
@@ -50,7 +50,7 @@ const Counter = () => {
 }
 ```
 
-https://codesandbox.io/s/react-typescript-forked-1x90m
+<Codesandbox id="1x90m" />
 
 ## atomWithReset
 
@@ -105,7 +105,7 @@ const RESET: unique symbol
 ```
 
 Special value that is accepted by [Resettable atoms](/jotai/guides/resettable)
-created with [`atomWithReset`](/jotai/api/utils#atom-with-Reset) or writable atom created
+created with [`atomWithReset`](/jotai/api/utils#atom-with-reset) or writable atom created
 with `atom` if it accepts `RESET` symbol.
 
 ### Example
@@ -160,7 +160,7 @@ const Counter = () => {
 }
 ```
 
-https://codesandbox.io/s/react-typescript-forked-eg0mw
+<Codesandbox id="eg0mw" />
 
 ## atomWithReducer
 
@@ -178,7 +178,7 @@ const countReducer = (prev, action) => {
 const countReducerAtom = atomWithReducer(0, countReducer)
 ```
 
-https://codesandbox.io/s/react-typescript-forked-g3tsx
+<Codesandbox id="g3tsx" />
 
 ## atomWithDefault
 
@@ -194,7 +194,7 @@ const count1Atom = atom(1)
 const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
 ```
 
-https://codesandbox.io/s/react-typescript-forked-unfro
+<Codesandbox id="unfro" />
 
 ## atomFamily
 
@@ -203,62 +203,65 @@ Ref: https://github.com/pmndrs/jotai/issues/23
 ### Usage
 
 ```js
-atomFamily(initializeRead, initializeWrite, areEqual): (param) => Atom
+atomFamily(initializeAtom, areEqual): (param) => Atom
 ```
 
 This will create a function that takes `param` and returns an atom.
 If it's already created, it will return it from the cache.
-`initializeRead` and `initializeWrite` are functions and return
-`read` and `write` respectively that are fed into `atom()`.
-Note that `initializeWrite` is optional.
-The third argument `areEqual` is also optional, which tell
-if two params are equal (defaults to `Object.is`.)
+`initializeAtom` is function that can return any kind of atom (`atom()`, `atomWithDefault()`, ...).
+Note that `areEqual` is optional, which tell
+if two params are equal (defaults to `Object.is`).
 
 To reproduce the similar behavior to [Recoil's atomFamily/selectorFamily](https://recoiljs.org/docs/api-reference/utils/atomFamily),
 specify a deepEqual function to `areEqual`. For example:
 
 ```js
+import { atom } from 'jotai'
 import deepEqual from 'fast-deep-equal'
 
-const fooFamily = atomFamily((param) => param, null, deepEqual)
+const fooFamily = atomFamily((param) => atom(param), deepEqual)
 ```
 
 ### Examples
 
 ```js
+import { atom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 
-const todoFamily = atomFamily((name) => name)
+const todoFamily = atomFamily((name) => atom(name))
 
 todoFamily('foo')
 // this will create a new atom('foo'), or return the one if already created
 ```
 
 ```js
+import { atom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 
-const todoFamily = atomFamily(
-  (name) => (get) => get(todosAtom)[name],
-  (name) => (get, set, arg) => {
-    const prev = get(todosAtom)
-    return { ...prev, [name]: { ...prev[name], ...arg } }
-  }
+const todoFamily = atomFamily((name) =>
+  atom(
+    (get) => get(todosAtom)[name],
+    (get, set, arg) => {
+      const prev = get(todosAtom)
+      return { ...prev, [name]: { ...prev[name], ...arg } }
+    }
+  )
 )
 ```
 
 ```js
+import { atom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 
 const todoFamily = atomFamily(
-  ({ id, name }) => ({ name }),
-  null,
+  ({ id, name }) => atom({ name }),
   (a, b) => a.id === b.id
 )
 ```
 
 ### Codesandbox
 
-https://codesandbox.io/s/react-typescript-forked-8zfrn
+<Codesandbox id="8zfrn" />
 
 ## selectAtom
 
@@ -373,7 +376,7 @@ const Monitor = () => {
 
 ### Codesandbox
 
-https://codesandbox.io/s/react-typescript-forked-6ur43
+<Codesandbox id="6ur43" />
 
 ## freezeAtom
 
@@ -422,7 +425,7 @@ See the below example for usage.
 
 ### codesandbox
 
-https://codesandbox.io/s/react-typescript-forked-7nir9?file=/src/App.tsx
+<Codesandbox id="7nir9" />
 
 ```tsx
 import * as React from 'react'
@@ -568,4 +571,4 @@ const App = () => {
 
 ### Codesandbox
 
-https://codesandbox.io/s/react-typescript-forked-krwsv?file=/src/App.tsx
+<Codesandbox id="krwsv" />

@@ -122,7 +122,7 @@ export default function Layout({ nav, toc, children }) {
                         </h5>
                         <div className="text-xl capitalize">
                           <Link href={previousPage.url}>
-                            <a>{previousPage.title}</a>
+                            <a className="text-gray-900">{previousPage.title}</a>
                           </Link>
                         </div>
                       </div>
@@ -135,7 +135,7 @@ export default function Layout({ nav, toc, children }) {
                         </h5>
                         <div className="text-xl capitalize">
                           <Link href={nextPage.url}>
-                            <a>{nextPage.title}</a>
+                            <a className="text-gray-900">{nextPage.title}</a>
                           </Link>
                         </div>
                       </div>

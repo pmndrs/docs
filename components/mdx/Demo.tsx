@@ -1,5 +1,4 @@
 import { useState, FC, useRef, useEffect } from 'react'
-import styled from 'styled-components'
 import prettier from 'prettier/standalone'
 import parserBabel from 'prettier/parser-babel'
 import { ErrorBoundary } from '../ErrorBoundary'
@@ -80,9 +79,9 @@ font-weight: bold;
       <div
         ref={containerRef}
         className="relative w-full grid"
-        style={{
-          height: 400,
-        }}
+        css={`
+          height: 400px;
+        `}
       >
         {onlyView ? (
           <SandpackRunner
@@ -108,21 +107,24 @@ font-weight: bold;
     <div
       ref={containerRef}
       className="relative w-full grid"
-      style={{
-        height: 400,
-      }}
+      css={`
+        height: 400px;
+      `}
     >
-      <DemoHeader>
-        <h3>{title}</h3>
-        {description ? <span>{description}</span> : null}
-        <DemoLink
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          {title && <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3>}
+        </div>
+        {description && <span>{description}</span>}
+        <a
+          className="flex mt-3 items-center opacity-60 text-xs text-gray-700"
           target="_blank"
           rel="nofollow noopener noreferrer"
           href={`https://codesandbox.io/s/${url}`}
         >
-          <CodeSandboxIcon /> Try it on CodeSandbox
-        </DemoLink>
-      </DemoHeader>
+          <CodeSandboxIcon className="mr-1" /> Try it on CodeSandbox
+        </a>
+      </div>
 
       <div className="relative h-full overflow-hidden">
         <ErrorBoundary>
@@ -143,29 +145,3 @@ font-weight: bold;
     </div>
   )
 }
-
-const DemoHeader = styled.header`
-  margin-bottom: 10px;
-
-  & > h3 {
-    margin: 0 0 0.17em 0 !important;
-    text-transform: uppercase !important;
-    color: #24292e !important;
-    font-size: 13.6px !important;
-    font-weight: 500 !important;
-    line-height: 19.9px !important;
-  }
-`
-
-const DemoLink = styled.a`
-  color: #24292e !important;
-  opacity: 0.6;
-  display: flex;
-  align-items: center;
-  margin-top: 12px;
-  font-size: 0.8em;
-
-  & > svg {
-    margin-right: 4px;
-  }
-`
