@@ -79,7 +79,7 @@ export default function Layout({ nav, toc, children }) {
             >
               <nav
                 id="nav"
-                className=" px-4 overflow-y-auto  font-medium  text-base  lg:text-sm  pb-10  lg:pb-14  sticky?lg:h-(screen-16) z-10 relative"
+                className="px-4 overflow-y-auto font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative"
               >
                 <div className="mb-4">
                   <LibSwitcher />
@@ -100,7 +100,7 @@ export default function Layout({ nav, toc, children }) {
               <div className="flex-auto min-w-0 px-4 pt-8 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{children}</div>
 
-                {docs[currentPageIndex] ? (
+                {docs[currentPageIndex] && (
                   <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
                     <a
                       target="_blank"
@@ -111,10 +111,10 @@ export default function Layout({ nav, toc, children }) {
                       Edit this page on GitHub
                     </a>
                   </div>
-                ) : null}
+                )}
 
                 {(previousPage || nextPage) && (
-                  <div className="flex justify-between w-full max-w-3xl  mx-auto mt-12">
+                  <div className="flex justify-between w-full max-w-3xl mx-auto mt-12">
                     {previousPage && (
                       <div className="">
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
@@ -145,7 +145,7 @@ export default function Layout({ nav, toc, children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {toc.length ? <Toc toc={toc} /> : null}
+                {toc.length && <Toc toc={toc} />}
               </div>
             </div>
           </div>
