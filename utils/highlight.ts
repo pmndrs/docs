@@ -21,7 +21,7 @@ export const trimPreview = (preview: string) =>
 /**
  * Traverses a search item, returning highlighted HTML.
  */
-const getHighlight = ({ search, title, description, content }: IHighlightProps) => {
+export const getHighlight = ({ search, title, description, content }: IHighlightProps) => {
   // Search match expression
   const match = new RegExp(search, 'gi')
   const isMatch = (text) => match.test(trimPreview(removeMarkdown(text)))
@@ -47,5 +47,3 @@ const getHighlight = ({ search, title, description, content }: IHighlightProps) 
     `,
   }
 }
-
-export default getHighlight
