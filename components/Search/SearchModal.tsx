@@ -1,6 +1,6 @@
 import { useSpring, a } from '@react-spring/web'
 import { SearchIcon } from 'components/Icons'
-import Item from './Item'
+import SearchItem from './SearchItem'
 
 const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
   const renderList = results.length > 0
@@ -39,7 +39,7 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
             type="search"
             name="search"
             id="search"
-            className={`outline-none focus:ring-gray-200 focus:border-gray-200 block w-full pl-10 sm:text-sm border-gray-300  bg-white px-4 py-6 text-gray-700 ${
+            className={`outline-none focus:ring-gray-200 focus:border-gray-200 block w-full pl-10 sm:text-sm border-gray-300 bg-white px-4 py-6 text-gray-700 ${
               renderList ? 'rounded-t-md' : 'rounded-md'
             }`}
             autoComplete="off"
@@ -50,11 +50,14 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
 
           {renderList && (
             <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
-              {results.map((res, i) => {
-                return (
-                  <Item key={`search-item-${i}`} search={search} multipleLibs={isThreeD} {...res} />
-                )
-              })}
+              {results.map((result, index) => (
+                <SearchItem
+                  key={`search-item-${index}`}
+                  search={search}
+                  multipleLibs={isThreeD}
+                  {...result}
+                />
+              ))}
             </ul>
           )}
         </div>
