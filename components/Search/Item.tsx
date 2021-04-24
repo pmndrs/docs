@@ -16,13 +16,7 @@ const Item = ({ title, url, search, multipleLibs, description, content }) => {
               {multipleLibs && (
                 <span className="text-xs font-light text-gray-500 block pb-1">{name}</span>
               )}
-              {highlight && (
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: highlight,
-                  }}
-                />
-              )}
+              {highlight && <span dangerouslySetInnerHTML={highlight} />}
             </span>
             <EnterIcon />
           </div>

@@ -1,44 +1,51 @@
 import removeMarkdown from 'utils/removeMarkdown'
 
 export interface IHighlightProps {
-  title: string
   search: string
+  title: string
   description: string
   content: string
 }
 
-const PREVIEW_LENGTH = 100
+/**
+ * The maximum length of search preview text.
+ */
+export const PREVIEW_LENGTH = 100
+
+/**
+ * Trims search preview text and indicates truncated text.
+ */
+export const trimPreview = (preview: string) =>
+  preview.length > PREVIEW_LENGTH ? `${preview.substring(0, PREVIEW_LENGTH)}...` : preview
 
 /**
  * Traverses a search item, returning highlighted HTML.
  */
 const getHighlight = ({ search, title, description, content }: IHighlightProps) => {
-  // Case-insensitive match expression
+  // Search match expression
   const match = new RegExp(search, 'gi')
+  const isMatch = (text) => match.test(trimPreview(removeMarkdown(text)))
 
-  // Traverse meta for matching content
-  const { type, result } = Object.entries({ title, description, content }).reduce(
-    (previous, [type, value]) => {
-      // Early return if match found or if not matching
-      if (previous.result || !match.test(value)) return previous
+  // Show content if description does not match search
+  const showContent = isMatch(content) && !isMatch(description)
+  const preview = showContent ? content : description
 
-      // Insert highlights around matching text
-      const preview = removeMarkdown(value)
-      const result = preview
-        .substring(0, PREVIEW_LENGTH)
-        .replace(match, (target: string) => `<span class="font-bold">${target}</span>`)
+  // Bolds matching text
+  const highlight = (text) =>
+    removeMarkdown(text).replace(
+      match,
+      (target: string) => `<span class="font-bold">${target}</span>`
+    )
 
-      return { type, result: preview.length > PREVIEW_LENGTH ? `${result}...` : result }
-    },
-    { type: null, result: null }
-  )
-
-  return `
-    ${type === 'title' ? result : title}
-    <span class="block text-sm text-gray-600 pt-2">
-      ${type === 'title' ? description.substring(0, PREVIEW_LENGTH) : result}
-    </span>
-  `
+  // Create highlight HTML
+  return {
+    __html: `
+      ${highlight(title)}
+      <span class="block text-sm text-gray-600 pt-2">
+        ${trimPreview(highlight(preview))}
+      </span>
+    `,
+  }
 }
 
 export default getHighlight
