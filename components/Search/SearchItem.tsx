@@ -13,9 +13,9 @@ const SearchItem = ({ title, url, search, multipleLibs, description, content }) 
   // Name of lib in multi-lib search
   const lib = titleCase(url.split('/')[1].replaceAll('-', ' '))
 
-  // Search match expression
+  // Case-insensitive search match expression
   const match = new RegExp(search, 'gi')
-  const isMatch = (text) => match.test(trimPreview(removeMarkdown(text)))
+  const isMatch = (text: string) => match.test(trimPreview(removeMarkdown(text)))
 
   // Show content if description does not match search
   const showContent = isMatch(content) && !isMatch(description)
@@ -35,7 +35,7 @@ const SearchItem = ({ title, url, search, multipleLibs, description, content }) 
                   __html: `
                     ${highlight(title, match)}
                     <span class="block text-sm text-gray-600 pt-2">
-                      ${trimPreview(highlight(preview, match))}
+                      ${highlight(trimPreview(preview), match)}
                     </span>
                   `,
                 }}
