@@ -126,9 +126,8 @@ font-weight: bold;
 
       <div className="relative h-full overflow-hidden">
         <ErrorBoundary>
-          {inViewport &&
-            data &&
-            (showCode ? (
+          {inViewport && data ? (
+            showCode ? (
               <Sandpack
                 customSetup={{
                   files: data,
@@ -150,7 +149,8 @@ font-weight: bold;
                   showNavigator: false,
                 }}
               />
-            ))}
+            )
+          ) : null}
         </ErrorBoundary>
       </div>
     </div>
