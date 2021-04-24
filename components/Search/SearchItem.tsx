@@ -19,7 +19,7 @@ const SearchItem = ({ title, url, search, multipleLibs, description, content }) 
 
   // Show content if description does not match search
   const showContent = isMatch(content) && !isMatch(description)
-  const preview = showContent ? content : description
+  const preview = showContent ? removeMarkdown(content) : description
 
   return (
     <Link href={url}>
