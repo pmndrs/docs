@@ -108,6 +108,8 @@ td:first-child {
 
 .grid-list li {
   @apply text-base text-gray-700;
+  font-size: 0.9375rem;
+  line-height: 1.35rem;
 }
 
 .grid-list li a {
