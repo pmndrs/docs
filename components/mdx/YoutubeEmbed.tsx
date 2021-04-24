@@ -1,14 +1,7 @@
 export const YouTubeEmbed = ({ src }: { src: string }) => {
   return (
-    <div className="relative pb-[56.25%] pt-[30px] h-0 2-full rounded-lg overflow-hidden my-[2em] border border-gray-200">
-      <iframe
-        width="853"
-        height="480"
-        src={src}
-        frameBorder="0"
-        allowFullScreen
-        className=" absolute top-0 left-0 w-full h-full"
-      />
+    <div className="aspect-w-16 aspect-h-9 pt-10 h-0 2-full rounded-lg overflow-hidden my-6 border border-gray-200">
+      <iframe width="853" height="480" src={src} frameBorder="0" allowFullScreen />
     </div>
   )
 }
