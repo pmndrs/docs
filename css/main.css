@@ -64,7 +64,7 @@ code span {
   @apply p-4 mb-8 overflow-hidden overflow-x-auto text-sm bg-gray-900 rounded;
 }
 
-a {
+main a {
   @apply text-blue-400;
 }
 

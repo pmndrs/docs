@@ -40,7 +40,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
             )}
           </div>
         )}
-        <div className="content-container">{content}</div>
+        <main className="content-container">{content}</main>
       </main>
     </Layout>
   )
