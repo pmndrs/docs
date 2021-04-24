@@ -76,13 +76,7 @@ font-weight: bold;
     }
 
     return code ? (
-      <div
-        ref={containerRef}
-        className="relative w-full grid"
-        css={`
-          height: 400px;
-        `}
-      >
+      <div ref={containerRef} className="relative w-full grid h-[400px]">
         {onlyView ? (
           <SandpackRunner
             template="react"
@@ -104,13 +98,7 @@ font-weight: bold;
     ) : null
   }
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full grid"
-      css={`
-        height: 400px;
-      `}
-    >
+    <div ref={containerRef} className="relative w-full grid h-[400px]">
       <div className="flex justify-between items-center mb-2">
         <div>
           {title && <h3 className="uppercase text-sm tracking-large text-gray-700">{title}</h3>}

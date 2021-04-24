@@ -66,7 +66,7 @@ const components = {
       className="mb-4 text-base leading-6 text-gray-700"
       css={`
         &:first-child {
-          display: inline-blokc;
+          display: inline-block;
         }
       `}
     >

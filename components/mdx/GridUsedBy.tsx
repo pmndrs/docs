@@ -1,13 +1,12 @@
 const Image = ({ size = 'contain', url, ...rest }) => {
   return (
     <a
-      {...rest}
+      className={`bg-[${size}] bg-no-repeat bg-center ${rest.className}`}
       css={`
         background-image: url(${url});
         background-size: ${size};
-        background-repeat: no-repeat;
-        background-position: center center;
       `}
+      {...rest}
     ></a>
   )
 }

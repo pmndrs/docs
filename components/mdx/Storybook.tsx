@@ -17,10 +17,7 @@ const Storybook = ({ id, lib }) => (
       </div>
     </div>
     <iframe
-      css={`
-        height: 400px;
-      `}
-      className="my-6 w-full"
+      className="my-6 w-full h-[400px]"
       src={`https://${lib}.pmnd.rs/iframe.html?id=${id}&viewMode=story`}
     />
   </LazyLoad>
