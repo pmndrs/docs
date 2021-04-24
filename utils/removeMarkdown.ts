@@ -10,12 +10,9 @@ export default function removeMarkdown(md: string) {
       // Remove atx-style headers
       .replace(/^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm, '$1$2$3')
       // Remove emphasis (repeat the line to remove double emphasis)
-      .replaceAll('**', '')
-      .replaceAll('```js', ' ')
-      .replaceAll('```ts', ' ')
-      .replaceAll('```jsx', ' ')
-      .replaceAll('```', ' ')
-      .replaceAll('`', '')
+      .replace(/\*{2}/g, '')
+      .replace(/\`{3}(js|ts)x?/g, ' ')
+      .replace(/\`/g, '')
       .replace(/(^.*\[|\].*$)/g, '')
       .replace(/(?:\r\n|\r|\n)/g, ' ')
 
