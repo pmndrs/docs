@@ -97,7 +97,7 @@ tbody tr:nth-child(odd) {
 }
 
 td {
-  @apply px-6 py-4 text-sm text-gray-900;
+  @apply px-6 py-4 text-sm text-gray-900 break-all;
   max-width: 150px;
 }
 
