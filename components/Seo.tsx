@@ -20,7 +20,7 @@ const sites = {
 
   'react-postprocessing': {
     title: 'React Postprocessing',
-    image: 'https://docs.pmnd.rs/react-postprocessing.jpg',
+    image: 'https://docs.pmnd.rs/react-processing.jpg',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
   },
   zustand: {
