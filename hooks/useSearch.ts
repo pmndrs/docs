@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { matchSorter } from 'match-sorter'
 export type Result = { title: string; url: string; content: string }
 
-const threeD = ['react-three-fiber', 'drei']
+const threeD = ['react-three-fiber', 'drei', 'react-postprocessing']
 
 export default function useSearch({ search, folder, docs }): [Result[], boolean] {
   const isThreeD = threeD.includes(folder)
