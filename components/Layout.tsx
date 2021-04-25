@@ -53,7 +53,7 @@ export default function Layout({ nav, toc, children }) {
             style={{ opacity }}
             className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72"
           >
-            <span className="font-bold cursor-pointer">Pmdnrs</span>
+            <span className="font-bold cursor-pointer">Pmndrs</span>
             <span className="font-normal cursor-pointer">.docs</span>
           </a.div>
         </Link>
