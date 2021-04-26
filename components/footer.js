@@ -4,8 +4,8 @@ export default function Footer() {
       <footer>
         <div className="footer__content">
           <div className="footer__left">
-            <a href="https://twitter.com/u29dc" target="_blank" rel="noopener">
-              <div className="iinfin">
+            <a href="https://twitter.com/pmndrs" target="_blank" rel="noopener">
+              <div>
                 <svg width="15" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill="#fff" d="M0 0h15v15H0z" />
                 </svg>
