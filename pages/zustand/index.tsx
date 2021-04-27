@@ -100,7 +100,7 @@ function Scene({ dof }) {
 
   return (
     <group ref={group}>
-      {/* <Fireflies count={10} radius={80} colors={["orange"]} /> */}
+      <Fireflies count={10} radius={80} />
       {layers.map(({ scale, texture, ref, factor = 0, scaleFactor = 1, wiggle = 0, z }, i) => (
         <Plane
           scale={scale}
