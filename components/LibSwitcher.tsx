@@ -5,6 +5,8 @@ import { animated as a, useTransition, useChain } from 'react-spring'
 import { switcherContentRef, switcherModalRef, useSwitcher } from 'store/switcher'
 import { useRouter } from 'next/router'
 import useKeyPress from 'hooks/useKeyPress'
+import { Close } from './Icons'
+import { useMemo } from 'react'
 
 const data = [
   {
@@ -36,7 +38,9 @@ const data = [
 function SwitcherContent({ open, handleClick }) {
   const router = useRouter()
 
-  const transitions = useTransition(open ? data : [], (item) => item.id, {
+  const _data = useMemo(() => data.filter(({ id }) => id !== router.query.slug[0]), [router])
+
+  const transitions = useTransition(open ? _data : [], (item) => item.id, {
     ref: switcherContentRef,
     unique: true,
     trail: 100,
@@ -50,7 +54,7 @@ function SwitcherContent({ open, handleClick }) {
   })
 
   return (
-    <div className="space-y-4 py-16 mx-4">
+    <div className="space-y-4 py-8 mx-4">
       {transitions.map(({ item, props, key }) => (
         <a.div
           key={key}
@@ -78,9 +82,9 @@ export default function LibSwitcher() {
   const router = useRouter()
 
   const handleClick = useCallback(
-    (path) => {
+    (path?: string) => {
       toggleSwitcher()
-      if (router.query.slug[0] !== path) {
+      if (path && router.query.slug[0] !== path) {
         router.push(`/${path}`)
       }
     },
@@ -103,6 +107,18 @@ export default function LibSwitcher() {
   return (
     <>
       <SimpleModal open={isSwitcherOpen}>
+        <div className="sticky top-0 left-0 right-0 grid grid-cols-3 bg-black text-white h-16">
+          <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
+            <span className="font-bold cursor-pointer">Pmndrs</span>
+            <span className="font-normal cursor-pointer">.docs</span>
+          </div>
+          <div className="flex justify-center items-center font-semibold capitalize">
+            <span className="hidden md:inline">{query.slug[0].replace(/\-/g, ' ')}</span>
+          </div>
+          <div className="flex justify-end items-center h-16">
+            <Close className="m-4 w-8 h-8 cursor-pointer" onClick={() => handleClick()} />
+          </div>
+        </div>
         <SwitcherContent open={isSwitcherOpen} handleClick={handleClick} />
       </SimpleModal>
       <div
