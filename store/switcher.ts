@@ -19,5 +19,4 @@ export const useSwitcher = create<State>((set) => ({
 }))
 
 export const switcherContentRef = createRef<ReactSpringHook>()
-export const switcherWrapperRef = createRef<ReactSpringHook>()
 export const switcherModalRef = createRef<ReactSpringHook>()
