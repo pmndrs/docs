@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { shaderMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 import React, { Suspense, useRef, useState } from 'react'
