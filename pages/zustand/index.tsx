@@ -54,8 +54,8 @@ function Scene({ dof }) {
     '/zustand-resources/leaves1.png',
     '/zustand-resources/leaves2.png',
   ])
-  const subject = useRef()
-  const group = useRef()
+  const subject = useRef<any>()
+  const group = useRef<any>()
   const layersRef = useRef([])
   const [movementVector] = useState(() => new THREE.Vector3())
   const [tempVector] = useState(() => new THREE.Vector3())
