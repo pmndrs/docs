@@ -29,7 +29,7 @@ function SimpleModal(props: SimpleModalProps) {
           item && (
             <a.div
               key={key}
-              className="fixed z-50 inset-0 overflow-hidden"
+              className="fixed z-50 inset-0"
               style={{ opacity: springProps.opacity }}
             >
               <div className="flex items-end justify-center h-screen  text-center md:block md:p-0">

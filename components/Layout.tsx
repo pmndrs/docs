@@ -64,7 +64,7 @@ export default function Layout({ nav, toc, children }) {
             <a.div
               id="nav-wrapper"
               className={clsx(
-                isSwitcherOpen ? 'overflow-hidden' : 'overflow-hidden overflow-y-auto',
+                isSwitcherOpen ? '' : 'overflow-hidden overflow-y-auto',
                 'h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative'
               )}
               style={navStyles}
