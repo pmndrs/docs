@@ -10,6 +10,7 @@ declare global {
     interface IntrinsicElements {
       meshLine: any
       meshLineMaterial: any
+      layerMaterial: any
     }
   }
 }
@@ -37,7 +38,7 @@ function Fatline({ curve, width, color }) {
   )
 }
 
-export default function Fireflies({ count, colors, radius = 10 }) {
+export default function Fireflies({ count, radius = 10 }) {
   const lines = useMemo(
     () =>
       new Array(count).fill(undefined).map((_, index) => {
@@ -57,7 +58,7 @@ export default function Fireflies({ count, colors, radius = 10 }) {
           curve,
         }
       }),
-    [count, radius, colors]
+    [count, radius]
   )
   return (
     <group position={[-radius * 2, -radius, 0]}>
