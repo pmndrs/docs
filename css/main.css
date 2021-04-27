@@ -252,13 +252,7 @@ ul.grid-list > li:before {
   .zustand-home .bear {
     left: -20%;
   }
-  .zustand-home .code {
-    justify-content: center;
-    width: 100% !important;
-    left: 0;
-    z-index: 1000;
-    margin-left: 0;
-  }
+
   .zustand-home code {
     font-size: 0.8em;
   }
@@ -266,7 +260,7 @@ ul.grid-list > li:before {
 
 @media only screen and (max-width: 600px) {
   .zustand-home code {
-    font-size: 0.6em;
+    font-size: 0.6em !important;
   }
 }
 
@@ -278,29 +272,6 @@ ul.grid-list > li:before {
 
 @media only screen and (max-width: 500px) {
   .zustand-home code {
-    font-size: 0.4em;
-  }
-  .zustand-home span.header-left {
-    top: 20px;
-    left: 20px;
-  }
-  .zustand-home a.top-left {
-    top: 70px;
-    left: 20px;
-  }
-
-  .zustand-home a.top-right {
-    top: 20px;
-    right: 20px;
-  }
-
-  .zustand-home a.bottom-left {
-    bottom: 20px;
-    left: 20px;
-  }
-
-  .zustand-home a.bottom-right {
-    bottom: 20px;
-    right: 20px;
+    font-size: 0.4em !important;
   }
 }

@@ -24,17 +24,17 @@ function Counter() {
   const { count, inc } = useStore()
   return (
     <div
-      className="absolute top-[-100px] right-[-40px] text-white z-[2000] p-6 rounded-xl w-[124px] h-[124px] text-xl z-[20000]"
+      className="absolute md:top-[-100px] md:right-[-40px] text-white z-[2000] p-6 rounded-xl md:w-[124px] md:h-[124px] md:text-xl text-base z-[20000]  w-[80px] h-[80px] top-[-80px] right-[-20px]"
       style={{ background: '#394a52', boxShadow: '0 16px 40px -5px rgba(0, 0, 0, 0.5)' }}
     >
       <span
-        className="absolute text-4xl left-[50%] top-[40px] "
+        className="absolute text-base md:text-4xl left-[50%] md:top-[40px] top-5 "
         style={{ transform: 'translate3d(-50%, -50%, 0)' }}
       >
         {count}
       </span>
       <button
-        className="m-3 p-1 absolute outline-none rounded w-[100px] bottom-0 left-0 border-2 border-color-white"
+        className="m-3 p-1 absolute outline-none rounded md:w-[100px] bottom-0 left-0 border-2 border-color-white"
         onClick={inc}
       >
         one up
@@ -157,8 +157,8 @@ export default function App() {
         <Effects ref={dof} />
       </Canvas>
 
-      <div className="absolute w-full h-full top-0 left-0 text-white">
-        <div className="absolute width-[50%] h-full flex ml-[50%] left-[25%] justify-center items-center">
+      <div className="absolute w-full h-full top-0 left-0 text-white overflow-hidden md:overflow-auto">
+        <div className="absolute md:width-[50%] h-full flex md:ml-[50%] md:left-[25%] md:mt-0 justify-center items-center code ml-[50%] mt-40 max-h-screen">
           <div className="absolute">
             <PrismCode className="language-jsx !whitespace-pre">{code}</PrismCode>
             <Counter />
@@ -167,22 +167,22 @@ export default function App() {
 
         <a
           href="https://github.com/pmndrs/zustand"
-          className=" top-[40px]  right-[40px] absolute"
+          className="md:top-10 md:right-10 top-7 right-5  absolute"
           target="_blank"
           rel="noreferer"
           children="Github"
         />
         <Link href="/zustand/introduction">
-          <a className="bottom-right bottom-[40px]  right-[40px] absolute">Docs</a>
+          <a className="md:bottom-10 md:right-10 bottom-5 right-5 absolute">Docs</a>
         </Link>
         <a
           href="https://www.instagram.com/tina.henschel/"
-          className="bottom-[40px]  left-[40px] absolute"
+          className="md:bottom-10 md:left-10 bottom-5 left-5 absolute"
           target="_blank"
           rel="noreferer"
           children="Illustrations @ Tina Henschel"
         />
-        <span className="font-bold absolute uppercase top-[40px] left-[40px] text-5xl inline-block">
+        <span className="font-bold absolute uppercase md:top-10 md:left-10 top-5 left-5 text-5xl inline-block">
           Zustand
         </span>
       </div>
