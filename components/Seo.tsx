@@ -39,6 +39,7 @@ const sites = {
 
 export default function SEO({ name }: { name: string }) {
   const currentSeo = sites[name]
+  console.log(name)
 
   return currentSeo ? (
     <Head>

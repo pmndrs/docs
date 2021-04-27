@@ -10,6 +10,7 @@ import 'prismjs'
 import 'prismjs/components/prism-jsx.min'
 import Fireflies from '../../components/Fireflies'
 import Link from 'next/link'
+import SEO from 'components/Seo'
 
 const useStore = create<{
   count: number
@@ -144,6 +145,7 @@ export default function App() {
   const dof = useRef()
   return (
     <div className="overflow-hidden h-screen w-screen">
+      <SEO name="zustand" />
       <Canvas
         orthographic
         gl={{
