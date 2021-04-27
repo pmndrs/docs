@@ -189,10 +189,6 @@ ul.grid-list > li:before {
   @apply bg-gray-800 text-gray-200;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 .zustand-home .bg {
   background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/DWLR-bg.jpg');
 }
