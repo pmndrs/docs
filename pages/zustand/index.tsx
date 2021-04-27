@@ -44,8 +44,8 @@ function Counter() {
 }
 
 function Scene({ dof }) {
-  const scaleN = useAspect(1600, 1000, 1)
-  const scaleW = useAspect(2200, 1000, 1)
+  const scaleN = useAspect(1600, 1000)
+  const scaleW = useAspect(2200, 1000)
   const textures = useTexture([
     '/zustand-resources/bg.jpg',
     '/zustand-resources/stars.png',
@@ -70,26 +70,19 @@ function Scene({ dof }) {
   ]
 
   useFrame((state, delta) => {
-    // @ts-ignore
     dof.current.target = focusVector.lerp(subject.current.position, 0.05)
     movementVector.lerp(tempVector.set(state.mouse.x, state.mouse.y * 0.2, 0), 0.2)
-    // @ts-ignore
     group.current.position.x = THREE.MathUtils.lerp(
-      // @ts-ignore
       group.current.position.x,
       state.mouse.x * 20,
       0.2
     )
-    // @ts-ignore
     group.current.rotation.x = THREE.MathUtils.lerp(
-      // @ts-ignore
       group.current.rotation.x,
       state.mouse.y / 10,
       0.2
     )
-    // @ts-ignore
     group.current.rotation.y = THREE.MathUtils.lerp(
-      // @ts-ignore
       group.current.rotation.y,
       -state.mouse.x / 2,
       0.2
@@ -123,7 +116,7 @@ function Scene({ dof }) {
   )
 }
 
-const Effects = React.forwardRef((props, ref) => {
+const Effects = React.forwardRef((_, ref) => {
   const {
     viewport: { width, height },
   } = useThree()
@@ -144,9 +137,10 @@ const Effects = React.forwardRef((props, ref) => {
 export default function App() {
   const dof = useRef()
   return (
-    <div className="overflow-hidden h-screen w-screen">
+    <div className="overflow-hidden h-screen w-screen pointer-events-none zustand-home">
       <SEO name="zustand" />
       <Canvas
+        linear
         orthographic
         gl={{
           powerPreference: 'high-performance',
@@ -163,7 +157,7 @@ export default function App() {
         <Effects ref={dof} />
       </Canvas>
 
-      <div className="absolute w-full h-full top-0 left-0 text-white zustand-home">
+      <div className="absolute w-full h-full top-0 left-0 text-white">
         <div className="absolute width-[50%] h-full flex ml-[50%] left-[25%] justify-center items-center">
           <div className="absolute">
             <PrismCode className="language-jsx !whitespace-pre">{code}</PrismCode>
@@ -174,6 +168,8 @@ export default function App() {
         <a
           href="https://github.com/pmndrs/zustand"
           className=" top-[40px]  right-[40px] absolute"
+          target="_blank"
+          rel="noreferer"
           children="Github"
         />
         <Link href="/zustand/introduction">
@@ -182,6 +178,8 @@ export default function App() {
         <a
           href="https://www.instagram.com/tina.henschel/"
           className="bottom-[40px]  left-[40px] absolute"
+          target="_blank"
+          rel="noreferer"
           children="Illustrations @ Tina Henschel"
         />
         <span className="font-bold absolute uppercase top-[40px] left-[40px] text-5xl inline-block">
