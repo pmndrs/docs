@@ -1,23 +1,10 @@
 import clsx from 'clsx'
 import SimpleModal from 'components/Modal'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSpring, animated as a, useTransition, useChain } from 'react-spring'
-import {
-  switcherContentRef,
-  switcherModalRef,
-  switcherWrapperRef,
-  useSwitcher,
-} from 'store/switcher'
+import { useCallback, useEffect, useState } from 'react'
+import { animated as a, useTransition, useChain } from 'react-spring'
+import { switcherContentRef, switcherModalRef, useSwitcher } from 'store/switcher'
 import { useRouter } from 'next/router'
-import { useMenu } from 'store/menu'
 import useKeyPress from 'hooks/useKeyPress'
-
-const defaultBoundingClientRect = {
-  height: 0,
-  width: 0,
-  x: 0,
-  y: 0,
-}
 
 const data = [
   {
@@ -44,17 +31,9 @@ const data = [
     id: 'react-postprocessing',
     label: 'React Postprocessing',
   },
-  // {
-  //   id: 'Component Material',
-  //   label: 'Component Material',
-  // },
-  // {
-  //   id: 'Valtio',
-  //   label: 'Valtio',
-  // },
 ]
 
-function SwitcherContent({ open, callback }) {
+function SwitcherContent({ open, handleClick }) {
   const router = useRouter()
 
   const transitions = useTransition(open ? data : [], (item) => item.id, {
@@ -70,18 +49,8 @@ function SwitcherContent({ open, callback }) {
     },
   })
 
-  const handleClick = useCallback(
-    (path) => {
-      if (router.query.slug[0] !== path) {
-        router.push(`/${path}`)
-      }
-      callback()
-    },
-    [router, callback]
-  )
-
   return (
-    <div className="space-y-4 pb-4 mx-4">
+    <div className="space-y-4 py-16 mx-4">
       {transitions.map(({ item, props, key }) => (
         <a.div
           key={key}
@@ -102,67 +71,41 @@ function SwitcherContent({ open, callback }) {
 }
 
 export default function LibSwitcher() {
-  const [localIsOpen, setLocalIsOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>()
-  const localIsOpenRef = useRef(localIsOpen)
-  const [boundingClientRect, setBoundingClientRect] = useState(defaultBoundingClientRect)
-  const { isSwitcherOpen, setIsSwitcherOpen } = useSwitcher()
-  const { isMenuOpen } = useMenu()
-  const labelSizeClasses = 'p-2 px-3'
+  const { isSwitcherOpen, setIsSwitcherOpen, toggleSwitcher } = useSwitcher()
+  const labelSizeClasses = 'block px-6 py-2'
   const { query } = useRouter()
   const escPressed = useKeyPress('Escape')
+  const router = useRouter()
 
-  const toggleSwitcher = useCallback(() => setLocalIsOpen((s) => !s), [setLocalIsOpen])
-
-  const { top } = useSpring({
-    ref: switcherWrapperRef,
-    top: localIsOpen ? 10 : boundingClientRect.y,
-    immediate: !isSwitcherOpen && !localIsOpen,
-    onRest: () =>
-      !localIsOpenRef.current && isSwitcherOpen && setIsSwitcherOpen(localIsOpenRef.current),
-  })
-
-  useChain(
-    localIsOpen
-      ? [switcherWrapperRef, switcherModalRef, switcherContentRef]
-      : [switcherContentRef, switcherModalRef, switcherWrapperRef],
-    [0, 0.35]
+  const handleClick = useCallback(
+    (path) => {
+      toggleSwitcher()
+      if (router.query.slug[0] !== path) {
+        router.push(`/${path}`)
+      }
+    },
+    [router, toggleSwitcher]
   )
 
-  useEffect(() => setBoundingClientRect(ref.current.getBoundingClientRect()), [
-    isMenuOpen,
-    setBoundingClientRect,
-  ])
-
-  useEffect(() => {
-    localIsOpenRef.current = localIsOpen
-    if (localIsOpen) {
-      setIsSwitcherOpen(true)
-    }
-  }, [localIsOpen, setIsSwitcherOpen])
+  useChain(
+    isSwitcherOpen
+      ? [switcherModalRef, switcherContentRef]
+      : [switcherContentRef, switcherModalRef],
+    [0, 0.35]
+  )
 
   useEffect(() => {
     if (escPressed) {
       setIsSwitcherOpen(false)
-      setLocalIsOpen(false)
     }
   }, [escPressed])
 
   return (
     <>
-      <SimpleModal open={localIsOpen}>
-        <SwitcherContent open={localIsOpen} callback={toggleSwitcher} />
+      <SimpleModal open={isSwitcherOpen}>
+        <SwitcherContent open={isSwitcherOpen} handleClick={handleClick} />
       </SimpleModal>
-      <div ref={ref} className={clsx('opacity-0 mx-1 capitalize', labelSizeClasses)}>
-        {query.slug[0].replace(/\-/g, '')}
-      </div>
-      <a.div
-        style={{
-          top,
-          width: boundingClientRect.width,
-          height: boundingClientRect.height,
-          left: boundingClientRect.x,
-        }}
+      <div
         className={clsx(
           'z-50 text-white rounded-md font-semibold bg-black cursor-pointer capitalize',
           labelSizeClasses
@@ -170,7 +113,7 @@ export default function LibSwitcher() {
         onClick={toggleSwitcher}
       >
         {query.slug[0].replace(/\-/g, ' ')}
-      </a.div>
+      </div>
     </>
   )
 }
