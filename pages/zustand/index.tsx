@@ -44,8 +44,8 @@ function Counter() {
 }
 
 function Scene({ dof }) {
-  const scaleN = useAspect(1600, 1000)
-  const scaleW = useAspect(2200, 1000)
+  const scaleN = useAspect(1600, 1000, 1.05)
+  const scaleW = useAspect(2200, 1000, 1.05)
   const textures = useTexture([
     '/zustand-resources/bg.jpg',
     '/zustand-resources/stars.png',
@@ -57,21 +57,21 @@ function Scene({ dof }) {
   const subject = useRef<any>()
   const group = useRef<any>()
   const layersRef = useRef([])
-  const [movementVector] = useState(() => new THREE.Vector3())
-  const [tempVector] = useState(() => new THREE.Vector3())
-  const [focusVector] = useState(() => new THREE.Vector3())
+  const [movement] = useState(() => new THREE.Vector3())
+  const [temp] = useState(() => new THREE.Vector3())
+  const [focus] = useState(() => new THREE.Vector3())
   const layers = [
     { texture: textures[0], z: 0, factor: 0.005, scale: scaleW },
     { texture: textures[1], z: 10, factor: 0.005, scale: scaleW },
     { texture: textures[2], z: 20, scale: scaleW },
     { texture: textures[3], z: 30, ref: subject, scaleFactor: 0.83, scale: scaleN },
-    { texture: textures[4], factor: 0.03, scaleFactor: 1, z: 40, wiggle: 0.24, scale: scaleW },
-    { texture: textures[5], factor: 0.04, scaleFactor: 1.3, z: 49, wiggle: 0.3, scale: scaleW },
+    { texture: textures[4], factor: 0.03, scaleFactor: 1, z: 40, wiggle: 0.6, scale: scaleW },
+    { texture: textures[5], factor: 0.04, scaleFactor: 1.3, z: 49, wiggle: 1, scale: scaleW },
   ]
 
   useFrame((state, delta) => {
-    dof.current.target = focusVector.lerp(subject.current.position, 0.05)
-    movementVector.lerp(tempVector.set(state.mouse.x, state.mouse.y * 0.2, 0), 0.2)
+    dof.current.target = focus.lerp(subject.current.position, 0.05)
+    movement.lerp(temp.set(state.mouse.x, state.mouse.y * 0.2, 0), 0.2)
     group.current.position.x = THREE.MathUtils.lerp(
       group.current.position.x,
       state.mouse.x * 20,
@@ -92,7 +92,7 @@ function Scene({ dof }) {
 
   return (
     <group ref={group}>
-      <Fireflies count={10} radius={80} />
+      <Fireflies count={20} radius={80} />
       {layers.map(({ scale, texture, ref, factor = 0, scaleFactor = 1, wiggle = 0, z }, i) => (
         <Plane
           scale={scale}
@@ -102,13 +102,12 @@ function Scene({ dof }) {
           ref={ref}
         >
           <layerMaterial
-            attach="material"
-            movementVector={movementVector}
+            movement={movement}
             textr={texture}
             factor={factor}
             ref={(el) => (layersRef.current[i] = el)}
             wiggle={wiggle}
-            scaleFactor={scaleFactor}
+            scale={scaleFactor}
           />
         </Plane>
       ))}
@@ -116,18 +115,16 @@ function Scene({ dof }) {
   )
 }
 
-const Effects = React.forwardRef((_, ref) => {
-  const {
-    viewport: { width, height },
-  } = useThree()
+const Effects = React.forwardRef((props, ref) => {
+  const { viewport: { width, height } } = useThree() // prettier-ignore
   return (
     <EffectComposer multisampling={0}>
       <DepthOfField
         ref={ref}
         bokehScale={4}
         focalLength={0.1}
-        width={width / 2}
-        height={height / 2}
+        width={(width * 5) / 2}
+        height={(height * 5) / 2}
       />
       <Vignette />
     </EffectComposer>
@@ -137,18 +134,12 @@ const Effects = React.forwardRef((_, ref) => {
 export default function App() {
   const dof = useRef()
   return (
-    <div className="overflow-hidden h-screen w-screen pointer-events-none zustand-home">
+    <div className="overflow-hidden h-screen w-screen zustand-home">
       <SEO name="zustand" />
       <Canvas
         linear
         orthographic
-        gl={{
-          powerPreference: 'high-performance',
-          antialias: false,
-          stencil: false,
-          alpha: false,
-          depth: false,
-        }}
+        gl={{ antialias: false, stencil: false, alpha: false, depth: false }}
         camera={{ zoom: 5, position: [0, 0, 200], far: 300, near: 0 }}
       >
         <Suspense fallback={null}>
@@ -157,7 +148,7 @@ export default function App() {
         <Effects ref={dof} />
       </Canvas>
 
-      <div className="absolute w-full h-full top-0 left-0 text-white overflow-hidden md:overflow-auto">
+      <div className="absolute w-full h-full top-0 left-0 text-white overflow-hidden md:overflow-auto pointer-events-none">
         <div className="absolute md:width-[50%] h-full flex md:ml-[50%] md:left-[25%] md:mt-0 justify-center items-center code ml-[50%] mt-40 max-h-screen">
           <div className="absolute">
             <PrismCode className="language-jsx !whitespace-pre">{code}</PrismCode>
