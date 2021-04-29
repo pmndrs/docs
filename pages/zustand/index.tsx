@@ -94,6 +94,7 @@ function Scene({ dof }) {
     <group ref={group}>
       <Fireflies count={20} radius={80} />
       {layers.map(({ scale, texture, ref, factor = 0, scaleFactor = 1, wiggle = 0, z }, i) => (
+        // @ts-ignore
         <Plane
           scale={scale}
           args={[1, 1, wiggle ? 10 : 1, wiggle ? 10 : 1]}
