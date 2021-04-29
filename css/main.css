@@ -189,43 +189,6 @@ ul.grid-list > li:before {
   @apply bg-gray-800 text-gray-200;
 }
 
-.zustand-home .bg {
-  background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/DWLR-bg.jpg');
-}
-
-.zustand-home .stars {
-  background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/OiNX-stars.png');
-}
-
-.zustand-home .ground {
-  background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/xyC5-ground.png');
-}
-
-.zustand-home .bear {
-  top: 12.5%;
-  height: 80% !important;
-  min-height: 600px;
-  left: -19%;
-  background-size: 1000px !important;
-  background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/TiR4-bear.png');
-}
-
-.zustand-home .leaves1 {
-  left: -2.5%;
-  top: -2.5%;
-  width: 105% !important;
-  height: 105% !important;
-  background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/zjhf-leaves1.png');
-}
-
-.zustand-home .leaves2 {
-  left: -2.5%;
-  top: -2.5%;
-  width: 105% !important;
-  height: 105% !important;
-  background-image: url('https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/3n-p-leaves2.png');
-}
-
 .zustand-home code {
   margin-top: -50px;
   display: inline-block;
@@ -236,23 +199,7 @@ ul.grid-list > li:before {
   box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.5);
 }
 
-@media only screen and (max-width: 1200px) {
-  .zustand-home .bear {
-    left: -20%;
-  }
-}
-
-@media only screen and (max-width: 1140px) {
-  .zustand-home .bear {
-    left: -25%;
-  }
-}
-
 @media only screen and (max-width: 1024px) {
-  .zustand-home .bear {
-    left: -20%;
-  }
-
   .zustand-home code {
     font-size: 0.8em;
   }
