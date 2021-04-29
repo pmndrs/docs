@@ -1,25 +1,10 @@
 import { EnterIcon } from 'components/Icons'
 import Link from 'next/link'
 import titleCase from 'utils/titleCase'
-import removeMarkdown from 'utils/removeMarkdown'
 import highlight from 'utils/highlight'
 
-// Trim search preview text
-const PREVIEW_LENGTH = 100
-const trimPreview = (preview: string) =>
-  preview.length > PREVIEW_LENGTH ? `${preview.substring(0, PREVIEW_LENGTH)}...` : preview
-
-const SearchItem = ({ title, url, search, multipleLibs, description, content }) => {
-  // Name of lib in multi-lib search
+const SearchItem = ({ url, multipleLibs, search, title, description }) => {
   const lib = titleCase(url.split('/')[1].replace(/\-/g, ' '))
-
-  // Case-insensitive search match expression
-  const match = new RegExp(search, 'gi')
-  const isMatch = (text: string) => match.test(trimPreview(removeMarkdown(text)))
-
-  // Show content if description does not match search
-  const showContent = isMatch(content) && !isMatch(description)
-  const preview = showContent ? removeMarkdown(content) : description
 
   return (
     <Link href={url}>
@@ -33,9 +18,9 @@ const SearchItem = ({ title, url, search, multipleLibs, description, content }) 
               <span
                 dangerouslySetInnerHTML={{
                   __html: `
-                    ${highlight(title, match)}
+                    ${highlight(title, search)}
                     <span class="block text-sm text-gray-600 pt-2">
-                      ${highlight(trimPreview(preview), match)}
+                      ${highlight(description, search)}
                     </span>
                   `,
                 }}
