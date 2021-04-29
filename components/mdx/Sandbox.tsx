@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 
 export default function Sandbox({ id }) {
   const [data, setData] = useState<{
@@ -22,11 +21,12 @@ export default function Sandbox({ id }) {
     <div>
       <a href={`https://codesandbox.io/s/${data.alias}`} target="_blank">
         <div className="flex rounded shadow-lg overflow-hidden">
-          <Image
+          <img
             width={1763}
             height={926}
             src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
             alt={data.title}
+            loading="lazy"
           />
         </div>
       </a>
