@@ -140,7 +140,7 @@ export default function Layout({ nav, toc, children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {toc.length && <Toc toc={toc} />}
+                {toc.length ? <Toc toc={toc} /> : null}
               </div>
             </div>
           </div>

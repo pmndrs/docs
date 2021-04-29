@@ -1,7 +1,10 @@
 /**
- * Bolds matching text in a string, returning HTML.
+ * Bolds matching text, returning HTML.
  */
-const highlight = (string: string, match: string | RegExp) =>
-  string.replace(match, (target: string) => `<span class="font-bold">${target}</span>`)
+const highlight = (text: string, target: string | RegExp) =>
+  text.replace(
+    typeof target === 'string' ? new RegExp(target, 'gi') : target,
+    (match: string) => `<span class="font-bold">${match}</span>`
+  )
 
 export default highlight
