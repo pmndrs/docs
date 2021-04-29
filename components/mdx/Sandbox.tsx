@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 export default function Sandbox({ id }) {
   const [data, setData] = useState<{
@@ -20,11 +21,14 @@ export default function Sandbox({ id }) {
   return (
     <div>
       <a href={`https://codesandbox.io/s/${data.alias}`} target="_blank">
-        <img
-          className="rounded shadow-lg"
-          src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
-          alt={data.title}
-        />{' '}
+        <div className="flex rounded shadow-lg overflow-hidden">
+          <Image
+            width={1763}
+            height={926}
+            src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
+            alt={data.title}
+          />
+        </div>
       </a>
       <h6 className="text-gray-700 font-bold capitalize mt-4">{data.title}</h6>
       <p className="text-gray-700">{data.description}</p>

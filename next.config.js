@@ -1,4 +1,7 @@
 module.exports = {
+  images: {
+    domains: ['codesandbox.io'],
+  },
   async redirects() {
     return [
       {
