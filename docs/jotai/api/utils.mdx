@@ -222,6 +222,33 @@ import deepEqual from 'fast-deep-equal'
 const fooFamily = atomFamily((param) => atom(param), deepEqual)
 ```
 
+### TypeScript
+
+Types are defined like this:
+
+```ts
+atomFamily<Param, Value, Update>(initializeAtom: (param: Param) => WritableAtom<Value, Update>, areEqual?: (a: Param, b: Param) => boolean)
+atomFamily<Param, Value>(initializeAtom: (param: Param) => Atom<Value>, areEqual?: (a: Param, b: Param) => boolean)
+```
+
+It's generally recommended to infer types from initializeAtom.
+
+```ts
+import type { PrimitiveAtom } from 'jotai'
+
+const myFamily = atomFamily((id: number) => atom(id))
+// the type of atom(id) is PrimitiveAtom<number>
+// PrimitiveAtom<number> is WritableAtom<number, SetStateAction<number>>
+```
+
+If you want to annotate it for primitive atoms, you need to use `SetStateAction`.
+
+```ts
+type SetStateAction<Value> = Value | ((prev: Value) => Value)
+
+const myFamily = atomFamily<number, number, SetStateAction<number>>((id: number) => atom(id))
+```
+
 ### Examples
 
 ```js
