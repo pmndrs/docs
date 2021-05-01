@@ -243,7 +243,7 @@ const myFamily = atomFamily((id: number) => atom(id))
 // PrimitiveAtom<number> is WritableAtom<number, SetStateAction<number>>
 ```
 
-If you want to explicitly declare it for a primitive atom, you need to use `SetStateAction`.
+If you want to explicitly declare the atomFamily for a primitive atom, you need to use `SetStateAction`.
 
 ```ts
 type SetStateAction<Value> = Value | ((prev: Value) => Value)
