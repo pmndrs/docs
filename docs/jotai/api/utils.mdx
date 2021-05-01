@@ -224,14 +224,16 @@ const fooFamily = atomFamily((param) => atom(param), deepEqual)
 
 ### TypeScript
 
-Types are defined like this:
+The atom family types will be inferred from initializeAtom.
+It's generally recommended to infer types from initializeAtom.
+You can explicitly declare the parameter, value, and atom's update function types using TypeScript generics.
 
 ```ts
 atomFamily<Param, Value, Update>(initializeAtom: (param: Param) => WritableAtom<Value, Update>, areEqual?: (a: Param, b: Param) => boolean)
 atomFamily<Param, Value>(initializeAtom: (param: Param) => Atom<Value>, areEqual?: (a: Param, b: Param) => boolean)
 ```
 
-It's generally recommended to infer types from initializeAtom.
+Here's a typical usage with a primitive atom.
 
 ```ts
 import type { PrimitiveAtom } from 'jotai'
@@ -241,7 +243,7 @@ const myFamily = atomFamily((id: number) => atom(id))
 // PrimitiveAtom<number> is WritableAtom<number, SetStateAction<number>>
 ```
 
-If you want to annotate it for primitive atoms, you need to use `SetStateAction`.
+If you want to explicitly declare it for a primitive atom, you need to use `SetStateAction`.
 
 ```ts
 type SetStateAction<Value> = Value | ((prev: Value) => Value)
