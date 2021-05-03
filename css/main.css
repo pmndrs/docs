@@ -188,3 +188,37 @@ ul.grid-list > li:before {
 .search-item.focus-visible li > div {
   @apply bg-gray-800 text-gray-200;
 }
+
+.zustand-home code {
+  margin-top: -50px;
+  display: inline-block;
+  width: auto !important;
+  padding: 40px 50px 40px 45px !important;
+  font-size: 0.8em;
+  border-radius: 10px !important;
+  box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.5);
+}
+
+@media only screen and (max-width: 1024px) {
+  .zustand-home code {
+    font-size: 0.8em;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .zustand-home code {
+    font-size: 0.6em !important;
+  }
+}
+
+.zustand-home a,
+.zustand-home button,
+.zustand-home code {
+  @apply pointer-events-auto;
+}
+
+@media only screen and (max-width: 500px) {
+  .zustand-home code {
+    font-size: 0.4em !important;
+  }
+}
