@@ -17,6 +17,12 @@ const sites = {
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber.',
   },
+
+  'react-postprocessing': {
+    title: 'React Postprocessing',
+    image: 'https://docs.pmnd.rs/react-processing.jpg',
+    description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
+  },
   zustand: {
     title: 'Zustand',
     description:

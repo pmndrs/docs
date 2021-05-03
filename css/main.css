@@ -2,13 +2,29 @@
 
 /* Write your own custom base styles here */
 
-/* Start purging... */
-@tailwind components;
-/* Stop purging. */
+@font-face {
+  font-family: 'Inter Var';
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+  font-named-instance: 'Regular';
+  src: url('/fonts/inter-var.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter Var';
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: block;
+  font-named-instance: 'Italic';
+  src: url('/fonts/inter-italic-var.woff2') format('woff2');
+}
 
-/* Write your own custom component styles here */
-.btn-blue {
-  @apply px-4 py-2 font-bold text-white bg-blue-500 rounded;
+@font-face {
+  font-family: 'Meslo';
+  src: url('/fonts/meslo.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
 }
 
 * {
@@ -22,7 +38,16 @@ body {
 pre,
 code,
 code span {
-  font-family: 'Menlo', 'Fira Code', monospace !important;
+  font-family: 'Meslo', monospace !important;
+}
+
+/* Start purging... */
+@tailwind components;
+/* Stop purging. */
+
+/* Write your own custom component styles here */
+.btn-blue {
+  @apply px-4 py-2 font-bold text-white bg-blue-500 rounded;
 }
 
 /* Start purging... */
@@ -97,7 +122,7 @@ tbody tr:nth-child(odd) {
 }
 
 td {
-  @apply px-6 py-4 text-sm text-gray-900;
+  @apply px-6 py-4 text-sm text-gray-900 break-all;
   max-width: 150px;
 }
 
