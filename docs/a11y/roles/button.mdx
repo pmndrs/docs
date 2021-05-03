@@ -1,4 +1,10 @@
-# Button
+---
+title: Button
+description: This page will tell you all you need to know about emulating an accessible button in your react-three-fiber app with @react-three-a11y
+nav: 4
+---
+
+## Role Button of the A11y component
 
 This role is meant to emulate the behaviour of a button.
 It will display a cursor pointer when your cursor is over the linked 3D object.
@@ -16,9 +22,9 @@ It is also actionnable by user using a screen reader.
 </A11y>
 ```
 
-Using it like this makes it focusable to all kind of users. It will also show a pointer on mouse over.
+Using it like this makes it focusable to all kind of users.
 
-You should also use the useA11y() hook within the encapsulated components to adjust the rendering on hover and focus.
+You should also use the useA11y() hook within the encapsulated components to adjust the rendering on hover and focus. Doing so greatly improve the accessibility of your page.
 Take a look at this code sample to see how to use it.
 You can also play with it in [this demo](https://n4rzi.csb.app)
 
@@ -39,5 +45,5 @@ function Some3DComponent() {
 }
 ```
 
-You can also specify the optional prop `activationMsg`.
-This message will be announced by screenreader when the button is activated.
+You could also specify the optional prop `activationMsg`.
+The message withinh activationMsg will be announced by screenreader when the button is activated.

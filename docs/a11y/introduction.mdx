@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: How to use @react-three/a11y
+description: Quick start about how to make your WebGL accessible with @react-three/a11y and react-three-fiber
 nav: 0
 ---
 
@@ -10,11 +10,11 @@ nav: 0
 
 @react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components:
 
-Focus and focus indication
-Tab index and keyboard navigation
-Screen reader support and alt-text
-Roles and cursor shapes
-Descriptive links
+- Focus and focus indication
+- Tab index and keyboard navigation
+- Screen reader support and alt-text
+- Roles and cursor shapes
+- Descriptive links
 
 You can try a [live demo here](https://n4rzi.csb.app).
 
@@ -24,9 +24,9 @@ npm install @react-three/a11y
 
 ## Quick overview to get started
 
-### First the A11yAnnouncer component
+### The A11yAnnouncer component
 
-First, place the A11yAnnouncer component next to the R3F Canvas component. This is critical, because it will manage the screen-reader.
+First, place the A11yAnnouncer component next to the R3F Canvas component. this componant is critical since it manage some screen-reader features.
 
 ```jsx
 import { Canvas } from 'react-three-fiber'
@@ -54,7 +54,7 @@ import { A11y } from '@react-three/a11y'
 </A11y>
 ```
 
-`MyComponent` can now receive focus. More accurately, the emulated "focus" will handled at the `A11y` components which acts as a provider
+`MyComponent` can now receive focus. More accurately, the emulated "focus" will be handled at the `A11y` components which acts as a provider
 for children to access its state. But even if objects are focusable, nothing will be displayed or shown by default.
 
 ## Call function on focus
@@ -85,7 +85,7 @@ Optionally, you can also show the description to the user on hover by setting `s
 <A11y role="button" description="open menu" actionCall={()=>{someFunction()}} ... />
 ```
 
-## The four roles of the `A11y` component
+## The four roles of the A11y component
 
 Like in HTML, you can focus different kind of elements and expect different things depending on what you're focusing.
 
@@ -116,7 +116,8 @@ This role is meant to emulate the behaviour of a button or a togglable button. I
 
 #### ToggleButton
 
-You can turn it into a button with aria-pressed by using the role togglebutton, you'll then be able to use the following properties deactivationMsg in addition to the usual description and activationMsg properties.
+By using the role togglebutton, you'll emulate a button with two state that will have the `aria-pressed` attribute.
+You'll then be able to use the deactivationMsg property in addition to the usual description and activationMsg properties.
 
 ```jsx
 <A11y
@@ -182,7 +183,15 @@ Use a custom tabindex with for your A11y components by providing a number to the
 <A11y tabIndex={-1} ... />
 ```
 
-⚠⚠⚠<br/>
-Avoid using tabindex values greater than 0. Doing so makes it difficult for people who rely on assistive technology to navigate and operate page content.
-Instead, write the document with the elements in a logical sequence.<br/>
-More about the use of tabIndex on <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex">developer.mozilla.org</a>
+<Hint>
+  ⚠⚠⚠
+  <br />
+  Avoid using tabindex values greater than 0. Doing so makes it difficult for people who rely on
+  assistive technology to navigate and operate page content. Instead, write the document with the
+  elements in a logical sequence.
+  <br />
+  More about the use of tabIndex on{' '}
+  <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex">
+    developer.mozilla.org
+  </a>
+</Hint>

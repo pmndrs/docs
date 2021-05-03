@@ -1,6 +1,7 @@
 ---
 title: Gotchas
 description: Things that could catch you off guard
+nav: 8
 ---
 
 ### Position of the accessible dom causing wrong hover detection
@@ -26,12 +27,8 @@ In order to make this "donut" accessible as a button react-three-a11y will keep 
 
 If we inspect the DOM, you should see something roughly like this for the above example.
 
-```HTML
-<button
-  aria-pressed="false"
->
-  Light intensity
-</button>
+```html
+<button aria-pressed="false">Light intensity</button>
 ```
 
 By default this button is positionned in the center of your 3D object which would cause it to work like this.
