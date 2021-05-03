@@ -35,6 +35,12 @@ const sites = {
       'Jotai is a primitive, flexible, and spooky state management library for React. 👻',
     // image: 'https://docs.pmnd.rs/jotai-ghost.png',
   },
+  a11y: {
+    title: 'React-three-a11y',
+    description:
+      '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
+    image: 'https://docs.pmnd.rs/a11y/react-three-a11y-header.jpg',
+  },
 }
 
 export default function SEO({ name }: { name: string }) {

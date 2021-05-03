@@ -30,6 +30,10 @@ const data = [
     label: 'Jotai',
   },
   {
+    id: 'a11y',
+    label: 'A11y',
+  },
+  {
     id: 'react-postprocessing',
     label: 'React Postprocessing',
   },
