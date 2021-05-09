@@ -123,7 +123,7 @@ We can mitigate it by using a helper function.
 
 ```ts
 const createInitialValues = () => {
-  const initialValues: (readonly [Atom<unknown>, unknonw])[] = []
+  const initialValues: (readonly [Atom<unknown>, unknown])[] = []
   const get = () => initialValues
   const set = <Value>(anAtom: Atom<Value>, value: Value) => {
     initialValues.push([anAtom, value])
