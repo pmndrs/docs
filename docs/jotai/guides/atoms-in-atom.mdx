@@ -5,3 +5,44 @@ nav: 11.5
 
 # Atoms in atom
 
+`atom()` creates an atom config, which is an object but it doesn't hold a value.
+Atom configs doesn't have string keys and we identify them with referential equality.
+In other words, we can use an atom config like a key.
+
+## Storing an atom config in useState
+
+First things first, we can store an atom config in useState.
+
+```tsx
+const Component = ({ atom1, atom2 }) => {
+  const [selectedAtom, setSelectedAtom] = useState(atom1)
+  const [value] = useAtom(selectedAtom)
+  return (
+    <div>
+      Selected value: {value}
+      <button onClick={() => setSelectedAtom(atom1)}>Select an atom</button>
+      <button onClick={() => setSelectedAtom(atom2)}>Select another atom</button>
+    </div>
+  )
+}
+```
+
+Note that we can pass atoms configs as props.
+
+It might not make any sense, but we could create an atom config on demand.
+
+```tsx
+const Component = () => {
+  const [currentAtom, setCurrentAtom] = useState(() => atom(0))
+  const [count, setCount] = useAtom(currentAtom)
+  return (
+    <div>
+      Count: {count} <button onClick={() => setCount((c) => c + 1)}>+1</button>
+      <button onClick={() => setCurrentAtom(atom(0))}>Create new</button>
+    </div>
+  )
+}
+```
+
+## Storing an atom config in atom
+
