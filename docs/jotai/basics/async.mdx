@@ -74,9 +74,11 @@ const Component = () => {
 
 > There's no way to know as of now if an atom suspends because of `read` or `write`.
 
-## Triggering `Suspense` fallback
+### Triggering `Suspense` fallback of write atom
 
-**An atom will trigger the `Suspense` fallback only if:**
+This section applies only for "async write atom" not "async read atom", which works different with `Suspense`.
+
+**A write atom will trigger the `Suspense` fallback only if:**
 
     * the atom's write arg (2nd one) is async
     * the awaited call is made directly and not from inside another containing function
