@@ -4,7 +4,6 @@ description: This doc describes `jotai/utils` bundle.
 nav: 13
 ---
 
-<<<<<<< HEAD
 ## atomWithStorage
 
 Ref: https://github.com/pmndrs/jotai/pull/394
@@ -47,6 +46,30 @@ This means that there will be a mismatch between what is originally served to th
 
 The suggested workaround for this issue is to only render the content dependent on the `storedValue` client-side by wrapping it in a [custom `<ClientOnly>` wrapper](https://www.joshwcomeau.com/react/the-perils-of-rehydration/#abstractions), which only renders after rehydration. Alternative solutions are technically possible, but would require a brief "flicker" as the `initialValue` is swapped to the `storedValue`, which can result in an unpleasant user experience, so this solution is advised.
 
+## useUpdateAtom
+
+Ref: https://github.com/pmndrs/jotai/issues/26
+
+```jsx
+import { atom, useAtom } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
+
+const countAtom = atom(0)
+
+const Counter = () => {
+  const [count] = useAtom(countAtom)
+  return <div>count: {count}</div>
+}
+
+const Controls = () => {
+  const setCount = useUpdateAtom(countAtom)
+  const inc = () => setCount((c) => c + 1)
+  return <button onClick={inc}>+1</button>
+}
+```
+
+<Codesandbox id="3q11k" />
+
 ## useAtomValue
 
 Ref: https://github.com/pmndrs/jotai/issues/212
@@ -71,121 +94,6 @@ const Counter = () => {
 
 <Codesandbox id="1x90m" />
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-## atomWithStorage
-||||||| constructed merge base
-## atomWithStorage
-=======
-||||||| constructed merge base
-=======
-## atomWithStorage
-
-Ref: https://github.com/pmndrs/jotai/pull/394
-
-```ts
-import { useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
-
-const darkModeAtom = atomWithStorage('darkMode', false)
-
-const Page = () => {
-  const [darkMode, setDarkMode] = useAtom(darkModeAtom)
-
-  return (
-    <>
-      <h1>Welcome to {darkMode ? 'dark' : 'light'} mode!</h1>
-      <button onClick={() => setDarkMode(!darkMode)}>toggle theme</button>
-    </>
-  )
-}
-```
-
-The `atomWithStorage` function creates an atom with a value persisted in `localStorage` or `sessionStorage` for React or `AsyncStorage` for React Native.
-
-### Parameters
-
-**key** (required): a unique string used as the key when syncing state with localStorage, sessionStorage, or AsyncStorage
-
-**initialValue** (required): the initial value of the atom
-
-**storage** (optional): an object with `getItem` and `setItem` methods for storing/retreiving persisted state; defaults to using `localStorage` for storage/retreival and `JSON.stringify()`/`JSON.parse()` for serialization/deserialization
-
-<Codesandbox id="7dfib" />
-
-### Server-side rendering
-
-Any JSX markup that depends on the value of a stored atom (e.g., a `className` or `style` prop) will use the `initialValue` when rendered on the server (since `localStorage` and `sessionStorage` are not available on the server).
-
-This means that there will be a mismatch between what is originally served to the user's browser as HTML and what is expected by React during the rehydration process if the user has a `storedValue` that differs from the `initialValue`.
-
-The suggested workaround for this issue is to only render the content dependent on the `storedValue` client-side by wrapping it in a [custom `<ClientOnly>` wrapper](https://www.joshwcomeau.com/react/the-perils-of-rehydration/#abstractions), which only renders after rehydration. Alternative solutions are technically possible, but would require a brief "flicker" as the `initialValue` is swapped to the `storedValue`, which can result in an unpleasant user experience, so this solution is advised..
-
->>>>>>> feat(jotai): revise docs for atomWithStorage util
-## useUpdateAtom
->>>>>>> feat(jotai): revise docs for atomWithStorage util
-
-Ref: https://github.com/pmndrs/jotai/issues/26
-
-```jsx
-import { atom, useAtom } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
-
-const countAtom = atom(0)
-
-const Counter = () => {
-  const [count] = useAtom(countAtom)
-  return <div>count: {count}</div>
-}
-
-const Controls = () => {
-  const setCount = useUpdateAtom(countAtom)
-  const inc = () => setCount((c) => c + 1)
-  return <button onClick={inc}>+1</button>
-}
-```
-
-<Codesandbox id="3q11k" />
-
-||||||| constructed merge base
-=======
-## atomWithStorage
-
-Ref: https://github.com/pmndrs/jotai/pull/394
-
-```ts
-import { useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
-
-const darkModeAtom = atomWithStorage('darkMode', false)
-
-const Page = () => {
-  const [darkMode, setDarkMode] = useAtom(darkModeAtom)
-
-  return (
-    <>
-      <h1>Welcome to {darkMode ? 'dark' : 'light'} mode!</h1>
-      <button onClick={() => setDarkMode(!darkMode)}>toggle theme</button>
-    </>
-  )
-}
-```
-
-The `atomWithStorage` function creates an atom with a value persisted in `localStorage` or `sessionStorage` for React or `AsyncStorage` for React Native.
-
-### Parameters
-
-- **key** (required): a unique string used as the key when syncing state with localStorage, sessionStorage, or AsyncStorage
-- **initialValue** (required): the initial value of the atom
-- **storage** (optional): an object with `getItem` and `setItem` methods for storing/retreiving persisted state; defaults to using `localStorage` for storage/retreival and `JSON.stringify()`/`JSON.parse()` for serialization/deserialization
-
-<Codesandbox id="7dfib" />
-
-### SSR
-
-Note that in an SSR context, the `initialValue` is replaced with the `storedValue` on mount. If the content of a component is rendered differently based on the value of an `atomWithStorage`, then a server-side rendered page will initially show the `initialValue` before being swapped to the `storedValue` during rehydration. A workaround for this is to only render the affected content client-side by wrapping it in a [custom `<ClientOnly>` wrapper](https://www.joshwcomeau.com/react/the-perils-of-rehydration/#abstractions) that only renders its contents after rehydration.
-
->>>>>>> feat(jotai): add docs for new atomWithStorage util
 ## atomWithReset
 
 Ref: https://github.com/pmndrs/jotai/issues/41
