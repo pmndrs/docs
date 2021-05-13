@@ -32,6 +32,7 @@ The props available for the canvas are:
 | raycaster       | Props that go into the default raycaster                           | `{}`                                                     |
 | vr              | Switches renderer to VR mode, then uses gl.setAnimationLoop        | `false`                                                  |
 | mode            | React mode: legacy, blocking, concurrent                           | `blocking`                                               |
+| frameloop       | Render mode: always, demand, never                                 | `always`                                                 |
 | resize          | Resize config, see react-use-measure's options                     | `{ scroll: true, debounce: { scroll: 50, resize: 0 } }`  |
 | orthographic    | Creates an orthographic camera                                     | `false`                                                  |
 | dpr             | Pixel-ratio, use window.devicePixelRatio, or automatic: [min, max] | `undefined`                                              |
@@ -39,6 +40,13 @@ The props available for the canvas are:
 | flat            | Use THREE.NoToneMapping instead of THREE.ACESFilmicToneMapping     | `false`                                                  |
 | onCreated       | Callback after the canvas has rendered (but not yet committed)     | `(state) => {}`                                          |
 | onPointerMissed | Response for pointer clicks that have missed any target            | `(event) => {}`                                          |
+
+The canvas props should be used as a _constructor_. To update the canvas props, set the state like this:
+
+```jsx
+const set = useThree((state) => state.set)
+set({ frameloop: 'demand' })
+```
 
 ### Defaults that the canvas component sets up
 
