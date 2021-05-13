@@ -94,6 +94,42 @@ const Counter = () => {
 
 <Codesandbox id="1x90m" />
 
+## atomWithStorage
+
+Ref: https://github.com/pmndrs/jotai/pull/394
+
+```ts
+import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
+const darkModeAtom = atomWithStorage('darkMode', false)
+
+const Page = () => {
+  const [darkMode, setDarkMode] = useAtom(darkModeAtom)
+
+  return (
+    <>
+      <h1>Welcome to {darkMode ? 'dark' : 'light'} mode!</h1>
+      <button onClick={() => setDarkMode(!darkMode)}>toggle theme</button>
+    </>
+  )
+}
+```
+
+The `atomWithStorage` function creates an atom with a value persisted in `localStorage` or `sessionStorage` for React or `AsyncStorage` for React Native.
+
+### Parameters
+
+- **key** (required): a unique string used as the key when syncing state with localStorage, sessionStorage, or AsyncStorage
+- **initialValue** (required): the initial value of the atom
+- **storage** (optional): an object with `getItem` and `setItem` methods for storing/retreiving persisted state; defaults to using `localStorage` for storage/retreival and `JSON.stringify()`/`JSON.parse()` for serialization/deserialization
+
+<Codesandbox id="7dfib" />
+
+### SSR
+
+Note that in an SSR context, the `initialValue` is replaced with the `storedValue` on mount. If the content of a component is rendered differently based on the value of an `atomWithStorage`, then a server-side rendered page will initially show the `initialValue` before being swapped to the `storedValue` during rehydration. A workaround for this is to only render the affected content client-side by wrapping it in a [custom `<ClientOnly>` wrapper](https://www.joshwcomeau.com/react/the-perils-of-rehydration/#abstractions) that only renders its contents after rehydration.
+
 ## atomWithReset
 
 Ref: https://github.com/pmndrs/jotai/issues/41
@@ -238,6 +274,41 @@ const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
 
 <Codesandbox id="unfro" />
 
+## atomWithHash
+
+### Usage
+
+```js
+atomWithHash(key, initialValue): PrimitiveAtom
+```
+
+This creats a new atom that is connected with URL hash.
+The hash must be in the URLSearchParams format.
+It's two-way binding: changing atom value will change the hash and
+changing the hash will change the atom value.
+This function works only with DOM.
+
+### Examples
+
+```jsx
+import { useAtom } from 'jotai'
+import { atomWithHash } from 'jotai/utils'
+const countAtom = atomWithHash('count', 1)
+const Counter: React.FC = () => {
+  const [count, setCount] = useAtom(countAtom)
+  return (
+    <>
+      <div>count: {count}</div>
+      <button onClick={() => setCount((c) => c + 1)}>button</button>
+    </>
+  )
+}
+```
+
+### Codesandbox
+
+<Codesandbox id="d5kn6" />
+
 ## atomFamily
 
 Ref: https://github.com/pmndrs/jotai/issues/23
@@ -262,6 +333,35 @@ import { atom } from 'jotai'
 import deepEqual from 'fast-deep-equal'
 
 const fooFamily = atomFamily((param) => atom(param), deepEqual)
+```
+
+### TypeScript
+
+The atom family types will be inferred from initializeAtom. Here's a typical usage with a primitive atom.
+
+```ts
+import type { PrimitiveAtom } from 'jotai'
+
+/**
+ * here the atom(id) returns a PrimitiveAtom<number>
+ * and PrimitiveAtom<number> is a WritableAtom<number, SetStateAction<number>>
+ */
+const myFamily = atomFamily((id: number) => atom(id)).
+```
+
+You can explicitly declare the type of parameter, value, and atom's setState function using TypeScript generics.
+
+```ts
+atomFamily<Param, Value, Update>(initializeAtom: (param: Param) => WritableAtom<Value, Update>, areEqual?: (a: Param, b: Param) => boolean)
+atomFamily<Param, Value>(initializeAtom: (param: Param) => Atom<Value>, areEqual?: (a: Param, b: Param) => boolean)
+```
+
+If you want to explicitly declare the atomFamily for a primitive atom, you need to use `SetStateAction`.
+
+```ts
+type SetStateAction<Value> = Value | ((prev: Value) => Value)
+
+const myFamily = atomFamily<number, number, SetStateAction<number>>((id: number) => atom(id))
 ```
 
 ### Examples
@@ -426,27 +526,29 @@ const Monitor = () => {
 import { atom } from 'jotai'
 import { freezeAtom } from 'jotai/utils'
 
-const countAtom = freezeAtom(atom(0))
+const objAtom = freezeAtom(atom({ count: 0 }))
 ```
 
-`freezeAtom` take an existing atom and return a new derived atom.
+`freezeAtom` takes an existing atom and returns a new derived atom.
 The returned atom is "frozen" which means when you use the atom
 with `useAtom` in components or `get` in other atoms,
-the atom value will be deeply freezed with Object.freeze.
+the atom value will be deeply frozen with Object.freeze.
 It would be useful to find bugs where you accidentally tried
 to mutate objects which can lead to unexpected behavior.
 
-## atomFrozenInDev
+## freezeAtomCreator
 
 ```js
-import { atomFrozenInDev as atom } from 'jotai/utils'
+import { atom } from 'jotai'
+import { freezeAtomCreator } from 'jotai/utils'
 
-const countAtom = atom(0)
+const createFrozenAtom = freezeAtomCreator(atom)
+const objAtom = createFrozenAtom({ count: 0 })
 ```
 
-`atomFrozenInDev` is another function to create a frozen atom.
-The atom is frozen only in the development mode.
-In production, it works as the normal `atom`.
+Instead of create a fronzen atom from an existing atom,
+`freezeAtomCreator` takes an atom creator function and returns a new function.
+You can use this not only for `atom`, but also for other `atomWith*` creators such as `atomWithReduer`.
 
 ## splitAtom
 

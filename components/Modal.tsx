@@ -26,10 +26,10 @@ function SimpleModal(props: SimpleModalProps) {
           item && (
             <a.div
               key={key}
-              className="fixed z-50 inset-0 overflow-hidden"
+              className="fixed z-50 inset-0"
               style={{ opacity: springProps.opacity }}
             >
-              <div className="flex items-end justify-center h-screen pt-4 pb-20 text-center sm:block sm:p-0">
+              <div className="flex items-end justify-center h-screen  text-center md:block md:p-0">
                 <style jsx>{`
                   ::-webkit-scrollbar {
                     display: none;
@@ -39,9 +39,9 @@ function SimpleModal(props: SimpleModalProps) {
                   <div className="absolute inset-0 bg-gray-100 opacity-75" />
                 </div>
                 {/* This element is to trick the browser into centering the modal contents. */}
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" />
+                <span className="hidden md:inline-block md:align-middle md:h-screen" />
                 <div
-                  className="inline-block align-bottom mb-16 rounded-lg text-left overflow-hidden overflow-y-scroll h-screen transform sm:my-16 sm:align-middle sm:w-full sm:px-1 sm:pb-16 z-20"
+                  className="inline-block align-bottom text-left overflow-hidden overflow-y-scroll h-screen transform md:align-middle md:w-full z-20"
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="modal-headline"

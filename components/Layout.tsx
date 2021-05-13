@@ -23,13 +23,6 @@ export default function Layout({ nav, toc, children }) {
     asPath,
   } = useRouter()
   const { isSwitcherOpen } = useSwitcher()
-  const { opacity } = useSpring({
-    opacity: isSwitcherOpen ? 0 : 1,
-    config: {
-      tension: 280,
-      friction: 28,
-    },
-  })
 
   const [lib] = slug as string[]
   const { nextPage, previousPage, currentPageIndex } = getPrevAndNext(asPath)
@@ -49,13 +42,10 @@ export default function Layout({ nav, toc, children }) {
         )}
       >
         <Link href="/">
-          <a.div
-            style={{ opacity }}
-            className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72"
-          >
+          <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
             <span className="font-bold cursor-pointer">Pmndrs</span>
             <span className="font-normal cursor-pointer">.docs</span>
-          </a.div>
+          </div>
         </Link>
         <Search />
         <button className="block md:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
@@ -73,15 +63,20 @@ export default function Layout({ nav, toc, children }) {
           >
             <a.div
               id="nav-wrapper"
-              className="h-full mr-24 overflow-hidden overflow-y-auto scrolling-touch bg-white lg:h-auto lg:block lg:relative lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10
-              relative"
+              className={clsx(
+                isSwitcherOpen ? '' : 'overflow-hidden overflow-y-auto',
+                'h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative'
+              )}
               style={navStyles}
             >
               <nav
                 id="nav"
-                className="px-4 overflow-y-auto font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative"
+                className={clsx(
+                  isSwitcherOpen ? 'overflow-y-hidden' : 'overflow-y-auto',
+                  'px-4 font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative'
+                )}
               >
-                <div className="mb-4">
+                <div className="mt-8 md:mt-0 mb-4">
                   <LibSwitcher />
                 </div>
                 <Nav nav={nav[lib]} />
@@ -145,7 +140,7 @@ export default function Layout({ nav, toc, children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {toc.length && <Toc toc={toc} />}
+                {toc.length ? <Toc toc={toc} /> : null}
               </div>
             </div>
           </div>
