@@ -84,7 +84,39 @@ Also, TypeScript type information would be helpful.
 
 ## Storing an array of atom configs in atom
 
-TODO
+Finally, the atoms in atom pattern is to store an array of atom config into an atom.
+
+```jsx
+const countsAtom = atom([atom(1), atom(2), atom(3)])
+
+const Counter = ({ countAtom }) => {
+  const [count, setCount] = useAtom(countAtom)
+  return (
+    <div>
+      {count} <button onClick={() => setCount((c) => c + 1)}>+1</button>
+    </div>
+  )
+}
+
+const Parent = () => {
+  const [counts, setCounts] = useAtom(countsAtom)
+  const addNewCount = () => {
+    const newAtom = atom(0)
+    setCounts((prev) => [...prev, newAtom])
+  }
+  return (
+    <div>
+      {counts.map((countAtom) => <Counter countAtom={countAtom} key={countAtom} />)}
+      <button onClick={addNewCount}>Add</button>
+    </div>
+  )
+}
+```
+
+It is important to note that `anAtom.toString()` return a unique id, which can be used for `key` in map.
+
+The benefit of this approach is, if you increment a count,
+only the corresponding Counter component re-renders and no other components re-render.
 
 ## Storing a map of atom configs in atom
 
