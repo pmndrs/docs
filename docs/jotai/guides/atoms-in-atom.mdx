@@ -113,11 +113,41 @@ const Parent = () => {
 }
 ```
 
-It is important to note that `anAtom.toString()` return a unique id, which can be used for `key` in map.
-
 The benefit of this approach is, if you increment a count,
 only the corresponding Counter component re-renders and no other components re-render.
 
+It is important to note that `anAtom.toString()` return a unique id, which can be used for `key` in map.
+
+### Hint for TypeScript users
+
+```tsx
+  <Counter countAtom={countAtom} key={`${countAtom}`} />
+```
+
 ## Storing a map of atom configs in atom
 
-TODO
+Likewise, we can store an object map instead of an array.
+
+```jsx
+const pricesAtom = atom({
+  apple: atom(15),
+  orange: atom(12),
+  pineapple: atom(25),
+})
+
+const Fruit = ({ name, priceAtom }) => {
+  const [price] = useAtom(countAtom)
+  return <div>{name}: {price}</div>
+}
+
+const Parent = () => {
+  const [prices] = useAtom(pricesAtom)
+  return (
+    <div>
+      {Object.keys(prices).map((name) => (
+        <Fruit name={name} priceAtom={prices[name]} key={name} />
+      ))}
+    </div>
+  )
+}
+```
