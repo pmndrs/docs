@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 
 export default function Sandbox({ id }) {
-  const [data, setData] = useState<{
-    alias: string
-    screenshot_url: string
-    tags: string[]
-    description: string
-    title: string
-  }>()
+  const [data, setData] =
+    useState<{
+      alias: string
+      screenshot_url: string
+      tags: string[]
+      description: string
+      title: string
+    }>()
 
   useEffect(() => {
     fetch(`/api/get-sandbox?id=${id}`)
@@ -29,7 +30,7 @@ export default function Sandbox({ id }) {
           loading="lazy"
         />
       </a>
-      <h6 className="text-gray-700 font-bold capitalize mt-4">{data.title}</h6>
+      <h6 className="text-gray-700 font-bold mt-4">{data.title}</h6>
       <p className="text-gray-700">{data.description}</p>
       <div className="w-full">
         {data.tags.map((tag, i) => (

@@ -115,7 +115,7 @@ export default function Layout({ nav, toc, children }) {
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
                           Previous
                         </h5>
-                        <div className="text-xl capitalize">
+                        <div className="text-xl">
                           <Link href={previousPage.url}>
                             <a className="text-gray-900">{previousPage.title}</a>
                           </Link>
@@ -128,7 +128,7 @@ export default function Layout({ nav, toc, children }) {
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
                           Next
                         </h5>
-                        <div className="text-xl capitalize">
+                        <div className="text-xl">
                           <Link href={nextPage.url}>
                             <a className="text-gray-900">{nextPage.title}</a>
                           </Link>
