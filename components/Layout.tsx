@@ -16,7 +16,7 @@ import { useDocs } from 'store/docs'
 
 export default function Layout({ nav, toc, children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
-  const { docs, getPrevAndNext } = useDocs()
+  const { docs, currentDocs, getPrevAndNext } = useDocs()
 
   const {
     query: { slug },
@@ -101,7 +101,7 @@ export default function Layout({ nav, toc, children }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                      href={`https://github.com/pmndrs/website/tree/docs/docs${docs[currentPageIndex].url}.mdx`}
+                      href={`https://github.com/pmndrs/website/tree/docs/docs${currentDocs[currentPageIndex].url}.mdx`}
                     >
                       Edit this page on GitHub
                     </a>

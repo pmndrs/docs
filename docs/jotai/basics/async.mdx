@@ -1,7 +1,7 @@
 ---
 title: Async
 description: This doc describes about the behavior with async.
-nav: 3
+nav: 1.3
 ---
 
 Async support is first class in jotai. It fully leverages React Suppense.
@@ -87,12 +87,12 @@ This _will_ trigger the `Suspense` fallback:
 
 ```ts
 const writeAtom = atom(null, async (get, set) => {
-   const response = await new Promise<string>((resolve, _reject) => {
+  const response = await new Promise<string>((resolve, _reject) => {
     setTimeout(() => {
-      resolve("some returned value");
-    }, 2000);
-  });
-  set(somePrimitiveAtom, "The returned value is: " + response);
+      resolve('some returned value')
+    }, 2000)
+  })
+  set(somePrimitiveAtom, 'The returned value is: ' + response)
 })
 ```
 
@@ -100,15 +100,15 @@ This _will not_ trigger the `Suspense` fallback:
 
 ```ts
 const writeAtom = atom(null, (get, set) => {
-   const getResponse = async () => {
-      const response = await new Promise<string>((resolve, _reject) => {
-        setTimeout(() => {
-          resolve("some returned value");
-        }, 2000);
-      });
-      set(somePrimitiveAtom, "The returned value is: " + response);
-   }
-  getResponse();
+  const getResponse = async () => {
+    const response = await new Promise<string>((resolve, _reject) => {
+      setTimeout(() => {
+        resolve('some returned value')
+      }, 2000)
+    })
+    set(somePrimitiveAtom, 'The returned value is: ' + response)
+  }
+  getResponse()
 })
 ```
 
