@@ -1,6 +1,6 @@
 ---
 title: Atoms in atom
-nav: 11.5
+nav: 2.7
 ---
 
 # Atoms in atom
@@ -64,7 +64,7 @@ const Component = () => {
       <button onClick={() => setNameAtom(lastNameAtom)}>Show Last Name</button>
     </div>
   )
-} 
+}
 ```
 
 It's possible to create a derived atom.
@@ -106,7 +106,9 @@ const Parent = () => {
   }
   return (
     <div>
-      {counts.map((countAtom) => <Counter countAtom={countAtom} key={countAtom} />)}
+      {counts.map((countAtom) => (
+        <Counter countAtom={countAtom} key={countAtom} />
+      ))}
       <button onClick={addNewCount}>Add</button>
     </div>
   )
@@ -121,7 +123,7 @@ It is important to note that `anAtom.toString()` return a unique id, which can b
 ### Hint for TypeScript users
 
 ```tsx
-  <Counter countAtom={countAtom} key={`${countAtom}`} />
+<Counter countAtom={countAtom} key={`${countAtom}`} />
 ```
 
 ## Storing a map of atom configs in atom
@@ -137,7 +139,11 @@ const pricesAtom = atom({
 
 const Fruit = ({ name, priceAtom }) => {
   const [price] = useAtom(countAtom)
-  return <div>{name}: {price}</div>
+  return (
+    <div>
+      {name}: {price}
+    </div>
+  )
 }
 
 const Parent = () => {
