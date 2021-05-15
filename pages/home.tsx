@@ -20,7 +20,7 @@ export default function HomePage() {
           {data.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col shadow-lg border border-gray-200 bg-white rounded-md font-normal"
+              className="flex flex-col shadow-lg border border-gray-200 bg-white rounded-md font-normal overflow-hidden"
             >
               <div className="px-6 pt-4 font-bold text-lg">{item.label}</div>
               <div className="flex-grow px-6 pt-1 pb-4 text-base text-gray-500 !leading-relaxed">
