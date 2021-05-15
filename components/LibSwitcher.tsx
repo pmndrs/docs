@@ -4,36 +4,7 @@ import { useRouter } from 'next/router'
 import cx from 'clsx'
 import { Popover } from '@headlessui/react'
 
-const data = [
-  {
-    id: 'react-three-fiber',
-    label: 'React Three Fiber',
-  },
-  {
-    id: 'react-spring',
-    label: 'React Spring',
-  },
-  {
-    id: 'drei',
-    label: 'Drei',
-  },
-  {
-    id: 'zustand',
-    label: 'Zustand',
-  },
-  {
-    id: 'jotai',
-    label: 'Jotai',
-  },
-  {
-    id: 'a11y',
-    label: 'A11y',
-  },
-  {
-    id: 'react-postprocessing',
-    label: 'React Postprocessing',
-  },
-]
+import { data } from '../data/libraries'
 
 export default function LibSwitcher() {
   const router = useRouter()
