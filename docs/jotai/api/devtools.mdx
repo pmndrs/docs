@@ -66,22 +66,26 @@ Be careful using this hook because it will cause the component to re-render for 
 import { Provider } from 'jotai'
 import { useAtomsSnapshot } from 'jotai/devtools'
 
-const RegisteredAtoms: React.FC = () => {
+const RegisteredAtoms = () => {
   const atoms = useAtomsSnapshot()
 
   return (
-    <Provider>
+    <div>
+      <p>Atom count: {atoms.size}</p>
       <div>
-        <p>Atom count: {atoms.size}</p>
-        <div>
-          {Array.from(atoms).map(([atom, atomValue]) => (
-            <p key={`${atom}`}>{`${atom.debugLabel}: ${atomValue}`}</p>
-          ))}
-        </div>
+        {Array.from(atoms).map(([atom, atomValue]) => (
+          <p key={`${atom}`}>{`${atom.debugLabel}: ${atomValue}`}</p>
+        ))}
       </div>
-    </Provider>
+    </div>
   )
 }
+
+const App = () => (
+  <Provider>
+    <RegisteredAtoms />
+  </Provider>
+)
 ```
 
 ## useGotoAtomsSnapshot
