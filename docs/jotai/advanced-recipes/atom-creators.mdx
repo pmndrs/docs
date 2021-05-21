@@ -25,6 +25,8 @@ export function atomWithToggle(
 ```
 
 An optional initial state can be provided as first argument.
+A second optional argument can be passed to provide an `atom creator` function, which could be used to enable composable behaviour with other `atom` utils. An example is described below, [`atomWithToggleStored`](#atomWithToggleStored).
+
 The setter function can have an optional arg to force a particular state (if you want to make a setActive function out of it for example).
 
 Here is how it's used.
@@ -54,7 +56,7 @@ const Toggle = () => {
 
 ## `atomWithToggleStored`
 
-> `atomWithToggleStored` does the same as [`atomWithToggle`](#atomWithToggle) but also persist the state anytime it changes in given storage using [`atomWithStorage`]('../api/utils#atomWithStorage').
+> `atomWithToggleStored` does the same as [`atomWithToggle`](#atomWithToggle) but also persist the state anytime it changes in given storage using [`atomWithStorage`](/jotai/api/utils#atomWithStorage).
 
 Here is the source :
 
