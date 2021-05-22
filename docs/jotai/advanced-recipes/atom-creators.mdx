@@ -10,22 +10,20 @@ nav: 5.2
 This avoids the boilerplate of having to setup another atom just to update the state of the first.
 
 ```ts
-export function atomWithToggle(
-  initialValue?: boolean,
-  createAtom: (initialValue: boolean) => PrimitiveAtom<boolean> = atom
-): WritableAtom<boolean, boolean | undefined> {
-  const effectAtom = createAtom(initialValue || false)
-  const anAtom: any = atom(initialValue, (get, set, state?: boolean) => {
-    const update = state ?? !get(anAtom)
+import { WritableAtom, atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
+export function atomWithToggle(initialValue?: boolean): WritableAtom<boolean, boolean | undefined> {
+  const anAtom = atom(initialValue, (get, set, nextValue?: boolean) => {
+    const update = nextValue ?? !get(anAtom)
     set(anAtom, update)
-    set(effectAtom, update)
   })
+
   return anAtom
 }
 ```
 
 An optional initial state can be provided as first argument.
-A second optional argument can be passed to provide an `atom creator` function, which could be used to enable composable behaviour with other `atom` utils. An example is described below, [`atomWithToggleStored`](#atomWithToggleStored).
 
 The setter function can have an optional arg to force a particular state (if you want to make a setActive function out of it for example).
 
@@ -54,29 +52,41 @@ const Toggle = () => {
 }
 ```
 
-## `atomWithToggleStored`
+## `atomWithToggleAndStorage`
 
-> `atomWithToggleStored` does the same as [`atomWithToggle`](#atomWithToggle) but also persist the state anytime it changes in given storage using [`atomWithStorage`](/jotai/api/utils#atomWithStorage).
+> `atomWithToggleAndStorage` does the same as [`atomWithToggle`](#atomWithToggle) but also persist the state anytime it changes in given storage using [`atomWithStorage`](/jotai/api/utils#atomWithStorage).
 
 Here is the source :
 
 ```ts
-export function atomWithToggleStored(
+import { WritableAtom, atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
+export function atomWithToggleAndStorage(
   key: string,
   initialValue?: boolean,
   storage?: any
 ): WritableAtom<boolean, boolean | undefined> {
-  return atomWithToggle(initialValue, (initial) => atomWithStorage(key!, initial, storage))
+  const anAtom = atomWithStorage(key!, initialValue, storage!)
+  const derivedAtom = atom(
+    (get) => get(anAtom),
+    (get, set, nextValue?: boolean) => {
+      const update = nextValue ?? !get(anAtom)
+      set(anAtom, update)
+    }
+  )
+
+  return derivedAtom
 }
 ```
 
 And how it's used :
 
 ```ts
-import { atomWithToggleStored } from 'XXX'
+import { atomWithToggleAndStorage } from 'XXX'
 
 // will have an initial value set to false & be stored in localStorage under the key "isActive"
-const isActiveAtom = atomWithToggleStored('isActive')
+const isActiveAtom = atomWithToggleAndStorage('isActive')
 ```
 
 The usage in a component is also the same as [`atomWithToggle`](#atomWithToggle).
