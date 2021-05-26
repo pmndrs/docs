@@ -42,7 +42,7 @@ You can play with the sandbox and see how it looks here after I added an HDRI ba
 
 Here comes the really fancy part, you can transform these models into React components and then use them as your would any React component.
 
-To do this grab your `GLTF` model and head over to [https://gltf.pmnd.rs/](https://gltf.pmnd.rs/) and drop your `GLTF`, after that you should see something like:
+To do this, grab your `GLTF` model and head over to [https://gltf.pmnd.rs/](gltf.pmnd.rs) and drop your `GLTF`, after that you should see something like:
 
 ![gltfjsx](./gltfjsx.png)
 
@@ -80,7 +80,7 @@ export default function Model(props) {
 useGLTF.preload('/Poimandres.gltf')
 ```
 
-Now we can import our model like we would import any react component and use it in our app:
+Now we can import our model like we would import any React component and use it in our app:
 
 ```jsx
 import { Suspense } from 'react'
@@ -109,7 +109,7 @@ You can play with the sandbox here:
 
 ## Loading OBJ models
 
-In the case we will use the trusted `useLoader` but in combination with `three.js` `OBJLoader`.
+In this case, we will use the trusted `useLoader` hook but in combination with `three.js` `OBJLoader`.
 
 ```js
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
@@ -140,7 +140,7 @@ import { useLoader } from '@react-three/fiber'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 ```
 
-To create our scene we can get the fbx as a return value of the useLoader by passing the `FBX` loader and the location of our file like so:
+To create our scene we can get the fbx as a return value of the useLoader by passing the `FBXloader` and the location of our file like so:
 
 ```jsx
 function Scene() {
@@ -170,12 +170,12 @@ You can play with the sandbox here:
 
 ## Showing a loader
 
-If your model is big it's always good to show a small loader of how much is already is loaded and again [@react-three/drei](https://github.com/pmndrs/drei) is here to help with `Html` and `useProgress`.
+If your model is big and takes a while to load, it's always good to show a small loader of how much is already is loaded and again [@react-three/drei](https://github.com/pmndrs/drei) is here to help with `Html` and `useProgress`.
 
 - `Html` allows you place plain ol' HTML in your canvas and render it like you would a normal DOM element.
 - `useProgress` is a hook that gives you a bunch of information about the loading status of your model.
 
-With these two things we can create a very bane bones loading component like so:
+With these two things we can create a very barebones loading component like so:
 
 ```jsx
 import { Html, useProgress } from '@react-three/drei'
@@ -186,7 +186,7 @@ function Loader() {
 }
 ```
 
-We can then wrap our model in it using suspense like so:
+We can then wrap our model in it using `Suspense` like so:
 
 ```jsx
 export default function App() {
@@ -200,6 +200,6 @@ export default function App() {
 }
 ```
 
-The hook returns much more than just the progress so there is a lot you can do there to give the user more information about the loading status of the application, you can play with all of them in this sandbox:
+The hook returns much more than just the progress so there is a lot you can do there to give the user more information about the loading status of the application. You can play with all of them in this sandbox:
 
 <Codesandbox id="nn2m7" />
