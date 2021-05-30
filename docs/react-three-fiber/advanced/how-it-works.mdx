@@ -30,7 +30,7 @@ function MyApp() {
 }
 ```
 
-This is equivalent, in THREE, to:
+In three.js, this is equivalent to:
 
 ```js
 import * as THREE from 'three'
@@ -80,7 +80,7 @@ Object creation is handled transparently by the Fiber renderer, the name of the 
 
 ## The `attach` props
 
-Fiber always tries to correctly estimate the relationship between components and their parents, for example:
+Fiber always tries to correctly infer the relationship between components and their parents, for example:
 
 ```jsx
 <group>
@@ -94,7 +94,7 @@ Here, we always know that a group can only have children, so Fiber just calls th
 group.add(mesh)
 ```
 
-For meshes and other THREE objects, rules can be different. Looking at the three.js documentation, we can see how a `THREE.Mesh` object is constructed using a `material` and a `geometry`.
+For meshes and other three.js objects, rules can be different. Looking at the three.js documentation, we can see how a `THREE.Mesh` object is constructed using a `material` and a `geometry`.
 
 With the `attach` prop, we can precisely tell the renderer what property to attach each component to:
 
@@ -112,7 +112,7 @@ mesh.material = new THREE.MeshNormalMaterial()
 mesh.geometry = new THREE.BoxBufferGeometry()
 ```
 
-As you can see, the `attach` prop is telling Fiber to set the parent's "material" property to a reference to our `<meshNormalMaterial />` object.
+As you can see, the `attach` prop is telling Fiber to set the parent's `material` property to a reference to our `<meshNormalMaterial />` object.
 
 <Callout>
   Note that while we used geometry and material for this example, Fiber also infers the attach
@@ -126,7 +126,7 @@ _Add example_
 
 ## Props
 
-With Fiber, you can pass any THREE property as a React property, and it will be assigned to the constructed object:
+With Fiber, you can pass any three.js property as a React property, and it will be assigned to the constructed object:
 
 ```jsx
 <meshBasicMaterial color="red" />
@@ -164,7 +164,7 @@ mesh.scale.set(3, 4, 5)
 
 [Pointer Events](/docs/events) are transparently handled by Fiber. On startup, it will create a [raycaster](https://threejs.org/docs/#api/en/core/Raycaster) for mouse picking.
 
-Every object wih `onPointer*` props, will be added to the array of objects checked every frame by the raycaster:
+Every object wih `onPointer` props will be added to the array of objects checked every frame by the raycaster:
 
 ```jsx
 <mesh onPointerDown={console.log}>...</mesh>
@@ -189,10 +189,10 @@ By default, Fiber will setup a render loop that renders the default `scene` from
 
 The loop is setup using [setAnimationLoop](https://threejs.org/docs/#api/en/renderers/WebGLRenderer.setAnimationLoop), which will execute its callback every time a new frame is renderable. This is what will happen every render:
 
-1. all [global before effects](docs/recipes/effects) are executed
-2. clock [delta](docs/time) is saved - implying all `useFrame` calls will share the same `delta`
+1. All [global before effects](docs/recipes/effects) are executed
+2. Clock [delta](docs/time) is saved - implying all `useFrame` calls will share the same `delta`
 3. `useFrame` callbacks are executed in order
 4. `renderer.render(scene, camera)` is called, effectively rendering the scene to screen
-5. all [global after effects](docs/recipes/effects) are executed
+5. All [global after effects](docs/recipes/effects) are executed
 
 _Add about opting out of render_

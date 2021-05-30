@@ -8,7 +8,7 @@ nav: 5
 
 ## Using TextureLoader & useLoader
 
-To load the textures we will use the `TextureLoader` from ThreeJS in combination with `useLoader` that will allow us to pass the location of the texture and get the map back.
+To load the textures we will use the `TextureLoader` from three.js in combination with `useLoader` that will allow us to pass the location of the texture and get the map back.
 
 It's better to explain with code, let's say you downloaded [this texture](https://cc0textures.com/view?id=PavingStones092) and placed it in the public folder of your site, to get the color map from it you could do:
 
@@ -50,7 +50,7 @@ export default function App() {
 }
 ```
 
-If everything went according to plan you should now be able top apply this texture to the sphere like so:
+If everything went according to plan, you should now be able to apply this texture to the sphere like so:
 
 ```jsx
 <sphereGeometry args={[1, 100, 100]} map={colorMap} />
@@ -82,7 +82,7 @@ Now we can place them in our mesh like so:
 />
 ```
 
-The displacement will probably be too much so usually setting it to 0.2 will make it look good. Our final code would look something like:
+The displacement will probably be too much, usually setting it to 0.2 will make it look good. Our final code would look something like:
 
 ```jsx
 function Scene() {
@@ -113,7 +113,7 @@ const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] = useLoader(Te
 
 ## Using useTexture
 
-Another way to import these is using `useTexture` from [`@react-three/drei`](https://github.com/pmndrs/drei), that will make it slightly easier and there is no need to import the TextureLoader, our code would like so:
+Another way to import these is using `useTexture` from [`@react-three/drei`](https://github.com/pmndrs/drei), that will make it slightly easier and there is no need to import the `TextureLoader`, our code would look like:
 
 ```js
 import { useTexture } from "@react-three/drei";

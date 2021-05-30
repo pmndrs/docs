@@ -2,10 +2,10 @@
 title: shaderMaterial
 ---
 
-Creates a [THREE.ShaderMaterial](https://threejs.org/docs/?q=ShaderMaterial#api/en/materials/ShaderMaterial) for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
+Creates a [`THREE.ShaderMaterial`](https://threejs.org/docs/?q=ShaderMaterial#api/en/materials/ShaderMaterial) for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
 
 ```jsx
-import { extend } from 'react-three-fiber'
+import { extend } from '@react-three/fiber'
 import glsl from 'babel-plugin-glsl/macro'
 
 const ColorShiftMaterial = shaderMaterial(

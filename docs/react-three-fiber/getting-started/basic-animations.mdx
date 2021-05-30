@@ -6,7 +6,7 @@ nav: 6
 
 This tutorial will assume some React knowledge, and will be based on [this starter codesandbox](https://codesandbox.io/s/getting-started-01-12q81?from-embed), so just fork it and follow along!
 
-We will build a really small, continuos animation loop, that will be the basic building block of more advanced animations later on.
+We will build a really small, continuous animation loop, that will be the basic building block of more advanced animations later on.
 
 ## useFrame
 
@@ -41,11 +41,11 @@ useFrame(({ clock }) => {
 })
 ```
 
-`clock` is a [THREE.js Clock](https://threejs.org/docs/#api/en/core/Clock) object, from which we are getting the total elapsed time, which will be key for our animations.
+`clock` is a [three.js Clock](https://threejs.org/docs/#api/en/core/Clock) object, from which we are getting the total elapsed time, which will be key for our animations.
 
 ## Animating with Refs
 
-It would be tempting to just update the state of our component via `setState` and let it change the `mesh` via props, but going through state isn't ideal, when dealing with continuos updates, commonly know as [transient updates]().
+It would be tempting to just update the state of our component via `setState` and let it change the `mesh` via props, but going through state isn't ideal, when dealing with continuous updates, commonly know as [transient updates]().
 Instead, we want to **directly mutate our mesh each frame**. First, we'll have to get a `reference` to it, via the `useRef` React hook:
 
 ```jsx
@@ -62,7 +62,7 @@ function MyAnimatedBox() {
 }
 ```
 
-myMesh will now hold a reference to the actual THREE.js object, which we can now freely mutate in `useFrame`, without having to worry about React:
+`myMesh` will now hold a reference to the actual three.js object, which we can now freely mutate in `useFrame`, without having to worry about React:
 
 ```jsx
 useFrame(({ clock }) => {
