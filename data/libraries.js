@@ -24,6 +24,7 @@ export const data = [
     github: 'https://github.com/pmndrs/zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
+    image: 'zustand-bear.png',
   },
   {
     id: 'jotai',
