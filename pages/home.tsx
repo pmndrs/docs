@@ -9,14 +9,14 @@ export default function HomePage() {
       <Head>
         <title>pmnd.rs docs</title>
       </Head>
-      <div className="min-h-screen p-32 bg-gray-50">
+      <div className="min-h-screen p-8 lg:p-32 bg-gray-50">
         <Link href="/">
-          <a className="text-3xl">
+          <a className="block text-3xl text-center lg:text-left">
             <span className="font-bold cursor-pointer">Pmndrs</span>
             <span className="font-normal cursor-pointer">.docs</span>
           </a>
         </Link>
-        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-16 w-full max-w-8xl mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-20">
           {data.map((item) => (
             <div
               key={item.id}
