@@ -138,7 +138,7 @@ const pricesAtom = atom({
 })
 
 const Fruit = ({ name, priceAtom }) => {
-  const [price] = useAtom(countAtom)
+  const [price] = useAtom(priceAtom)
   return (
     <div>
       {name}: {price}
