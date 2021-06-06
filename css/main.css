@@ -4,19 +4,20 @@
 
 @font-face {
   font-family: 'Inter Var';
+  src: url('/fonts/inter-var.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: block;
   font-named-instance: 'Regular';
-  src: url('/fonts/inter-var.woff2') format('woff2');
 }
+
 @font-face {
   font-family: 'Inter Var';
+  src: url('/fonts/inter-italic-var.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
   font-display: block;
   font-named-instance: 'Italic';
-  src: url('/fonts/inter-italic-var.woff2') format('woff2');
 }
 
 @font-face {
