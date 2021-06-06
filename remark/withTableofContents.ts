@@ -11,7 +11,7 @@ const withTableofContents = (toc?: any[]) => {
       const node = tree.children[i]
       if (node.type === 'heading' && [2, 3].includes(node.depth)) {
         const title = node.children
-          .filter((n) => n.type === 'text')
+          .filter((n) => n.type === 'text' || n.type === 'inlineCode')
           .map((n) => n.value)
           .join('')
 
