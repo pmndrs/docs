@@ -48,7 +48,7 @@ export default function Layout({ nav, toc, children }) {
           </div>
         </Link>
         <Search />
-        <button className="block md:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
+        <button className="block lg:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
           <MenuIcon />
         </button>
       </div>
