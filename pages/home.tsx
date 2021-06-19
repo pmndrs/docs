@@ -33,7 +33,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex w-full border-t border-gray-200 divide-x divide-gray-200">
                   <Link href={item.id}>
-                    <a className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-blue-50">
+                    <a className="inline-flex items-center space-x-2 w-1/2 px-6 py-4">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 16 16"
@@ -51,7 +51,7 @@ export default function HomePage() {
                     href={item.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-blue-50"
+                    className="inline-flex items-center space-x-2 w-1/2 px-6 py-4"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
