@@ -15,17 +15,17 @@ export default function LibSwitcher() {
   )
 
   return (
-    <Popover className="relative">
-      <Popover.Button className="block w-full px-6 py-2 bg-black rounded-md text-white">
+    <Popover className="relative mt-4">
+      <Popover.Button className="block w-full px-6 py-2 focus:outline-none bg-black rounded-md font-bold text-lg text-white">
         {currentPage}
       </Popover.Button>
-      <Popover.Panel className="absolute z-10 w-full mt-4 p-3 shadow-xl bg-white rounded-md">
+      <Popover.Panel className="absolute z-10 w-full mt-4 p-3 shadow-2xl bg-white rounded-md">
         <div className="flex flex-col space-y-3">
           {data.map((item) => (
             <Link key={item.id} href={item.id}>
               <a
                 className={cx(
-                  'px-3 py-2 hover:bg-gray-50 rounded-md font-normal',
+                  'px-3 py-2 hover:bg-gray-50 rounded-md font-normal text-base',
                   item.id === query.slug[0] && 'sr-only'
                 )}
               >
