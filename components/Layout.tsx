@@ -37,12 +37,12 @@ export default function Layout({ nav, toc, children }) {
       <div id="modal" />
       <div
         className={clsx(
-          'sticky top-0 flex flex-none w-full mx-auto bg-white max-w-8xl',
+          'sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl',
           isSwitcherOpen ? 'z-30 lg:z-30' : 'z-40 lg:z-50'
         )}
       >
         <Link href="/">
-          <div className="flex items-center flex-none pl-4 border-b border-gray-200 sm:pl-6 xl:pl-8 lg:border-b-0 lg:w-60 xl:w-72">
+          <div className="flex items-center flex-none pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
             <span className="font-bold cursor-pointer">Pmndrs</span>
             <span className="font-normal cursor-pointer">.docs</span>
           </div>

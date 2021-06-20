@@ -30,8 +30,7 @@ export const data = [
     id: 'jotai',
     label: 'Jotai',
     github: 'https://github.com/pmndrs/jotai',
-    description:
-      'Jotai is a primitive and flexible yet spooky small state management library for React.',
+    description: 'Jotai is a primitive and flexible state management library for React.',
   },
   {
     id: 'a11y',
