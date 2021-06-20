@@ -73,7 +73,7 @@ You can nest primitive objects, too:
     <texture attach="map" image={img} onUpdate={self => (self.needsUpdate = true)} />
 ```
 
-Sometimes attaching isn't enough. For example, the following example attaches effects to an array called "passes" of the parent `effectComposer`. `attachArray` adds the object to the target array and takes it out on unmount:
+Sometimes attaching isn't enough. The following example attaches effects to an array called "passes" of the parent `effectComposer`. `attachArray` adds the object to the target array and takes it out on unmount:
 
 ```jsx
 <effectComposer>
