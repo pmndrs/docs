@@ -4,14 +4,14 @@ description: This is a short primer on how to scale performance.
 nav: 17
 ---
 
-Websites like Sketchfab make sure the scene always fluid, running at 60 fps, and responsive, no matter which device is being used or how demanding the loaded model is, which depends on the vertex count, draw calls, and so on.
+Websites like Sketchfab make sure the scene is always fluid, running at 60 fps, and responsive, no matter which device is being used or how demanding the loaded model is, which depends on the vertex count, draw calls, and so on.
 
 They do this by scaling performance:
 
-- Nested loading, lesser textures and models first, then high-resolution
+- Nested loading, lesser textures and models are loaded first, high-resolution later
 - Movement regression, where effects, textures, shadows will slightly reduce until still-stand
 
-In three-fiber both are pretty easy to achieve.
+In three-fiber both are easy to achieve.
 
 ## Nested loading
 
@@ -77,9 +77,9 @@ You can define defaults like so:
 
 ### This is how you can put the system into regression
 
-The only thing you have to do is call `state.performance.regress()`. When you do that, that is up to you, but it could be when when the mouse moves, or the scene is moving, for instance when controls fire their change-event.
+The only thing you have to do is call `regress()`. When exactly you do that, that is up to you, but it could be when when the mouse moves, or the scene is moving, for instance when controls fire their change-event.
 
-The following puts the system in regress when contols are active:
+Say you are using controls, then the following code puts the system in regress when they are active:
 
 ```jsx
 const regress = useThree((state) => state.performance.regress)
@@ -91,7 +91,9 @@ useEffect(() => {
 
 <Hint>Mere calls to regress() will not change or affect anything!</Hint>
 
-The user has to opt in by listening to the performance `current`. The number itself will tell you what to do. 1 (max) means everything's ok, the default. Less than 1 (min) means a regression is requested and the number itself tells you how far you should go when scaling down. For instance, you could simply multiply `current` with the pixelratio to cut down on resolution. If you have defined `min: 0.5` that would mean it will half the resolution. It can be used for anything else, too, switching off lights when `current < 1`, using lower-res textures, skip post-processing effects, etc. You could of course also animate/lerp these changes.
+Your app has to opt into performance scaling by listening to the performance `current`! The number itself will tell you what to do. 1 (max) means everything is ok, the default. Less than 1 (min) means a regression is requested and the number itself tells you how far you should go when scaling down.
+
+For instance, you could simply multiply `current` with the pixelratio to cut down on resolution. If you have defined `min: 0.5` that would mean it will half the resolution for at least 200ms (delay) when regress is called. It can be used for anything else, too: switching off lights when `current < 1`, using lower-res textures, skip post-processing effects, etc. You could of course also animate/lerp these changes.
 
 Here is a small prototype component that scales the pixel ratio:
 
@@ -106,7 +108,7 @@ function AdaptivePixelRatio() {
 }
 ```
 
-Drop this component into the scene and you have adaptive resolution:
+Drop this component into the scene, combine it with the code above that calls `regress()`, and you have adaptive resolution:
 
 ```jsx
 <AdaptivePixelRatio />
