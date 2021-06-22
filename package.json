@@ -46,7 +46,7 @@
     "styled-components": "^5.2.3",
     "three": "^0.127.0",
     "threejs-meshline": "^2.0.12",
-    "zustand": "^3.5.1"
+    "zustand": "^3.5.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.8",
