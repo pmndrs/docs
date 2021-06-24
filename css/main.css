@@ -7,7 +7,7 @@
   src: url('/fonts/inter-var.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
   font-named-instance: 'Regular';
 }
 
@@ -16,7 +16,7 @@
   src: url('/fonts/inter-italic-var.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
-  font-display: block;
+  font-display: swap;
   font-named-instance: 'Italic';
 }
 
@@ -25,7 +25,7 @@
   src: url('/fonts/meslo.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }
 
 * {
