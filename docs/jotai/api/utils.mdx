@@ -147,8 +147,8 @@ const RESET: unique symbol
 ```
 
 Special value that is accepted by [Resettable atoms](/jotai/guides/resettable)
-created with [`atomWithReset`](/jotai/api/utils#atom-with-reset) or writable atom created
-with `atom` if it accepts `RESET` symbol.
+created with [`atomWithReset`](/jotai/api/utils#atom-with-reset), [`atomWithDefault`](/jotai/api/utils#atom-with-default)
+or writable atom created with `atom` if it accepts `RESET` symbol.
 
 ### Example
 
@@ -228,7 +228,7 @@ Ref: https://github.com/pmndrs/jotai/issues/352
 
 ### Usage
 
-This is a function to create a primitive atom.
+This is a function to create a resettable primitive atom.
 Its default value can be specified with a read function instead of a static initial value.
 
 ```js
@@ -242,12 +242,13 @@ const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
 
 <Codesandbox id="unfro" />
 
-### Refreshing default values
+### Resetting default values
 
-You can refresh the value of an `atomWithDefault` atom to its original default value.
+You can reset the value of an `atomWithDefault` atom to its original default value.
 
 ```js
-import { atomWithDefault, REFRESH } from 'jotai/utils'
+import { useAtom } from 'jotai'
+import { atomWithDefault, useResetAtom, RESET } from 'jotai/utils'
 
 const count1Atom = atom(1)
 const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
@@ -255,12 +256,15 @@ const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
 const Counter: React.FC = () => {
   const [count1, setCount1] = useAtom(count1Atom)
   const [count2, setCount2] = useAtom(count2Atom)
+  const resetCount2 = useResetAtom(count2Atom)
+
   return (
     <>
       <div>count1: {count1}, count2: {count2}</div>
       <button onClick={() => setCount1((c) => c + 1)}>increment count1</button>
       <button onClick={() => setCount2((c) => c + 1)}>increment count2</button>
-      <button onClick={() => setCount2(REFRESH)}>Refresh count2 default value</button>
+      <button onClick={() => resetCount2()}>Reset with useResetAtom</button>
+      <button onClick={() => setCount2(RESET)}>Reset with RESET const</button>
     </>
   )
 }
@@ -270,7 +274,7 @@ This can be useful when an `atomWithDefault` atom value is overwritten
 using the `set` function, in which case the provided `getter` function
 is no longer used and any change in dependencies atoms will not trigger an update.
 
-Setting the value to the `REFRESH` value allows us to restore the original default value,
+Resetting the value allows us to restore its original default value,
 discarding changes made previously via the `set` function.
 
 ## atomWithHash
