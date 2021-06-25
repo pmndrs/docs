@@ -16,7 +16,7 @@ const withTableofContents = (toc?: any[]) => {
           .map((n) =>
             n.type === 'inlineCode'
               ? // Cleanup links for code-only titles
-                n.value.replace(/^(get|set)\s|\(.+|\??\:.+/, '')
+                n.value.replace(/^(get|set)\s|\(.+|\??\:.+/g, '')
               : n.value
           )
           .join('')
