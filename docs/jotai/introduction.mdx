@@ -155,12 +155,3 @@ function Controls() {
   const [count, compute] = useAtom(fetchCountAtom)
   return <button onClick={() => compute("http://count.host.com")}>compute</button>
 ```
-
-## Installation notes
-
-This package requires some peer dependencies, which you need to install by
-yourself.
-
-```bash
-yarn add jotai react
-```
