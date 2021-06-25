@@ -31,8 +31,7 @@ const sites = {
   },
   jotai: {
     title: 'Jotai',
-    description:
-      'Jotai is a primitive, flexible, and spooky state management library for React. 👻',
+    description: 'Jotai is a primitive and flexible state management library for React. 👻',
     // image: 'https://docs.pmnd.rs/jotai-ghost.png',
   },
   a11y: {

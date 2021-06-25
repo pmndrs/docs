@@ -33,7 +33,7 @@ The Canvas component does some important setup work behind the scenes:
   just changing the `width` and `height` of `#canvas-container` in your css.
 </Hint>
 
-To actually _render_ something in our scene, we'll add a `mesh` component. In Fiber, every THREE.js object has an equivalent component:
+To actually _render_ something in our scene, we'll add a `mesh` component. In Fiber, every three.js object has an equivalent component:
 
 ```js
 const myMesh = new THREE.Mesh()
@@ -43,7 +43,7 @@ const myMesh = new THREE.Mesh()
 
 ## Adding a Mesh Component
 
-A [`Mesh`](https://threejs.org/docs/#api/en/objects/Mesh) is a basic object in THREE.js, and it's used to hold the polygons and the material that are needed to represent the object in 3D space.
+A [`Mesh`](https://threejs.org/docs/#api/en/objects/Mesh) is a basic object in three.js, and it's used to hold the polygons and the material that are needed to represent the object in 3D space.
 We'll create a new mesh using a **BoxGeometry** component for the geometry and a **MeshPhongMaterial** component for the material.
 
 To actually add these objects to our scene, we mount them inside the `<Canvas />` component.
@@ -51,7 +51,7 @@ To actually add these objects to our scene, we mount them inside the `<Canvas />
 <Hint>
   Note that we don't need to import anything, THREE objects will be treated as native JSX elements,
   just like you can just write &lt;div /&gt; or &lt;span /&gt; in regular React. The general rule is
-  that Fiber components are available under the camel-case version of their name in THREE.js.
+  that Fiber components are available under the camel-case version of their name in three.js.
 </Hint>
 
 ```jsx
@@ -71,7 +71,7 @@ export default function App() {
 }
 ```
 
-Let's pause for a moment to understand exactly what is happening here. The code we just wrote is the equivalent to this THREE.js code:
+Let's pause for a moment to understand exactly what is happening here. The code we just wrote is the equivalent to this three.js code:
 
 ```jsx
 const scene = new THREE.Scene()
@@ -100,7 +100,7 @@ Then, geometry and material are _attached_ to their parent.
 
 ### Constructor arguments
 
-If we consult the [documentation for THREE's `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry) we see can can optionally pass three arguments for: width, length and depth:
+If we consult the [documentation for THREE's `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry) we can optionally pass three arguments for: width, length and depth:
 
 ```js
 const geometry = new THREE.BoxGeometry(2, 2, 2)
@@ -128,7 +128,7 @@ Next, we will add some lights to our scene, by putting these components as child
 
 ### Props
 
-This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. When you set any prop on a Fiber component, it will set the property of the same name on the THREE.js object.
+This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. When you set any prop on a Fiber component, it will set the property of the same name on the three.js object.
 
 Let's focus on our `ambientLight`, whose [documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) tells us that we can optionally construct it with a color, but can also receive props.
 

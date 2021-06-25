@@ -1,7 +1,7 @@
 ---
 title: Utils
 description: This doc describes `jotai/utils` bundle.
-nav: 3.2
+nav: 2.2
 ---
 
 ## atomWithStorage
@@ -226,6 +226,8 @@ const countReducerAtom = atomWithReducer(0, countReducer)
 
 Ref: https://github.com/pmndrs/jotai/issues/352
 
+### Usage
+
 This is a function to create a primitive atom.
 Its default value can be specified with a read function instead of a static initial value.
 
@@ -236,7 +238,40 @@ const count1Atom = atom(1)
 const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
 ```
 
+### Codesandbox
+
 <Codesandbox id="unfro" />
+
+### Refreshing default values
+
+You can refresh the value of an `atomWithDefault` atom to its original default value.
+
+```js
+import { atomWithDefault, REFRESH } from 'jotai/utils'
+
+const count1Atom = atom(1)
+const count2Atom = atomWithDefault((get) => get(count1Atom) * 2)
+
+const Counter: React.FC = () => {
+  const [count1, setCount1] = useAtom(count1Atom)
+  const [count2, setCount2] = useAtom(count2Atom)
+  return (
+    <>
+      <div>count1: {count1}, count2: {count2}</div>
+      <button onClick={() => setCount1((c) => c + 1)}>increment count1</button>
+      <button onClick={() => setCount2((c) => c + 1)}>increment count2</button>
+      <button onClick={() => setCount2(REFRESH)}>Refresh count2 default value</button>
+    </>
+  )
+}
+```
+
+This can be useful when an `atomWithDefault` atom value is overwritten
+using the `set` function, in which case the provided `getter` function
+is no longer used and any change in dependencies atoms will not trigger an update.
+
+Setting the value to the `REFRESH` value allows us to restore the original default value,
+discarding changes made previously via the `set` function.
 
 ## atomWithHash
 
@@ -510,7 +545,7 @@ const createFrozenAtom = freezeAtomCreator(atom)
 const objAtom = createFrozenAtom({ count: 0 })
 ```
 
-Instead of create a fronzen atom from an existing atom,
+Instead of create a frozen atom from an existing atom,
 `freezeAtomCreator` takes an atom creator function and returns a new function.
 You can use this not only for `atom`, but also for other `atomWith*` creators such as `atomWithReduer`.
 

@@ -30,7 +30,7 @@ You can use [three.js's entire object catalogue and all properties](https://thre
 
 ### Constructor arguments
 
-In `three.js` objects are classes that are instantiated. These classes can receive one-time constructor arguments (`new THREE.SphereGeometry(1, 32)`), and properties (`someObject.visible = true`). In three-fiber constructor arguments are always passed as an array via `args`. If args change later on, the object must naturally get re-constructed from scratch!
+In three.js objects are classes that are instantiated. These classes can receive one-time constructor arguments (`new THREE.SphereGeometry(1, 32)`), and properties (`someObject.visible = true`). In react-three-fiber, constructor arguments are always passed as an array via `args`. If args change later on, the object must naturally get reconstructed from scratch!
 
 ```jsx
 <sphereGeometry args={[1, 32]} />
@@ -38,14 +38,14 @@ In `three.js` objects are classes that are instantiated. These classes can recei
 
 ### Shortcuts
 
-All properties whose underlying object has a `.set()` method can directly receive the same arguments that `set` would otherwise take. For example [THREE.Color.set](https://threejs.org/docs/index.html#api/en/math/Color.set) can take a color string, so instead of `color={new THREE.Color('hotpink')}` you can simply write `color="hotpink"`. Some `set` methods take multiple arguments, for instance [THREE.Vector3](https://threejs.org/docs/index.html#api/en/math/Vector3.set), give it an array in that case `position={[100, 0, 0]}`.
+All properties whose underlying object has a `.set()` method can directly receive the same arguments that `set` would otherwise take. For example [`THREE.Color.set`](https://threejs.org/docs/index.html#api/en/math/Color.set) can take a color string, so instead of `color={new THREE.Color('hotpink')}` you can simply write `color="hotpink"`. Some `set` methods take multiple arguments, for instance [`THREE.Vector3`](https://threejs.org/docs/index.html#api/en/math/Vector3.set), give it an array in that case `position={[100, 0, 0]}`.
 
 ```jsx
 <mesh position={[1, 2, 3]} />
   <meshStandardMaterial color="hotpink" />
 ```
 
-Properties that have a `setScalar` method (for instance Vector3) can be set like so:
+Properties that have a `setScalar` method (for instance `Vector3`) can be set like so:
 
 ```jsx
 // Translates to <mesh scale={[1, 1, 1]} />
@@ -73,7 +73,7 @@ You can nest primitive objects, too:
     <texture attach="map" image={img} onUpdate={self => (self.needsUpdate = true)} />
 ```
 
-Sometimes attaching isn't enough. For example, the following example attaches effects to an array called "passes" of the parent `effectComposer`. `attachArray` adds the object to the target array and takes it out on unmount:
+Sometimes attaching isn't enough. The following example attaches effects to an array called "passes" of the parent `effectComposer`. `attachArray` adds the object to the target array and takes it out on unmount:
 
 ```jsx
 <effectComposer>
@@ -81,7 +81,7 @@ Sometimes attaching isn't enough. For example, the following example attaches ef
   <glitchPass attachArray="passes" renderToScreen />
 ```
 
-You can also attach to named parent properties using `attachObject={[target, name]}`, which adds the object and takes it out on unmount. The following adds a buffer-attribute to parent.attributes.position.
+You can also attach to named parent properties using `attachObject={[target, name]}`, which adds the object and takes it out on unmount. The following adds a buffer-attribute to `parent.attributes.position`.
 
 ```jsx
 <bufferGeometry attach="geometry">
@@ -110,7 +110,7 @@ If you want to reach into nested attributes (for instance: `mesh.rotation.x`), j
 
 ### Putting already existing objects into the scene-graph
 
-You can use the `primitive` placeholder for that. You can still give it properties or attach nodes to it. Never add the same object multiple times, this is not allowed in `three.js`! Primitives will not dispose of the object they carry on unmount, you are responsible for disposing of it!
+You can use the `primitive` placeholder for that. You can still give it properties or attach nodes to it. Never add the same object multiple times, this is not allowed in three.js! Primitives will not dispose of the object they carry on unmount, you are responsible for disposing of it!
 
 ```jsx
 const mesh = new THREE.Mesh(geometry, material)

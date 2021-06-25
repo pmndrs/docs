@@ -2,7 +2,7 @@
 title: CubeCamera
 ---
 
-A [THREE.CubeCamera](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
+A [`THREE.CubeCamera`](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
 
 Using the `frames` prop you can control if this camera renders indefinitively or statically (a given number of times).
 If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders.

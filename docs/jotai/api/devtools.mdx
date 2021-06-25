@@ -1,7 +1,7 @@
 ---
 title: Devtools
 description: This doc describes `jotai/devtool` bundle.
-nav: 3.3
+nav: 2.3
 ---
 
 ## useAtomDevtools
@@ -42,5 +42,90 @@ export const useTasksDevtools = () => {
   // You can attach two devtools instances to the same atom and differentiate them with custom names.
   useAtomDevtools(tasksAtom, 'Tasks (Instance 1)')
   useAtomDevtools(tasksAtom, 'Tasks (Instance 2)')
+}
+```
+
+## useAtomsSnapshot
+
+⚠️ Note: This hook only works in a `process.env.NODE_ENV !== 'production'` environment.
+
+`useAtomsSnapshot` takes a snapshot of the currently mounted atoms and their state.
+
+```ts
+function useAtomsSnapshot(scope?: Scope): AtomsSnapshot
+```
+
+It accepts an atom `scope` parameter and will return an `AtomsSnapshot`, which is basically a `Map<AnyAtom, unknown>`. You can use the `Map` API to iterate over atoms and their state.
+This hook is primarily meant for debugging and devtools use cases.
+
+Be careful using this hook because it will cause the component to re-render for all state changes.
+
+### Example
+
+```ts
+import { Provider } from 'jotai'
+import { useAtomsSnapshot } from 'jotai/devtools'
+
+const RegisteredAtoms = () => {
+  const atoms = useAtomsSnapshot()
+
+  return (
+    <div>
+      <p>Atom count: {atoms.size}</p>
+      <div>
+        {Array.from(atoms).map(([atom, atomValue]) => (
+          <p key={`${atom}`}>{`${atom.debugLabel}: ${atomValue}`}</p>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const App = () => (
+  <Provider>
+    <RegisteredAtoms />
+  </Provider>
+)
+```
+
+## useGotoAtomsSnapshot
+
+⚠️ Note: This hook only works in a `process.env.NODE_ENV !== 'production'` environment.
+
+`useGotoAtomsSnapshot` will update the current Jotai state to match the passed snapshot.
+
+```ts
+function useGotoAtomsSnapshot(
+  scope?: Scope
+): (values: Iterable<readonly [AnyAtom, unknown]>) => void
+```
+
+This hook returns a callback, which takes a `snapshot` from the `useAtomsSnapshot` hook and will update the Jotai state. It accepts an atom `scope` parameter and will error if the atoms have mixed scopes.
+This hook is primarily meant for debugging and devtools use cases.
+
+### Example
+
+```ts
+import { Provider } from 'jotai'
+import { useAtomsSnapshot, useGotoAtomsSnapshot } from 'jotai/devtools'
+
+const petAtom = atom('cat')
+const colorAtom = atom('blue')
+
+const UpdateSnapshot: React.FC = () => {
+  const snapshot = useAtomsSnapshot()
+  const goToSnapshot = useGotoAtomsSnapshot()
+  return (
+    <button
+      onClick={() => {
+        const newSnapshot = new Map(snapshot)
+        newSnapshot.set(petAtom, 'dog')
+        newSnapshot.set(colorAtom, 'green')
+        goToSnapshot(newSnapshot)
+      }}
+    >
+      Go to snapshot
+    </button>
+  )
 }
 ```

@@ -54,7 +54,7 @@ const Search = () => {
         />
       ) : null}
       <div className="relative w-full">
-        <div className="flex items-center justify-between flex-auto h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between flex-auto h-16 px-4">
           <button
             type="button"
             onClick={() => setShowSearchModal(true)}
