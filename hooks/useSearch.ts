@@ -28,7 +28,7 @@ export default function useSearch({ search, folder, docs }): [Result[], boolean]
       )
       return re.slice(0, 4)
     }
-  }, [search])
+  }, [docs, folder, isThreeD, search])
 
   return [results, isThreeD]
 }

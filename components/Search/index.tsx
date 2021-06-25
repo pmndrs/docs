@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSearch, { Result } from 'hooks/useSearch'
 import useKeyPress from 'hooks/useKeyPress'
@@ -30,13 +30,13 @@ const Search = () => {
     if (escPressed && showSearchModal) {
       setShowSearchModal(false)
     }
-  }, [escPressed])
+  }, [escPressed, showSearchModal])
 
   useEffect(() => {
     if (slashPressed && !showSearchModal) {
       setShowSearchModal(true)
     }
-  }, [slashPressed])
+  }, [slashPressed, showSearchModal])
 
   useEffect(() => setShowSearchModal(false), [asPath])
 
@@ -70,9 +70,9 @@ const Search = () => {
               <path
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               ></path>
             </svg>
             <span>

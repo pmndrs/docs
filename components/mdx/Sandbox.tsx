@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 export default function Sandbox({ id }) {
-  const [data, setData] =
-    useState<{
-      alias: string
-      screenshot_url: string
-      tags: string[]
-      description: string
-      title: string
-    }>()
+  const [data, setData] = useState<{
+    alias: string
+    screenshot_url: string
+    tags: string[]
+    description: string
+    title: string
+  }>()
 
   useEffect(() => {
     fetch(`/api/get-sandbox?id=${id}`)
       .then((rsp) => rsp.json())
       .then(setData)
-  }, [])
+  }, [id])
 
   if (!data) return null
 
   return (
     <div>
-      <a href={`https://codesandbox.io/s/${data.alias}`} target="_blank">
-        <img
+      <a href={`https://codesandbox.io/s/${data.alias}`} target="_blank" rel="noreferrer">
+        <Image
           className="rounded shadow-lg"
           src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
           alt={data.title}
@@ -35,6 +35,7 @@ export default function Sandbox({ id }) {
       <div className="w-full">
         {data.tags.map((tag, i) => (
           <span
+            key={i}
             className={`inline-block mt-1 text-gray-500 bg-gray-100 rounded px-1 py-1 text-xs ${
               i !== data.tags.length - 1 ? 'mr-1' : null
             }`}
