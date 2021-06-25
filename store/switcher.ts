@@ -17,7 +17,7 @@ export const useSwitcher = create<State>((set) => ({
   toggleSwitcher: () => set((state) => ({ isSwitcherOpen: !state.isSwitcherOpen })),
 }))
 
-interface Modal {
+type Modal = {
   key: number
   opacity: number
 }
