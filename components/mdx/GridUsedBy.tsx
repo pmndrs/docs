@@ -21,7 +21,6 @@ export const GridUsedBy = () => {
       `}
     >
       <Image
-        title="Aragon"
         alt="Aragon"
         size="130px"
         href="https://aragon.org/"
