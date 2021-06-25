@@ -1,7 +1,7 @@
 import fs from 'fs'
 import matter from 'gray-matter'
-import hydrate from 'next-mdx-remote/hydrate'
-import renderToString from 'next-mdx-remote/render-to-string'
+import { MDXRemote } from 'next-mdx-remote'
+import { serialize } from 'next-mdx-remote/serialize'
 import path from 'path'
 import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 import Layout from 'components/Layout'
@@ -16,7 +16,6 @@ import { useDocs } from 'store/docs'
 import { useEffect } from 'react'
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
-  const content = hydrate(source, { components })
   const { query } = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
   const name = query.slug[0]
@@ -40,7 +39,9 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
             )}
           </div>
         )}
-        <main className="content-container">{content}</main>
+        <main className="content-container">
+          <MDXRemote {...source} components={components} />
+        </main>
       </main>
     </Layout>
   )
@@ -60,8 +61,7 @@ export const getStaticProps = async ({ params }) => {
   }, {})
 
   const toc = []
-  const mdxSource = await renderToString(content, {
-    components,
+  const mdxSource = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],

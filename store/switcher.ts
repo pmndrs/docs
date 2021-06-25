@@ -1,5 +1,4 @@
 import { createRef } from 'react'
-import { ReactSpringHook } from 'react-spring'
 import create from 'zustand'
 
 type State = {
@@ -18,5 +17,5 @@ export const useSwitcher = create<State>((set) => ({
   toggleSwitcher: () => set((state) => ({ isSwitcherOpen: !state.isSwitcherOpen })),
 }))
 
-export const switcherContentRef = createRef<ReactSpringHook>()
-export const switcherModalRef = createRef<ReactSpringHook>()
+export const switcherContentRef = createRef()
+export const switcherModalRef = createRef()

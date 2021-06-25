@@ -32,7 +32,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex w-full border-t border-gray-200 divide-x divide-gray-200">
-                  <Link href={item.id}>
+                  <Link href={`/${item.id}`}>
                     <a className="inline-flex items-center space-x-2 w-1/2 px-6 py-4">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
