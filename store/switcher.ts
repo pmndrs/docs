@@ -1,4 +1,4 @@
-import { createRef } from 'react'
+import { createRef, RefObject } from 'react'
 import create from 'zustand'
 
 type State = {
@@ -17,5 +17,9 @@ export const useSwitcher = create<State>((set) => ({
   toggleSwitcher: () => set((state) => ({ isSwitcherOpen: !state.isSwitcherOpen })),
 }))
 
-export const switcherContentRef = createRef()
-export const switcherModalRef = createRef()
+interface Modal {
+  key: number
+  opacity: number
+}
+
+export const switcherModalRef = createRef<RefObject<Modal>>()
