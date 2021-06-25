@@ -11,7 +11,6 @@ This avoids the boilerplate of having to setup another atom just to update the s
 
 ```ts
 import { WritableAtom, atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
 
 export function atomWithToggle(initialValue?: boolean): WritableAtom<boolean, boolean | undefined> {
   const anAtom = atom(initialValue, (get, set, nextValue?: boolean) => {

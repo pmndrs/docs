@@ -4,8 +4,9 @@ description: How to persist atoms
 nav: 3.3
 ---
 
-The core itself doesn't support persistence.
-There are several patterns for persistence depending on requirements.
+Jotai has an [atomWithStorage function in the utils bundle](/jotai/api/utils#atom-with-storage) for persistance that supports persisting state in `sessionStorage`, `localStorage`, `AsyncStorage`, or the URL hash.
+
+There are also several alternate implementations here:
 
 ## A simple pattern with localStorage
 
