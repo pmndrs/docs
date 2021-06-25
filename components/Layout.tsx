@@ -30,7 +30,7 @@ export default function Layout({ nav, toc, children }) {
   const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
   const overlayStyles = useSpring({ opacity: isMenuOpen ? 1 : 0.4, config: animationConfig })
   useLockBodyScroll(isMenuOpen)
-  useEffect(() => closeMenu(), [asPath])
+  useEffect(() => closeMenu(), [asPath]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -42,10 +42,12 @@ export default function Layout({ nav, toc, children }) {
         )}
       >
         <Link href="/">
-          <div className="flex items-center flex-none pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
-            <span className="font-bold cursor-pointer">Pmndrs</span>
-            <span className="font-normal cursor-pointer">.docs</span>
-          </div>
+          <a>
+            <div className="flex items-center flex-none pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
+              <span className="font-bold cursor-pointer">Pmndrs</span>
+              <span className="font-normal cursor-pointer">.docs</span>
+            </div>
+          </a>
         </Link>
         <Search />
         <button className="block lg:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>

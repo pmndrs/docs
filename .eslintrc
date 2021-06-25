@@ -1,0 +1,10 @@
+{
+  "extends": "next",
+  "plugins": ["react-hooks"],
+  "rules": {
+    "react/display-name": 0,
+    "import/no-anonymous-default-export": 0,
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error"
+  }
+}

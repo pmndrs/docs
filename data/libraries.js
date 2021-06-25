@@ -1,3 +1,5 @@
+import zustandImage from './zustand-bear.png'
+
 export const data = [
   {
     id: 'react-three-fiber',
@@ -24,7 +26,7 @@ export const data = [
     github: 'https://github.com/pmndrs/zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
-    image: 'zustand-bear.png',
+    image: zustandImage,
   },
   {
     id: 'jotai',

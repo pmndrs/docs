@@ -9,10 +9,7 @@ import { data } from '../data/libraries'
 export default function LibSwitcher() {
   const router = useRouter()
   const { query } = router
-  const currentPage = useMemo(
-    () => data.find((item) => item.id === query.slug[0]).label,
-    [data, query]
-  )
+  const currentPage = useMemo(() => data.find((item) => item.id === query.slug[0]).label, [query])
 
   return (
     <Popover className="relative mt-4">

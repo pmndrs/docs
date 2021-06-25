@@ -48,7 +48,7 @@ export const Demo: FC<DemoProps> = ({
           setData(files)
         })
     }
-  }, [])
+  }, [url])
 
   useObserver(containerRef, (entry) => {
     setInViewport(entry.isIntersecting)

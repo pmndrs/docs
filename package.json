@@ -7,7 +7,8 @@
     "dev": "next",
     "start": "next start",
     "build": "next build",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "author": "Poimandres",
   "license": "MIT",
@@ -60,8 +61,10 @@
     "babel-jest": "^27.0.5",
     "babel-plugin-styled-components": "^1.12.0",
     "eslint": "^7.29.0",
+    "eslint-config-next": "^11.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.0.5",

@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { data } from '../data/libraries'
 
@@ -70,7 +71,7 @@ export default function HomePage() {
               {item?.image && (
                 <>
                   <div className="absolute inset-0 z-0">
-                    <img
+                    <Image
                       src={item.image}
                       className="w-full h-full object-cover object-top opacity-30"
                       alt=""

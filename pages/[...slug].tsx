@@ -23,7 +23,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   useEffect(() => {
     setDocs(allDocs)
     setCurrentDocs(name)
-  }, [])
+  }, [allDocs, name, setCurrentDocs, setDocs])
 
   return (
     <Layout nav={nav} toc={toc}>
