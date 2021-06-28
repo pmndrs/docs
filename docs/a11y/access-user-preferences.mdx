@@ -77,7 +77,7 @@ const My3dObject = () => {
 
 ## Use the context outside and inside the r3f canvas
 
-At the moment React context [can not be readily used between two renderers](hhttps://github.com/pmndrs/react-three-fiber/issues/43), this is due to a problem within React.
+At the moment React context [can not be readily used between two renderers](https://github.com/pmndrs/react-three-fiber/issues/43), this is due to a problem within React.
 If react-dom use the A11yUserPreferences provider, you will not be able to consume it within `<Canvas>`.
 
 There's a ready-made solution in drei: [useContextBridge](https://github.com/pmndrs/drei#usecontextbridge) which allows you to forward contexts provided above the `<Canvas />` to be consumed within it.
