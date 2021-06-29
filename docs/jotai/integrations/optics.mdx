@@ -45,13 +45,13 @@ const bAtom = focusAtom(objectAtom, (optic) => optic.prop('b'))
 
 const Controls = () => {
   const [a, setA] = useAtom(aAtom)
-  const [b, setB] = useAtom(aAtom)
+  const [b, setB] = useAtom(bAtom)
   return (
     <div>
       <span>Value of a: {a}</span>
       <span>Value of b: {b}</span>
       <button onClick={() => setA((oldA) => oldA + 1)}>Increment a</button>
-      <button onClick={() => setA((oldB) => oldB + 1)}>Increment b</button>
+      <button onClick={() => setB((oldB) => oldB + 1)}>Increment b</button>
     </div>
   )
 }
