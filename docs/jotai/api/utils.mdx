@@ -367,6 +367,19 @@ type SetStateAction<Value> = Value | ((prev: Value) => Value)
 const myFamily = atomFamily<number, number, SetStateAction<number>>((id: number) => atom(id))
 ```
 
+### Caveat: Memory Leaks
+
+Internally, atomFamily is just a Map whoes key is a param and whose value is an atom config.
+Unless you explicitly remove unused params, this leads to memory leaks.
+This is crucial if you use infinite number of params.
+
+There are two ways to remove params.
+
+- `myFamily.remove(param)` allows you to remove a specific param.
+- `myFamily.setShouldRemove(shouldRemove)` is to register `shouldRemove` function which runs immediately **and** when you are to get an atom from a cache.
+  - shouldRemove is a function that takes two arguments `createdAt` in milliseconds and `param`, and returns a boolean value.
+  - setting `null` will remove the previously registered function.
+
 ### Examples
 
 ```js
