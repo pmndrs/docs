@@ -18,7 +18,7 @@ export function atomWithToggle(initialValue?: boolean): WritableAtom<boolean, bo
     set(anAtom, update)
   })
 
-  return anAtom
+  return anAtom as WritableAtom<boolean, boolean | undefined>
 }
 ```
 
