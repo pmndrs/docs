@@ -53,7 +53,8 @@ export default function App() {
 If everything went according to plan, you should now be able to apply this texture to the sphere like so:
 
 ```jsx
-<sphereGeometry args={[1, 100, 100]} map={colorMap} />
+<meshStandardMaterial map={colorMap}/>
+
 ```
 
 Awesome! That works but we have a lot more textures to import and do we have to create a diffent useLoader for each of them?
