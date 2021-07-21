@@ -12,9 +12,9 @@ export default function HomePage() {
       </Head>
       <div className="min-h-screen p-8 lg:p-32 bg-gray-50">
         <Link href="/">
-          <a className="block text-3xl text-center lg:text-left">
-            <span className="font-bold cursor-pointer">Pmndrs</span>
-            <span className="font-normal cursor-pointer">.docs</span>
+          <a className="block text-3xl text-center lg:text-left cursor-pointer">
+            <span className="font-bold">Pmndrs</span>
+            <span className="font-normal">.docs</span>
           </a>
         </Link>
         <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-20">
