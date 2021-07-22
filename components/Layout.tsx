@@ -43,7 +43,7 @@ export default function Layout({ nav, toc, children }) {
       >
         <Link href="/">
           <a>
-            <div className="flex items-center flex-none pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
+            <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
               <span className="font-bold cursor-pointer">Pmndrs</span>
               <span className="font-normal cursor-pointer">.docs</span>
             </div>

@@ -12,7 +12,7 @@ export default function HomePage() {
       </Head>
       <div className="min-h-screen p-8 lg:p-32 bg-gray-50">
         <Link href="/">
-          <a className="block text-3xl text-center lg:text-left">
+          <a className="p-2 block text-3xl text-center lg:text-left">
             <span className="font-bold cursor-pointer">Pmndrs</span>
             <span className="font-normal cursor-pointer">.docs</span>
           </a>
