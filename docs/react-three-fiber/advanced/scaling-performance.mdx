@@ -67,13 +67,13 @@ If you access the same model or texture in different places it will always re-us
 <Codesandbox id="dix1y" />
 
 ```jsx
-function Model(props) {
-  const { nodes, materials } = useGLTF("/model.glb")
-  return <mesh geometry={nodes.robot.geometry} material={materials.metal} {...props} />
+function Shoe(props) {
+  const { nodes, materials } = useGLTF("/shoe.glb")
+  return <mesh geometry={nodes.shoe.geometry} material={materials.canvas} {...props} />
 }
 
-<Model position={[1, 2, 3]} />
-<Model position={[4, 5, 6]} />
+<Shoe position={[1, 2, 3]} />
+<Shoe position={[4, 5, 6]} />
 ```
 
 ## Instancing
@@ -85,14 +85,13 @@ You should be mindful of how many draw calls you employ. You should have no more
 Setting up instancing is not so hard, consult [the Threejs docs](https://threejs.org/docs/index.html?q=instance#api/en/objects/InstancedMesh) if you need help.
 
 ```jsx
-const obj = new THREE.Object3D()
-function Instances({ count = 1000000 }) {
+function Instances({ count = 100000, temp = new THREE.Object3D() }) {
   const ref = useRef()
   useEffect(() => {
     for (let i = 0; i < count; i++) {
-      obj.position.set(Math.random(), Math.random(), Math.random())
-      obj.updateMatrix()
-      ref.current.setMatrixAt(id, obj.matrix)
+      temp.position.set(Math.random(), Math.random(), Math.random())
+      temp.updateMatrix()
+      ref.current.setMatrixAt(id, temp.matrix)
     }
     ref.current.instanceMatrix.needsUpdate = true
   }, [])
