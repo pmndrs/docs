@@ -80,7 +80,7 @@ If you access a resource via useLoader with the same url, throughout the compone
 
 ```jsx
 function Shoe(props) {
-  const { nodes, materials } = useGLTF("/shoe.glb")
+  const { nodes, materials } = useLoader(GLTFLoader, "/shoe.glb")
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.shoe.geometry} material={materials.canvas} />
