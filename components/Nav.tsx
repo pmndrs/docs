@@ -38,7 +38,7 @@ function Nav({ nav }: NavProps) {
       {Object.entries(nav).map(([key, children], index) => (
         <Fragment key={`${key}-${index}`}>
           <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold">
-            {key.replace(/\-/g, '')}
+            {key.replace(/\-/g, ' ')}
           </h3>
           {Object.entries(children).map(([key, route], index) => (
             <Fragment key={`${key}-${index}`}>

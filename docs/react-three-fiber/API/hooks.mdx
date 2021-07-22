@@ -1,7 +1,7 @@
 ---
 title: Hooks
 description: Hooks are the heart of react-three-fiber
-nav: 11
+nav: 7
 ---
 
 Hooks allow you to tie or request specific information to your component. For instance, components that want to participate in the renderloop can use `useFrame`, components that need to be informed of three.js specifics can use `useThree` and so on. All hooks clean up after themselves once the component unmounts.
@@ -127,15 +127,37 @@ function Foo() {
 If you need more control you may pass a numerical `renderPriority` value. This will cause react-three-fiber to disable automatic rendering altogether. It will now be your responsibility to render, which is useful when you're working with effect composers, heads-up displays, etc.
 
 ```jsx
-useFrame(({ gl, scene, camera }) => {
-  gl.render(scene, camera)
-}, 1)
+function Render() {
+  // Takes over the render-loop, the user has the responsibility to render
+  useFrame(({ gl, scene, camera }) => {
+    gl.render(scene, camera)
+  }, 1)
+
+function RenderOnTop() {
+  // This will execute *after* Render's useframe
+  useFrame(({ gl, ... }) => {
+    gl.render(...)
+  }, 2)
 ```
 
 <Hint>
   Callbacks will be executed in order of ascending priority values (lowest first, highest last.),
   similar to the doms z-order.
 </Hint>
+
+### Negative indicies
+
+Using negative indicies will **not take over the render loop**, but it can be useful if you really must order the sequence of useFrames across the component tree.
+
+```jsx
+function A() {
+  // This will execute first
+  useFrame(() => ..., -1)
+
+function B() {
+  // This useFrame will execute *after* A's
+  useFrame(() => ..., -2)
+```
 
 ## useLoader
 

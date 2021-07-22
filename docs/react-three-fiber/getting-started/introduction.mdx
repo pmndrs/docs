@@ -12,17 +12,17 @@ npm install three @react-three/fiber
 
 Build your scene declaratively with re-usable, self-contained components that react to state, are readily interactive and can tap into React's ecosystem.
 
-### Does it have limitations?
+#### Does it have limitations?
 
-None. Everything that works in `three.js` will work here without exception.
+None. Everything that works in Threejs will work here without exception.
 
-### Can it keep up with frequent updates to three.js?
+#### Can it keep up with frequent updates to Threejs?
 
-Yes, because it merely expresses `three.js` in JSX: `<mesh />` becomes `new THREE.Mesh()`, and that happens dynamically. There is no hard dependency on a particular `three.js` version, it does not wrap or duplicate a single `three.js` class.
+Yes. There is no hard dependency on a particular Threejs version, it does not wrap or duplicate a single Threejs class. It merely expresses Threejs in JSX: `<mesh />` becomes `new THREE.Mesh()`, and that happens dynamically.
 
-### Is it slower than plain three.js?
+#### Is it slower than plain Threejs?
 
-There is no additional overhead. Components participate in the renderloop outside of React.
+No. There is no additional overhead. Components participate in a unified renderloop outside of React. It outperforms Threejs in scale due to Reacts scheduling abilities.
 
 ### What does it look like?
 

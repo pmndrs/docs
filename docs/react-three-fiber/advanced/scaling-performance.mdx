@@ -1,19 +1,143 @@
 ---
 title: Scaling performance
 description: This is a short primer on how to scale performance.
-nav: 17
+nav: 10
 ---
 
-Websites like Sketchfab make sure the scene is always fluid, running at 60 fps, and responsive, no matter which device is being used or how demanding the loaded model is, which depends on the vertex count, draw calls, and so on.
+Running WebGL can be quite expensive depending on how powerful your devices are. In order to mitigate this, especially if you want to make your application available to a broad variety of devices, including weaker options, you should look into performance optimizations. This article goes through a couple of them.
 
-They do this by scaling performance:
+## On-demand rendering
 
-- Nested loading, lesser textures and models are loaded first, high-resolution later
-- Movement regression, where effects, textures, shadows will slightly reduce until still-stand
+Most Threejs apps run in a game-loop, they render 60 times per second. Three-fiber is no different. This is perfect when your scene has moving parts in it. This is what generally drains batteries and makes fans spin up. 
 
-In three-fiber both are easy to achieve.
+Given that movement in your scene is only temporary and may come to a still stand, then you can opt into on-demand rendering, which will only render when necessary. This saves battery and keeps fans from going crazy.
+
+Open your devtools for instance in the sandbox below and you will see that it is completely idle when nothing is moving. Only when you move the model around it renders.
+
+<Codesandbox id="wvgxp" />
+
+You activate it with the `frameloop` prop, and this is already enough if your app merely changes props, which now will request frames to be rendered automatically.
+
+```jsx
+<Canvas frameloop="demand">
+```
+
+<Hint>
+  Calling invalidate() will not render immediately, it merely requests a new frame to be rendered
+  out. Calling invalidate multiple times will not render multiple times. Think of it as a flag to
+  tell the system that something has changed.
+</Hint>
+
+### Triggering manual frames
+
+One caveat is that if anything in the tree _mutates_ props, then React cannot be aware of it and the display would be stale. Use the `invalidate` function to trigger frames manually.
+
+This is useful when something is temporarily moving, for instance an animation. If you had controls for instance it would be a good idea to invalidate in the `change` event. Drei's controls [do this automatically](https://github.com/pmndrs/drei/blob/master/src/core/OrbitControls.tsx#L40) for you. If you use react-spring to animate your scene, then it will also call `invalidate()` for you.
+
+```jsx
+import { invalidate } from '@react-three/fiber'
+
+// Anywhere you need it
+invalidate()
+```
+
+## Re-using geometries and materials
+
+Each geometry and material means additional overhead for the GPU. You should try to re-use resources if you know they will repeat.
+
+You could do this globally:
+
+```jsx
+const material = new THREE.MeshLambertMaterial({ color: "red" })
+const geometry = new THREE.SphereGeometry(1, 28, 28)
+
+function Scene() {
+  return (
+    <>
+      <mesh geometry={sphere} material={red} />
+      <mesh position={[1, 2, 3]} geometry={sphere} material={red} />
+```
+
+### Caching with useLoader
+
+<Hint>Every resource that is loaded with useLoader is cached automatically!</Hint>
+
+If you access a resource via useLoader with the same url, throughout the component tree, then you will always refer to the same asset and thereby re-use it. This is especially useful if you run your GLTF assets through [gltfjsx](https://github.com/pmndrs/gltfjsx) because it links up geometries and materials and thereby creates re-usable models.
+
+<Codesandbox id="dix1y" />
+
+```jsx
+function Shoe(props) {
+  const { nodes, materials } = useGLTF("/shoe.glb")
+  return (
+    <group {...props} dispose={null}>
+      <mesh geometry={nodes.shoe.geometry} material={materials.canvas} />
+    </group>
+  )
+}
+
+<Shoe position={[1, 2, 3]} />
+<Shoe position={[4, 5, 6]} />
+```
+
+## Instancing
+
+Each mesh is a draw call, you should be mindful of how many of these you employ: no more than 1000 as the very maximum, and optimally a few hundred or less. You can win performance back by reducing draw calls, for example by instancing repeating objects. This way you can have hundreds of thousands of objects in a single draw call.
+
+<Codesandbox id="h873k" />
+
+Setting up instancing is not so hard, consult [the Threejs docs](https://threejs.org/docs/index.html?q=instance#api/en/objects/InstancedMesh) if you need help.
+
+```jsx
+function Instances({ count = 100000, temp = new THREE.Object3D() }) {
+  const ref = useRef()
+  useEffect(() => {
+    // Set positions
+    for (let i = 0; i < count; i++) {
+      temp.position.set(Math.random(), Math.random(), Math.random())
+      temp.updateMatrix()
+      ref.current.setMatrixAt(id, temp.matrix)
+    }
+    // Update the instance
+    ref.current.instanceMatrix.needsUpdate = true
+  }, [])
+  return (
+    <instancedMesh ref={ref} args={[null, null, count]}>
+      <boxGeometry />
+      <meshPhongMaterial />
+    </instancedMesh>
+  )
+}
+```
+
+## Level of detail
+
+Sometimes it can be beneficial to reduce the quality of an object the further it is away from the camera. Why would you display it full resolution if it is barely visible. This can be a good strategy to reduce the overall vertex-count which means less work for the GPU.
+
+Scroll in and out to see the effect:
+
+<Codesandbox id="12nmp" />
+
+There is a small component in drei called `<Detailed />` which sets up LOD without boilerplate. You load or prepare a couple of resolution stages, as many as you like, and then give them the same amount of distances from the camera, starting from highest quality to lowest.
+
+```jsx
+import { Detailed, useGLTF } from '@react-three/drei'
+
+function Model() {
+  const [low, mid, high] = useGLTF(["/low.glb", "/mid.glb", "/high.glb"])
+  return (
+    <Detailed distances={[0, 10, 20]}>
+      <mesh geometry={high} />
+      <mesh geometry={mid} />
+      <mesh geometry={low} />
+    <Detailed/>
+  )
+}
+```
 
 ## Nested loading
+
+Nested loading means that lesser textures and models are loaded first, higher-resolution later.
 
 The following sandbox goes through three loading stages:
 
@@ -46,7 +170,7 @@ function Model({ url }) {
 
 ## Movement regression
 
-As of version 6 three-fiber allows you to compose performance scaling.
+Websites like Sketchfab make sure the scene is always fluid, running at 60 fps, and responsive, no matter which device is being used or how expensive a loaded model is. They do this by regressing movement, where effects, textures, shadows will slightly reduce quality until still-stand
 
 The following sandbox uses expensive lights and post-processing. In order for it to run relatively smooth it will scale the pixel ratio on movement and also skip heavy post-processing effects like ambient occlusion.
 
@@ -116,3 +240,47 @@ Drop this component into the scene, combine it with the code above that calls `r
 ```
 
 There are pre-made components for this already in the [drei library](https://github.com/pmndrs/drei/#performance).
+
+## ⚠️ Enable concurrency
+
+React 18 will introduce concurrent scheduling, specifically time slicing. This will virtualise the component graph, which then allows you to priotitise components and actions. Think of how a virtual list avoids scaling issues because it only renders as many items as the screen can take, it is not affected by the amount of items it has to render, be it 10 or 100.000.000.
+
+React 18 functions very similar to this, it can potentially defer load and heavy tasks in ways that would be hard or impossible to achieve in a vanilla application. It thereby holds on to a stable framerate even in the most demanding situations.
+
+You can already use it in current Three-fiber.
+
+```jsx
+<Canvas mode="concurrent">
+```
+
+The following benchmark shows how powerful concurrency can be: https://github.com/drcmda/scheduler-test
+
+It simulates heavy load by creating hundreds of THREE.TextGeometry instances (510 to be exact). This class, like many others in Threejs, is expensive and takes a while to construct. If all 510 instances are created the same time **it will cause approximately 1.5 seconds of pure jank** (Apple M1), the tab would normally freeze. It runs in an interval and **will execute every 2 seconds**.
+
+|         | Distributed | At-once |
+| ------- | ----------- | ------- |
+| Threejs | ~20fps      | ~5fps   |
+| React   | ~60fps      | ~60fps  |
+
+<p align="center">
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/three-distributed.jpg"
+  />
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/three-at-once.jpg"
+  />
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/react-distributed.jpg"
+  />
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/react-at-once.jpg"
+  />
+</p>
+
+<Hint>
+  Until React 18 comes out officially the concurrency option in Three-fiber is experimental!
+</Hint>

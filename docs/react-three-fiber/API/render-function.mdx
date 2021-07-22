@@ -1,7 +1,7 @@
 ---
 title: Render Function
 description: 'React Three Fiber without the React part'
-nav: 9
+nav: 5
 ---
 
 As of version 6 you may use a render function, similar to how `react-dom` and all the other React renderers work. This allows you to shave off `react-dom` (~40kb), `react-use-measure` + `resize-observer-polyfill` (~5kb) and, if you don't need them, `pointer-events` (~7kb) (you need to explictely import `events` and add them to the config otherwise).
