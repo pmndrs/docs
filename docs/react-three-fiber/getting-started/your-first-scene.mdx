@@ -8,67 +8,58 @@ This tutorial will assume some React knowledge.
 
 ## Setting up the Canvas
 
-We'll start by importing the `<Canvas />` component from `@react-three/fiber` and putting it in our React tree:
+We'll start by importing the `<Canvas />` component from `@react-three/fiber` and putting it in our React tree.
 
 ```jsx
+import ReactDOM from 'react-dom'
 import { Canvas } from '@react-three/fiber'
 
-export default function App() {
+function App() {
   return (
     <div id="canvas-container">
       <Canvas />
     </div>
   )
 }
+
+ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
 The Canvas component does some important setup work behind the scenes:
 
 - It sets up a **Scene** and a **Camera**, the basic building blocks necessary for rendering
-- It automatically handles resizing
-- It renders our scene every frame
+- It renders our scene every frame, you do not need a traditional render-loop
 
 <Hint>
-  Note that the Canvas will be resized to fit the parent div, so you can control how big it is by
-  just changing the `width` and `height` of `#canvas-container` in your css.
+  Canvas is responsive to fit the parent node, so you can control how big it is by changing the
+  parents width and height, in this case #canvas-container.
 </Hint>
-
-To actually _render_ something in our scene, we'll add a `mesh` component. In Fiber, every three.js object has an equivalent component:
-
-```js
-const myMesh = new THREE.Mesh()
-// is equivalent to
-<mesh />
-```
 
 ## Adding a Mesh Component
 
-A [`Mesh`](https://threejs.org/docs/#api/en/objects/Mesh) is a basic object in three.js, and it's used to hold the polygons and the material that are needed to represent the object in 3D space.
-We'll create a new mesh using a **BoxGeometry** component for the geometry and a **MeshPhongMaterial** component for the material.
+To actually see something in our scene, we'll add a lowercase `<mesh />` native element, which is the direct equivalent to new THREE.Mesh().
 
-To actually add these objects to our scene, we mount them inside the `<Canvas />` component.
+```js
+<Canvas>
+  <mesh />
+```
 
 <Hint>
-  Note that we don't need to import anything, THREE objects will be treated as native JSX elements,
-  just like you can just write &lt;div /&gt; or &lt;span /&gt; in regular React. The general rule is
-  that Fiber components are available under the camel-case version of their name in three.js.
+  Note that we don't need to import anything, All three.js objects will be treated as native JSX
+  elements, just like you can just write &lt;div /&gt; or &lt;span /&gt; in regular React-dom. The
+  general rule is that Fiber components are available under the camel-case version of their name in
+  three.js.
 </Hint>
 
-```jsx
-import { Canvas } from '@react-three/fiber'
+A [`Mesh`](https://threejs.org/docs/#api/en/objects/Mesh) is a basic scene object in three.js, and it's used to hold the geometry and the material needed to represent a shape in 3D space.
+We'll create a new mesh using a **BoxGeometry** and a **MeshStandardMaterial** which [automatically attach](https://docs.pmnd.rs/react-three-fiber/API/objects#dealing-with-objects-that-are-normally-not-part-of-the-scene-and-attaching) to their parent.
 
-export default function App() {
-  return (
-    <div id="canvas-container">
-      <Canvas>
-        <mesh>
-          <boxGeometry />
-          <meshPhongMaterial />
-        </mesh>
-      </Canvas>
-    </div>
-  )
-}
+```jsx
+<Canvas>
+  <mesh>
+    <boxGeometry />
+    <meshStandardMaterial />
+  </mesh>
 ```
 
 Let's pause for a moment to understand exactly what is happening here. The code we just wrote is the equivalent to this three.js code:
@@ -83,7 +74,7 @@ document.querySelector('#canvas-container').appendChild(renderer.domElement)
 
 const mesh = new THREE.Mesh()
 mesh.geometry = new THREE.BoxGeometry()
-mesh.material = new THREE.MeshPhongMaterial()
+mesh.material = new THREE.MeshStandardMaterial()
 
 scene.add(mesh)
 
@@ -95,49 +86,40 @@ function animate() {
 animate()
 ```
 
-When you mount a `mesh` component, Fiber is creating a new `THREE.Mesh` object, and the same is done for geometry and material.
-Then, geometry and material are _attached_ to their parent.
-
 ### Constructor arguments
 
-If we consult the [documentation for THREE's `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry) we can optionally pass three arguments for: width, length and depth:
+If we consult the [documentation for `BoxGeometry`](https://threejs.org/docs/#api/en/geometries/BoxGeometry) we can optionally pass three arguments for: width, length and depth:
 
 ```js
-const geometry = new THREE.BoxGeometry(2, 2, 2)
+new THREE.BoxGeometry(2, 2, 2)
 ```
 
-In order to do this in Fiber we use the `args` prop, which _always_ takes an array whose items represent constructor argument.
+In order to do this in Fiber we use the `args` prop, which _always_ takes an array whose items represent the constructor arguments.
 
 ```jsx
 <boxGeometry args={[2, 2, 2]} />
 ```
 
-<Hint>Note that every time you change these, the object must be re-constructed!</Hint>
+<Hint>Note that every time you change args, the object must be re-constructed!</Hint>
 
 ## Adding lights
 
-Next, we will add some lights to our scene, by putting these components as children of `<Canvas />`
+Next, we will add some lights to our scene, by putting these components into our canvas.
 
 ```jsx
 <Canvas>
-  ...
   <ambientLight intensity={0.1} />
   <directionalLight color="red" position={[0, 0, 5]} />
-</Canvas>
 ```
 
 ### Props
 
-This introduces us to the last fundamental concept of Fiber, how React `props` work on THREE objects. When you set any prop on a Fiber component, it will set the property of the same name on the three.js object.
+This introduces us to the last fundamental concept of Fiber, how React `props` work on three.js objects. When you set any prop on a Fiber component, it will set the property of the same name on the three.js instance.
 
-Let's focus on our `ambientLight`, whose [documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) tells us that we can optionally construct it with a color, but can also receive props.
+Let's focus on our `ambientLight`, whose [documentation](https://threejs.org/docs/#api/en/lights/AmbientLight) tells us that we can optionally construct it with a color, but it can also receive props.
 
 ```jsx
-// we are using a THREE.js AmbientLight
-<ambientLight
-  // we are setting the lights intensity to 0.1
-  intensity={0.1}
-/>
+<ambientLight intensity={0.1} />
 ```
 
 Which is the equivalent to:
@@ -149,7 +131,7 @@ light.intensity = 0.1
 
 ### Shortcuts
 
-There are a few shortcuts for _classes_ that have a `.set()` method (colors, vectors, ect).
+There are a few shortcuts for props that have a `.set()` method (colors, vectors, ect).
 
 ```jsx
 const light = new THREE.DirectionalLight()
@@ -160,12 +142,7 @@ light.color.set('red')
 Which is the same as the following in JSX:
 
 ```jsx
-<directionalLight
-  // we are setting the position
-  position={[0, 0, 5]}
-  // we are setting the color
-  color="red"
-/>
+<directionalLight position={[0, 0, 5]} color="red" />
 ```
 
 Please refer to the API for [a deeper explanation](/react-three-fiber/API/objects).
@@ -173,171 +150,21 @@ Please refer to the API for [a deeper explanation](/react-three-fiber/API/object
 ## The result
 
 ```jsx
-import { Canvas } from '@react-three/fiber'
-
-export default function App() {
-  return (
-    <div id="canvas-container">
-      <Canvas>
-        <ambientLight intensity={0.1} />
-        <directionalLight color="red" position={[0, 0, 5]} />
-        <mesh>
-          <boxGeometry />
-          <meshPhongMaterial />
-        </mesh>
-      </Canvas>
-    </div>
-  )
-}
+<Canvas>
+  <ambientLight intensity={0.1} />
+  <directionalLight color="red" position={[0, 0, 5]} />
+  <mesh>
+    <boxGeometry />
+    <meshStandardMaterial />
+  </mesh>
+</Canvas>
 ```
 
 <Codesandbox id="12q81" />
 
 ## Exercise
 
-- try different materials, like [`<meshNormalMaterial />`](https://threejs.org/docs/#api/en/materials/MeshNormalMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial)
+- try different materials, like [`<meshNormalMaterial />`](https://threejs.org/docs/#api/en/materials/MeshNormalMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial) and give them a color
 - try different geometries, like [`<sphereGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereGeometry) or [`<octahedronGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronGeometry)
 - try changing the `position` on our `mesh` component, by setting the prop with the same name
 - try extracting our mesh to a new component
-
-<!--
-Every scene starts with the `<Canvas />` component, which we can import from `react-three-fiber`:
-
-
-In the example above, we can start getting familiar with some of the **basic concepts** of React Three Fiber:
-
-1. We set a **camera** prop for the `<Canvas />` component. This is the initial position of Fiber's default **PerspectiveCamera** - which would otherwise be at `[0, 0, 5]`
-
-2. We added a `<color />` component with `args` and `attach` props. This means that a new `THREE.Color` object will be created and set as the `background` property of the main `scene`.
-
-```jsx
-const color = new THREE.Color('black') // args is the arguments array, passed to the constructor
-scene.background = color // set the property on a three.js object parent[attach] = object
-```
-
-3. We added a `<mesh />` component with a `<boxGeometry />` child. Any component with `geometry` or `material` in its name, will automatically attach to the corresponding property of its parent:
-
-```js
-const myMesh = new THREE.Mesh() // <mesh />
-const myGeometry = new THREE.BoxGeometry() // <boxGeometry />
-
-myMesh.geometry = myGeometry // set the `geometry` property on our mesh
-```
-
-The `Canvas` will fill its parent element (try changing the width and height of `.App` in
-`src/styles.css`)
-
-**React Three Fiber can render any object from three.js**, using these simple rules:
-
-- components will be camel-case, so `THREE.Mesh` will be `<mesh />` and `THREE.BoxGeometry` will be `<boxGeometry />`
-- constructor arguments will be passed via the `args` prop, so `new THREE.Color("red")` will become `<color args={["red"]} />`
-
-This gives you an initial idea of how React Three Fiber will work, but let's dive deeper!
-
-## Meshes, Geometries and Materials
-
-In the previous example, we created a `<mesh />` component with a `<boxGeometry />` child.
-
-This is equivalent to creating those objects in three.js, putting them together and adding them to the scene:
-
-```js
-const mesh = new THREE.Mesh()
-const geometry = new THREE.BoxGeometry()
-
-mesh.geometry = geometry
-scene.add(mesh)
-```
-
-We can add materials in the same way, let's say we want to use [`THREE.MeshNormalMaterial`](), we will have to use a camel-case version of the name, in this case `<meshPhysicalMaterial />`:
-
-<Codesandbox id="cvxpd" />
-
-**Exercise:**
-
-- try different materials, like [`<meshPhongMaterial />`](https://threejs.org/docs/#api/en/materials/MeshPhongMaterial) or [`<meshBasicMaterial />`](https://threejs.org/docs/#api/en/materials/MeshBasicMaterial)
-- try different geometries, like [`<sphereGeometry />`](https://threejs.org/docs/#api/en/geometries/SphereGeometry) or [`<octahedronGeometry />`](https://threejs.org/docs/#api/en/geometries/OctahedronGeometry)
-
-## Loading Textures
-
-We will now add a simple [`texture`](https://threejs.org/docs/index.html#api/en/textures/Texture) to our box, to make it look less boring!
-
-This example will introduce you to the concept of three's **Loaders**, Fiber's [**useLoader**](/api/useloader) hook and a sprinkle of React's **Suspense**.
-
-<Codesandbox id="xxrlt" />
-
-Let's take a closer look:
-
-- we moved our box _mesh_ to its own component, since **React Three Fiber Hooks** can only be used inside `<Canvas />` children.
-- we imported the `useLoader` hook from Fiber.
-  _useLoader_ expects at least two arguments, the first being a three.js `Loader` constructor, and the second being the url of the resource you want to load
-  ```jsx
-  useLoader(THREE.TextureLoader, url)
-  ```
-- we wrapped our `<MyBox />` component with a React Suspense block.
-
-  ```jsx
-  <React.Suspense fallback={null}>
-    <MyBox />
-  </React.Suspense>
-  ```
-
-  By doing this, we tell React that our component should not be rendered until our texture is finished loading, and that instead we want to render whatever element is passed to `fallback`.
-  We will be just using `null` for now, but we will build something nicer later!
-
-  <Callout>
-    React Suspense is a big topic, we will get back to it later, but if you want to learn more, you
-    should read this page.
-  </Callout>
-
-- Finally, we assign our newly loaded texture to the `map` property of `MeshBasicMaterial`
-
-**Exercise:**
-
-- try scaling the texture and changing its wrapping modes:
-
-```jsx
-// texture is scaled down to repeat twice
-myTexture.repeat.set(2, 2)
-// texture will now repeat both horizontally and vertically
-myTexture.wrapS = myTexture.wrapT = THREE.RepeatWrapping
-```
-
-You can just add these lines right after assigning `myTexture` (line 10).
-
-We can also simplify our texture loading by using drei's
-[`useTexture`](https://github.com/pmndrs/drei#usetexture)
-
-## Loading 3D Models
-
-Boxes are boring, we all know that. Let's load a `gltf` file, and get introduced to the React Three Fiber ecosystem:
-
-We will add a new dependency to our project, [`@react-three/drei`](https://github.com/pmndrs/drei).
-Drei is a collection of useful helpers and abstractions for Fiber, and we will use a few of its components to improve our example.
-
-<Codesandbox id="kmdi5" />
-
-- we put our files in `public/model`, so that our resource will be served by the web server
-- we load our model with drei's [`useGLTF`](https://github.com/pmndrs/drei#usetexture). Here's what's happening, in detail:
-  - Suspense is triggered by `useGLTF`, so our component will not render until it's done loading
-  - The `.gltf` file is fetched
-  - All the related files (binaries and images) are fetched
-  - Suspense is resolved and our component can now finally render
-- we destructure nodes (the model's objects) and materials and assign them to a mesh's geometry and material
-
-BONUS: we can add [OrbitControls](https://threejs.org/docs/index.html#examples/en/controls/OrbitControls)
-by using drei's `<OrbitControls />` component - try dragging and scrolling in the scene
-
-Phew, that's a lot to unpack. We will make this process easier later, when we'll introduce the [**gltfjsx**](https://github.com/pmndrs/gltfjsx) utility.
-
-**Exercise:**
-
-- try console logging the result of `useGLTF`, to see just what's returned from the hook
-- try to load a `.glb` file - you can find some free-to-use files here https://github.com/KhronosGroup/glTF-Sample-Models/
-
-## Moving to components
-
-We will now refactor our previous example to better use React's strong suite, components!
-
-<Codesandbox id="wudry" />
-
-In the example, we created a new `MyBox` component that will render a new `mesh`, and we reuse it twice, with different `position` and `color` props. -->
