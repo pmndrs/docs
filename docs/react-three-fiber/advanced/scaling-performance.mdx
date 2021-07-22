@@ -16,13 +16,15 @@ If you open devtools in the sandbox below you will see that it is completely idl
 
 <Codesandbox id="wvgxp" />
 
-This is how you activate it.
+You activate it with the `frameloop` prop, and this is already enough if your app merely changes props, which now will request frames to be rendered automatically.
 
 ```jsx
 <Canvas frameloop="demand">
 ```
 
-Use the `invalidate` function to trigger frames manually. This is useful when something is temporarily moving, for instance an animation. If you had controls for instance, it would be a good idea to stick it into the `change` event. Drei's controls [do this automatically](https://github.com/pmndrs/drei/blob/master/src/core/OrbitControls.tsx#L40) for you. If you use react-spring to animate your scene, then it will also call `invalidate()` for you.
+If anything in the tree mutates Threejs objects instead, then React cannot be aware of it, and the display would be stale. Use the `invalidate` function to trigger frames manually. 
+
+This is useful when something is temporarily moving, for instance an animation. If you had controls for instance, it would be a good idea to stick it into the `change` event. Drei's controls [do this automatically](https://github.com/pmndrs/drei/blob/master/src/core/OrbitControls.tsx#L40) for you. If you use react-spring to animate your scene, then it will also call `invalidate()` for you.
 
 ```jsx
 import { invalidate } from '@react-three/fiber'
