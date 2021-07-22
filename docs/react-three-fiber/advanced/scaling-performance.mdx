@@ -93,7 +93,7 @@ function Instances({ count = 1000000 }) {
     </instancedMesh>
   )
 }
-````
+```
 
 ## Level of detail
 
@@ -225,3 +225,41 @@ Drop this component into the scene, combine it with the code above that calls `r
 ```
 
 There are pre-made components for this already in the [drei library](https://github.com/pmndrs/drei/#performance).
+
+## ⚠️ Enable concurrency
+
+React 18 will introduce concurrent scheduling, specifically time slicing. This can virtualise the entire component graph, which then allows you to priotitise components. Think of how a virtual list avoid scaling issues because it only renders as many items as the screen can take. React functions very similar to this, it can potentially defer load and heavy tasks in ways that would be very hard to achieve in a plain Threejs application and thereby holds on to a stable framerate even in impossibly demanding situations.
+
+You can already use it in current Three-fiber.
+
+```jsx
+<Canvas mode="concurrent">
+```
+
+The follow benchmark shows how powerful concurrency can be: https://github.com/drcmda/scheduler-test
+
+It simulates heavy load by creating hundreds of THREE.TextGeometry instances (510 to be exact). This class, like many others in Threejs, is expensive and takes a while to construct. If all 510 instances are created the same time **it will cause approximately 1.5 seconds of pure jank** (Apple M1), the tab would normally freeze. It runs in an interval and **will execute every 2 seconds**.
+
+|         | Distributed | At-once |
+| ------- | ----------- | ------- |
+| Threejs | ~20fps      | ~5fps   |
+| React   | ~60fps      | ~60fps  |
+
+<p align="center">
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/three-distributed.jpg"
+  />
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/three-at-once.jpg"
+  />
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/react-distributed.jpg"
+  />
+  <img
+    style={{ width: '50%', display: 'inline-block' }}
+    src="https://github.com/drcmda/scheduler-test/raw/master/assets/react-at-once.jpg"
+  />
+</p>
