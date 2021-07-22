@@ -41,8 +41,6 @@ invalidate()
 
 Each geometry is a draw call and each material is a program. You should try your very best to re-use them.
 
-<Codesandbox id="dix1y" />
-
 You could do this globally:
 
 ```jsx
@@ -57,6 +55,8 @@ function Scene() {
 ```
 
 And if you use GLTF in combination with [gltfjsx](https://github.com/pmndrs/gltfjsx) that is done for you because all `useLoader` assets are cached.
+
+<Codesandbox id="dix1y" />
 
 ```jsx
 function Model(props) {
@@ -240,8 +240,6 @@ You can already use it in current Three-fiber.
 <Canvas mode="concurrent">
 ```
 
-<Hint>Until React 18 comes out officially the concurrency options in Three-fiber is experimental!</Hint>
-
 The following benchmark shows how powerful concurrency can be: https://github.com/drcmda/scheduler-test
 
 It simulates heavy load by creating hundreds of THREE.TextGeometry instances (510 to be exact). This class, like many others in Threejs, is expensive and takes a while to construct. If all 510 instances are created the same time **it will cause approximately 1.5 seconds of pure jank** (Apple M1), the tab would normally freeze. It runs in an interval and **will execute every 2 seconds**.
@@ -269,3 +267,5 @@ It simulates heavy load by creating hundreds of THREE.TextGeometry instances (51
     src="https://github.com/drcmda/scheduler-test/raw/master/assets/react-at-once.jpg"
   />
 </p>
+
+<Hint>Until React 18 comes out officially the concurrency options in Three-fiber is experimental!</Hint>
