@@ -8,7 +8,9 @@ Running WebGL can be quite expensive depending on how powerful your devices are.
 
 ## On-demand rendering
 
-Most Threejs apps run in a game-loop, that means they render 60 times per second. Three-fiber defaults to that as well. This is perfect when your scene is always moving or has moving parts in it. But it can be demanding, this is what makes your fans spin up. It can also be wasteful because it affects the battery the most. When your scene can come to rest, animations and movement are only temporarily, then you can opt into on-demand rendering instead, which will only render when necessary.
+Most Threejs apps run in a game-loop, they render 60 times per second. Three-fiber is no different. This is perfect when your scene has moving parts in it. This is what generally drains batteries and makes fans spin up. 
+
+Given that movement in your scene is only temporary and may come to a still stand, then you can opt into on-demand rendering, which will only render when necessary. This saves battery and keeps fans from going crazy.
 
 Open your devtools for instance in the sandbox below and you will see that it is completely idle when nothing is moving. Only when you move the model around it renders.
 
