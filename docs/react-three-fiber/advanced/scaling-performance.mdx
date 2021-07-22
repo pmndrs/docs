@@ -41,9 +41,9 @@ import { invalidate } from '@react-three/fiber'
 invalidate()
 ```
 
-## Re-using objects and materials
+## Re-using geometries and materials
 
-Each geometry is a draw call and each material is a program. You should try your very best to re-use them.
+Each geometry and material means additional overhead for the GPU. You should try to re-use resources if you know they will repeat.
 
 You could do this globally:
 
@@ -60,16 +60,20 @@ function Scene() {
 
 ### Caching with useLoader
 
-<Hint>Every asset that is loaded with useLoader is cached!</Hint>
+<Hint>Every resource that is loaded with useLoader is cached automatically!</Hint>
 
-If you access the same model or texture in different places it will always re-use them! This is especially useful if you run your GLTF assets through [gltfjsx](https://github.com/pmndrs/gltfjsx) because it links up geometries and materials and thereby creates re-usable models.
+If you access a resource via useLoader with the same url, throughout the component tree, then you will always refer to the same asset and thereby re-use it. This is especially useful if you run your GLTF assets through [gltfjsx](https://github.com/pmndrs/gltfjsx) because it links up geometries and materials and thereby creates re-usable models.
 
 <Codesandbox id="dix1y" />
 
 ```jsx
 function Shoe(props) {
   const { nodes, materials } = useGLTF("/shoe.glb")
-  return <mesh geometry={nodes.shoe.geometry} material={materials.canvas} {...props} />
+  return (
+    <group {...props} dispose={null}>
+      <mesh geometry={nodes.shoe.geometry} material={materials.canvas} />
+    </group>
+  )
 }
 
 <Shoe position={[1, 2, 3]} />
@@ -78,7 +82,7 @@ function Shoe(props) {
 
 ## Instancing
 
-You should be mindful of how many draw calls you employ. You should have no more than 1000 as the very maximum, and optimally a few hundred or less. You can win performance back by reducing draw calls by instancing repeating objects. This way you can have hundreds of thousands of objects in a single draw call.
+Each mesh is a draw call, you should be mindful of how many of these you employ: no more than 1000 as the very maximum, and optimally a few hundred or less. You can win performance back by reducing draw calls, for example by instancing repeating objects. This way you can have hundreds of thousands of objects in a single draw call.
 
 <Codesandbox id="8fo01" />
 
@@ -88,11 +92,13 @@ Setting up instancing is not so hard, consult [the Threejs docs](https://threejs
 function Instances({ count = 100000, temp = new THREE.Object3D() }) {
   const ref = useRef()
   useEffect(() => {
+    // Set positions
     for (let i = 0; i < count; i++) {
       temp.position.set(Math.random(), Math.random(), Math.random())
       temp.updateMatrix()
       ref.current.setMatrixAt(id, temp.matrix)
     }
+    // Update the instance
     ref.current.instanceMatrix.needsUpdate = true
   }, [])
   return (
@@ -106,13 +112,13 @@ function Instances({ count = 100000, temp = new THREE.Object3D() }) {
 
 ## Level of detail
 
-You use LODs to reduce quality the further an object is away. That can be a good strategy to reduce the vertex-count.
+Sometimes it can be beneficial to reduce the quality of an object the further it is away from the camera. Why would you display it full resolution if it is barely visible. This can be a good strategy to reduce the overall vertex-count which means less work for the GPU.
 
 Scroll in and out to see the effect:
 
 <Codesandbox id="12nmp" />
 
-There is a small component in drei called `<Detailed />` which sets up LOD without boilerplate. You load or prepare a couple of stages, as many as you like, and then give them the same amount of distances from the camera, starting from highest quality to lowest.
+There is a small component in drei called `<Detailed />` which sets up LOD without boilerplate. You load or prepare a couple of resolution stages, as many as you like, and then give them the same amount of distances from the camera, starting from highest quality to lowest.
 
 ```jsx
 import { Detailed, useGLTF } from '@react-three/drei'
