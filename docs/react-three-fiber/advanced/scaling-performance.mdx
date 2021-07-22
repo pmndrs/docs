@@ -8,38 +8,50 @@ Running WebGL can be quite expensive depending on how powerful your devices are.
 
 ## On-demand rendering
 
-Most Threejs apps run in a game-loop, they render 60 times per second. Three-fiber is no different. This is perfect when your scene has moving parts in it. This is what generally drains batteries and makes fans spin up. 
+Threejs apps usually run in a game-loop that executes 60 times a second, three-fiber is no different. This is perfectly fine when your scene has _constantly_ moving parts in it. This is what generally drains batteries the most and makes fans spin up.
 
-Given that movement in your scene is only temporary and may come to a still stand, then you can opt into on-demand rendering, which will only render when necessary. This saves battery and keeps fans from going crazy.
+But if the moving parts in your scene are allowed to come to rest, then it would be wasteful to keep rendering. In such cases you can opt into on-demand rendering, which will only render when necessary. This saves battery and keeps noisy fans in check.
 
-Open your devtools for instance in the sandbox below and you will see that it is completely idle when nothing is moving. Only when you move the model around it renders.
+Open the sandbox below in a full screen and look into dev tools, you will see that it is completely idle when nothing is going on. It renders only when you move the model.
 
 <Codesandbox id="wvgxp" />
 
-You activate it with the `frameloop` prop, and this is already enough if your app merely changes props, which now will request frames to be rendered automatically.
+All you need to do is set the canvas `frameloop` prop to `demand`. It will render frames whenever it detects prop changes throughout the component tree.
 
 ```jsx
 <Canvas frameloop="demand">
 ```
 
-<Hint>
-  Calling invalidate() will not render immediately, it merely requests a new frame to be rendered
-  out. Calling invalidate multiple times will not render multiple times. Think of it as a flag to
-  tell the system that something has changed.
-</Hint>
-
 ### Triggering manual frames
 
-One caveat is that if anything in the tree _mutates_ props, then React cannot be aware of it and the display would be stale. Use the `invalidate` function to trigger frames manually.
-
-This is useful when something is temporarily moving, for instance an animation. If you had controls for instance it would be a good idea to invalidate in the `change` event. Drei's controls [do this automatically](https://github.com/pmndrs/drei/blob/master/src/core/OrbitControls.tsx#L40) for you. If you use react-spring to animate your scene, then it will also call `invalidate()` for you.
+One major caveat is that if anything in the tree _mutates_ props, then React cannot be aware of it and the display would be stale. For instance, camera controls just grab into the camera and mutate its values. Here you can use Three-fibers `invalidate` function to trigger frames manually.
 
 ```jsx
-import { invalidate } from '@react-three/fiber'
+function Controls() {
+  const ref = useRef()
+  const { invalidate, camera, gl } = useThree()
+  useEffect(() => {
+    ref.current.addEventListener('change', invalidate)
+    return () => ref.current.removeEventListener('change', invalidate)
+  }, [])
+  return <orbitControls ref={ref} args={[camera, gl.domElement]} />
+```
 
-// Anywhere you need it
+<Hint>
+  Drei's controls do this automatically for you. If you use react-spring to animate your scene then it will also take care of it.
+</Hint>
+
+Generally you can call invalidate whenever you need to render:
+
+```jsx
 invalidate()
 ```
+
+<Hint>
+  Calling <InlineCode>invalidate()</InlineCode> will not render immediately, it merely requests a
+  new frame to be rendered out. Calling invalidate multiple times will not render multiple times.
+  Think of it as a flag to tell the system that something has changed.
+</Hint>
 
 ## Re-using geometries and materials
 
