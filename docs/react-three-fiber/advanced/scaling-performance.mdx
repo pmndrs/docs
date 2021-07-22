@@ -10,9 +10,9 @@ This article teaches you how to employ these strategies.
 
 ## On-demand rendering
 
-By default Three-fiber runs in a game-loop, that means it executes 60 times per second. This is the fastest, but also the most demanding and wasteful, it also affects the battery the most. You can opt into on-demand rendering instead, which will only render when props anywhere in the tree change.
+Most Threejs apps run in a game-loop, that means they render 60 times per second. Three-fiber defaults to that as well. This is perfect when your scene is always moving or has moving parts in it. But it can be demanding, this is what makes your fans spin up. It can also be wasteful because it affects the battery the most. When your scene can come to rest, animations and movement are only temporarily, then you can opt into on-demand rendering instead, which will only render when necessary.
 
-If you open devtools in the sandbox below you will see that it is completely idle when nothing is moving.
+Open your devtools for instance in the sandbox below and you will see that it is completely idle when nothing is moving. Only when you move the model around it renders.
 
 <Codesandbox id="wvgxp" />
 
@@ -22,9 +22,17 @@ You activate it with the `frameloop` prop, and this is already enough if your ap
 <Canvas frameloop="demand">
 ```
 
-If anything in the tree mutates Threejs objects instead, then React cannot be aware of it, and the display would be stale. Use the `invalidate` function to trigger frames manually. 
+<Hint>
+  Calling invalidate() will not render immediately, it merely requests a new frame to be rendered
+  out. Calling invalidate multiple times will not render multiple times. Think of it as a flag to
+  tell the system that something has changed.
+</Hint>
 
-This is useful when something is temporarily moving, for instance an animation. If you had controls for instance, it would be a good idea to stick it into the `change` event. Drei's controls [do this automatically](https://github.com/pmndrs/drei/blob/master/src/core/OrbitControls.tsx#L40) for you. If you use react-spring to animate your scene, then it will also call `invalidate()` for you.
+### Triggering manual frames
+
+One caveat is that if anything in the tree _mutates_ props, then React cannot be aware of it and the display would be stale. Use the `invalidate` function to trigger frames manually.
+
+This is useful when something is temporarily moving, for instance an animation. If you had controls for instance it would be a good idea to invalidate in the `change` event. Drei's controls [do this automatically](https://github.com/pmndrs/drei/blob/master/src/core/OrbitControls.tsx#L40) for you. If you use react-spring to animate your scene, then it will also call `invalidate()` for you.
 
 ```jsx
 import { invalidate } from '@react-three/fiber'
@@ -32,10 +40,6 @@ import { invalidate } from '@react-three/fiber'
 // Anywhere you need it
 invalidate()
 ```
-
-<Hint>
-  Calling invalidate() will not cause it to render immediately, it merely requests a new frame.
-</Hint>
 
 ## Re-using objects and materials
 
@@ -54,7 +58,11 @@ function Scene() {
       <mesh position={[1, 2, 3]} geometry={sphere} material={red} />
 ```
 
-And if you use GLTF in combination with [gltfjsx](https://github.com/pmndrs/gltfjsx) that is done for you because all `useLoader` assets are cached.
+### Caching with useLoader
+
+<Hint>Every asset that is loaded with useLoader is cached!</Hint>
+
+If you access the same model or texture in different places it will always re-use them! This is especially useful if you run your GLTF assets through [gltfjsx](https://github.com/pmndrs/gltfjsx) because it links up geometries and materials and thereby creates re-usable models.
 
 <Codesandbox id="dix1y" />
 
@@ -268,4 +276,6 @@ It simulates heavy load by creating hundreds of THREE.TextGeometry instances (51
   />
 </p>
 
-<Hint>Until React 18 comes out officially the concurrency options in Three-fiber is experimental!</Hint>
+<Hint>
+  Until React 18 comes out officially the concurrency options in Three-fiber is experimental!
+</Hint>
