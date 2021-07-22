@@ -25,7 +25,7 @@ With this we can create a Model component and place it in our scene like so:
 
 ```jsx
 function Scene() {
-  const gltf = useLoader(GLTFLoader, './Poimandres.gltf')
+  const gltf = useLoader(GLTFLoader, '/Poimandres.gltf')
   return (
     <Suspense fallback={null}>
       <primitive object={gltf.scene} />
@@ -120,7 +120,7 @@ With these imported let's get the mesh into our scene:
 
 ```jsx
 function Scene() {
-  const obj = useLoader(OBJLoader, 'Poimandres.obj')
+  const obj = useLoader(OBJLoader, '/Poimandres.obj')
   return <primitive object={obj} />
 }
 ```
@@ -144,7 +144,7 @@ To create our scene we can get the fbx as a return value of the useLoader by pas
 
 ```jsx
 function Scene() {
-  const fbx = useLoader(FBXLoader, 'Poimandres.fbx')
+  const fbx = useLoader(FBXLoader, '/Poimandres.fbx')
   return <primitive object={fbx} />
 }
 ```
@@ -159,7 +159,7 @@ You can play with the sandbox here:
 
 ```jsx
 function Scene() {
-  const fbx = useFBX('Poimandres.fbx')
+  const fbx = useFBX('/Poimandres.fbx')
   return <primitive object={fbx} />
 }
 ```
