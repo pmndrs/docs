@@ -84,7 +84,7 @@ function Shoe(props) {
 
 Each mesh is a draw call, you should be mindful of how many of these you employ: no more than 1000 as the very maximum, and optimally a few hundred or less. You can win performance back by reducing draw calls, for example by instancing repeating objects. This way you can have hundreds of thousands of objects in a single draw call.
 
-<Codesandbox id="8fo01" />
+<Codesandbox id="h873k" />
 
 Setting up instancing is not so hard, consult [the Threejs docs](https://threejs.org/docs/index.html?q=instance#api/en/objects/InstancedMesh) if you need help.
 
@@ -282,5 +282,5 @@ It simulates heavy load by creating hundreds of THREE.TextGeometry instances (51
 </p>
 
 <Hint>
-  Until React 18 comes out officially the concurrency options in Three-fiber is experimental!
+  Until React 18 comes out officially the concurrency option in Three-fiber is experimental!
 </Hint>
