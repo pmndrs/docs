@@ -108,7 +108,7 @@ There is a small component in drei called `<Detailed />` which sets up LOD witho
 ```jsx
 import { Detailed, useGLTF } from '@react-three/drei'
 
-function Scene() {
+function Model() {
   const [low, mid, high] = useGLTF(["/low.glb", "/mid.glb", "/high.glb"])
   return (
     <Detailed distances={[0, 10, 20]}>
@@ -228,7 +228,9 @@ There are pre-made components for this already in the [drei library](https://git
 
 ## ⚠️ Enable concurrency
 
-React 18 will introduce concurrent scheduling, specifically time slicing. This can virtualise the entire component graph, which then allows you to priotitise components. Think of how a virtual list avoid scaling issues because it only renders as many items as the screen can take. React functions very similar to this, it can potentially defer load and heavy tasks in ways that would be very hard to achieve in a plain Threejs application and thereby holds on to a stable framerate even in impossibly demanding situations.
+React 18 will introduce concurrent scheduling, specifically time slicing. This will virtualise the component graph, which then allows you to priotitise components and actions. Think of how a virtual list avoids scaling issues because it only renders as many items as the screen can take, it is not affected by the amount of items it has to render, be it 10 or 100.000.000.
+
+React 18 functions very similar to this, it can potentially defer load and heavy tasks in ways that would be hard or impossible to achieve in a vanilla application. It thereby holds on to a stable framerate even in the most demanding situations.
 
 You can already use it in current Three-fiber.
 
@@ -236,7 +238,9 @@ You can already use it in current Three-fiber.
 <Canvas mode="concurrent">
 ```
 
-The follow benchmark shows how powerful concurrency can be: https://github.com/drcmda/scheduler-test
+<Hint>Until React 18 comes out officially the concurrency options in Three-fiber is experimental!</Hint>
+
+The following benchmark shows how powerful concurrency can be: https://github.com/drcmda/scheduler-test
 
 It simulates heavy load by creating hundreds of THREE.TextGeometry instances (510 to be exact). This class, like many others in Threejs, is expensive and takes a while to construct. If all 510 instances are created the same time **it will cause approximately 1.5 seconds of pure jank** (Apple M1), the tab would normally freeze. It runs in an interval and **will execute every 2 seconds**.
 
