@@ -68,7 +68,7 @@ function Model(props) {
 
 ## Instancing
 
-You should be mindful of how many draw calls you employ. You should have no more than 1000 as the very maximum, and optimally a few hundred or less. You can win performance back by reduxing draw calls through instancing recurring objects. This way you can have hundreds of thousands of objects.
+You should be mindful of how many draw calls you employ. You should have no more than 1000 as the very maximum, and optimally a few hundred or less. You can win performance back by reducing draw calls by instancing repeating objects. This way you can have hundreds of thousands of objects in a single draw call.
 
 <Codesandbox id="8fo01" />
 
@@ -97,13 +97,13 @@ function Instances({ count = 1000000 }) {
 
 ## Level of detail
 
-You use LODs to reduce quality the further an object is away. That can be a nice strategy to redux the vertex-count.
+You use LODs to reduce quality the further an object is away. That can be a good strategy to reduce the vertex-count.
 
 Scroll in and out to see the effect:
 
 <Codesandbox id="12nmp" />
 
-There is a small abstraction in drei called `Detailed` that helps you do with without the boilerplate it would normally cause you. You load or prepare a couple of stages, as many as you like, and then give them the same amount of distances from the camera starting from highest quality to lowest.
+There is a small component in drei called `<Detailed />` which sets up LOD without boilerplate. You load or prepare a couple of stages, as many as you like, and then give them the same amount of distances from the camera, starting from highest quality to lowest.
 
 ```jsx
 import { Detailed, useGLTF } from '@react-three/drei'
@@ -122,7 +122,7 @@ function Scene() {
 
 ## Nested loading
 
-Nested loading means that lesser textures and models are loaded first, high-resolution later.
+Nested loading means that lesser textures and models are loaded first, higher-resolution later.
 
 The following sandbox goes through three loading stages:
 
