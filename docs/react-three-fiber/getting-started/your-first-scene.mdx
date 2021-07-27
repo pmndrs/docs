@@ -46,7 +46,7 @@ To actually see something in our scene, we'll add a lowercase `<mesh />` native 
 
 <Hint>
   Note that we don't need to import anything, All three.js objects will be treated as native JSX
-  elements, just like you can just write &lt;div /&gt; or &lt;span /&gt; in regular React-dom. The
+  elements, just like you can just write &lt;div /&gt; or &lt;span /&gt; in regular ReactDOM. The
   general rule is that Fiber components are available under the camel-case version of their name in
   three.js.
 </Hint>
@@ -131,7 +131,7 @@ light.intensity = 0.1
 
 ### Shortcuts
 
-There are a few shortcuts for props that have a `.set()` method (colors, vectors, ect).
+There are a few shortcuts for props that have a `.set()` method (colors, vectors, etc).
 
 ```jsx
 const light = new THREE.DirectionalLight()

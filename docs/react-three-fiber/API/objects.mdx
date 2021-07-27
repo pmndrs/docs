@@ -32,7 +32,7 @@ You can use [three.js's entire object catalogue and all properties](https://thre
 
 ## Constructor arguments
 
-In three.js objects are classes that are instantiated. These classes can receive one-time constructor arguments (`new THREE.SphereGeometry(1, 32)`), and properties (`someObject.visible = true`). In react-three-fiber, constructor arguments are always passed as an array via `args`. If args change later on, the object must naturally get reconstructed from scratch!
+In three.js objects are classes that are instantiated. These classes can receive one-time constructor arguments (`new THREE.SphereGeometry(1, 32)`), and properties (`someObject.visible = true`). In React Three Fiber, constructor arguments are always passed as an array via `args`. If args change later on, the object must naturally get reconstructed from scratch!
 
 ```jsx
 <sphereGeometry args={[1, 32]} />
@@ -62,7 +62,7 @@ Properties that have a `setScalar` method (for instance `Vector3`) can be set li
 
 You can put non-Object3D primitives (geometries, materials, etc) into the render tree as well. They take the same properties and constructor arguments they normally would.
 
-You might be wondering why you would want to put something in the "scene" that normally would not be part of it, in a vanilla Three.js app at least. For the same reason you declare any object: it becomes managed, reactive and auto-disposes. These objects are not technically part of the scene, but they "attach" to a parent which is.
+You might be wondering why you would want to put something in the "scene" that normally would not be part of it, in a vanilla three.js app at least. For the same reason you declare any object: it becomes managed, reactive and auto-disposes. These objects are not technically part of the scene, but they "attach" to a parent which is.
 
 ### Attach
 
@@ -77,8 +77,8 @@ The following attaches a material to the `material` property of a mesh and a geo
 ```
 
 <Hint>
-  All native elements ending with "Material" receive attach="material", and all elements
-  ending with "Geometry" receive attach="geometry". So you do not have to type it out any longer.
+  All native elements ending with "Material" receive attach="material", and all elements ending with
+  "Geometry" receive attach="geometry". So you do not have to type it out any longer.
 </Hint>
 
 ```jsx
@@ -134,7 +134,7 @@ And in the case the add/remove functions are more complex:
   <renderPass
     args={[scene, camera]}
     attachFns={[
-      (parent, self) => parent.addPass(self), 
+      (parent, self) => parent.addPass(self),
       (parent, self) => parent.removePass)(self)
     ]} />
 ```
@@ -160,7 +160,7 @@ function Component() {
 
 ## Using 3rd-party objects declaratively
 
-The `extend` function extends three-fiber's catalogue of JSX elements. Components added this way can then be referenced in the scene-graph using camel casing similar to other primitives.
+The `extend` function extends React Three Fiber's catalogue of JSX elements. Components added this way can then be referenced in the scene-graph using camel casing similar to other primitives.
 
 ```jsx
 import { extend } from '@react-three/fiber'
@@ -176,7 +176,7 @@ return (
 
 ## Disposal
 
-Freeing resources is a [manual chore in `three.js`](https://threejs.org/docs/#manual/en/introduction/How-to-dispose-of-objects), but React is aware of object-lifecycles, hence three-fiber will attempt to free resources for you by calling `object.dispose()`, if present, on all unmounted objects.
+Freeing resources is a [manual chore in `three.js`](https://threejs.org/docs/#manual/en/introduction/How-to-dispose-of-objects), but React is aware of object-lifecycles, hence React Three Fiber will attempt to free resources for you by calling `object.dispose()`, if present, on all unmounted objects.
 
 If you manage assets by yourself, globally or in a cache, this may _not_ be what you want. You can switch it off by placing `dispose={null}` onto meshes, materials, etc, or even on parent containers like groups, it is now valid for the entire tree.
 

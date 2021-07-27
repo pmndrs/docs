@@ -87,7 +87,7 @@ Since we already have that we can fire an event in it like so:
 await renderer.fireEvent(mesh, 'click')
 ```
 
-With that done all thats left to do is the tree demonstration of our scene and make sure the scale prop on our mesh has updated:
+With that done, all that's left to do is the tree demonstration of our scene and make sure the scale prop on our mesh has updated:
 
 ```js
 expect(mesh.props.scale).toBe(1.5)

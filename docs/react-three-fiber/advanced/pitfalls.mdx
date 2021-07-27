@@ -8,7 +8,7 @@ nav: 11
 
 This is a good overview: https://discoverthreejs.com/tips-and-tricks
 
-The most important gotcha in three.js is that creating objects can be expensive, think twice before you mount/unmnount things! Every material or light that you put into the scene has to compile, every geometry you create will be processed. Share materials and geometries if you can, either in global scope or locally:
+The most important gotcha in three.js is that creating objects can be expensive, think twice before you mount/unmount things! Every material or light that you put into the scene has to compile, every geometry you create will be processed. Share materials and geometries if you can, either in global scope or locally:
 
 ```jsx
 const geom = useMemo(() => new BoxBufferGeometry(), [])
@@ -83,7 +83,7 @@ return <mesh position-x={x} />
 
 ### ✅ Fetch state directly
 
-For instance using [zustand](https://github.com/react-spring/zustand).
+For instance using [Zustand](https://github.com/react-spring/zustand).
 
 ```jsx
 useFrame(() => (ref.current.position.x = api.getState().x))
@@ -92,7 +92,7 @@ return <mesh ref={ref} />
 
 ### ✅ Or, subscribe transitently
 
-See: [transiten updates for often occuring state changes](https://github.com/react-spring/zustand#transient-updates-for-often-occuring-state-changes).
+See: [transiten updates for often occurring state changes](https://github.com/react-spring/zustand#transient-updates-for-often-occuring-state-changes).
 
 ```jsx
 const ref = useRef()
@@ -165,7 +165,7 @@ function Component() {
 }
 ```
 
-Instead use useLoader, which caches assets and makes them available througout the scene.
+Instead use useLoader, which caches assets and makes them available throughout the scene.
 
 ### ✅ Cache and re-use objects
 
@@ -181,4 +181,4 @@ function Component() {
 }
 ```
 
-Regarding GLTF's try to use [gltfjsx](https://github.com/pmndrs/gltfjsx) as much as you can, this will create immutable jsx graphs which allow you to even re-use full models.
+Regarding GLTF's try to use [GLTFJSX](https://github.com/pmndrs/gltfjsx) as much as you can, this will create immutable JSX graphs which allow you to even re-use full models.
