@@ -110,7 +110,12 @@ The use cases of this are testing and server side rendering.
 
 ```jsx
 const TestRoot = () => (
-  <Provider initialValues={[[atom1, 1], [atom2, 'b']]}>
+  <Provider
+    initialValues={[
+      [atom1, 1],
+      [atom2, 'b'],
+    ]}
+  >
     <Component />
   </Provider>
 )
@@ -199,7 +204,7 @@ it's okay to create them at anytime.
 If you create atoms in render functions, you would typically want to use
 a hook like `useRef` or `useMemo` for memoization. If not, the atom would be created everytime the component renders.
 
-You can create an atom and store it wth `useState` or even in another atom.
+You can create an atom and store it with `useState` or even in another atom.
 See an example in [issue #5](https://github.com/pmndrs/jotai/issues/5).
 
 You can cache atoms somewhere globally.
