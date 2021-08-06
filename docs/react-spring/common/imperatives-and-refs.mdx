@@ -18,9 +18,9 @@ const [props, set, stop] = useSpring(() => ({ opacity: 1 }))
 set({ opacity: toggle ? 1 : 0 })
 ```
 
-And while this was really good, it's not the best API, having the imperative API returned from the spring stops you from digging for the correct function. It makes extensability easier too if we add more api methods.
+And while this was really good, it's not the best API, having the imperative API returned from the spring stops you from digging for the correct function. It makes extensibility easier too if we add more api methods.
 
-However, if you're really set on loving the old `set`, from `9.1.0` we have aliased the second arg to call `api.start` which is the v9 equivalent of `set`. This will give you a depreceation notice:
+However, if you're really set on loving the old `set`, from `9.1.0` we have aliased the second arg to call `api.start` which is the v9 equivalent of `set`. This will give you a depreciation notice:
 
 <Demo name="backwardsCompatability" />
 
@@ -65,7 +65,7 @@ const api = {
 
 ## Using Refs
 
-Introducting `useSpringRef`! The library version of `useRef` to be used instead of `useRef` in the following situations:
+Introducing `useSpringRef`! The library version of `useRef` to be used instead of `useRef` in the following situations:
 
 ```jsx
 const springRef = useSpringRef()
