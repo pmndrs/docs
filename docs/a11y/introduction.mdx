@@ -27,7 +27,7 @@ npm install @react-three/a11y
 
 ### The A11yAnnouncer component
 
-First, place the A11yAnnouncer component next to the R3F Canvas component. This componant is critical since it manage some screen-reader features.
+First, place the A11yAnnouncer component next to the R3F Canvas component. This component is critical since it manage some screen-reader features.
 
 ```jsx
 import { Canvas } from '@react-three/fiber'
@@ -111,7 +111,7 @@ Uses the `default` cursor. This role is meant to provide information to screen r
 
 Uses the `pointer` cursor. Special attributes: `activationMsg`.
 
-This role is meant to emulate the behaviour of a button or a togglable button. It will display a cursor pointer when your cursor is over the linked 3D object. It will call a function on click but also on any kind of action that would trigger a focused button (Enter, Double-Tap, ...). It is also actionnable by user using a screen reader.
+This role is meant to emulate the behaviour of a button or a toggleable button. It will display a cursor pointer when your cursor is over the linked 3D object. It will call a function on click but also on any kind of action that would trigger a focused button (Enter, Double-Tap, ...). It is also actionable by user using a screen reader.
 
 [Read more about role button](/a11y/roles/button)
 
@@ -155,7 +155,7 @@ In order to provide informations to screen reader users and use this package at 
 
 ### Use of section
 
-For screen readears, it might be useful to provide additionnal information on how to use some unconventional UI.
+For screen readers, it might be useful to provide additional information on how to use some unconventional UI.
 You can do it by wrapping the concerned part of your code relative to this UI in the A11ySection like so.
 
 ```jsx
@@ -176,7 +176,7 @@ The A11yUserPreferences component is available in order to access user preferenc
 
 Take a look at [the A11yUserPreferences page](/a11y/access-user-preferences) or the [demo](https://n4rzi.csb.app) to see it in action and how to use it. The demo will adapt to your system preferences.
 
-## Additionals Features
+## Additional Features
 
 Use a custom tabindex with for your A11y components by providing a number to the tabIndex attribute
 
