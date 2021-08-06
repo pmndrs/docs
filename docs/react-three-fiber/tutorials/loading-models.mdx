@@ -140,7 +140,7 @@ import { useLoader } from '@react-three/fiber'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 ```
 
-To create our scene we can get the fbx as a return value of the useLoader by passing the `FBXloader` and the location of our file like so:
+To create our scene we can get the FBX as a return value of the useLoader by passing the `FBXloader` and the location of our file like so:
 
 ```jsx
 function Scene() {
@@ -155,7 +155,7 @@ You can play with the sandbox here:
 
 ### Loading FBX models using useFBX
 
-[@react-three/drei](https://github.com/pmndrs/drei) exports a very useful helper when it comes to loading fbx models and it's called `useFBX`, in this case there is no need to import anything from `three.js` as it is all done behind the scenes and we can just pass the location of the file to `useFBX` like so:
+[@react-three/drei](https://github.com/pmndrs/drei) exports a very useful helper when it comes to loading FBX models and it's called `useFBX`, in this case there is no need to import anything from `three.js` as it is all done behind the scenes and we can just pass the location of the file to `useFBX` like so:
 
 ```jsx
 function Scene() {
@@ -175,7 +175,7 @@ If your model is big and takes a while to load, it's always good to show a small
 - `Html` allows you place plain ol' HTML in your canvas and render it like you would a normal DOM element.
 - `useProgress` is a hook that gives you a bunch of information about the loading status of your model.
 
-With these two things we can create a very barebones loading component like so:
+With these two things, we can create a very bare-bones loading component like so:
 
 ```jsx
 import { Html, useProgress } from '@react-three/drei'

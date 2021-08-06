@@ -14,15 +14,15 @@ Build your scene declaratively with re-usable, self-contained components that re
 
 #### Does it have limitations?
 
-None. Everything that works in Threejs will work here without exception.
+None. Everything that works in three.js will work here without exception.
 
-#### Can it keep up with frequent updates to Threejs?
+#### Can it keep up with frequent updates to three.js?
 
-Yes. There is no hard dependency on a particular Threejs version, it does not wrap or duplicate a single Threejs class. It merely expresses Threejs in JSX: `<mesh />` becomes `new THREE.Mesh()`, and that happens dynamically.
+Yes. There is no hard dependency on a particular three.js version, it does not wrap or duplicate a single three.js class. It merely expresses three.js in JSX: `<mesh />` becomes `new THREE.Mesh()`, and that happens dynamically.
 
-#### Is it slower than plain Threejs?
+#### Is it slower than plain three.js?
 
-No. There is no additional overhead. Components participate in a unified renderloop outside of React. It outperforms Threejs in scale due to Reacts scheduling abilities.
+No. There is no additional overhead. Components participate in a unified renderloop outside of React. It outperforms three.js in scale due to Reacts scheduling abilities.
 
 ### What does it look like?
 
@@ -137,8 +137,8 @@ You need to be versed in both React and `three.js` before rushing into this. If 
 
 - Make sure you have a [basic grasp of `three.js`](https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene). Keep that site open.
 - When you know what a scene is, a camera, mesh, geometry, material, fork the [demo above](https://github.com/pmndrs/react-three-fiber#what-does-it-look-like).
-- [Look up](https://threejs.org/docs/index.html#api/en/objects/Mesh) the JSX elements that you see (mesh, ...), _all_ threejs exports are native to three-fiber.
-- Try changing some values, scroll through our [Api](/markdown/api.md) to see what the various settings and hooks do.
+- [Look up](https://threejs.org/docs/index.html#api/en/objects/Mesh) the JSX elements that you see (mesh, ...), _all_ three.js exports are native to React Three Fiber.
+- Try changing some values, scroll through our [API](/markdown/api.md) to see what the various settings and hooks do.
 
 ### Some reading material:
 

@@ -60,9 +60,9 @@ The hook is reactive, if you resize the browser for instance, you get fresh meas
 | frameloop       | React render-mode                                         | `always`, `demand`, `never`                                                                                                                                                                                    |
 | performance     | System regression                                         | `{ current: number, min: number, max: number, debounce: number, regress: () => void }`                                                                                                                         |
 | size            | Canvas size in pixels                                     | `{ width: number, height: number }`                                                                                                                                                                            |
-| viewport        | Viewport size in three.js units                            | `{ width: number, height: number, initialDpr: number, dpr: number, factor: number, distance: number, aspect: number, getCurrentViewport: (camera?: Camera, target?: THREE.Vector3, size?: Size) => Viewport }` |
-| set             | Allows you to set any state property                      | `(state: SetState<RootState>) => void`                                                                                                                                                                                    |
-| get             | Allows you to retrieve any state property non-reactively | `() => GetState<RootState>`                                                                                                                                                                         |
+| viewport        | Viewport size in three.js units                           | `{ width: number, height: number, initialDpr: number, dpr: number, factor: number, distance: number, aspect: number, getCurrentViewport: (camera?: Camera, target?: THREE.Vector3, size?: Size) => Viewport }` |
+| set             | Allows you to set any state property                      | `(state: SetState<RootState>) => void`                                                                                                                                                                         |
+| get             | Allows you to retrieve any state property non-reactively  | `() => GetState<RootState>`                                                                                                                                                                                    |
 | invalidate      | Request a new render, given that `frameloop === 'demand'` | `() => void`                                                                                                                                                                                                   |
 | advance         | Advance one tick, given that `frameloop === 'never'`      | `(timestamp: number, runGlobalEffects?: boolean) => void`                                                                                                                                                      |
 | setSize         | Resize the canvas                                         | `(width: number, height: number) => void`                                                                                                                                                                      |
@@ -124,7 +124,7 @@ function Foo() {
 
 ### Taking over the render-loop
 
-If you need more control you may pass a numerical `renderPriority` value. This will cause react-three-fiber to disable automatic rendering altogether. It will now be your responsibility to render, which is useful when you're working with effect composers, heads-up displays, etc.
+If you need more control you may pass a numerical `renderPriority` value. This will cause React Three Fiber to disable automatic rendering altogether. It will now be your responsibility to render, which is useful when you're working with effect composers, heads-up displays, etc.
 
 ```jsx
 function Render() {
@@ -142,12 +142,12 @@ function RenderOnTop() {
 
 <Hint>
   Callbacks will be executed in order of ascending priority values (lowest first, highest last.),
-  similar to the doms z-order.
+  similar to the DOM's z-order.
 </Hint>
 
-### Negative indicies
+### Negative indices
 
-Using negative indicies will **not take over the render loop**, but it can be useful if you really must order the sequence of useFrames across the component tree.
+Using negative indices will **not take over the render loop**, but it can be useful if you really must order the sequence of useFrames across the component tree.
 
 ```jsx
 function A() {
@@ -176,9 +176,11 @@ function Model() {
 }
 
 function App() {
-  <Suspense fallback={<FallbackComponent /> /* or null */}>
-    <Model />
-  </Suspense>
+  return (
+    <Suspense fallback={<FallbackComponent /> /* or null */}>
+      <Model />
+    </Suspense>
+  )
 }
 ```
 
@@ -189,7 +191,7 @@ function App() {
 
 <Hint>
   Be very careful with mutating or disposing of loaded assets, especially when you plan to re-use
-  them. Refer to the automatic disposal section in the Api.
+  them. Refer to the automatic disposal section in the API.
 </Hint>
 
 ### Loader extensions
@@ -216,7 +218,7 @@ const [bumpMap, specMap, normalMap] = useLoader(TextureLoader, [url1, url2, url2
 
 ### Loading status
 
-You can get the loading status from a callback you provide as the fourth argument. Though consider alternatives like THREE.DefaultLoadingManager or better yet, [drei's](https://github.com/pmndrs/drei) loading helpers.
+You can get the loading status from a callback you provide as the fourth argument. Though consider alternatives like THREE.DefaultLoadingManager or better yet, [Drei's](https://github.com/pmndrs/drei) loading helpers.
 
 ```jsx
 useLoader(loader, url, extensions, xhr => {
@@ -226,7 +228,7 @@ useLoader(loader, url, extensions, xhr => {
 
 ### Special treatment of GLTFLoaders and all loaders that return a scene prop
 
-If a `result.scene` prop is found the hook will automatically create a object & material collection: `{ nodes, materials }`. This lets you build immutable scene graphs selectively. You can also specifically alter the data without having to traverse it. [gltfjsx](https://github.com/pmndrs/gltfjsx) specifically relies on this data.
+If a `result.scene` prop is found the hook will automatically create a object & material collection: `{ nodes, materials }`. This lets you build immutable scene graphs selectively. You can also specifically alter the data without having to traverse it. [GLTFJSX](https://github.com/pmndrs/gltfjsx) specifically relies on this data.
 
 ```jsx
 const { nodes, material } = useLoader(GLTFLoader, url)
