@@ -4,6 +4,8 @@ description: How to use Jotai with Next.js
 nav: 3.4
 ---
 
+Jotai has support for hydration of atoms with `useHydrateAtoms`. The documentation for the hook can be seen [here](/jotai/api/utils#use-hydrate-atoms).
+
 ## You can't return promises in server side rendering
 
 ```js
@@ -16,16 +18,3 @@ const postData = atom((get) => {
 })
 ```
 
-## Hydration is possible with care
-
-Check the following examples.
-
-## Examples
-
-### Clock
-
-<Codesandbox id="5ylrj" />
-
-### HN Posts
-
-<Codesandbox id="pm0l8" />
