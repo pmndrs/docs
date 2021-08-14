@@ -8,6 +8,10 @@ Jotai has support for hydration of atoms with `useHydrateAtoms`. The documentati
 
 ## You can't return promises in server side rendering
 
+It's important to note that you can't return promises with SSR - However, it's possible to guard against it inside the atom definition.
+
+If possible use `useHydrateAtoms` to hydrate values from the server.
+
 ```js
 const postData = atom((get) => {
   const id = get(postId)
@@ -27,3 +31,14 @@ const postData = atom((get) => {
 ### HN Posts
 
 <Codesandbox id="819n4" />
+
+### Next.js repo
+
+```bash
+npx create-next-app --example with-jotai with-jotai-app
+# or
+yarn create next-app --example with-jotai with-jotai-app
+```
+
+Here's a [link](https://github.com/vercel/next.js/tree/canary/examples/with-jotai).
+
