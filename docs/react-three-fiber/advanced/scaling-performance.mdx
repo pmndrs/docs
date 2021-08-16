@@ -61,8 +61,8 @@ Each geometry and material means additional overhead for the GPU. You should try
 You could do this globally:
 
 ```jsx
-const material = new THREE.MeshLambertMaterial({ color: "red" })
-const geometry = new THREE.SphereGeometry(1, 28, 28)
+const red = new THREE.MeshLambertMaterial({ color: "red" })
+const sphere = new THREE.SphereGeometry(1, 28, 28)
 
 function Scene() {
   return (
