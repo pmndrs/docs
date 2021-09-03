@@ -18,7 +18,7 @@ return items.map(i => <mesh geometry={geom} material={mat} ...
 
 Try to use [instancing](https://codesandbox.io/s/r3f-instanced-colors-8fo01) as much as you can when you need to display many objects of a similar type!
 
-## Never, ever, setState animations!
+## Never, ever, setState in loops!
 
 Avoid forcing a full component (+ its children) through React and its diffing mechanism 60 times per second.
 
@@ -26,10 +26,20 @@ Avoid forcing a full component (+ its children) through React and its diffing me
 
 ```jsx
 const [x, setX] = useState(0)
-useFrame(() => setX((x) => x + 0.01))
-// Or, just as bad ...
-// useEffect(() => void setInterval(() => setX(x => x + 0.01), 1), [])
+useFrame(() => setX(x => x + 0.01))
 return <mesh position-x={x} />
+```
+
+### ❌ setState in intervals is bad
+
+```jsx
+useEffect(() => void setInterval(() => setX(x => x + 0.01), 1), [])
+```
+
+### ❌ setState in events is bad
+
+```jsx
+<mesh onPointerMove={() => setX(x => x + 0.01)} />
 ```
 
 ### ✅ Instead, use refs and mutate
@@ -51,7 +61,8 @@ Instead use lerp, or animation libs that animate outside of React! Avoid libs li
 ```jsx
 function Signal({ active }) {
   const ref = useRef()
-  useFrame(() => ref.current.position.x = THREE.MathUtils.lerp(ref.current.position.x, active ? 100 : 0, 0.1))
+  useFrame(() => ref.current.position.x =
+    THREE.MathUtils.lerp(ref.current.position.x, active ? 100 : 0, 0.1))
   return <mesh ref={ref} />
 ```
 
