@@ -138,10 +138,10 @@ useFrame(() => {
 This will re-use a vector and even remember its value on re-render
 
 ```jsx
-const [vec] = useState(() => new THREE.Vector3())
-useFrame(() => {
-  ref.current.position.lerp(vec.set(x, y, z), 0.1)
-})
+function Foo({ vec = new THREE.Vector(), ...props })
+  useFrame(() => {
+    ref.current.position.lerp(vec.set(x, y, z), 0.1)
+  })
 ```
 
 ## useLoader instead of plain loaders
