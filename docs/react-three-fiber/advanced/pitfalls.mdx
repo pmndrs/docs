@@ -20,7 +20,7 @@ Try to use [instancing](https://codesandbox.io/s/r3f-instanced-colors-8fo01) as 
 
 ## Never, ever, setState in loops!
 
-SetState in React is a tool for flags and reactive updates. It is not adequate for fast updates! You should never setState in loops, for instance in order to move or animate something or even if you receive fast data from somewhere: remote, events, etc. Avoid forcing a full component (+ its children) through React and its diffing mechanism 60 times per second.
+SetState in React is not adequate for fast updates, for instance in order to move or animate something, or even if you receive fast data from somewhere: remote, events, etc. Avoid forcing a full component (+ its children) through React and its diffing mechanism 60 times per second!
 
 ### ❌ setState in loops is bad
 
@@ -30,7 +30,7 @@ useFrame(() => setX((x) => x + 0.1))
 return <mesh position-x={x} />
 ```
 
-### ❌ setState in intervals is bad
+### ❌ setState in fast intervals is bad
 
 ```jsx
 useEffect(() => void setInterval(() => setX((x) => x + 0.1), 1), [])
