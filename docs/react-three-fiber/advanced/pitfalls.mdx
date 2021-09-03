@@ -137,7 +137,7 @@ Try to avoid creating too much effort for the garbage collector, re-pool objects
 
 ### ❌ This is bad news for the GC
 
-This creates a new vector 60 times a second
+This creates a new vector 60 times a second, which allocates memory and forces the GC to eventually kick in.
 
 ```jsx
 useFrame(() => {
@@ -145,9 +145,9 @@ useFrame(() => {
 })
 ```
 
-### ✅ Better re-use data
+### ✅ Better re-use object
 
-This will re-use a vector and even remember its value on re-render
+Set up re-used objects in global or local space, now the GC will be silent.
 
 ```jsx
 function Foo({ vec = new THREE.Vector(), ...props })
