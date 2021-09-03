@@ -44,12 +44,22 @@ useEffect(() => void setInterval(() => setX((x) => x + 0.1), 1), [])
 
 ### ✅ Instead, use refs and mutate
 
-This is safe and that is how you would do it in plain three.js as well, this is what useFrame is for!
+This is why useFrame exists! Consider mutating props safe as long as the component is the only entity that mutates.
 
 ```jsx
 const ref = useRef()
 useFrame(() => (ref.current.position.x += 0.01))
 return <mesh ref={ref} />
+```
+
+And the same goes for intervals and events, just use references!
+
+```jsx
+useEffect(() => void setInterval(() => (ref.current.position.x += 0.01), 1), [])
+```
+
+```jsx
+<mesh onPointerMove={() => (ref.current.position.x += 0.01)} />
 ```
 
 ## Don't let React near animations
