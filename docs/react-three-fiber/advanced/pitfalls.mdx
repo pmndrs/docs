@@ -20,31 +20,31 @@ Try to use [instancing](https://codesandbox.io/s/r3f-instanced-colors-8fo01) as 
 
 ## Never, ever, setState in loops!
 
-Avoid forcing a full component (+ its children) through React and its diffing mechanism 60 times per second.
+SetState in React is a tool for flags and reactive updates. It is not adequate for fast updates! You should never setState in loops, for instance in order to move or animate something or even if you receive fast data from somewhere: remote, events, etc. Avoid forcing a full component (+ its children) through React and its diffing mechanism 60 times per second.
 
 ### ❌ setState in loops is bad
 
 ```jsx
 const [x, setX] = useState(0)
-useFrame(() => setX(x => x + 0.01))
+useFrame(() => setX((x) => x + 0.1))
 return <mesh position-x={x} />
 ```
 
 ### ❌ setState in intervals is bad
 
 ```jsx
-useEffect(() => void setInterval(() => setX(x => x + 0.01), 1), [])
+useEffect(() => void setInterval(() => setX((x) => x + 0.1), 1), [])
 ```
 
-### ❌ setState in events is bad
+### ❌ setState in fast events is bad
 
 ```jsx
-<mesh onPointerMove={() => setX(x => x + 0.01)} />
+<mesh onPointerMove={() => setX((x) => x + 0.1)} />
 ```
 
 ### ✅ Instead, use refs and mutate
 
-This is totally fine and that's how you would do it in plain three.js as well
+This is safe and that is how you would do it in plain three.js as well, this is what useFrame is for!
 
 ```jsx
 const ref = useRef()
@@ -62,7 +62,8 @@ Instead use lerp, or animation libs that animate outside of React! Avoid libs li
 function Signal({ active }) {
   const ref = useRef()
   useFrame(() => ref.current.position.x =
-    THREE.MathUtils.lerp(ref.current.position.x, active ? 100 : 0, 0.1))
+    THREE.MathUtils.lerp(ref.current.position.x, active ? 100 : 0, 0.1)
+  )
   return <mesh ref={ref} />
 ```
 
@@ -80,7 +81,7 @@ function Signal({ active }) {
 
 ## Never bind fast state reactive
 
-Using state-managers and selected state is fine, but not for updates that happen rapidly!
+Using state-managers and selective state is fine, but not for updates that happen rapidly!
 
 ### ❌ Don't bind reactive fast-state
 
