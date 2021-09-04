@@ -91,7 +91,7 @@ the `queue` array has either finished or been cancelled.
 await spring.start()
 ```
 
-The awaited value is an [`AnimationResult`](/common/props#animation-result) object.
+The awaited value is an [`AnimationResult`](/react-spring/common/props#animation-result) object.
 
 ### `start(props): Promise`
 
@@ -108,7 +108,7 @@ await spring.start({ from: 0, to: 1 })
 
 Process the given array of updates.
 
-The returned promise resolves to an [`AnimationResult`](/common/props#animation-result) object whose:
+The returned promise resolves to an [`AnimationResult`](/react-spring/common/props#animation-result) object whose:
 
 - `finished` property is only `true` when every animation triggered by
   the `queue` was finished before being stopped or cancelled.

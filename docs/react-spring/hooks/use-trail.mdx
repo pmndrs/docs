@@ -21,7 +21,7 @@ const trail = useTrail(amount, { opacity: 1 })
 
 ### Or: pass a function that returns values, and update using "set"
 
-You will get an API object back. It will not cause the component to render like an overwrite would (the animation still executes of course). Handling updates like this is useful for fast-occurring updates, and you should generally prefer it as it's more powerful. Further documentation can be found in [Imperatives & Refs](http://localhost:3000/common/imperatives-and-refs#api-methods)
+You will get an API object back. It will not cause the component to render like an overwrite would (the animation still executes of course). Handling updates like this is useful for fast-occurring updates, and you should generally prefer it as it's more powerful. Further documentation can be found in [Imperatives & Refs](/react-spring/common/imperatives-and-refs#api-methods)
 
 ```jsx
 const [trail, api] = useTrail(amount, () => ({ opacity: 1 }))
@@ -42,7 +42,7 @@ return trail.map((styles) => <animated.div style={styles} />)
 
 ## Properties
 
-All properties of the [shared-api](/docs/hooks/api) apply.
+All properties of the [shared-api](/react-spring/common/props) apply.
 
 ## Demos
 
