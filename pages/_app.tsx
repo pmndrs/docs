@@ -35,7 +35,6 @@ function App({ Component, pageProps }: AppProps) {
         <meta property="og:type" content="website" />
 
         <link rel="preload" href="/fonts/inter-var.woff2" as="font" crossOrigin="" />
-        <link rel="preload" href="/fonts/inter-italic-var.woff2" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/meslo.woff2" as="font" crossOrigin="" />
       </Head>
       <Component {...pageProps} />
