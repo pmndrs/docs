@@ -48,19 +48,19 @@ const elems = transition((style, item, t, i) => <a.div style={style}>{t.phase}</
 
 All properties of the [shared-api](/react-spring/common/props) apply.
 
-| Property | Type              | Description                                                                                                                                                      |
-| -------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| initial  | obj/fn            | Initial (first time) base values, optional (can be null)                                                                                                         |
-| from     | obj/fn            | Base values, optional                                                                                                                                            |
-| enter    | obj/fn/array(obj) | Styles apply for entering elements                                                                                                                               |
-| update   | obj/fn/array(obj) | Styles apply for updating elements (you can update the hook itself with new values)                                                                              |
-| leave    | obj/fn/array(obj) | Styles apply for leaving elements                                                                                                                                |
-| trail    | number            | Delay in ms before the animation starts, adds up for each enter/update and leave                                                                                 |
-| reset    | bool/fn           | Prefers the `initial` prop over the `from` prop.                                                                                                                 |
-| keys     | array/function    | see [keys](/hooks/use-transition#keys) for more information                                                                                                      |
-| key      | single item       | only use if you're passing a single item to `useTransition` see [keys](/hooks/use-transition#keys) for more information                                          |
-| expires  | bool/number       | lets you control when removed items are unmounted (after their `leave` animation has finished) see [expires](/hooks/use-transition#expires) for more information |
-| sort     | fn                | useful shortcut for slicing and sorting your items array before passing it to the `useTransition` hook                                                           |
+| Property | Type              | Description                                                                                                                                                                   |
+| -------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| initial  | obj/fn            | Initial (first time) base values, optional (can be null)                                                                                                                      |
+| from     | obj/fn            | Base values, optional                                                                                                                                                         |
+| enter    | obj/fn/array(obj) | Styles apply for entering elements                                                                                                                                            |
+| update   | obj/fn/array(obj) | Styles apply for updating elements (you can update the hook itself with new values)                                                                                           |
+| leave    | obj/fn/array(obj) | Styles apply for leaving elements                                                                                                                                             |
+| trail    | number            | Delay in ms before the animation starts, adds up for each enter/update and leave                                                                                              |
+| reset    | bool/fn           | Prefers the `initial` prop over the `from` prop.                                                                                                                              |
+| keys     | array/function    | see [keys](/react-spring/hooks/use-transition#keys) for more information                                                                                                      |
+| key      | single item       | only use if you're passing a single item to `useTransition` see [keys](/react-spring/hooks/use-transition#keys) for more information                                          |
+| expires  | bool/number       | lets you control when removed items are unmounted (after their `leave` animation has finished) see [expires](/react-spring/hooks/use-transition#expires) for more information |
+| sort     | fn                | useful shortcut for slicing and sorting your items array before passing it to the `useTransition` hook                                                                        |
 
 ### Keys
 
