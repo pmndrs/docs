@@ -15,8 +15,8 @@
       "type": "image/png"
     }
   ],
-  "name": "Poimandres Docs",
-  "short_name": "PMNDRS Docs",
-  "start_url": "https://docs.pmnd.rs",
+  "name": "Poimandres",
+  "short_name": "PMNDRS",
+  "start_url": "https://pmnd.rs",
   "theme_color": "#000000"
 }
