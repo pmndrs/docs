@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useSwitcher } from 'store/switcher'
 import { useMenu } from 'store/menu'
-import useLockBodyScroll from 'utils/useLockBodyScroll'
+import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import { useDocs } from 'store/docs'
 
 export default function Layout({ nav, toc, children }) {
