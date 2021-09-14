@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSearch, { Result } from 'hooks/useSearch'
 import useKeyPress from 'hooks/useKeyPress'
-import useLockBodyScroll from 'utils/useLockBodyScroll'
+import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 import { useDocs } from 'store/docs'
 

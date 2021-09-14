@@ -1,7 +1,10 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useEffect } from 'react'
+
+// Conditionally run on the client (useEffect is no-op server-side)
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 function useLockBodyScroll(active = false) {
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!active) return
     // Get original body overflow
     const originalStyle = window.getComputedStyle(document.body).overflow
@@ -11,7 +14,7 @@ function useLockBodyScroll(active = false) {
     return () => {
       document.body.style.overflow = originalStyle
     }
-  }, [active]) // Empty array ensures effect is only run on mount and unmount
+  }, [active])
 }
 
 export default useLockBodyScroll
