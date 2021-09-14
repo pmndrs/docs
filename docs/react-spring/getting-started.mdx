@@ -237,7 +237,7 @@ Every hook except `useChain` now supports a `deps` argument, which is an array e
 
 Whenever a dependency is changed, the update will be processed and thus the animation will be updated. But otherwise, updates are ignored when all dependencies are unchanged.
 
-When a dependency array is passed, or the spring object is created with a function the `useSpring` and `useSprings` hooks each return an `api` object. For more information see the [`Imperatives & Refs`](/imperatives-and-refs) section
+When a dependency array is passed, or the spring object is created with a function the `useSpring` and `useSprings` hooks each return an `api` object. For more information see the [`Imperatives & Refs`](/react-spring/common/imperatives-and-refs) section
 
 ```js
 const [style, api] = useSpring({ x: 0, y: 0 }, [])
