@@ -1,6 +1,6 @@
 import { animated as a, useTransition } from 'react-spring'
 import { switcherModalRef } from 'store/switcher'
-import useLockBodyScroll from 'utils/useLockBodyScroll'
+import useLockBodyScroll from 'hooks/useLockBodyScroll'
 
 type SimpleModalProps = {
   open: boolean
