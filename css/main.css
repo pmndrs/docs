@@ -8,6 +8,16 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  font-named-instance: 'Regular';
+}
+
+@font-face {
+  font-family: 'Inter Var';
+  src: url('/fonts/inter-italic-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  font-named-instance: 'Italic';
 }
 
 @font-face {
