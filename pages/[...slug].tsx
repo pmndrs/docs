@@ -33,9 +33,15 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
           <div className="pb-6 mb-4 border-b post-header">
             <h1 className="mb-4 text-5xl font-bold tracking-tighter">{frontMatter.title}</h1>
             {frontMatter.description && (
-              <p className="text-base leading-4 text-gray-400 leading-5">
-                {frontMatter.description}
-              </p>
+              <MDXRemote
+                {...frontMatter.description}
+                components={{
+                  ...components,
+                  p: ({ children }) => (
+                    <p className="text-base leading-4 text-gray-400 leading-5">{children}</p>
+                  ),
+                }}
+              />
             )}
           </div>
         )}
@@ -49,8 +55,8 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
 
 export const getStaticProps = async ({ params }) => {
   const postFilePath = path.join(DOCS_PATH, `${path.join(...params.slug)}.mdx`)
-  const source = fs.readFileSync(postFilePath)
-  const { content, data } = matter(source)
+  const postData = fs.readFileSync(postFilePath)
+  const { content, data } = matter(postData)
   const allDocs = await getAllDocs()
 
   const nav = allDocs.reduce((nav, file) => {
@@ -61,7 +67,7 @@ export const getStaticProps = async ({ params }) => {
   }, {})
 
   const toc = []
-  const mdxSource = await serialize(content, {
+  const source = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
@@ -70,13 +76,17 @@ export const getStaticProps = async ({ params }) => {
     scope: data,
   })
 
+  // Also serialize descriptions
+  const description = data.description ? await serialize(data.description) : null
+  const frontMatter = { ...data, description }
+
   return {
     props: {
       allDocs,
       nav,
       toc,
-      source: mdxSource,
-      frontMatter: data,
+      source,
+      frontMatter,
     },
   }
 }
