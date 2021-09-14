@@ -11,7 +11,7 @@ nav: 1
 - `useTransition` for mount/unmount transitions (lists where items are added/removed/updated)
 - `useChain` to queue or chain multiple animations together -->
 
-The basic spring is [useSpring](/hooks/usespring), but the same concept applies to all animation primitives. Let's have a look...
+The basic spring is [useSpring](/react-spring/hooks/use-spring), but the same concept applies to all animation primitives. Let's have a look...
 
 ```jsx
 import { useSpring, animated } from 'react-spring'
@@ -36,7 +36,7 @@ You need the animation-primitive itself, and a special factory called `animated`
 const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
 ```
 
-A spring simply animates values from one state to another. Updates are accumulative, springs remember all the values you ever pass. You can use arbitrary names. There are a couple of reserved keywords like "from" (for base values). [You can learn about the api here](/docs/hooks/api). The received props are not static values! These props are self-updating, you cannot use them in regular divs and such.
+A spring simply animates values from one state to another. Updates are accumulative, springs remember all the values you ever pass. You can use arbitrary names. There are a couple of reserved keywords like "from" (for base values). [You can learn about the api here](/react-spring/common/props). The received props are not static values! These props are self-updating, you cannot use them in regular divs and such.
 
 ### Finally, tie the animated values to your view
 
@@ -140,7 +140,7 @@ For now, they only exist in `@react-spring/web`. **Want them in native? Consider
 
 ## View interpolation
 
-In cases where you need to clamp or extrapolate, each animated value can interpolate inside the view, which is a powerful tool to have. The interpolate function called `to` either takes a function or an object which forms a range. Interpolations can also form chains which allows you to route one calculation into another or reuse them. [Look into the shared-api](/docs/hooks/api) for an object description.
+In cases where you need to clamp or extrapolate, each animated value can interpolate inside the view, which is a powerful tool to have. The interpolate function called `to` either takes a function or an object which forms a range. Interpolations can also form chains which allows you to route one calculation into another or reuse them. [Look into the shared-api](/react-spring/common/interpolation) for an object description.
 
 You may wonder why you wouldn't always interpolate inside of the spring. View interpolation can be a little faster, and it takes up less space.
 
