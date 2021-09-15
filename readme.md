@@ -7,6 +7,8 @@
 - [Drei](https://docs.pmnd.rs/drei)
 - [Zustand](https://docs.pmnd.rs/zustand)
 - [Jotai](https://docs.pmnd.rs/jotai)
+- [React Three A11y](https://docs.pmnd.rs/a11y)
+- [React Postprocessing](https://docs.pmnd.rs/react-postprocessing)
 
 ## How to run locally
 
