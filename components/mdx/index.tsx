@@ -48,6 +48,7 @@ const components = {
     const Comp = `h${clampedLevel}`
     return (
       <a href={`#${id}`} className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')}>
+        {/* @ts-ignore */}
         <Comp id={id}>{children}</Comp>
       </a>
     )
