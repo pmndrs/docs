@@ -34,6 +34,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta property="og:locale" content="en_us" />
         <meta property="og:type" content="website" />
 
+        <link rel="preload" href="/fonts/inter-regular.woff2" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/inter-medium.woff2" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/inter-semibold.woff2" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/inter-bold.woff2" as="font" crossOrigin="" />
