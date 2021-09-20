@@ -8,7 +8,7 @@
     margin: 0 3rem;
   }
 
-  @media (max-width: 696px) {
+  @media (max-width: $mobile) {
     flex-direction: column;
     row-gap: 2rem;
   }
