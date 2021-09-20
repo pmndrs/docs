@@ -37,7 +37,7 @@ const components = {
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
   Codesandbox,
-  Heading: ({ children, id, level }) => {
+  Heading: ({ children, id, level, ...rest }) => {
     const headingStyle = {
       2: 'text-3xl mb-6 mt-8',
       3: 'text-xl mb-4 mt-6',
@@ -47,7 +47,7 @@ const components = {
     const clampedLevel = Math.min(Math.max(level, 2), 4)
     const Comp = `h${clampedLevel}`
     return (
-      <a href={`#${id}`} className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')}>
+      <a href={`#${id}`} className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')} {...rest}>
         {/* @ts-ignore */}
         <Comp id={id}>{children}</Comp>
       </a>
