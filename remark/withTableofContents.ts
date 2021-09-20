@@ -25,11 +25,16 @@ const withTableofContents = (toc?: any[]) => {
         const content = children
           .map((n) => (n.type === 'text' ? n.value : `<${n.type}>{'${n.value}'}</${n.type}>`))
           .join('')
-        node.type = 'jsx'
-        node.value = `<Heading id={"${slug}"} level={${node.depth}}>${content}</Heading>`
 
-        if (Array.isArray(toc)) {
-          toc.push({ slug, title, depth: node.depth })
+        node.type = 'jsx'
+
+        // Remove duplicate heading links
+        if (toc.find((previous) => previous.slug === slug)) {
+          node.value = `<Heading level={${node.depth}}>${content}</Heading>`
+        } else {
+          node.value = `<Heading id={"${slug}"} level={${node.depth}}>${content}</Heading>`
+
+          toc?.push?.({ slug, title, depth: node.depth })
         }
       }
     }
