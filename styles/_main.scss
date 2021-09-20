@@ -35,9 +35,7 @@ a:visited {
 main {
   align-items: center;
   display: flex;
-  height: 90vh;
   justify-content: center;
-  width: 100%;
 
   h1 {
     font-size: 4rem;
@@ -45,11 +43,14 @@ main {
   }
 }
 
-.main {
+.layout {
   position: absolute;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 3rem;
 }
 
 .video {
