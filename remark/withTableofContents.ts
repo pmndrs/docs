@@ -7,6 +7,7 @@ import slugify from '@sindresorhus/slugify'
 const withTableofContents = (toc?: any[]) => {
   return () => (tree) => {
     // @ts-ignore
+    const parents = []
     for (let i = 0; i < tree.children.length; i++) {
       const node = tree.children[i]
       if (node.type === 'heading' && [2, 3].includes(node.depth)) {
@@ -26,16 +27,23 @@ const withTableofContents = (toc?: any[]) => {
           .map((n) => (n.type === 'text' ? n.value : `<${n.type}>{'${n.value}'}</${n.type}>`))
           .join('')
 
-        node.type = 'jsx'
+        const isDuplicate = toc.find((previous) => previous.slug === slug)
+        const isParent = node.depth === 2
+
+        const label = isParent ? slug : `${parents[parents.length - 1]} - ${slug}`
 
         // Remove duplicate heading links
-        if (toc.find((previous) => previous.slug === slug)) {
-          node.value = `<Heading level={${node.depth}}>${content}</Heading>`
+        if (isDuplicate) {
+          node.type = 'jsx'
+          node.value = `<Heading aria-label="${label}" level={${node.depth}}>${content}</Heading>`
         } else {
-          node.value = `<Heading id={"${slug}"} level={${node.depth}}>${content}</Heading>`
+          node.type = 'jsx'
+          node.value = `<Heading id="${slug}" aria-label="${label}" level={${node.depth}}>${content}</Heading>`
 
-          toc?.push?.({ slug, title, depth: node.depth })
+          toc?.push?.({ slug, title, label, depth: node.depth })
         }
+
+        if (node.depth === 2) parents.push(label)
       }
     }
 

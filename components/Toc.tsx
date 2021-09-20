@@ -4,6 +4,7 @@ type TocItem = {
   depth: number
   slug: string
   title: string
+  label: string
 }
 
 type Toc = TocItem[]
@@ -21,6 +22,7 @@ function Toc({ toc }: TocProps) {
       {toc.map((item) => (
         <h4 key={item.slug} className={clsx(item.depth === 3 && 'ml-4')}>
           <a
+            aria-label={item.label}
             className="block py-1 text-sm font-normal leading-6 text-gray-500 hover:underline"
             href={`#${item.slug}`}
           >
