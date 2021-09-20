@@ -30,7 +30,8 @@ const withTableofContents = (toc?: any[]) => {
         const isDuplicate = toc.find((previous) => previous.slug === slug)
         const isParent = node.depth === 2
 
-        const label = isParent ? slug : `${parents[parents.length - 1]} - ${slug}`
+        const parent = parents?.length && parents[parents.length - 1]
+        const label = isParent || !parent ? slug : `${parent} - ${slug}`
 
         // Remove duplicate heading links
         if (isDuplicate) {
