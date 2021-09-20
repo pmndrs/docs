@@ -44,7 +44,7 @@ const components = {
       </a>
     )
   },
-  Heading: ({ children, id, level }) => {
+  Heading: ({ children, id, level, ...rest }) => {
     const Comp = level === 2 ? 'h2' : 'h3'
     return (
       <a
@@ -54,6 +54,7 @@ const components = {
           level === 2 ? 'text-3xl mb-6 mt-8' : 'text-xl mb-4 mt-6',
           'tracking-tight'
         )}
+        {...rest}
       >
         <Comp id={id}>{children}</Comp>
       </a>
