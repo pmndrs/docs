@@ -1,8 +1,3 @@
-footer {
-  height: 10vh;
-  width: 100%;
-}
-
 .footer__content {
   align-items: center;
   display: flex;
@@ -11,6 +6,11 @@ footer {
   > * {
     flex: 1;
     margin: 0 3rem;
+  }
+
+  @media (max-width: 696px) {
+    flex-direction: column;
+    row-gap: 2rem;
   }
 }
 
