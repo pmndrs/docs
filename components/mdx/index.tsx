@@ -37,25 +37,18 @@ const components = {
   Callout: ({ children }) => children,
   Bleed: ({ children }) => children,
   Codesandbox,
-  h4: ({ children, id, level }) => {
-    return (
-      <a href={`#${id}`} className="heading text-base mb-4 mt-4 tracking-tight">
-        <h4 id={id}>{children}</h4>
-      </a>
-    )
-  },
   Heading: ({ children, id, level, ...rest }) => {
-    const Comp = level === 2 ? 'h2' : 'h3'
+    const headingStyle = {
+      2: 'text-3xl mb-6 mt-8',
+      3: 'text-xl mb-4 mt-6',
+      4: 'text-base mb-4 mt-4',
+    }
+
+    const clampedLevel = Math.min(Math.max(level, 2), 4)
+    const Comp = `h${clampedLevel}`
     return (
-      <a
-        href={`#${id}`}
-        className={clsx(
-          'heading',
-          level === 2 ? 'text-3xl mb-6 mt-8' : 'text-xl mb-4 mt-6',
-          'tracking-tight'
-        )}
-        {...rest}
-      >
+      <a href={`#${id}`} className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')} {...rest}>
+        {/* @ts-ignore */}
         <Comp id={id}>{children}</Comp>
       </a>
     )

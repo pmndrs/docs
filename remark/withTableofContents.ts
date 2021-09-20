@@ -10,7 +10,7 @@ const withTableofContents = (toc?: any[]) => {
     const parents = []
     for (let i = 0; i < tree.children.length; i++) {
       const node = tree.children[i]
-      if (node.type === 'heading' && [2, 3].includes(node.depth)) {
+      if (node.type === 'heading' && [2, 3, 4].includes(node.depth)) {
         const children = node.children.filter((n) => ['text', 'inlineCode'].includes(n.type))
 
         const title = children
