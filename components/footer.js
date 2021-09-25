@@ -13,13 +13,13 @@ export default function Footer() {
             </a>
           </div>
           <div className="footer__center">
-            <a className="link" href="https://pmnd.rs/twitter">
+            <a className="link" href="https://pmnd.rs/twitter" target="_blank" rel="noopener noreferrer">
               Twitter
             </a>
-            <a className="link" href="https://pmnd.rs/github">
+            <a className="link" href="https://pmnd.rs/github" target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
-            <a className="link" href="https://pmnd.rs/discord">
+            <a className="link" href="https://pmnd.rs/discord" target="_blank" rel="noopener noreferrer">
               Discord
             </a>
           </div>
