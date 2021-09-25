@@ -139,6 +139,8 @@ td {
 
 td:first-child {
   @apply px-6 py-4 text-sm font-medium text-gray-900;
+  white-space: pre-wrap;
+  word-break: break-word;
   max-width: 150px;
 }
 
