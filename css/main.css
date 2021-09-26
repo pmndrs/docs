@@ -243,10 +243,10 @@ ul.grid-list > li:before {
 }
 
 .loading {
-  --fillColor: rgb(243, 244, 246);
-  --revealColor: rgb(255, 255, 255);
+  --fillColor: 243 244 246;
+  --revealColor: 255 255 255;
 
-  background: var(--fillColor);
+  background: rgb(var(--fillColor));
   color: transparent;
   position: relative;
 }
@@ -255,10 +255,10 @@ ul.grid-list > li:before {
   animation: loading 2s infinite;
   background-image: linear-gradient(
     90deg,
-    rgba(var(--revealColor), 0) 0,
-    rgba(var(--revealColor), 0.2) 20%,
-    rgba(var(--revealColor), 0.5) 60%,
-    rgba(var(--revealColor), 0)
+    rgb(var(--revealColor) / 0) 0,
+    rgb(var(--revealColor) / 0.2) 20%,
+    rgb(var(--revealColor) / 0.5) 60%,
+    rgb(var(--revealColor) / 0)
   );
   content: '';
   inset: 0;

@@ -37,7 +37,7 @@ export default function Sandbox({ id }) {
       {/* Render skeleton while loading */}
       {!data && (
         <>
-          <div aria-hidden className="loading rounded shadow-lg" style={{ height: 128 }} />
+          <div aria-hidden className="loading rounded" style={{ height: 128 }} />
           <h6 aria-hidden className="loading rounded text-gray-700 font-bold mt-4">
             loading
           </h6>
