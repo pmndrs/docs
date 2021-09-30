@@ -23,23 +23,23 @@ const App = () => (
 
 The props available for the canvas are:
 
-| Prop            | Description                                                        | Default                                                  |
-| --------------- | ------------------------------------------------------------------ | -------------------------------------------------------- |
-| children        | three.js JSX elements or regular components                         |                                                          |
-| gl              | Props that go into the default renderer, or your own renderer      | `{}`                                                     |
-| camera          | Props that go into the default camera, or your own `THREE.Camera`  | `{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }` |
-| shadows         | Props that go into `gl.shadowMap`, can also be set true for `PCFsoft`  | `false`                                                  |
-| raycaster       | Props that go into the default raycaster                           | `{}`                                                     |
-| vr              | Switches renderer to VR mode, then uses `gl.setAnimationLoop`        | `false`                                                  |
-| mode            | React mode: legacy, blocking, concurrent                           | `blocking`                                               |
-| frameloop       | Render mode: always, demand, never                                 | `always`                                                 |
-| resize          | Resize config, see react-use-measure's options                     | `{ scroll: true, debounce: { scroll: 50, resize: 0 } }`  |
-| orthographic    | Creates an orthographic camera                                     | `false`                                                  |
-| dpr             | Pixel-ratio, use `window.devicePixelRatio`, or automatic: [min, max] | `undefined`                                              |
-| linear          | Switch off automatic sRGB encoding and gamma correction            | `false`                                                  |
-| flat            | Use `THREE.NoToneMapping` instead of `THREE.ACESFilmicToneMapping` | `false`                                                  |
-| onCreated       | Callback after the canvas has rendered (but not yet committed)     | `(state) => {}`                                          |
-| onPointerMissed | Response for pointer clicks that have missed any target            | `(event) => {}`                                          |
+| Prop            | Description                                                           | Default                                                  |
+| --------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
+| children        | three.js JSX elements or regular components                           |                                                          |
+| gl              | Props that go into the default renderer, or your own renderer         | `{}`                                                     |
+| camera          | Props that go into the default camera, or your own `THREE.Camera`     | `{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }` |
+| shadows         | Props that go into `gl.shadowMap`, can also be set true for `PCFsoft` | `false`                                                  |
+| raycaster       | Props that go into the default raycaster                              | `{}`                                                     |
+| xr              | Switches renderer to XR mode, then uses `gl.setAnimationLoop`         | `false`                                                  |
+| mode            | React mode: legacy, blocking, concurrent                              | `blocking`                                               |
+| frameloop       | Render mode: always, demand, never                                    | `always`                                                 |
+| resize          | Resize config, see react-use-measure's options                        | `{ scroll: true, debounce: { scroll: 50, resize: 0 } }`  |
+| orthographic    | Creates an orthographic camera                                        | `false`                                                  |
+| dpr             | Pixel-ratio, use `window.devicePixelRatio`, or automatic: [min, max]  | `undefined`                                              |
+| linear          | Switch off automatic sRGB encoding and gamma correction               | `false`                                                  |
+| flat            | Use `THREE.NoToneMapping` instead of `THREE.ACESFilmicToneMapping`    | `false`                                                  |
+| onCreated       | Callback after the canvas has rendered (but not yet committed)        | `(state) => {}`                                          |
+| onPointerMissed | Response for pointer clicks that have missed any target               | `(event) => {}`                                          |
 
 The canvas props should be used as a _constructor_. To update the canvas props, set the state like this:
 
@@ -64,9 +64,10 @@ Canvas will create a translucent `THREE.WebGLRenderer` with the following proper
 
 <Hint>
   The colorspace will be set to sRGB (unless "linear" is true), all colors and textures will be
-  auto-converted. Consult [donmccurdy.com: Color Management in three.js](https://www.donmccurdy.com/2020/06/17/color-management-in-threejs) for more
-  information about this. Unless "flat" is true it will set up `THREE.ACESFilmicToneMapping` for
-  slightly more contrast.
+  auto-converted. Consult [donmccurdy.com: Color Management in
+  three.js](https://www.donmccurdy.com/2020/06/17/color-management-in-threejs) for more information
+  about this. Unless "flat" is true it will set up `THREE.ACESFilmicToneMapping` for slightly more
+  contrast.
 </Hint>
 
 <Hint>
