@@ -253,4 +253,5 @@ function Model(url) {
   const scene = useLoader(OBJLoader, url)
   const { nodes, materials } = useGraph(scene)
   return <mesh geometry={nodes.robot.geometry} material={materials.metal} />
+}
 ```
