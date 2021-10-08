@@ -1,11 +1,12 @@
-import zustandImage from './zustand-bear.png'
+import zustandImage from './zustand-bear-small.png'
+import jotaiImage from './jotai-ghost-small.png'
 
 export const data = [
   {
     id: 'react-three-fiber',
     label: 'React Three Fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
-    description: 'React-three-fiber is a React renderer for three.js.',
+    description: 'React-three-fiber is a React renderer for three.js',
   },
   {
     id: 'react-spring',
@@ -18,7 +19,7 @@ export const data = [
     label: 'Drei',
     github: 'https://github.com/pmndrs/drei',
     description:
-      'Drei is a growing collection of useful helpers and abstractions for react-three-fiber.',
+      'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
   },
   {
     id: 'zustand',
@@ -32,7 +33,8 @@ export const data = [
     id: 'jotai',
     label: 'Jotai',
     github: 'https://github.com/pmndrs/jotai',
-    description: 'Jotai is a primitive and flexible state management library for React.',
+    description: 'Jotai is a primitive and flexible state management library for React',
+    image: jotaiImage,
   },
   {
     id: 'a11y',

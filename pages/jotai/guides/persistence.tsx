@@ -1,3 +1,3 @@
 import redirect from '../../../utils/redirect'
 
-export default redirect('https://jotai.pmnd.rs/docs/guides/persistence/')
+export default redirect('https://jotai.pmnd.rs/docs/guides/persistence')
