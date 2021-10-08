@@ -1,4 +1,5 @@
-import zustandImage from './zustand-bear.png'
+import zustandImage from './zustand-bear-small.png'
+import jotaiImage from './jotai-ghost-small.png'
 
 export const data = [
   {
@@ -33,6 +34,7 @@ export const data = [
     label: 'Jotai',
     github: 'https://github.com/pmndrs/jotai',
     description: 'Jotai is a primitive and flexible state management library for React.',
+    image: jotaiImage,
   },
   {
     id: 'a11y',

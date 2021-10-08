@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -24,13 +25,26 @@ export default function HomePage() {
               className="relative shadow-lg border border-gray-200 bg-white rounded-md font-normal overflow-hidden"
             >
               <div className="relative z-10 flex flex-col justify-between h-full">
-                <div className="flex items-center px-6 space-x-6">
-                  <div>
+                <div className="flex justify-between items-center px-6">
+                  <div className="max-w-md">
                     <div className="pt-4 font-bold text-lg">{item.label}</div>
-                    <div className="flex-grow pt-1 pb-4 text-base text-gray-500 !leading-relaxed">
+                    <div className="flex-grow pr-4 pt-1 pb-4 text-base text-gray-500 !leading-relaxed">
                       {item.description}
                     </div>
                   </div>
+                  {item?.image && (
+                    <div className="relative flex-shrink-0 w-20 h-20">
+                      <a href={item.github} target="_blank" rel="noopener" className="block">
+                        <Image
+                          src={item.image}
+                          layout="fill"
+                          className="object-contain"
+                          alt={item.label}
+                          aria-hidden
+                        />
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="flex w-full border-t border-gray-200 divide-x divide-gray-200">
                   <Link href={`/${item.id}`}>
@@ -45,7 +59,8 @@ export default function HomePage() {
                           fill="#0F0F0F"
                         />
                       </svg>
-                      <span>Documentation</span>
+                      <span className="sm:hidden">Docs</span>
+                      <span className="hidden sm:inline">Documentation</span>
                     </a>
                   </Link>
                   <a
@@ -68,19 +83,6 @@ export default function HomePage() {
                   </a>
                 </div>
               </div>
-              {item?.image && (
-                <>
-                  <div className="absolute inset-0 z-0">
-                    <Image
-                      src={item.image}
-                      className="w-full h-full object-cover object-top opacity-30"
-                      alt=""
-                      aria-hidden
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white" />
-                </>
-              )}
             </div>
           ))}
         </div>
