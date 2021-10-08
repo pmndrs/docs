@@ -1,3 +1,3 @@
 import redirect from '../../../utils/redirect'
 
-export default redirect('https://jotai.pmnd.rs/docs/api/devtools/')
+export default redirect('https://jotai.pmnd.rs/docs/api/devtools')
