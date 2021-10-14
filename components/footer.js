@@ -13,6 +13,9 @@ export default function Footer() {
             </a>
           </div>
           <div className="footer__center">
+            <a className="link" href="https://docs.pmnd.rs/home" target="_blank" rel="noopener noreferrer">
+              Docs
+            </a>
             <a className="link" href="https://pmnd.rs/twitter" target="_blank" rel="noopener noreferrer">
               Twitter
             </a>
