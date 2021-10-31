@@ -29,8 +29,12 @@ const components = {
       {children}
     </div>
   ),
-  Grid: ({ children, cols = 4 }) => (
-    <ul className={`grid sm:grid-cols-2 md:grid-cols-${cols} gap-4 text-sm text-gray-700 grid-list`}>
+  Grid: ({ children, focus }) => (
+    <ul
+      className={`grid sm:grid-cols-2 ${
+        focus ? 'md:grid-cols-2' : 'md:grid-cols-4'
+      } gap-4 text-sm text-gray-700 grid-list`}
+    >
       {children}
     </ul>
   ),
@@ -47,7 +51,11 @@ const components = {
     const clampedLevel = Math.min(Math.max(level, 2), 4)
     const Comp = `h${clampedLevel}`
     return (
-      <a href={`#${id}`} className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')} {...rest}>
+      <a
+        href={`#${id}`}
+        className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')}
+        {...rest}
+      >
         {/* @ts-ignore */}
         <Comp id={id}>{children}</Comp>
       </a>
