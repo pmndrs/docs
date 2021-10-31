@@ -29,11 +29,18 @@ const components = {
       {children}
     </div>
   ),
-  Grid: ({ children, focus }) => (
+  Grid: ({ children, cols = 4 }) => (
     <ul
       className={`grid sm:grid-cols-2 ${
-        focus ? 'md:grid-cols-2' : 'md:grid-cols-4'
+        cols === 4
+          ? 'md:grid-cols-4'
+          : cols === 3
+          ? 'md:grid-cols-3'
+          : cols === 2
+          ? 'md:grid-cols-2'
+          : 'md:grid-cols-1'
       } gap-4 text-sm text-gray-700 grid-list`}
+      style={{ marginBottom: '1rem' }}
     >
       {children}
     </ul>
