@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 
-export default function Sandbox({ id }) {
+export default function Sandbox({ id, occlude }) {
   const sandboxRef = useRef()
   const [data, setData] = useState<{
     alias: string
@@ -12,25 +12,32 @@ export default function Sandbox({ id }) {
   }>()
 
   useEffect(() => {
-    // Wait to load section until in view
-    const sectionObserver = new IntersectionObserver(([entry], observer) => {
-      if (entry.isIntersecting) {
-        // Once observed, don't observe again
-        observer.unobserve(entry.target)
-
-        // Fetch once observed
-        fetch(`/api/get-sandbox?id=${id}`)
-          .then((rsp) => rsp.json())
-          .then(setData)
-      }
-    })
-
-    sectionObserver.observe(sandboxRef.current)
-
-    return () => {
-      sectionObserver.disconnect()
+    function fetchSandbox(id) {
+      fetch(`/api/get-sandbox?id=${id}`)
+        .then((rsp) => rsp.json())
+        .then(setData)
     }
-  }, [id])
+
+    if (occlude) {
+      // Wait to load section until in view
+      const sectionObserver = new IntersectionObserver(([entry], observer) => {
+        if (entry.isIntersecting) {
+          // Once observed, don't observe again
+          observer.unobserve(entry.target)
+          // Fetch once observed
+          fetchSandbox(id)
+        }
+      })
+
+      sectionObserver.observe(sandboxRef.current)
+
+      return () => {
+        sectionObserver.disconnect()
+      }
+    } else {
+      fetchSandbox(id)
+    }
+  }, [id, occlude])
 
   return (
     <div ref={sandboxRef}>
