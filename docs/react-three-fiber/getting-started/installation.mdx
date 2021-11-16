@@ -15,6 +15,7 @@ We've put together guides for getting started with each popular framework:
 
 - Create React App
 - Next.js
+- Expo
 <!-- - Gatsby -->
 
 If you just want to give it a try, fork this [example on codesandbox](https://codesandbox.io/s/rrppl0y8l4?file=/src/App.js)!
@@ -39,6 +40,32 @@ module.exports = withTM()
 ```
 
 Make sure to check out our [official next.js starter](https://github.com/pmndrs/react-three-next), too!
+
+## Expo & React Native
+
+This example uses `expo-cli` for the sake of simplicity, but you can use your own barebones setup if you wish.
+
+```bash
+# Install expo-cli, this will create our app
+npm install expo-cli -g
+
+# Create app and cd into it
+expo init my-app
+cd my-app
+
+# Install dependencies
+npm install three @react-three/fiber
+
+# Start
+expo start
+```
+
+Just import from native targets and that's it!
+
+```jsx
+import { Canvas } from '@react-three/fiber/native'
+import { useGLTF } from '@react-three/drei/native'
+```
 
 ## Without build tools
 
