@@ -13,7 +13,7 @@ import { useDocs } from 'store/docs'
 import { useEffect } from 'react'
 // import { data } from 'data/libraries'
 
-export default function PostPage({ toc, source, allDocs, nav, title }) {
+export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const { query } = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
   const name = query.slug[0]
@@ -27,9 +27,22 @@ export default function PostPage({ toc, source, allDocs, nav, title }) {
     <Layout nav={nav} toc={toc}>
       <Seo name={name} />
       <main className="max-w-3xl mx-auto">
-        <div className="pb-6 mb-4 border-b post-header">
-          <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
-        </div>
+        {frontMatter.title && (
+          <div className="pb-6 mb-4 border-b post-header">
+            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{frontMatter.title}</h1>
+            {frontMatter.description && (
+              <MDXRemote
+                {...frontMatter.description}
+                components={{
+                  ...components,
+                  p: ({ children }) => (
+                    <p className="text-base leading-4 text-gray-400 leading-5">{children}</p>
+                  ),
+                }}
+              />
+            )}
+          </div>
+        )}
         <main className="content-container">
           <MDXRemote {...source} components={components} />
         </main>
@@ -51,6 +64,7 @@ export default function PostPage({ toc, source, allDocs, nav, title }) {
 const settings: { [key: string]: { dir: string; tag?: string } } = {
   'react-three-fiber': {
     dir: 'markdown',
+    tag: 'docs-remote',
   },
 }
 
@@ -66,26 +80,25 @@ const getPages = async (lib: keyof typeof settings) => {
     `https://api.github.com/repos/pmndrs/${lib}/git/trees/${tag}?recursive=1`
   ).then((res) => res.json())
 
-  const isMarkdown = ({ path }) =>
-    path.startsWith(`${dir}/`) && /\.mdx?$/.test(path) && !path.endsWith('changelog.md') // changelog is invalid markdown, breaks build
+  const isMarkdown = ({ path }) => path.startsWith(`${dir}/`) && /\.mdx?$/.test(path)
 
   const pages = await Promise.all(
     tree.filter(isMarkdown).map(async ({ path }) => {
-      const postData = await fetch(
-        `https://raw.githubusercontent.com/pmndrs/${lib}/${tag}/${path}`
-      ).then((res) => res.text())
-
       const localPath = path
         .toLowerCase()
         .replace(`${dir}/`, '')
         .replace(/\.mdx?$/, '')
 
       const slug = [lib, ...localPath.split('/')]
-
       const url = slug.join('/')
-      const title = slug[slug.length - 1]
+      const name = slug[slug.length - 1]
 
-      return { postData, slug, url, title }
+      const postData = await fetch(
+        `https://raw.githubusercontent.com/pmndrs/${lib}/${tag}/${path}`
+      ).then((res) => res.text())
+      const { content, data } = matter(postData)
+
+      return { slug, url, name, content, data }
     })
   )
 
@@ -116,9 +129,8 @@ export const getStaticProps = async ({ params }) => {
   const pages = await getPages(lib)
 
   const post = pages.find((page) => page.slug.join('/') === params.slug.join('/'))
-  const { postData, title } = post
+  const { content, data } = post
 
-  const { content, data } = matter(postData)
   const allDocs = await getAllPages()
 
   const nav = allDocs.reduce((nav, file) => {
@@ -138,13 +150,17 @@ export const getStaticProps = async ({ params }) => {
     scope: data,
   })
 
+  // Also serialize descriptions
+  const description = data.description ? await serialize(data.description) : null
+  const frontMatter = { ...data, description }
+
   return {
     props: {
       allDocs,
       nav,
       toc,
       source,
-      title,
+      frontMatter,
     },
   }
 }

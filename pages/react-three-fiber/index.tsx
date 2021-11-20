@@ -1,3 +1,3 @@
 import redirect from '../../utils/redirect'
 
-export default redirect('/react-three-fiber/api')
+export default redirect('/react-three-fiber/getting-started/introduction')
