@@ -32,7 +32,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
             <h1 className="mb-4 text-5xl font-bold tracking-tighter">{frontMatter.title}</h1>
             {frontMatter.description && (
               <MDXRemote
-                {...frontMatter.description}
+                {...source}
                 components={{
                   ...components,
                   p: ({ children }) => (
@@ -82,25 +82,31 @@ const getPages = async (lib: keyof typeof settings) => {
 
   const isMarkdown = ({ path }) => path.startsWith(`${dir}/`) && /\.mdx?$/.test(path)
 
-  const pages = await Promise.all(
-    tree.filter(isMarkdown).map(async ({ path }) => {
-      const localPath = path
-        .toLowerCase()
-        .replace(`${dir}/`, '')
-        .replace(/\.mdx?$/, '')
+  const pages = (
+    await Promise.all(
+      tree.filter(isMarkdown).map(async ({ path }) => {
+        const localPath = path
+          .toLowerCase()
+          .replace(`${dir}/`, '')
+          .replace(/\.mdx?$/, '')
 
-      const slug = [lib, ...localPath.split('/')]
-      const url = slug.join('/')
-      const name = slug[slug.length - 1]
+        const postData = await fetch(
+          `https://raw.githubusercontent.com/pmndrs/${lib}/${tag}/${path}`
+        ).then((res) => res.text())
+        const { data } = matter(postData)
 
-      const postData = await fetch(
-        `https://raw.githubusercontent.com/pmndrs/${lib}/${tag}/${path}`
-      ).then((res) => res.text())
-      const { content, data } = matter(postData)
+        const slug = [lib, ...localPath.split('/')]
+        const url = `/${slug.join('/')}`
+        const pathname = slug[slug.length - 1]
 
-      return { slug, url, name, content, data }
-    })
-  )
+        const title = data.title || pathname.replace(/\-/g, ' ')
+        const description = data.description ? await serialize(data.description) : ''
+        const nav = data.nav ?? Infinity
+
+        return { slug, url, title, description, nav, postData, frontMatter: data }
+      })
+    )
+  ).sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
 
   cachedPages.set(lib, pages)
 
@@ -129,7 +135,8 @@ export const getStaticProps = async ({ params }) => {
   const pages = await getPages(lib)
 
   const post = pages.find((page) => page.slug.join('/') === params.slug.join('/'))
-  const { content, data } = post
+  const { postData, frontMatter } = post
+  const { content } = matter(postData)
 
   const allDocs = await getAllPages()
 
@@ -147,12 +154,8 @@ export const getStaticProps = async ({ params }) => {
       remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
       rehypePlugins: [],
     },
-    scope: data,
+    scope: frontMatter,
   })
-
-  // Also serialize descriptions
-  const description = data.description ? await serialize(data.description) : null
-  const frontMatter = { ...data, description }
 
   return {
     props: {

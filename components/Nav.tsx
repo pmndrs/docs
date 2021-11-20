@@ -25,7 +25,7 @@ function NavItem({ route }) {
             isActive && 'bg-gray-100'
           )}
         >
-          {route.data?.title || route.name}
+          {route.title}
         </a>
       </Link>
     </li>
