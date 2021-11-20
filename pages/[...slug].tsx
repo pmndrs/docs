@@ -66,7 +66,8 @@ const getPages = async (lib: keyof typeof settings) => {
     `https://api.github.com/repos/pmndrs/${lib}/git/trees/${tag}?recursive=1`
   ).then((res) => res.json())
 
-  const isMarkdown = ({ path }) => path.startsWith(`${dir}/`) && /\.mdx?$/.test(path)
+  const isMarkdown = ({ path }) =>
+    path.startsWith(`${dir}/`) && /\.mdx?$/.test(path) && !path.endsWith('changelog.md') // changelog is invalid markdown, breaks build
 
   const pages = await Promise.all(
     tree.filter(isMarkdown).map(async ({ path }) => {
