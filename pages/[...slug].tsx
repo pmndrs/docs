@@ -32,7 +32,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
             <h1 className="mb-4 text-5xl font-bold tracking-tighter">{frontMatter.title}</h1>
             {frontMatter.description && (
               <MDXRemote
-                {...source}
+                {...frontMatter.description}
                 components={{
                   ...components,
                   p: ({ children }) => (
@@ -95,7 +95,7 @@ const getPages = async (lib: keyof typeof settings) => {
         ).then((res) => res.text())
         const { content, data } = matter(postData)
 
-        const slug = [lib, ...localPath.split('/')]
+        const slug = [lib as string, ...localPath.split('/')]
         const url = `/${slug.join('/')}`
         const pathname = slug[slug.length - 1]
 
