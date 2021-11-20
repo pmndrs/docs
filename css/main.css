@@ -112,6 +112,10 @@ blockquote p {
   @apply text-gray-400 !important;
 }
 
+summary {
+  @apply select-none cursor-pointer mb-2;
+}
+
 table {
   min-width: 600px;
 }
