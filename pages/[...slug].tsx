@@ -103,7 +103,7 @@ const getPages = async (lib: keyof typeof settings) => {
         const description = data.description ? await serialize(data.description) : ''
         const nav = data.nav ?? Infinity
 
-        return { slug, url, title, description, nav, content, frontMatter: data }
+        return { slug, url, title, description, nav, content, data }
       })
     )
   ).sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
@@ -135,7 +135,7 @@ export const getStaticProps = async ({ params }) => {
   const pages = await getPages(lib)
 
   const post = pages.find((page) => page.slug.join('/') === params.slug.join('/'))
-  const { content, frontMatter } = post
+  const { content, data, title, description } = post
 
   const allDocs = await getAllPages()
 
@@ -153,7 +153,7 @@ export const getStaticProps = async ({ params }) => {
       remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
       rehypePlugins: [],
     },
-    scope: frontMatter,
+    scope: data,
   })
 
   return {
@@ -162,7 +162,7 @@ export const getStaticProps = async ({ params }) => {
       nav,
       toc,
       source,
-      frontMatter,
+      frontMatter: { title, description },
     },
   }
 }
