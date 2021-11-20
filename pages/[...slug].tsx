@@ -11,7 +11,7 @@ import setValue from 'set-value'
 import { useRouter } from 'next/router'
 import { useDocs } from 'store/docs'
 import { useEffect } from 'react'
-// import { data } from 'data/libraries'
+import { data } from 'data/libraries'
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const { query } = useRouter()
@@ -51,16 +51,6 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   )
 }
 
-// const settings = data.reduce(
-//   (acc, { id, dir = 'markdown' }) => ({
-//     ...acc,
-//     [id]: {
-//       dir,
-//     },
-//   }),
-//   {}
-// )
-
 const settings: { [key: string]: { dir: string; tag?: string } } = {
   'react-three-fiber': {
     dir: 'markdown',
@@ -74,10 +64,11 @@ const getPages = async (lib: keyof typeof settings) => {
   const cached = cachedPages.get(lib)
   if (cached) return cached
 
-  const { dir, tag = 'master' } = settings[lib]
+  const { docs } = data.find(({ id }) => id === lib)
+  const { repo, dir, tag = 'master' } = docs
 
   const { tree } = await fetch(
-    `https://api.github.com/repos/pmndrs/${lib}/git/trees/${tag}?recursive=1`
+    `https://api.github.com/repos/pmndrs/${repo}/git/trees/${tag}?recursive=1`
   ).then((res) => res.json())
 
   const isMarkdown = ({ path }) => path.startsWith(`${dir}/`) && /\.mdx?$/.test(path)
@@ -91,7 +82,7 @@ const getPages = async (lib: keyof typeof settings) => {
           .replace(/\.mdx?$/, '')
 
         const postData = await fetch(
-          `https://raw.githubusercontent.com/pmndrs/${lib}/${tag}/${path}`
+          `https://raw.githubusercontent.com/pmndrs/${repo}/${tag}/${path}`
         ).then((res) => res.text())
         const { content, data } = matter(postData)
 
@@ -114,7 +105,8 @@ const getPages = async (lib: keyof typeof settings) => {
 }
 
 const getAllPages = async () => {
-  const libs = Object.keys(settings)
+  // Get ids of libs who have opted into hosting docs
+  const libs = data.filter(({ docs }) => docs).map(({ id }) => id)
   const pages = await Promise.all(libs.map(getPages))
 
   return pages.flat()
