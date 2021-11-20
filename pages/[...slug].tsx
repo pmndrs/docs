@@ -93,7 +93,7 @@ const getPages = async (lib: keyof typeof settings) => {
         const postData = await fetch(
           `https://raw.githubusercontent.com/pmndrs/${lib}/${tag}/${path}`
         ).then((res) => res.text())
-        const { data } = matter(postData)
+        const { content, data } = matter(postData)
 
         const slug = [lib, ...localPath.split('/')]
         const url = `/${slug.join('/')}`
@@ -103,7 +103,7 @@ const getPages = async (lib: keyof typeof settings) => {
         const description = data.description ? await serialize(data.description) : ''
         const nav = data.nav ?? Infinity
 
-        return { slug, url, title, description, nav, postData, frontMatter: data }
+        return { slug, url, title, description, nav, content, frontMatter: data }
       })
     )
   ).sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
@@ -135,8 +135,7 @@ export const getStaticProps = async ({ params }) => {
   const pages = await getPages(lib)
 
   const post = pages.find((page) => page.slug.join('/') === params.slug.join('/'))
-  const { postData, frontMatter } = post
-  const { content } = matter(postData)
+  const { content, frontMatter } = post
 
   const allDocs = await getAllPages()
 
