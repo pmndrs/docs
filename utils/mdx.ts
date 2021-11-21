@@ -81,9 +81,6 @@ export const parseMDX = (filePath: string, { repo, dir = '', branch = 'main' }: 
     .replace(/\\+/g, '/')
     .replace(/^\//, '')
 
-  // Get remote GitHub path
-  const remotePath = `https://github.com/${repo}/tree/${branch}/${relativePath}`
-
   // Get local web path
   const localPath = relativePath
     // Remove folder prefix
@@ -91,5 +88,11 @@ export const parseMDX = (filePath: string, { repo, dir = '', branch = 'main' }: 
     .replace(MARKDOWN_REGEX, '')
     .toLowerCase()
 
-  return { content, data, relativePath, remotePath, localPath }
+  // Get remote GitHub path
+  const isWiki = repo.includes('.wiki')
+  const remotePath = isWiki
+    ? `https://github.com/${repo.replace('.wiki', '/wiki')}/${localPath}`
+    : `https://github.com/${repo}/tree/${branch}/${relativePath}`
+
+  return { content, data, relativePath, localPath, remotePath }
 }
