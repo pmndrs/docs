@@ -2,7 +2,7 @@
 nav: 10
 --- -->
 
-# `useSnapshot(state)` without property access will always trigger re-render
+## `useSnapshot(state)` without property access will always trigger re-render
 
 https://github.com/pmndrs/valtio/issues/209#issuecomment-896859395
 
@@ -46,7 +46,7 @@ This is technically same as the previous one. It doesn't touch the property of `
 
 In summary, if a snapshot object (nested or not) is not accessed with any properties, it assumes the entire object is accessed, so any change inside the object will trigger re-render.
 
-# Object.keys
+## Object.keys
 
 `Object.keys(state.obj)` doesn't touch any object properties, so the same as above.
 
@@ -65,7 +65,7 @@ useEffect(() => {
 }, [])
 ```
 
-# Using `React.memo` with object props may result in unexpected behavior
+## Using `React.memo` with object props may result in unexpected behavior
 
 The `snap` variable returned by `useSnapshot(state)` is tracked for render optimization.
 If you pass the `snap` or some objects in `snap` to a component with `React.memo`,

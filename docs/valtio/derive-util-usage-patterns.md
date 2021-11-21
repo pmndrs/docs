@@ -6,16 +6,16 @@ nav: 2
 
 With `derive`, the computation will occur if any property of the base proxy changes. Example:
 
-```
+```js
 const baseProxy = proxy({
   counter1: 0,
   counter2: 0,
   counter3: 0,
-  counter4: 0
-});
+  counter4: 0,
+})
 
 const countersOneAndTwoSelectors = derive({
-  sum: get => get(baseProxy).counter1 + get(baseProxy).counter2
+  sum: (get) => get(baseProxy).counter1 + get(baseProxy).counter2,
 })
 ```
 
@@ -25,18 +25,18 @@ In this example even if `baseProxy.counter3` or `baseProxy.counter4` are changed
 
 As noted on his page, re-computation occurs when unrelated properties change. It is possible to use `get` on sub-objects. This has the benefit of not re-computing when properties of the parent object are updated. Example:
 
-```
+```js
 const baseProxy = proxy({
   counter1And2: {
     counter1: 0,
-    counter2: 0
+    counter2: 0,
   },
   counter3: 0,
-  counter4: 0
-});
+  counter4: 0,
+})
 
 const countersOneAndTwoSelectors = derive({
-  sum: get => get(baseProxy.counter1And2).counter1 + get(baseProxy.counter1And2).counter2
+  sum: (get) => get(baseProxy.counter1And2).counter1 + get(baseProxy.counter1And2).counter2,
 })
 ```
 
