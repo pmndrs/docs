@@ -6,7 +6,11 @@ import matter from 'gray-matter'
 import { serialize } from 'next-mdx-remote/serialize'
 import { data } from 'data/libraries'
 
+// Checks for .md(x) file extension
 const MARKDOWN_REGEX = /\.mdx?$/
+
+// Uncomments frontMatter from vanilla markdown
+const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
 
 /**
  * Clones a repository.
@@ -49,7 +53,12 @@ export const getDocs = async (lib: string) => {
 
   // Filters to markdown files in target dir
   const isMarkdown = (filePath: string) =>
-    filePath.startsWith(docsDir) && MARKDOWN_REGEX.test(filePath)
+    // Is a markdown file
+    MARKDOWN_REGEX.test(filePath) &&
+    // Is in markdown dir
+    filePath.startsWith(docsDir) &&
+    // Doesn't start with _, private/meta for wikis
+    !filePath.startsWith(path.resolve(docsDir, '_'))
 
   // Generate docs
   const docs = (
@@ -64,7 +73,10 @@ export const getDocs = async (lib: string) => {
           .replace(/^\//, '')
           .toLowerCase()
 
-        const postData = fs.readFileSync(filePath, { encoding: 'utf-8' })
+        const postData = fs
+          .readFileSync(filePath, { encoding: 'utf-8' })
+          // Remove <!-- --> comments from frontMatter
+          .replace(FRONTMATTER_REGEX, '')
         const { content, data } = matter(postData)
 
         const slug = [lib, ...localPath.split('/')]
