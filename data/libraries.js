@@ -74,9 +74,7 @@ export const data = [
     github: 'https://github.com/pmndrs/valtio',
     description: 'Valtio makes proxy-state simple for React and Vanilla',
     docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/valtio',
+      repo: 'CodyJasonBennett/valtio',
     },
   },
   {
