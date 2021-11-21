@@ -50,22 +50,12 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   )
 }
 
-export const getStaticPaths = async () => {
-  const docs = await getAllDocs()
-  const paths = docs.map(({ slug }) => ({ params: { slug } }))
-
-  return {
-    paths,
-    fallback: false,
-  }
-}
-
 export const getStaticProps = async ({ params }) => {
   const [lib] = params.slug
   const docs = await getDocs(lib)
 
   const post = docs.find((doc) => doc.slug.join('/') === params.slug.join('/'))
-  const { content, data, title, description } = post
+  const { content, data } = post
 
   const allDocs = await getAllDocs()
 
@@ -86,13 +76,27 @@ export const getStaticProps = async ({ params }) => {
     scope: data,
   })
 
+  // Also serialize descriptions
+  const description = data.description ? await serialize(data.description) : null
+  const frontMatter = { ...data, description }
+
   return {
     props: {
       allDocs,
       nav,
       toc,
       source,
-      frontMatter: { title, description },
+      frontMatter,
     },
+  }
+}
+
+export const getStaticPaths = async () => {
+  const docs = await getAllDocs()
+  const paths = docs.map(({ slug }) => ({ params: { slug } }))
+
+  return {
+    paths,
+    fallback: false,
   }
 }

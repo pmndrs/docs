@@ -103,7 +103,7 @@ export default function Layout({ nav, toc, children }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                      href={`https://github.com/pmndrs/website/tree/docs/docs${currentDocs[currentPageIndex].url}.mdx`}
+                      href={currentDocs[currentPageIndex].remotePath}
                     >
                       Edit this page on GitHub
                     </a>

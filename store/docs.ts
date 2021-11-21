@@ -1,15 +1,23 @@
 import create from 'zustand'
 
-type Doc = { content: string; title: string; url: string; description: string }
+type Doc = {
+  content: string
+  title: string
+  url: string
+  description: string
+  nav: number
+  relativePath: string
+  remotePath: string
+  localPath: string
+  data: Omit<Doc, 'content' | 'relativePath' | 'remotePath' | 'localPath'>
+}
 
 type State = {
   docs: Doc[]
   currentDocs: Doc[]
   setDocs: (doc: Doc[]) => void
   setCurrentDocs: (folder: string) => void
-  getPrevAndNext: (
-    folder: string
-  ) => {
+  getPrevAndNext: (folder: string) => {
     previousPage: Doc
     nextPage: Doc
     currentPageIndex: number
