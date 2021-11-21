@@ -8,7 +8,7 @@ export const data = [
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
     docs: {
-      repo: 'website',
+      repo: 'pmndrs/website',
       tag: 'docs',
       dir: 'docs/react-three-fiber',
     },
@@ -19,7 +19,7 @@ export const data = [
     github: 'https://github.com/pmndrs/react-spring',
     description: 'Bring your components to life with simple spring animation primitives for React',
     docs: {
-      repo: 'website',
+      repo: 'pmndrs/website',
       tag: 'docs',
       dir: 'docs/react-spring',
     },
@@ -31,7 +31,7 @@ export const data = [
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
     docs: {
-      repo: 'website',
+      repo: 'pmndrs/website',
       tag: 'docs',
       dir: 'docs/drei',
     },
@@ -44,7 +44,7 @@ export const data = [
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     image: zustandImage,
     docs: {
-      repo: 'website',
+      repo: 'pmndrs/website',
       tag: 'docs',
       dir: 'docs/zustand',
     },
@@ -63,7 +63,7 @@ export const data = [
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     docs: {
-      repo: 'website',
+      repo: 'pmndrs/website',
       tag: 'docs',
       dir: 'docs/a11y',
     },
@@ -74,7 +74,7 @@ export const data = [
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     docs: {
-      repo: 'website',
+      repo: 'pmndrs/website',
       tag: 'docs',
       dir: 'docs/react-postprocessing',
     },

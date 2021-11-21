@@ -68,7 +68,7 @@ const getPages = async (lib: keyof typeof settings) => {
   const { repo, dir, tag = 'master' } = docs
 
   const { tree } = await fetch(
-    `https://api.github.com/repos/pmndrs/${repo}/git/trees/${tag}?recursive=1`
+    `https://api.github.com/repos/${repo}/git/trees/${tag}?recursive=1`
   ).then((res) => res.json())
 
   const isMarkdown = ({ path }) => path.startsWith(`${dir}/`) && /\.mdx?$/.test(path)
@@ -82,7 +82,7 @@ const getPages = async (lib: keyof typeof settings) => {
           .replace(/\.mdx?$/, '')
 
         const postData = await fetch(
-          `https://raw.githubusercontent.com/pmndrs/${repo}/${tag}/${path}`
+          `https://raw.githubusercontent.com/${repo}/${tag}/${path}`
         ).then((res) => res.text())
         const { content, data } = matter(postData)
 
