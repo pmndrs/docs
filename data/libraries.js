@@ -75,7 +75,7 @@ export const data = [
     description: 'Valtio makes proxy-state simple for React and Vanilla',
     docs: {
       repo: 'pmndrs/website',
-      branch: 'fetch-remote',
+      branch: 'docs',
       dir: 'docs/valtio',
     },
   },
