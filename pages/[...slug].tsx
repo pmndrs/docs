@@ -11,7 +11,7 @@ import setValue from 'set-value'
 import { useRouter } from 'next/router'
 import { useDocs } from 'store/docs'
 import { useEffect } from 'react'
-import { data } from 'data/libraries'
+import { getAllDocs, getDocs } from 'utils/docs'
 
 export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   const { query } = useRouter()
@@ -51,63 +51,9 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   )
 }
 
-const cachedPages = new Map()
-
-const getPages = async (lib: string) => {
-  const cached = cachedPages.get(lib)
-  if (cached) return cached
-
-  const { docs } = data.find(({ id }) => id === lib)
-  const { repo, dir, tag = 'master' } = docs
-
-  const { tree } = await fetch(
-    `https://api.github.com/repos/${repo}/git/trees/${tag}?recursive=1`
-  ).then((res) => res.json())
-
-  const isMarkdown = ({ path }) => path.startsWith(`${dir}/`) && /\.mdx?$/.test(path)
-
-  const pages = (
-    await Promise.all(
-      tree.filter(isMarkdown).map(async ({ path }) => {
-        const localPath = path
-          .toLowerCase()
-          .replace(`${dir}/`, '')
-          .replace(/\.mdx?$/, '')
-
-        const postData = await fetch(
-          `https://raw.githubusercontent.com/${repo}/${tag}/${path}`
-        ).then((res) => res.text())
-        const { content, data } = matter(postData)
-
-        const slug = [lib, ...localPath.split('/')]
-        const url = `/${slug.join('/')}`
-        const pathname = slug[slug.length - 1]
-
-        const title = data.title || pathname.replace(/\-/g, ' ')
-        const description = data.description ? await serialize(data.description) : ''
-        const nav = data.nav ?? Infinity
-
-        return { slug, url, title, description, nav, content, data }
-      })
-    )
-  ).sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
-
-  cachedPages.set(lib, pages)
-
-  return pages
-}
-
-const getAllPages = async () => {
-  // Get ids of libs who have opted into hosting docs
-  const libs = data.filter(({ docs }) => docs).map(({ id }) => id)
-  const pages = await Promise.all(libs.map(getPages))
-
-  return pages.flat()
-}
-
 export const getStaticPaths = async () => {
-  const pages = await getAllPages()
-  const paths = pages.map(({ slug }) => ({ params: { slug } }))
+  const docs = await getAllDocs()
+  const paths = docs.map(({ slug }) => ({ params: { slug } }))
 
   return {
     paths,
@@ -117,12 +63,12 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const [lib] = params.slug
-  const pages = await getPages(lib)
+  const docs = await getDocs(lib)
 
-  const post = pages.find((page) => page.slug.join('/') === params.slug.join('/'))
+  const post = docs.find((doc) => doc.slug.join('/') === params.slug.join('/'))
   const { content, data, title, description } = post
 
-  const allDocs = await getAllPages()
+  const allDocs = await getAllDocs()
 
   const nav = allDocs.reduce((nav, file) => {
     const [lib, ...rest] = file.slug

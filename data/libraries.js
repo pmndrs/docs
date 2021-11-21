@@ -9,7 +9,7 @@ export const data = [
     description: 'React-three-fiber is a React renderer for three.js',
     docs: {
       repo: 'pmndrs/website',
-      tag: 'docs',
+      branch: 'docs',
       dir: 'docs/react-three-fiber',
     },
   },
@@ -20,7 +20,7 @@ export const data = [
     description: 'Bring your components to life with simple spring animation primitives for React',
     docs: {
       repo: 'pmndrs/website',
-      tag: 'docs',
+      branch: 'docs',
       dir: 'docs/react-spring',
     },
   },
@@ -32,7 +32,7 @@ export const data = [
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
     docs: {
       repo: 'pmndrs/website',
-      tag: 'docs',
+      branch: 'docs',
       dir: 'docs/drei',
     },
   },
@@ -45,7 +45,7 @@ export const data = [
     image: zustandImage,
     docs: {
       repo: 'pmndrs/website',
-      tag: 'docs',
+      branch: 'docs',
       dir: 'docs/zustand',
     },
   },
@@ -64,8 +64,17 @@ export const data = [
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     docs: {
       repo: 'pmndrs/website',
-      tag: 'docs',
+      branch: 'docs',
       dir: 'docs/a11y',
+    },
+  },
+  {
+    id: 'valtio',
+    label: 'valtio',
+    github: 'https://github.com/pmndrs/valtio',
+    description: 'Valtio makes proxy-state simple for React and Vanilla',
+    docs: {
+      repo: 'pmndrs/valtio.wiki',
     },
   },
   {
@@ -75,7 +84,7 @@ export const data = [
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     docs: {
       repo: 'pmndrs/website',
-      tag: 'docs',
+      branch: 'docs',
       dir: 'docs/react-postprocessing',
     },
   },
