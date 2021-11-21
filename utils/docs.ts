@@ -12,6 +12,9 @@ const MARKDOWN_REGEX = /\.mdx?$/
 // Uncomments frontMatter from vanilla markdown
 const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
 
+// Removes multi and single-line comments from markdown
+const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
+
 /**
  * Clones a repository.
  */
@@ -77,6 +80,8 @@ export const getDocs = async (lib: string) => {
           .readFileSync(filePath, { encoding: 'utf-8' })
           // Remove <!-- --> comments from frontMatter
           .replace(FRONTMATTER_REGEX, '')
+          // Remove extraneous comments from post
+          .replace(COMMENT_REGEX, '')
         const { content, data } = matter(postData)
 
         const slug = [lib, ...localPath.split('/')]

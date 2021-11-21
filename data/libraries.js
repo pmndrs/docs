@@ -68,15 +68,15 @@ export const data = [
       dir: 'docs/a11y',
     },
   },
-  {
-    id: 'valtio',
-    label: 'valtio',
-    github: 'https://github.com/pmndrs/valtio',
-    description: 'Valtio makes proxy-state simple for React and Vanilla',
-    docs: {
-      repo: 'pmndrs/valtio.wiki',
-    },
-  },
+  // {
+  //   id: 'valtio',
+  //   label: 'valtio',
+  //   github: 'https://github.com/pmndrs/valtio',
+  //   description: 'Valtio makes proxy-state simple for React and Vanilla',
+  //   docs: {
+  //     repo: 'pmndrs/valtio.wiki',
+  //   },
+  // },
   {
     id: 'react-postprocessing',
     label: 'React Postprocessing',
