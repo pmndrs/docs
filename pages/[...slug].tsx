@@ -51,16 +51,9 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
   )
 }
 
-const settings: { [key: string]: { dir: string; tag?: string } } = {
-  'react-three-fiber': {
-    dir: 'markdown',
-    tag: 'docs-remote',
-  },
-}
-
 const cachedPages = new Map()
 
-const getPages = async (lib: keyof typeof settings) => {
+const getPages = async (lib: string) => {
   const cached = cachedPages.get(lib)
   if (cached) return cached
 
@@ -86,7 +79,7 @@ const getPages = async (lib: keyof typeof settings) => {
         ).then((res) => res.text())
         const { content, data } = matter(postData)
 
-        const slug = [lib as string, ...localPath.split('/')]
+        const slug = [lib, ...localPath.split('/')]
         const url = `/${slug.join('/')}`
         const pathname = slug[slug.length - 1]
 
