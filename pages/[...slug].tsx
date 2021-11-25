@@ -88,6 +88,7 @@ export const getStaticProps = async ({ params }) => {
       source,
       frontMatter,
     },
+    revalidate: 300, // 5 min
   }
 }
 
@@ -95,8 +96,5 @@ export const getStaticPaths = async () => {
   const docs = await getAllDocs()
   const paths = docs.map(({ slug }) => ({ params: { slug } }))
 
-  return {
-    paths,
-    fallback: false,
-  }
+  return { paths, fallback: 'blocking' }
 }
