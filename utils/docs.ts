@@ -1,4 +1,3 @@
-import { serialize } from 'next-mdx-remote/serialize'
 import { data } from 'data/libraries'
 import { getPaths, parseMDX } from 'utils/mdx'
 
@@ -7,10 +6,10 @@ const cachedDocs = new Map()
 /**
  * Fetches docs for a lib.
  */
-export const getDocs = async (lib: string) => {
+export const getDocs = async (lib: string, force = false) => {
   // If cached, return it
   const cached = cachedDocs.get(lib)
-  if (cached) return cached
+  if (!force && cached) return cached
 
   // Get lib docs settings
   const { docs: docsConfig } = data.find(({ id }) => id === lib)
@@ -49,7 +48,7 @@ export const getDocs = async (lib: string) => {
 export const getAllDocs = async () => {
   // Get ids of libs who have opted into hosting docs
   const libs = data.filter(({ docs }) => docs).map(({ id }) => id)
-  const docs = await Promise.all(libs.map(getDocs))
+  const docs = await Promise.all(libs.map(async (lib) => getDocs(lib)))
 
   return docs.flat()
 }
