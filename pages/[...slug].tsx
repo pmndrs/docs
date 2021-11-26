@@ -51,17 +51,16 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const [lib] = params.slug
+  // Get docs' category information from url
+  const [lib, ...rest] = params.slug
+  const [page, category] = rest.reverse()
+
   const docs = await getDocs(lib, false)
   if (!docs) return { notFound: true }
 
   // Check for post and handle redirects
   const post = docs.find((doc) => doc.slug.join('/') === params.slug.join('/'))
   if (!post) {
-    // Get docs' category information from url
-    const [lib, ...rest] = params.slug
-    const [page, category] = rest.reverse()
-
     // Redirect /lib to /lib/first-page
     const firstPage = docs[0]
     if (!page) return { redirect: { destination: firstPage.url, permanent: false } }

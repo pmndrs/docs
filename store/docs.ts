@@ -6,10 +6,9 @@ type Doc = {
   url: string
   description: string
   nav: number
-  relativePath: string
-  remotePath: string
-  localPath: string
-  data: Omit<Doc, 'content' | 'relativePath' | 'remotePath' | 'localPath'>
+  editURL: string
+  localURL: string
+  data: Pick<Doc, 'content' | 'title' | 'description' | 'nav'>
 }
 
 type State = {

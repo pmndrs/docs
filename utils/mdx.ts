@@ -49,10 +49,7 @@ export const isMarkdown = ({ repo, branch = 'main', dir = '' }: DocsConfig) => {
 /**
  * Parses a filepath into web-safe local and remote urls.
  */
-export const parseFilePath = (
-  filePath: string,
-  { repo, branch = 'main', dir = '' }: DocsConfig
-) => {
+export const getURLs = (filePath: string, { repo, branch = 'main', dir = '' }: DocsConfig) => {
   // Get relative file path
   const relativePath = filePath
     .replace(path.resolve(process.cwd(), `temp/${repo}-${branch}`), '')
@@ -60,19 +57,19 @@ export const parseFilePath = (
     .replace(/^\//, '')
 
   // Get local web path
-  const localPath = relativePath
+  const localURL = relativePath
     // Remove folder prefix
     .replace(`${dir}/`, '')
     .replace(MARKDOWN_REGEX, '')
     .toLowerCase()
 
-  // Get remote GitHub path
+  // Get remote GitHub URL
   const isWiki = repo.includes('.wiki')
-  const remotePath = isWiki
-    ? `https://github.com/${repo.replace('.wiki', '/wiki')}/${localPath}`
+  const editURL = isWiki
+    ? `https://github.com/${repo.replace('.wiki', '/wiki')}/${localURL}`
     : `https://github.com/${repo}/tree/${branch}/${relativePath}`
 
-  return { filePath, relativePath, localPath, remotePath }
+  return { localURL, editURL }
 }
 
 /**
@@ -110,7 +107,7 @@ export const parseMDX = (filePath: string, config: DocsConfig) => {
 
   // Parse it
   const { content, data } = matter(postData)
-  const paths = parseFilePath(filePath, config)
+  const urls = getURLs(filePath, config)
 
-  return { content, data, ...paths }
+  return { content, data, ...urls }
 }

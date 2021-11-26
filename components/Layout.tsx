@@ -103,7 +103,7 @@ export default function Layout({ nav, toc, children }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                      href={currentDocs[currentPageIndex].remotePath}
+                      href={currentDocs[currentPageIndex].editURL}
                     >
                       Edit this page on GitHub
                     </a>

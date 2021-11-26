@@ -10,10 +10,10 @@ export const parseDoc = (lib: string, filePath: string) => {
   if (!target?.docs) return
 
   // Parse doc
-  const { localPath, data, ...rest } = parseMDX(filePath, target.docs)
+  const { localURL, data, ...rest } = parseMDX(filePath, target.docs)
 
   // Create internal meta
-  const slug = [lib, ...localPath.split('/')]
+  const slug = [lib, ...localURL.split('/')]
   const url = `/${slug.join('/')}`
   const pathname = slug[slug.length - 1]
 
