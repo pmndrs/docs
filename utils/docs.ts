@@ -6,10 +6,11 @@ import { getPaths, parseMDX } from 'utils/mdx'
  */
 export const parseDoc = (lib: string, filePath: string) => {
   // Get lib docs settings
-  const { docs: docsConfig } = libData.find(({ id }) => id === lib)
+  const target = libData.find(({ id }) => id === lib)
+  if (!target?.docs) return
 
   // Parse doc
-  const { localPath, data, ...rest } = parseMDX(filePath, docsConfig)
+  const { localPath, data, ...rest } = parseMDX(filePath, target.docs)
 
   // Create internal meta
   const slug = [lib, ...localPath.split('/')]
@@ -29,10 +30,11 @@ export const parseDoc = (lib: string, filePath: string) => {
  */
 export const getDocs = async (lib: string) => {
   // Get target lib settings
-  const { docs: docsConfig } = libData.find(({ id }) => id === lib)
+  const target = libData.find(({ id }) => id === lib)
+  if (!target?.docs) return
 
   // Get docs paths
-  const paths = await getPaths(docsConfig)
+  const paths = await getPaths(target.docs)
 
   // Generate docs
   const docs = paths

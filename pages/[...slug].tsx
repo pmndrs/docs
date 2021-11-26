@@ -53,9 +53,26 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
 export const getStaticProps = async ({ params }) => {
   const [lib] = params.slug
   const docs = await getDocs(lib)
+  if (!docs) return { notFound: true }
 
+  // Check for post and handle redirects
   const post = docs.find((doc) => doc.slug.join('/') === params.slug.join('/'))
-  const { content, data } = post
+  if (!post) {
+    // Get docs' category information from url
+    const [lib, ...rest] = params.slug
+    const [page, category] = rest.reverse()
+
+    // Redirect /lib to /lib/first-page
+    const firstPage = docs[0]
+    if (!page) return { redirect: { destination: firstPage.url, permanent: false } }
+
+    // Redirect /lib/category to /lib/category/first-page
+    const rootPage = docs.find((doc) => doc.slug.join('/').startsWith(`${lib}/${page}`))
+    if (!category && rootPage) return { redirect: { destination: rootPage.url, permanent: false } }
+
+    // No matches, return 404
+    return { notFound: true }
+  }
 
   const allDocs = await getAllDocs()
 
@@ -66,9 +83,10 @@ export const getStaticProps = async ({ params }) => {
     return nav
   }, {})
 
+  const { content, data } = post
   const toc = []
+
   const source = await serialize(content, {
-    // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
       rehypePlugins: [],
