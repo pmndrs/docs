@@ -5,6 +5,11 @@ module.exports = {
   async redirects() {
     return [
       {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+      {
         source: '/docs/:slug*',
         destination: '/:slug*',
         permanent: true,
@@ -12,13 +17,13 @@ module.exports = {
       {
         source: '/jotai',
         destination: 'https://jotai.pmnd.rs/docs/introduction',
-        permanent: true
+        permanent: true,
       },
       {
         source: '/jotai/:slug*',
         destination: 'https://jotai.pmnd.rs/docs/:slug*',
-        permanent: true
-      }
+        permanent: true,
+      },
     ]
   },
 }
