@@ -25,21 +25,30 @@ export const parseDoc = (lib: string, filePath: string) => {
   return { ...rest, ...data, data, slug, url }
 }
 
+const cachedDocs = new Map()
+
 /**
  * Fetches docs for a lib.
  */
-export const getDocs = async (lib: string) => {
+export const getDocs = async (lib: string, invalidate: boolean) => {
   // Get target lib settings
   const target = libData.find(({ id }) => id === lib)
   if (!target?.docs) return
 
+  // Read from cache unless invalidating
+  const cache = cachedDocs.get(lib)
+  if (cache && !invalidate) return cache
+
   // Get docs paths
-  const paths = await getPaths(target.docs)
+  const paths = await getPaths(target.docs, invalidate)
 
   // Generate docs
   const docs = paths
     .map((filePath) => parseDoc(lib, filePath))
     .sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
+
+  // Update cache
+  cachedDocs.set(lib, docs)
 
   return docs
 }
@@ -50,7 +59,7 @@ export const getDocs = async (lib: string) => {
 export const getAllDocs = async () => {
   // Get ids of libs who have opted into hosting docs
   const libs = libData.filter(({ docs }) => docs)
-  const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id)))
+  const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id, false)))
 
   return docs.flat()
 }

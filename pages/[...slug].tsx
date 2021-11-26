@@ -52,7 +52,7 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
 
 export const getStaticProps = async ({ params }) => {
   const [lib] = params.slug
-  const docs = await getDocs(lib)
+  const docs = await getDocs(lib, false)
   if (!docs) return { notFound: true }
 
   // Check for post and handle redirects

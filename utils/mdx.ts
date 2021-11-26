@@ -29,9 +29,7 @@ export const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
  * Clones a repository.
  */
 export const clone = ({ repo, branch = 'main' }: DocsConfig) =>
-  execSync(
-    `git clone git://github.com/${repo}.git temp/${repo}-${branch} ${branch ? `-b ${branch}` : ''}`
-  )
+  execSync(`git clone git://github.com/${repo}.git temp/${repo}-${branch} -b ${branch} -q`)
 
 /**
  * Returns a filter function to grab posts based on a docsConfig.
@@ -80,11 +78,16 @@ export const parseFilePath = (
 /**
  * Traverses a repo for matching docs, returning local paths.
  */
-export const getPaths = async ({ repo, branch = 'main', dir = '' }: DocsConfig) => {
-  // Update repo if on disk, otherwise clone it
+export const getPaths = async (
+  { repo, branch = 'main', dir = '' }: DocsConfig,
+  invalidate: boolean
+) => {
+  // Cleanup cache and clone repo
   const repoDir = path.resolve(process.cwd(), `temp/${repo}-${branch}`)
+
+  // Clone repo, skip cache when invalidating
+  if (invalidate) fs.rmSync(repoDir, { recursive: true, force: true })
   if (!fs.existsSync(repoDir)) clone({ repo, dir, branch })
-  // else execSync(`git -C ${repoDir} pull`)
 
   // Traverses repo, returning its file contents and their paths
   const paths: string[] = await recursiveReaddir(repoDir)
