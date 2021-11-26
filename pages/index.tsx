@@ -26,19 +26,19 @@ export default function HomePage() {
               <div className="relative z-10 flex flex-col justify-between h-full">
                 <div className="flex justify-between items-center px-6">
                   <div className="max-w-md">
-                    <div className="pt-4 font-bold text-lg">{item.label}</div>
+                    <div className="pt-4 font-bold text-lg">{item.title}</div>
                     <div className="flex-grow pr-4 pt-1 pb-4 text-base text-gray-500 !leading-relaxed">
                       {item.description}
                     </div>
                   </div>
-                  {item?.image && (
+                  {item?.icon && (
                     <div className="relative flex-shrink-0 w-20 h-20">
                       <a href={item.github} target="_blank" rel="noopener" className="block">
                         <Image
-                          src={item.image}
+                          src={item.icon}
                           layout="fill"
                           className="object-contain"
-                          alt={item.label}
+                          alt={item.title}
                           aria-hidden
                         />
                       </a>
