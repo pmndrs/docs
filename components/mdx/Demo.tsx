@@ -6,6 +6,7 @@ import { useObserver } from 'hooks/useObserver'
 import { SandpackRunner, Sandpack } from '@codesandbox/sandpack-react'
 import '@codesandbox/sandpack-react/dist/index.css'
 import { CodeSandboxIcon } from 'components/Icons'
+import type { ICodesandbox } from 'pages/api/get-sandbox'
 
 interface DemoProps {
   title: string
@@ -36,7 +37,7 @@ export const Demo: FC<DemoProps> = ({
     if (url) {
       fetch(`/api/get-sandbox?id=${url}`)
         .then((rsp) => rsp.json())
-        .then(({ modules, directories }) => {
+        .then(({ modules, directories }: ICodesandbox) => {
           const files = modules.reduce((acc, curr) => {
             const dir = curr.directory_shortid
               ? '/' + directories.find((d) => d.shortid === curr.directory_shortid)?.title
