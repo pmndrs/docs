@@ -9,7 +9,7 @@ import { data } from '../data/libraries'
 export default function LibSwitcher() {
   const router = useRouter()
   const { query } = router
-  const currentPage = useMemo(() => data.find((item) => item.id === query.slug[0]).label, [query])
+  const currentPage = useMemo(() => data.find((item) => item.id === query.slug[0]).title, [query])
 
   return (
     <Popover className="relative mt-4">
@@ -26,7 +26,7 @@ export default function LibSwitcher() {
                   item.id === query.slug[0] && 'sr-only'
                 )}
               >
-                {item.label}
+                {item.title}
               </a>
             </Link>
           ))}
