@@ -63,14 +63,18 @@ Canvas will create a translucent `THREE.WebGLRenderer` with the following proper
 - A [resize observer](https://github.com/react-spring/react-use-measure)
 
 <Hint>
-  The colorspace will be set to sRGB (unless "linear" is true), all colors and textures will be
-  auto-converted. Consult [donmccurdy.com: Color Management in
-  three.js](https://www.donmccurdy.com/2020/06/17/color-management-in-threejs) for more information
-  about this. Unless "flat" is true it will set up `THREE.ACESFilmicToneMapping` for slightly more
-  contrast.
+
+The colorspace will be set to sRGB (unless "linear" is true), all colors and textures will be
+auto-converted. Consult [donmccurdy.com: Color Management in
+three.js](https://www.donmccurdy.com/2020/06/17/color-management-in-threejs) for more information
+about this. Unless "flat" is true it will set up `THREE.ACESFilmicToneMapping` for slightly more
+contrast.
+
 </Hint>
 
 <Hint>
-  Consider Resize-Observer polyfills for older Safari browsers. We recommend
-  https://github.com/juggle/resize-observer
+
+Consider Resize-Observer polyfills for older Safari browsers. We recommend
+[juggle/resize-observer](https://github.com/juggle/resize-observer).
+
 </Hint>
