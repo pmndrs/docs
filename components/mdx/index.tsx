@@ -70,18 +70,7 @@ const components = {
   },
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
-  li: ({ children }) => (
-    <li
-      className="mb-4 text-base leading-6 text-gray-700"
-      css={`
-        &:first-child {
-          display: inline-block;
-        }
-      `}
-    >
-      {children}
-    </li>
-  ),
+  li: ({ children }) => <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>,
   inlineCode: InlineCode,
   InlineCode,
   p: ({ children }) => <p className="mb-4 text-base text-gray-700">{children}</p>,
