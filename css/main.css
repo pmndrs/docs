@@ -52,7 +52,7 @@ code span {
   font-family: 'Meslo', monospace !important;
 }
 
-li:first-child {
+li.text-base:first-child {
   display: inline-block;
 }
 
