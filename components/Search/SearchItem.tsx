@@ -1,7 +1,6 @@
-import { EnterIcon } from 'components/Icons'
 import Link from 'next/link'
-import titleCase from 'utils/titleCase'
-import highlight from 'utils/highlight'
+import { EnterIcon } from 'components/Icons'
+import { titleCase, highlight } from 'utils/text'
 
 const SearchItem = ({ url, multipleLibs, search, title, description }) => {
   const lib = titleCase(url.split('/')[1].replace(/\-/g, ' '))
