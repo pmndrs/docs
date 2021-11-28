@@ -7,9 +7,7 @@ type State = {
   currentDocs: Doc[]
   setDocs: (doc: Doc[]) => void
   setCurrentDocs: (folder: string) => void
-  getPrevAndNext: (
-    folder: string
-  ) => {
+  getPrevAndNext: (folder: string) => {
     previousPage: Doc
     nextPage: Doc
     currentPageIndex: number

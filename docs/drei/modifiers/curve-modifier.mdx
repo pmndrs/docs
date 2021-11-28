@@ -8,9 +8,10 @@ Given a curve will replace the children of this component with a mesh that move 
 ```jsx
 const curveRef = useRef()
 
-const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'), [
-  handlePos,
-])
+const curve = React.useMemo(
+  () => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'),
+  [handlePos]
+)
 
 return (
   <CurveModifier ref={curveRef} curve={curve}>
