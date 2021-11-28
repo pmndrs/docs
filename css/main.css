@@ -52,6 +52,10 @@ code span {
   font-family: 'Meslo', monospace !important;
 }
 
+li:first-child {
+  display: inline-block;
+}
+
 /* Start purging... */
 @tailwind components;
 /* Stop purging. */
@@ -200,6 +204,14 @@ ul.grid-list > li:before {
 
 #intro-demos .demo-cell img.phone {
   max-width: 90px;
+}
+
+.demo-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.demo-grid > div:last-of-type:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .search-item.focus-visible li > div {

@@ -5,10 +5,10 @@ export const TweetGrid = () => {
   return (
     <div
       className="grid w-full gap-4"
-      css={`
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        grid-auto-rows: minmax(200px, auto);
-      `}
+      style={{
+        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+        gridAutoRows: 'minmax(200px, auto)',
+      }}
     >
       <Tweet tweetId="1006931395003015170" options={{ width: w }} />
       <Tweet
