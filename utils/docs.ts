@@ -1,6 +1,6 @@
 import { data as libData } from 'data/libraries'
 import { getPaths, parseMDX } from 'utils/mdx'
-import type { Doc } from 'store/docs'
+import type { Doc } from 'hooks/useDocs'
 
 /**
  * Parses a doc into JSX with meta.

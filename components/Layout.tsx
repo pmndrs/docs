@@ -9,10 +9,10 @@ import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { useSwitcher } from 'store/switcher'
-import { useMenu } from 'store/menu'
+import useSwitcher from 'hooks/useSwitcher'
+import useMenu from 'hooks/useMenu'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
-import { useDocs } from 'store/docs'
+import useDocs from 'hooks/useDocs'
 
 export default function Layout({ nav, toc, children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()

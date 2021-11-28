@@ -23,7 +23,7 @@ export type DocState = {
   }
 }
 
-export const useDocs = create<DocState>((set, get) => ({
+const useDocs = create<DocState>((set, get) => ({
   docs: [],
   currentDocs: [],
   setDocs: (docs: Doc[]) => set({ docs }),
@@ -44,3 +44,5 @@ export const useDocs = create<DocState>((set, get) => ({
       return { currentDocs }
     }),
 }))
+
+export default useDocs
