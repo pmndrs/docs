@@ -1,17 +1,17 @@
 import create from 'zustand'
 
-type Doc = {
-  content: string
-  title: string
+export type Doc = {
+  title?: string
+  description?: string
+  nav?: number
+  slug: string[]
   url: string
-  description: string
-  nav: number
   editURL: string
-  localURL: string
-  data: Pick<Doc, 'content' | 'title' | 'description' | 'nav'>
+  content: string
+  data: { [key: string]: any }
 }
 
-type State = {
+export type DocState = {
   docs: Doc[]
   currentDocs: Doc[]
   setDocs: (doc: Doc[]) => void
@@ -23,7 +23,7 @@ type State = {
   }
 }
 
-export const useDocs = create<State>((set, get) => ({
+export const useDocs = create<DocState>((set, get) => ({
   docs: [],
   currentDocs: [],
   setDocs: (docs: Doc[]) => set({ docs }),

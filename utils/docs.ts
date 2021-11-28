@@ -1,10 +1,11 @@
 import { data as libData } from 'data/libraries'
 import { getPaths, parseMDX } from 'utils/mdx'
+import type { Doc } from 'store/docs'
 
 /**
  * Parses a doc into JSX with meta.
  */
-export const parseDoc = (lib: string, filePath: string) => {
+export const parseDoc = (lib: string, filePath: string): Doc => {
   // Get lib docs settings
   const target = libData.find(({ id }) => id === lib)
   if (!target?.docs) return
@@ -30,7 +31,7 @@ const cachedDocs = new Map()
 /**
  * Fetches docs for a lib.
  */
-export const getDocs = async (lib: string, invalidate: boolean) => {
+export const getDocs = async (lib: string, invalidate: boolean): Promise<Doc[]> => {
   // Get target lib settings
   const target = libData.find(({ id }) => id === lib)
   if (!target?.docs) return
@@ -56,7 +57,7 @@ export const getDocs = async (lib: string, invalidate: boolean) => {
 /**
  * Fetches docs for all libs.
  */
-export const getAllDocs = async () => {
+export const getAllDocs = async (): Promise<Doc[]> => {
   // Get ids of libs who have opted into hosting docs
   const libs = libData.filter(({ docs }) => docs)
   const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id, false)))
