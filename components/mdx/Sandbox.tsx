@@ -1,15 +1,10 @@
 import { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
+import type { ICodesandbox } from 'pages/api/get-sandbox'
 
 export default function Sandbox({ id, occlude }) {
   const sandboxRef = useRef()
-  const [data, setData] = useState<{
-    alias: string
-    screenshot_url: string
-    tags: string[]
-    description: string
-    title: string
-  }>()
+  const [data, setData] = useState<ICodesandbox>()
 
   useEffect(() => {
     function fetchSandbox(id) {
