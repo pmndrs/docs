@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import { useDocs } from 'store/docs'
 import { useEffect } from 'react'
 
-export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
+export default function PostPage({ allDocs, nav, toc, data, source }) {
   const { query } = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
   const name = query.slug[0]
@@ -29,19 +29,11 @@ export default function PostPage({ toc, source, allDocs, nav, frontMatter }) {
     <Layout nav={nav} toc={toc}>
       <Seo name={name} />
       <main className="max-w-3xl mx-auto">
-        {frontMatter.title && (
+        {data.title && (
           <div className="pb-6 mb-4 border-b post-header">
-            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{frontMatter.title}</h1>
-            {frontMatter.description && (
-              <MDXRemote
-                {...frontMatter.description}
-                components={{
-                  ...components,
-                  p: ({ children }) => (
-                    <p className="text-base leading-4 text-gray-400 leading-5">{children}</p>
-                  ),
-                }}
-              />
+            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{data.title}</h1>
+            {data.description && (
+              <p className="text-base leading-4 text-gray-400 leading-5">{data.description}</p>
             )}
           </div>
         )}
@@ -76,17 +68,13 @@ export const getStaticProps = async ({ params }) => {
     scope: data,
   })
 
-  // Also serialize descriptions
-  const description = data.description ? await serialize(data.description) : null
-  const frontMatter = { ...data, description }
-
   return {
     props: {
       allDocs,
       nav,
       toc,
       source,
-      frontMatter,
+      data,
     },
   }
 }
