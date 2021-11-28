@@ -4,7 +4,7 @@ import useSearch, { Result } from 'hooks/useSearch'
 import useKeyPress from 'hooks/useKeyPress'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
-import { useDocs } from 'store/docs'
+import useDocs from 'hooks/useDocs'
 
 const Search = () => {
   const { query, asPath } = useRouter()

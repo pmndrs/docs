@@ -11,7 +11,7 @@ import prism from 'remark-prism'
 import { withCodesandbox, withTableofContents } from 'utils/remark'
 import setValue from 'set-value'
 import { useRouter } from 'next/router'
-import { useDocs } from 'store/docs'
+import useDocs from 'hooks/useDocs'
 import { useEffect } from 'react'
 
 export default function PostPage({ allDocs, nav, toc, data, source }) {

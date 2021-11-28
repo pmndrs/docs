@@ -2,7 +2,7 @@ import create from 'zustand'
 
 type Doc = { content: string; title: string; url: string; description: string }
 
-type State = {
+type DocState = {
   docs: Doc[]
   currentDocs: Doc[]
   setDocs: (doc: Doc[]) => void
@@ -14,7 +14,7 @@ type State = {
   }
 }
 
-export const useDocs = create<State>((set, get) => ({
+const useDocs = create<DocState>((set, get) => ({
   docs: [],
   currentDocs: [],
   setDocs: (docs: Doc[]) => set({ docs }),
@@ -35,3 +35,5 @@ export const useDocs = create<State>((set, get) => ({
       return { currentDocs }
     }),
 }))
+
+export default useDocs
