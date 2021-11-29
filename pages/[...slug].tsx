@@ -8,10 +8,11 @@ import { withCodesandbox, withTableofContents } from 'utils/remark'
 import setValue from 'set-value'
 import { useRouter } from 'next/router'
 import useDocs from 'hooks/useDocs'
-import { useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { getAllDocs, getDocs } from 'utils/docs'
 
 export default function PostPage({ allDocs, nav, toc, data, source }) {
+  const contentRef = useRef()
   const { query } = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
   const name = query.slug[0]
@@ -22,7 +23,7 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
   }, [allDocs, name, setCurrentDocs, setDocs])
 
   return (
-    <Layout nav={nav} toc={toc}>
+    <Layout contentRef={contentRef} nav={nav} toc={toc}>
       <Seo name={name} />
       <main className="max-w-3xl mx-auto">
         {data.title && (
@@ -33,7 +34,7 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
             )}
           </div>
         )}
-        <main className="content-container">
+        <main className="content-container" ref={contentRef}>
           <MDXRemote {...source} components={components} />
         </main>
       </main>
