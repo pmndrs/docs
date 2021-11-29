@@ -1,6 +1,3 @@
-import zustandIcon from './zustand-bear-small.png'
-import jotaiIcon from './jotai-ghost-small.png'
-
 export const data = [
   {
     id: 'react-three-fiber',
@@ -45,7 +42,7 @@ export const data = [
     github: 'https://github.com/pmndrs/zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
-    icon: zustandIcon,
+    icon: '/zustand-icon.png',
     image: 'https://docs.pmnd.rs/zustand-resources/zustand-bear.jpg',
     docs: {
       repo: 'pmndrs/website',
@@ -58,7 +55,7 @@ export const data = [
     title: 'Jotai',
     github: 'https://github.com/pmndrs/jotai',
     description: 'Jotai is a primitive and flexible state management library for React',
-    icon: jotaiIcon,
+    icon: '/jotai-icon.png',
     // image: 'https://docs.pmnd.rs/jotai-ghost.png',
   },
   {
