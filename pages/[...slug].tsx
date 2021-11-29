@@ -1,30 +1,38 @@
-import { MDXRemote } from 'next-mdx-remote'
+import { MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import Layout from 'components/Layout'
 import components from 'components/mdx'
-import Seo from 'components/Seo'
+import SEO from 'components/Seo'
 import prism from 'remark-prism'
-import { withCodesandbox, withTableofContents } from 'utils/remark'
-import setValue from 'set-value'
+import { TOCItem, withCodesandbox, withTableofContents } from 'utils/remark'
 import { useRouter } from 'next/router'
-import useDocs from 'hooks/useDocs'
+import useDocs, { Doc } from 'hooks/useDocs'
 import { useRef, useEffect } from 'react'
-import { getAllDocs, getDocs } from 'utils/docs'
+import { getAllDocs, getDocs, getNavItems, NavItems } from 'utils/docs'
+import { GetStaticPaths, GetStaticProps } from 'next'
 
-export default function PostPage({ allDocs, nav, toc, data, source }) {
+interface PostPageProps {
+  allDocs: Doc[]
+  nav: NavItems
+  toc: TOCItem[]
+  data: Doc['data']
+  source: MDXRemoteSerializeResult<Record<string, unknown>>
+}
+
+export default function PostPage({ allDocs, nav, toc, data, source }: PostPageProps) {
   const contentRef = useRef()
   const { query } = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
-  const name = query.slug[0]
+  const [lib] = query.slug as string[]
 
   useEffect(() => {
     setDocs(allDocs)
-    setCurrentDocs(name)
-  }, [allDocs, name, setCurrentDocs, setDocs])
+    setCurrentDocs(lib)
+  }, [allDocs, lib, setCurrentDocs, setDocs])
 
   return (
     <Layout contentRef={contentRef} nav={nav} toc={toc}>
-      <Seo name={name} />
+      <SEO lib={lib} />
       <main className="max-w-3xl mx-auto">
         {data.title && (
           <div className="pb-6 mb-4 border-b post-header">
@@ -34,7 +42,7 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
             )}
           </div>
         )}
-        <main className="content-container" ref={contentRef}>
+        <main ref={contentRef} className="content-container">
           <MDXRemote {...source} components={components} />
         </main>
       </main>
@@ -42,16 +50,16 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
   )
 }
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
   // Get docs' category information from url
-  const [lib, ...rest] = params.slug
+  const [lib, ...rest] = params.slug as string[]
   const [page, category] = rest.reverse()
 
   const docs = await getDocs(lib, false)
   if (!docs) return { notFound: true }
 
-  // Check for post and handle redirects
-  const post = docs.find((doc) => doc.slug.join('/') === params.slug.join('/'))
+  // Check for post and handle redirects on no match
+  const post = docs.find((doc) => doc.slug.join('/') === (params.slug as string[]).join('/'))
   if (!post) {
     // Redirect /lib to /lib/first-page
     const firstPage = docs[0]
@@ -66,16 +74,10 @@ export const getStaticProps = async ({ params }) => {
   }
 
   const allDocs = await getAllDocs()
-
-  const nav = allDocs.reduce((nav, file) => {
-    const [lib, ...rest] = file.slug
-    const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
-    setValue(nav, _path, file)
-    return nav
-  }, {})
+  const nav = getNavItems(allDocs)
 
   const { content, data } = post
-  const toc = []
+  const toc: TOCItem[] = []
 
   const source = await serialize(content, {
     mdxOptions: {
@@ -97,7 +99,7 @@ export const getStaticProps = async ({ params }) => {
   }
 }
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const docs = await getAllDocs()
   const paths = docs.map(({ slug }) => ({ params: { slug } }))
 

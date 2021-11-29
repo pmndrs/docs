@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { data } from 'data/libraries'
 
-export default function SEO({ name }: { name: string }) {
-  const currentSeo = data.find(({ id }) => id === name)
+export default function SEO({ lib }: { lib: string }) {
+  const currentSeo = data.find(({ id }) => id === lib)
   if (!currentSeo) return null
 
   return (
@@ -12,13 +12,13 @@ export default function SEO({ name }: { name: string }) {
       <meta name="description" content={currentSeo.description} />
 
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={`https://docs.pmnd.rs/${name}`} />
+      <meta property="og:url" content={`https://docs.pmnd.rs/${lib}`} />
       <meta property="og:title" content={`${currentSeo.title} Documentation`} />
       <meta property="og:description" content={currentSeo.description} />
       <meta property="og:image" content={currentSeo.image} />
 
       <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={`https://docs.pmnd.rs/${name}`} />
+      <meta property="twitter:url" content={`https://docs.pmnd.rs/${lib}`} />
       <meta property="twitter:title" content={`${currentSeo.title} Documentation`} />
       <meta property="twitter:description" content={currentSeo.description} />
       <meta property="twitter:image" content={currentSeo.image} />

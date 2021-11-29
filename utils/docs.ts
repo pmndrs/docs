@@ -1,3 +1,4 @@
+import setValue from 'set-value'
 import { data as libData } from 'data/libraries'
 import { getPaths, parseMDX } from 'utils/mdx'
 import type { Doc } from 'hooks/useDocs'
@@ -63,4 +64,20 @@ export const getAllDocs = async (): Promise<Doc[]> => {
   const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id, false)))
 
   return docs.flat()
+}
+
+export type NavItems = { [lib: string]: { [category: string]: Doc | { [page: string]: Doc } } }
+
+/**
+ * Builds a nested list of docs, organized by lib, category, and page keys.
+ */
+export const getNavItems = (docs: Doc[]): NavItems => {
+  const nav = docs.reduce((nav, file) => {
+    const [lib, ...rest] = file.slug
+    const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
+    setValue(nav, _path, file)
+    return nav
+  }, {})
+
+  return nav
 }
