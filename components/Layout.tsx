@@ -14,7 +14,7 @@ import useMenu from 'hooks/useMenu'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import useDocs from 'hooks/useDocs'
 
-export default function Layout({ nav, toc, children }) {
+export default function Layout({ contentRef, nav, toc, children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { docs, currentDocs, getPrevAndNext } = useDocs()
 
@@ -142,7 +142,7 @@ export default function Layout({ nav, toc, children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {toc.length ? <Toc toc={toc} /> : null}
+                {toc.length ? <Toc contentRef={contentRef} toc={toc} /> : null}
               </div>
             </div>
           </div>
