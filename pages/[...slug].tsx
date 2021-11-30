@@ -1,17 +1,18 @@
+import { useRef, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import Layout from 'components/Layout'
-import components from 'components/mdx'
 import SEO from 'components/Seo'
+import components from 'components/mdx'
 import prism from 'remark-prism'
-import { TOCItem, withCodesandbox, withTableofContents } from 'utils/remark'
-import { useRouter } from 'next/router'
 import useDocs, { Doc } from 'hooks/useDocs'
-import { useRef, useEffect, useLayoutEffect } from 'react'
+import { TOCItem, withCodesandbox, withTableofContents } from 'utils/remark'
 import { getAllDocs, getDocs, getNavItems, NavItems } from 'utils/docs'
-import { GetStaticPaths, GetStaticProps } from 'next'
 
-interface PostProps {
+interface PostPageProps {
+  redirect?: string
   allDocs: Doc[]
   nav: NavItems
   toc: TOCItem[]
@@ -19,11 +20,15 @@ interface PostProps {
   source: MDXRemoteSerializeResult<Record<string, unknown>>
 }
 
-function Post({ allDocs, nav, toc, data, source }: Partial<PostProps>) {
+export default function PostPage({ redirect, allDocs, nav, toc, data, source }: PostPageProps) {
   const contentRef = useRef()
-  const { query } = useRouter()
+  const router = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
-  const [lib] = query.slug as string[]
+  const [lib] = router.query.slug as string[]
+
+  useEffect(() => {
+    if (redirect) router.push(redirect, undefined, { shallow: true })
+  }, [redirect, router, data.url])
 
   useEffect(() => {
     setDocs(allDocs)
@@ -50,35 +55,33 @@ function Post({ allDocs, nav, toc, data, source }: Partial<PostProps>) {
   )
 }
 
-interface PostPageProps extends Partial<PostProps> {
-  redirect?: string
-}
-
-export default function PostPage({ redirect, ...rest }: PostPageProps) {
-  const router = useRouter()
-
-  useLayoutEffect(() => {
-    if (redirect) return void router.push(redirect)
-  }, [redirect, router])
-
-  return redirect ? null : <Post {...rest} />
-}
-
 export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
   // Get docs' category information from url
-  const [lib, page] = params.slug as string[]
+  const [lib, ...rest] = params.slug as string[]
+  const [page, category] = rest.reverse()
 
-  // Check for post and handle redirects on no match
+  let redirect: string = null
+  let post: Doc
+
+  // Check for post or find best matches to redirect to
   const docs = await getDocs(lib)
-  const post = docs.find((doc) => doc.slug.join('/') === (params.slug as string[]).join('/'))
+  post = docs.find((doc) => doc.slug.join('/') === (params.slug as string[]).join('/'))
   if (!post) {
     // Redirect /lib to /lib/first-page
-    const firstPage = docs[0]
-    if (!page) return { props: { redirect: firstPage.url } }
+    if (!page) {
+      post = docs[0]
+    }
 
     // Redirect /lib/category to /lib/category/first-page
-    const rootPage = docs.find((doc) => doc.slug.join('/').startsWith(`${lib}/${page}`))
-    return { props: { redirect: rootPage.url } }
+    if (!post && !category) {
+      post = docs.find((doc) => doc.slug.join('/').startsWith(`${lib}/${page}`))
+    }
+
+    // Post was not found, return 404
+    if (!post) return { notFound: true }
+
+    // Alternate post was found, tell client to rewrite path
+    redirect = post.url
   }
 
   const allDocs = await getAllDocs()
@@ -97,6 +100,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
 
   return {
     props: {
+      redirect,
       allDocs,
       nav,
       toc,
