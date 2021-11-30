@@ -6,7 +6,7 @@ import path from 'path'
 import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 import Layout from 'components/Layout'
 import components from 'components/mdx'
-import Seo from 'components/Seo'
+import SEO from 'components/Seo'
 import prism from 'remark-prism'
 import { withCodesandbox, withTableofContents } from 'utils/remark'
 import setValue from 'set-value'
@@ -18,16 +18,16 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
   const contentRef = useRef()
   const { query } = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
-  const name = query.slug[0]
+  const lib = query.slug[0]
 
   useEffect(() => {
     setDocs(allDocs)
-    setCurrentDocs(name)
-  }, [allDocs, name, setCurrentDocs, setDocs])
+    setCurrentDocs(lib)
+  }, [allDocs, lib, setCurrentDocs, setDocs])
 
   return (
     <Layout contentRef={contentRef} nav={nav} toc={toc}>
-      <Seo name={name} />
+      <SEO lib={lib} />
       <main className="max-w-3xl mx-auto">
         {data.title && (
           <div className="pb-6 mb-4 border-b post-header">

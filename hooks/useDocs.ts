@@ -1,13 +1,13 @@
 import create from 'zustand'
 
-type Doc = { content: string; title: string; url: string; description: string }
+export type Doc = { content: string; title: string; url: string; description: string }
 
-type DocState = {
+export type DocState = {
   docs: Doc[]
   currentDocs: Doc[]
   setDocs: (doc: Doc[]) => void
-  setCurrentDocs: (folder: string) => void
-  getPrevAndNext: (folder: string) => {
+  setCurrentDocs: (lib: string) => void
+  getPrevAndNext: (asPath: string) => {
     previousPage: Doc
     nextPage: Doc
     currentPageIndex: number
@@ -29,9 +29,9 @@ const useDocs = create<DocState>((set, get) => ({
       currentPageIndex,
     }
   },
-  setCurrentDocs: (folder: string) =>
+  setCurrentDocs: (lib: string) =>
     set((state) => {
-      const currentDocs = state.docs.filter((doc) => doc.url.includes(`/${folder}/`))
+      const currentDocs = state.docs.filter((doc) => doc.url.includes(`/${lib}/`))
       return { currentDocs }
     }),
 }))

@@ -1,9 +1,8 @@
 import slugify from '@sindresorhus/slugify'
 
-interface Node {
+export interface Node {
   type: string
   value: string
-  depth: number
   children: Node[]
 }
 
@@ -21,10 +20,15 @@ export const withCodesandbox = () => {
   }
 }
 
-interface TOCItem {
+export interface TOCItem {
   slug: string
   title: string
   label: string
+  depth: number
+}
+
+export interface ToCNode extends Omit<Node, 'children'> {
+  children: ToCNode[]
   depth: number
 }
 
@@ -32,7 +36,7 @@ interface TOCItem {
  * Generates a table of contents from page headings.
  */
 export const withTableofContents = (toc: TOCItem[]) => {
-  return () => (tree: Node) => {
+  return () => (tree: ToCNode) => {
     const parents: string[] = []
 
     tree.children.forEach((node) => {
