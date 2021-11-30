@@ -28,7 +28,8 @@ export default function PostPage({ redirect, allDocs, nav, toc, data, source }: 
 
   useEffect(() => {
     if (redirect) router.push(redirect, undefined, { shallow: true })
-  }, [redirect, router, data.url])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     setDocs(allDocs)
