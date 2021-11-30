@@ -27,7 +27,7 @@ export default function PostPage({ redirect, allDocs, nav, toc, data, source }: 
   const [lib] = router.query.slug as string[]
 
   useEffect(() => {
-    if (redirect) router.push(redirect, undefined, { shallow: true })
+    if (redirect) router.replace(redirect, undefined, { shallow: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
