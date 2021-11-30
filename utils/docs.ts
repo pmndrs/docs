@@ -32,17 +32,17 @@ const cachedDocs = new Map()
 /**
  * Fetches docs for a lib.
  */
-export const getDocs = async (lib: string, invalidate: boolean): Promise<Doc[]> => {
+export const getDocs = async (lib: string): Promise<Doc[]> => {
   // Get target lib settings
   const target = libData.find(({ id }) => id === lib)
   if (!target?.docs) return
 
   // Read from cache unless invalidating
   const cache = cachedDocs.get(lib)
-  if (cache && !invalidate) return cache
+  if (cache) return cache
 
   // Get docs paths
-  const paths = await getPaths(target.docs, invalidate)
+  const paths = await getPaths(target.docs)
 
   // Generate docs
   const docs = paths
@@ -61,7 +61,7 @@ export const getDocs = async (lib: string, invalidate: boolean): Promise<Doc[]> 
 export const getAllDocs = async (): Promise<Doc[]> => {
   // Get ids of libs who have opted into hosting docs
   const libs = libData.filter(({ docs }) => docs)
-  const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id, false)))
+  const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id)))
 
   return docs.flat()
 }

@@ -75,15 +75,11 @@ export const getURLs = (filePath: string, { repo, branch = 'main', dir = '' }: D
 /**
  * Traverses a repo for matching docs, returning local paths.
  */
-export const getPaths = async (
-  { repo, branch = 'main', dir = '' }: DocsConfig,
-  invalidate: boolean
-) => {
+export const getPaths = async ({ repo, branch = 'main', dir = '' }: DocsConfig) => {
   // Cleanup cache and clone repo
   const repoDir = path.resolve(process.cwd(), `temp/${repo}-${branch}`)
 
-  // Clone repo, skip cache when invalidating
-  if (invalidate) fs.rmSync(repoDir, { recursive: true, force: true })
+  // Clone configured repo
   if (!fs.existsSync(repoDir)) clone({ repo, dir, branch })
 
   // Traverses repo, returning its file contents and their paths
