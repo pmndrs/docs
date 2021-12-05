@@ -1,16 +1,16 @@
 ---
 title: Using with TypeScript
-description: This guide will help through common scenarios  and how to approach them with TypeScript.
-nav: 17
+description: This guide will help through common scenarios and how to approach them with TypeScript.
+nav: 18
 ---
 
-This tutorial will assume some React and TypeScript knowledge and will base off of [this starter codesandbox](https://codesandbox.io/s/brnsm), so you can fork it and follow along.
+This tutorial will assume some React and TypeScript knowledge. You can fork and follow along from [this starter codesandbox](https://codesandbox.io/s/brnsm).
 
-## Typing refs
+## Typing with useRef
 
 React's `useRef` won't automatically infer types despite pointing it to a typed element.
 
-You can type the ref yourself by passing an element's type through via generics:
+You can type the ref yourself by passing an element's type through generics:
 
 ```tsx
 import { useRef, useEffect } from 'react'
@@ -91,7 +91,7 @@ You can then declaratively create custom elements with primitives, but TypeScrip
 
 ### Node Helpers
 
-react-three-fiber exports helpers that you can use to define different types of nodes. These nodes will define an element that we'll attach to the global JSX namespace.
+react-three-fiber exports helpers that you can use to define different types of nodes. These nodes will type an element that we'll attach to the global JSX namespace.
 
 ```tsx
 Node
@@ -127,4 +127,37 @@ declare global {
 
 // react-three-fiber will create your custom component and TypeScript will understand it
 ;<customComponent />
+```
+
+## Exported types
+
+react-three-fiber is extensible and exports types for its internals, such as render props, canvas props, and events:
+
+```tsx
+// Event raycaster intersection
+Intersection
+
+// `useFrame` internal subscription and render callback
+Subscription
+RenderCallback
+
+// `useThree`'s returned internal state
+RootState
+Performance
+Dpr
+Size
+Viewport
+Camera
+
+// Canvas props
+Props
+
+// Supported events
+Events
+
+// Event manager signature (is completely modular)
+EventManager
+
+// Wraps a platform event as it's passed through the event manager
+ThreeEvent
 ```
