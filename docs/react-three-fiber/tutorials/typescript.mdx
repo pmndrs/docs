@@ -1,10 +1,10 @@
 ---
 title: Using with TypeScript
-description: This guide will help through common schenarios and how to approach them wtih TypeScript.
+description: This guide will help through common scenarios  and how to approach them with TypeScript.
 nav: 17
 ---
 
-This tutorial will assume some React and TypeScript knowledge, and will be based on [this starter codesandbox](https://codesandbox.io/s/brnsm), so you can fork it and follow along.
+This tutorial will assume some React and TypeScript knowledge and will base off of [this starter codesandbox](https://codesandbox.io/s/brnsm), so you can fork it and follow along.
 
 ## Typing refs
 
@@ -32,11 +32,11 @@ function Box(props) {
 }
 ```
 
-The exclamation mark is a non-null assertion which will let TS know that `ref.current` is defined when we access it in effects.
+The exclamation mark is a non-null assertion that will let TS know that `ref.current` is defined when we access it in effects.
 
 ## Typing shorthand props
 
-react-three-fiber accepts short-hand props like scalars, strings, and arrays so you can declatively set properties without side-effects.
+react-three-fiber accepts short-hand props like scalars, strings, and arrays so you can declaratively set properties without side effects.
 
 Here are the different variations of props:
 
@@ -79,9 +79,9 @@ class CustomElement extends GridHelper {}
 extend({ CustomElement })
 ```
 
-The catalogue teaches the underlying reconciler about how to create fibers for these elements and treat them within the scene.
+The catalogue teaches the underlying reconciler how to create fibers for these elements and treat them within the scene.
 
-You can then declatively create custom elements with primitives, but TypeScript won't know about them nor their props.
+You can then declaratively create custom elements with primitives, but TypeScript won't know about them nor their props.
 
 ```html
 // error: 'customElement' does not exist on type 'JSX.IntrinsicElements'
@@ -91,7 +91,7 @@ You can then declatively create custom elements with primitives, but TypeScript 
 
 ### Node Helpers
 
-react-three-fiber exports helpers which you can use to define different types of nodes. These nodes will define an element which we'll attach to the global JSX namespace.
+react-three-fiber exports helpers that you can use to define different types of nodes. These nodes will define an element that we'll attach to the global JSX namespace.
 
 ```tsx
 Node
