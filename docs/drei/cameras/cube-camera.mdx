@@ -1,5 +1,6 @@
 ---
 title: CubeCamera
+nav: 2
 ---
 
 A [`THREE.CubeCamera`](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
@@ -10,7 +11,6 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 
 ```jsx
 import { CubeCamera } from '@react-three/drei'
-
 ;<CubeCamera
   resolution={256} // Size of the off-buffer (256 by default)
   frames={Infinity} // How many frames it should render (Indefinitively by default)
