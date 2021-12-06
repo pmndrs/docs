@@ -7,7 +7,9 @@ An abstraction around [THREE.TransformControls](https://threejs.org/docs/index.h
 You can wrap objects which then receive a transform gizmo.
 
 ```jsx
-<TransformControls mode="translate">
+import { TransformControls } from '@react-three/drei'
+
+;<TransformControls mode="translate">
   <mesh />
 </TransformControls>
 ```
@@ -15,6 +17,8 @@ You can wrap objects which then receive a transform gizmo.
 You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or `React.MutableRefObjects`.
 
 ```jsx
+import { TransformControls } from '@react-three/drei'
+
 <TransformControls object={mesh} mode="translate">
 <mesh ref={mesh} />
 ```
@@ -22,6 +26,8 @@ You could also reference the object which might make it easier to exchange the t
 If you are using other controls (`OrbitControls`, `TrackballControls`, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
 
 ```jsx
+import { TransformControls } from '@react-three/drei'
+
 <TransformControls mode="translate" />
 <OrbitControls makeDefault />
 ```
