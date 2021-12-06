@@ -1,11 +1,13 @@
 ---
 title: TrackballControls
+nav: 13
 ---
 
-TrackballControls is similar to OrbitControls. However, it does not maintain a constant camera up vector. That means if the camera orbits over the “north” and “south” poles, it does not flip to stay "right side up".
+`TrackballControls` is similar to `OrbitControls`. However, it does not maintain a constant camera up vector. That means if the camera orbits over the “north” and “south” poles, it does not flip to stay "right side up".
 
 ```jsx
-<TrackballControls />
+import { TrackballControls } from '@react-three/drei'
+;<TrackballControls />
 ```
 
 <StoryBook lib="drei" id="controls-trackballcontrols--trackball-controls-scene-st" />
