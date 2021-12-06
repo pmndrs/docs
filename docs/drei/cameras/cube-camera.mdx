@@ -9,7 +9,9 @@ If you have two static objects in the scene, make it `frames={2}` for instance, 
 If you have moving objects, unset the prop and use a smaller `resolution` instead.
 
 ```jsx
-<CubeCamera
+import { CubeCamera } from '@react-three/drei'
+
+;<CubeCamera
   resolution={256} // Size of the off-buffer (256 by default)
   frames={Infinity} // How many frames it should render (Indefinitively by default)
   fog={customFog} // Allows you to pass a Fog or FogExp2 instance for a smaller frustrum
