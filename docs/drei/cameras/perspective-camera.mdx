@@ -2,15 +2,28 @@
 title: PerspectiveCamera
 ---
 
-A responsive `THREE.PerspectiveCamera` that can set itself as the default.
+A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
 ```jsx
 <PerspectiveCamera
   makeDefault // Registers it as the default camera system-wide (default=false)
   {...props} // All THREE.PerspectiveCamera props are valid
->
+/>
+<mesh />
+```
+
+You can also give it children, which will now occupy the same position as the camera and follow along as it moves.
+
+```jsx
+<PerspectiveCamera makeDefault {...props}>
   <mesh />
 </PerspectiveCamera>
+```
+
+You can also drive it manually, it won't be responsive and you have to calculate aspect ration yourself.
+
+```jsx
+<PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
 ```
 
 <StoryBook lib="drei" id="camera-perspectivecamera--perspective-camera-scene-st" />

@@ -3,19 +3,12 @@ title: Introduction
 nav: 2
 ---
 
-If available, controls have damping enabled by default. They manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [three.js controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
+If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-Every control component can be used with a custom camera using the `camera` prop:
+Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
-```jsx
-const [camera, set] = useState()
+Drei currently exports `OrbitControls`, `MapControls`, `TrackballControls`, `ArcballControls`, `FlyControls`, `DeviceOrientationControls`, `PointerLockControls`, `FirstPersonControls`
 
-return (
-  <>
-    <PerspectiveCamera ref={set} position={[0, 5, 5]} />
-    <OrbitControls camera={camera} />
-  </>
-)
-```
+All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
-PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
+PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls.
