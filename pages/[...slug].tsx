@@ -7,8 +7,7 @@ import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
 import Layout from 'components/Layout'
 import components from 'components/mdx'
 import SEO from 'components/Seo'
-import prism from 'remark-prism'
-import { withCodesandbox, withTableofContents } from 'utils/remark'
+import { withTheme, withCodesandbox, withTableofContents } from 'utils/remark'
 import setValue from 'set-value'
 import { useRouter } from 'next/router'
 import useDocs from 'hooks/useDocs'
@@ -62,7 +61,7 @@ export const getStaticProps = async ({ params }) => {
   const source = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
-      remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
+      remarkPlugins: [withTheme, withCodesandbox, withTableofContents(toc)],
       rehypePlugins: [],
     },
     scope: data,
