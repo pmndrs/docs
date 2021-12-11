@@ -8,9 +8,9 @@ This tutorial will assume some React and TypeScript knowledge. You can fork and 
 
 ## Typing with useRef
 
-React's `useRef` won't automatically infer types despite pointing it to a typed element.
+React's `useRef` won't automatically infer types despite pointing it to a typed ref.
 
-You can type the ref yourself by passing an element's type through generics:
+You can type the ref yourself by passing an type through `useRef`'s generics:
 
 ```tsx
 import { useRef, useEffect } from 'react'
