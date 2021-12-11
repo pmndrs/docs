@@ -52,10 +52,6 @@ code span {
   font-family: 'Meslo', monospace !important;
 }
 
-li.text-base:first-child {
-  display: inline-block;
-}
-
 /* Start purging... */
 @tailwind components;
 /* Stop purging. */
