@@ -17,7 +17,7 @@ We've put together guides for getting started with each popular framework:
 - Create React App
 - Next.js
 - CDN w/o build tools
-- Expo
+- React Native
 
 If you just want to give it a try, fork this [example on codesandbox](https://codesandbox.io/s/rrppl0y8l4?file=/src/App.js)!
 
@@ -110,9 +110,9 @@ ReactDOM.render(
 
 </details>
 
-## Expo & React Native
+## React Native
 
-> This example uses `expo-cli` and relies on react 18 beta.
+This example relies on react 18 beta and uses `expo-cli`, but you can create a bare project with their template or with the `react-native` CLI.
 
 ```bash
 # Install expo-cli, this will create our app
@@ -129,7 +129,7 @@ npm install three @react-three/fiber@beta react@beta
 expo start
 ```
 
-Some configuration may be required to tell the Metro bundler about your assets:
+Some configuration may be required to tell the Metro bundler about your assets if you use `useLoader` or Drei abstractions like `useGLTF` and `useTexture`:
 
 ```js
 // metro.config.js
@@ -145,8 +145,8 @@ Just import from native targets and that's it!
 
 ```jsx
 import React, { Suspense } from 'react'
-import { Canvas } from '@react-three/fiber/native'
 import { useGLTF } from '@react-three/drei/native'
+import { Canvas } from '@react-three/fiber/native'
 import modelPath from './assets/model.glb'
 
 function Model(props) {
