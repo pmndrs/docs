@@ -11,18 +11,31 @@ npm install three @react-three/fiber
 > Fiber is compatible with React v16.8+ and works with ReactDOM and React Native.
 
 Getting started with React Three Fiber is not nearly has hard as you might have thought, but various frameworks may require particular attention.
+
 We've put together guides for getting started with each popular framework:
 
 - Create React App
 - Next.js
+- CDN w/o build tools
 - Expo
-<!-- - Gatsby -->
 
 If you just want to give it a try, fork this [example on codesandbox](https://codesandbox.io/s/rrppl0y8l4?file=/src/App.js)!
 
 ## Create React App
 
 `create-react-app` will work out of the box, nothing special here!
+
+```bash
+# Create app
+npx create-react-app my-app
+cd my-app
+
+# Install dependencies
+npm install three @react-three/fiber
+
+# Start
+npm run start
+```
 
 ## Next.js
 
@@ -40,32 +53,6 @@ module.exports = withTM()
 ```
 
 Make sure to check out our [official next.js starter](https://github.com/pmndrs/react-three-next), too!
-
-## Expo & React Native
-
-This example uses `expo-cli` for the sake of simplicity, but you can use your own barebones setup if you wish.
-
-```bash
-# Install expo-cli, this will create our app
-npm install expo-cli -g
-
-# Create app and cd into it
-expo init my-app
-cd my-app
-
-# Install dependencies
-npm install three @react-three/fiber@beta react@beta
-
-# Start
-expo start
-```
-
-Just import from native targets and that's it!
-
-```jsx
-import { Canvas } from '@react-three/fiber/native'
-import { useGLTF } from '@react-three/drei/native'
-```
 
 ## Without build tools
 
@@ -122,3 +109,60 @@ ReactDOM.render(
 ```
 
 </details>
+
+## Expo & React Native
+
+> This example uses `expo-cli` and relies on react 18 beta.
+
+```bash
+# Install expo-cli, this will create our app
+npm install expo-cli -g
+
+# Create app and cd into it
+expo init my-app
+cd my-app
+
+# Install dependencies
+npm install three @react-three/fiber@beta react@beta
+
+# Start
+expo start
+```
+
+Some configuration may be required to tell the Metro bundler about your assets:
+
+```js
+// metro.config.js
+module.exports = {
+  resolver: {
+    sourceExts: ['js', 'jsx', 'json', 'ts', 'tsx', 'cjs'],
+    assetExts: ['glb', 'png', 'jpg'],
+  },
+}
+```
+
+Just import from native targets and that's it!
+
+```jsx
+import React, { Suspense } from 'react'
+import { Canvas } from '@react-three/fiber/native'
+import { useGLTF } from '@react-three/drei/native'
+import modelPath from './assets/model.glb'
+
+function Model(props) {
+  const { scene } = useGLTF(modelPath)
+  return <primitive {...props} object={scene} />
+}
+
+function App() {
+  return (
+    <Canvas>
+      <Suspense fallback={null}>
+        <Model />
+      </Suspense>
+    </Canvas>
+  )
+}
+
+export default App
+```
