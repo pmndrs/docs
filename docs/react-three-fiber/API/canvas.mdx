@@ -21,7 +21,7 @@ const App = () => (
 )
 ```
 
-The props available for the canvas are:
+### Render Props
 
 | Prop            | Description                                                                                                                                       | Default                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -41,26 +41,25 @@ The props available for the canvas are:
 | onCreated       | Callback after the canvas has rendered (but not yet committed)                                                                                    | `(state) => {}`                                          |
 | onPointerMissed | Response for pointer clicks that have missed any target                                                                                           | `(event) => {}`                                          |
 
-The canvas props should be used as a _constructor_. To update the canvas props, set the state like this:
+### Render defaults
 
-```jsx
-const set = useThree((state) => state.set)
-set({ frameloop: 'demand' })
-```
-
-### Defaults that the canvas component sets up
-
-Canvas will create a translucent `THREE.WebGLRenderer` with the following properties:
+Canvas uses the [render function](/react-three-fiber/API/render-function) which will create a translucent `THREE.WebGLRenderer` with the following constructor args:
 
 - antialias=true
 - alpha=true
 - powerPreference="high-performance"
-- setClearAlpha(0)
+
+and with the following properties:
+
+- outputEncoding = THREE.sRGBEncoding
+- toneMapping = THREE.ACESFilmicToneMapping
+
+It will also create the following scene internals:
+
 - A `THREE.Perspective` camera
 - A `THREE.Orthographic` cam if `orthographic` is true
 - A `THREE.PCFSoftShadowMap` if `shadows` is true
 - A `THREE.Scene` (into which all the JSX is rendered) and a `THREE.Raycaster`
-- A [resize observer](https://github.com/react-spring/react-use-measure)
 
 <Hint>
 
@@ -73,6 +72,8 @@ contrast.
 </Hint>
 
 <Hint>
+
+Canvas creates a [resize observer](https://github.com/react-spring/react-use-measure) to update the canvas size.
 
 Consider Resize-Observer polyfills for older Safari browsers. We recommend
 [juggle/resize-observer](https://github.com/juggle/resize-observer).
