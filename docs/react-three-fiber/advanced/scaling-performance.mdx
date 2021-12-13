@@ -258,7 +258,7 @@ There are pre-made components for this already in the [Drei library](https://git
 
 ## ⚠️ Enable concurrency
 
-React 18 will introduce concurrent scheduling, specifically time slicing. This will virtualize the component graph, which then allows you to prioritise components and actions. Think of how a virtual list avoids scaling issues because it only renders as many items as the screen can take, it is not affected by the amount of items it has to render, be it 10 or 100.000.000.
+React 18 will introduce concurrent scheduling, specifically time slicing via `startTransition` and `useTransition`. This will virtualize the component graph, which then allows you to prioritise components and actions. Think of how a virtual list avoids scaling issues because it only renders as many items as the screen can take, it is not affected by the amount of items it has to render, be it 10 or 100.000.000.
 
 React 18 functions very similar to this, it can potentially defer load and heavy tasks in ways that would be hard or impossible to achieve in a vanilla application. It thereby holds on to a stable framerate even in the most demanding situations.
 

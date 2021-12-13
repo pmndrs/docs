@@ -132,7 +132,7 @@ Live demo: https://codesandbox.io/s/icy-tree-brnsm?file=/src/App.tsx
 <details>
   <summary>Show React Native example</summary>
 
-This example uses `expo-cli` for the sake of simplicity, but you can use your own barebones setup if you wish.
+This example relies on react 18 and uses `expo-cli`, but you can create a bare project with their template or with the `react-native` CLI.
 
 ```bash
 # Install expo-cli, this will create our app
@@ -143,14 +143,25 @@ expo init my-app
 cd my-app
 
 # Install dependencies
-npm install three @react-three/fiber@beta react@beta
+npm install three @react-three/fiber@beta react@rc
 
 # Start
 expo start
 ```
 
+Some configuration may be required to tell the Metro bundler about your assets if you use `useLoader` or Drei abstractions like `useGLTF` and `useTexture`:
+
+```js
+// metro.config.js
+module.exports = {
+  resolver: {
+    sourceExts: ['js', 'jsx', 'json', 'ts', 'tsx', 'cjs'],
+    assetExts: ['glb', 'png', 'jpg'],
+  },
+}
+```
+
 ```tsx
-import * as THREE from 'three'
 import React, { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber/native'
 

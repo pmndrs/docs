@@ -29,3 +29,86 @@ import { unmountComponentAtNode } from '@react-three/fiber'
 
 unmountComponentAtNode(document.querySelector('canvas'))
 ```
+
+<Hint>
+
+`render` is depreciated in v8 beta for the new `createRoot` signature.
+
+```js
+import { createRoot } from '@react-three/fiber'
+
+let root
+
+window.addEventListener('resize', () =>
+  root = createRoot(document.querySelector('canvas'), {
+    events,
+    size: { width: window.innerWidth, height: window.innerHeight },
+  ).render(<mesh />)
+)
+
+window.dispatchEvent(new Event('resize'))
+
+// to unmount
+root.unmount()
+```
+
+</Hint>
+
+## ⚠️ Tree-shaking
+
+New with v8 beta, the underlying reconciler no longer pulls in the THREE namespace automatically.
+
+This enables a granular catalogue which also enables tree-shaking via the `extend` API:
+
+```jsx
+import { extend, createRoot } from '@react-three/fiber'
+import { Mesh, BoxGeometry, MeshStandardMaterial } from 'three'
+
+extend({ Mesh, BoxGeometry, MeshStandardMaterial })
+
+createRoot(canvas).render(
+  <>
+    <mesh>
+      <boxGeometry />
+      <meshStandardMaterial />
+    </mesh>
+  </>
+)
+```
+
+There's an [official babel plugin](@react-three/babel) which will do this for you automatically:
+
+```jsx
+// In:
+
+import { createRoot } from '@react-three/fiber'
+
+createRoot(canvasNode).render(
+  <mesh>
+    <boxGeometry />
+    <meshStandardMaterial />
+  </mesh>
+)
+
+// Out:
+
+import { createRoot, extend } from '@react-three/fiber'
+import {
+  Mesh as _Mesh,
+  BoxGeometry as _BoxGeometry,
+  MeshStandardMaterial as _MeshStandardMaterial,
+} from 'three'
+
+extend({
+  Mesh: _Mesh,
+  BoxGeometry: _BoxGeometry,
+  MeshStandardMaterial: _MeshStandardMaterial,
+})
+
+createRoot(canvasNode).render(
+  <mesh>
+    <boxGeometry />
+    <meshStandardMaterial />
+  </mesh>
+)
+```
