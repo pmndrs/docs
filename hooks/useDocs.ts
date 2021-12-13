@@ -1,6 +1,15 @@
 import create from 'zustand'
 
-export type Doc = { content: string; title: string; url: string; description: string }
+export type Doc = {
+  title?: string
+  description?: string
+  nav?: number
+  slug: string[]
+  url: string
+  editURL: string
+  content: string
+  data: { [key: string]: any }
+}
 
 export type DocState = {
   docs: Doc[]
@@ -31,7 +40,7 @@ const useDocs = create<DocState>((set, get) => ({
   },
   setCurrentDocs: (lib: string) =>
     set((state) => {
-      const currentDocs = state.docs.filter((doc) => doc.url.includes(`/${lib}/`))
+      const currentDocs = state.docs.filter((doc) => doc.slug[0] === lib)
       return { currentDocs }
     }),
 }))

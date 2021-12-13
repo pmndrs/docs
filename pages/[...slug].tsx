@@ -1,23 +1,34 @@
-import fs from 'fs'
-import matter from 'gray-matter'
-import { MDXRemote } from 'next-mdx-remote'
-import { serialize } from 'next-mdx-remote/serialize'
-import path from 'path'
-import { getDocsPaths, getAllDocs, DOCS_PATH } from 'utils/mdxUtils'
-import Layout from 'components/Layout'
-import components from 'components/mdx'
-import SEO from 'components/Seo'
-import { withTheme, withCodesandbox, withTableofContents } from 'utils/remark'
-import setValue from 'set-value'
-import { useRouter } from 'next/router'
-import useDocs from 'hooks/useDocs'
 import { useRef, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { GetStaticPaths, GetStaticProps } from 'next'
+import { MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
+import { serialize } from 'next-mdx-remote/serialize'
+import Layout from 'components/Layout'
+import SEO from 'components/Seo'
+import components from 'components/mdx'
+import useDocs, { Doc } from 'hooks/useDocs'
+import { TOCItem, withTheme, withCodesandbox, withTableofContents } from 'utils/remark'
+import { getAllDocs, getDocs, getNavItems, NavItems } from 'utils/docs'
 
-export default function PostPage({ allDocs, nav, toc, data, source }) {
+interface PostPageProps {
+  redirect?: string
+  allDocs: Doc[]
+  nav: NavItems
+  toc: TOCItem[]
+  data: Doc['data']
+  source: MDXRemoteSerializeResult<Record<string, unknown>>
+}
+
+export default function PostPage({ redirect, allDocs, nav, toc, data, source }: PostPageProps) {
   const contentRef = useRef()
-  const { query } = useRouter()
+  const router = useRouter()
   const { setDocs, setCurrentDocs } = useDocs()
-  const lib = query.slug[0]
+  const [lib] = router.query.slug as string[]
+
+  useEffect(() => {
+    if (redirect) router.replace(redirect, undefined, { shallow: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     setDocs(allDocs)
@@ -36,7 +47,7 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
             )}
           </div>
         )}
-        <main className="content-container" ref={contentRef}>
+        <main ref={contentRef} className="content-container">
           <MDXRemote {...source} components={components} />
         </main>
       </main>
@@ -44,22 +55,42 @@ export default function PostPage({ allDocs, nav, toc, data, source }) {
   )
 }
 
-export const getStaticProps = async ({ params }) => {
-  const postFilePath = path.join(DOCS_PATH, `${path.join(...params.slug)}.mdx`)
-  const postData = fs.readFileSync(postFilePath)
-  const { content, data } = matter(postData)
+export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
+  // Get docs' category information from url
+  const [lib, ...rest] = params.slug as string[]
+  const [page, category] = rest.reverse()
+
+  let redirect: string = null
+  let post: Doc
+
+  // Check for post or find best matches to redirect to
+  const docs = await getDocs(lib)
+  post = docs.find((doc) => doc.slug.join('/') === (params.slug as string[]).join('/'))
+  if (!post) {
+    // Redirect /lib to /lib/first-page
+    if (!page) {
+      post = docs[0]
+    }
+
+    // Redirect /lib/category to /lib/category/first-page
+    if (!post && !category) {
+      post = docs.find((doc) => doc.slug.join('/').startsWith(`${lib}/${page}`))
+    }
+
+    // Post was not found, return 404
+    if (!post) return { notFound: true }
+
+    // Alternate post was found, tell client to rewrite path
+    redirect = post.url
+  }
+
   const allDocs = await getAllDocs()
+  const nav = getNavItems(allDocs)
 
-  const nav = allDocs.reduce((nav, file) => {
-    const [lib, ...rest] = file.url.split('/').filter(Boolean)
-    const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
-    setValue(nav, _path, file)
-    return nav
-  }, {})
+  const { content, data } = post
+  const toc: TOCItem[] = []
 
-  const toc = []
   const source = await serialize(content, {
-    // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [withTheme, withCodesandbox, withTableofContents(toc)],
       rehypePlugins: [],
@@ -69,6 +100,7 @@ export const getStaticProps = async ({ params }) => {
 
   return {
     props: {
+      redirect,
       allDocs,
       nav,
       toc,
@@ -78,16 +110,26 @@ export const getStaticProps = async ({ params }) => {
   }
 }
 
-export const getStaticPaths = async () => {
-  // Map the path into the static paths object required by Next.js
-  const paths = (await getDocsPaths()).map((slug) => ({
-    params: {
-      slug: slug.split(path.sep).filter(Boolean),
-    },
-  }))
+export const getStaticPaths: GetStaticPaths = async () => {
+  const docs = await getAllDocs()
+  const paths = docs.reduce((acc, { slug }) => {
+    // Get lib and category from slug
+    const [lib, ...rest] = slug
+    const [, category] = rest.reverse()
 
-  return {
-    paths,
-    fallback: false,
-  }
+    // Add fallback pages for /lib redirects
+    const libFallback = { params: { slug: [lib] } }
+    if (lib && !acc.includes(libFallback)) acc.push(libFallback)
+
+    // Add fallback pages for /lib/category redirects
+    const categoryFallback = { params: { slug: [lib, category] } }
+    if (category && !acc.includes(categoryFallback)) acc.push(categoryFallback)
+
+    // Add page
+    acc.push({ params: { slug } })
+
+    return acc
+  }, [])
+
+  return { paths, fallback: false }
 }
