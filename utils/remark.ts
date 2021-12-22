@@ -1,32 +1,9 @@
-import { getHighlighter } from 'shiki'
 import slugify from '@sindresorhus/slugify'
-import theme from 'data/theme.json'
 
 export interface Node {
   type: string
   value: string
   children: Node[]
-}
-
-export interface CodeNode extends Omit<Node, 'children'> {
-  lang: 'ts' | 'tsx' | 'js' | 'jsx' | 'css' | 'glsl' | 'bash'
-  children: CodeNode[]
-}
-
-/**
- * Highlights code snippets with the Poimandres VSCode theme.
- */
-export const withTheme = () => {
-  return async (tree: CodeNode) => {
-    const { codeToHtml } = await getHighlighter({ theme } as any)
-
-    tree.children.forEach((node) => {
-      if (node.type === 'code') {
-        node.type = 'html'
-        node.value = codeToHtml(node.value, node.lang)
-      }
-    })
-  }
 }
 
 /**
