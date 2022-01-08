@@ -27,8 +27,6 @@ export const parseDoc = (lib: string, filePath: string): Doc => {
   return { ...rest, ...data, data, slug, url }
 }
 
-const cachedDocs = new Map()
-
 /**
  * Fetches docs for a lib.
  */
@@ -37,10 +35,6 @@ export const getDocs = async (lib: string): Promise<Doc[]> => {
   const target = libData.find(({ id }) => id === lib)
   if (!target?.docs) return
 
-  // Read from cache unless invalidating
-  const cache = cachedDocs.get(lib)
-  if (cache) return cache
-
   // Get docs paths
   const paths = await getPaths(target.docs)
 
@@ -48,9 +42,6 @@ export const getDocs = async (lib: string): Promise<Doc[]> => {
   const docs = paths
     .map((filePath) => parseDoc(lib, filePath))
     .sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
-
-  // Update cache
-  cachedDocs.set(lib, docs)
 
   return docs
 }

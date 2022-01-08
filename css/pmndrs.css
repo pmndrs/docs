@@ -39,6 +39,7 @@ pre[class*='language-'] {
   --function: #5de4c7;
   --keyword: #add7ff;
   --literal: #fffac2;
+  --falsy: #f087bd;
 
   padding: 1.75em;
   margin: 1.5em 0;
@@ -118,6 +119,10 @@ pre[class*='language-'] {
 .token.regex,
 .token.important {
   color: var(--literal);
+}
+
+.token.deleted {
+  color: var(--falsy);
 }
 
 .token.important,
