@@ -6,9 +6,9 @@ export const data = [
     description: 'React-three-fiber is a React renderer for three.js',
     image: 'https://docs.pmnd.rs/react-three-fiber/share.jpg',
     docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/react-three-fiber',
+      repo: 'pmndrs/react-three-fiber',
+      branch: 'master',
+      dir: 'docs',
     },
   },
   {
