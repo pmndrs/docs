@@ -29,7 +29,7 @@ export const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
  * Clones a repository.
  */
 export const clone = ({ repo, branch = 'main' }: DocsConfig) =>
-  execSync(`git clone git://github.com/${repo}.git temp/${repo}-${branch} -b ${branch} -q`)
+  execSync(`git clone https://github.com/${repo}.git temp/${repo}-${branch} -b ${branch} -q`)
 
 /**
  * Returns a filter function to grab posts based on a docsConfig.
