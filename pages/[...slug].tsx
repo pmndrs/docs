@@ -108,7 +108,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       source,
       data,
     },
-    revalidate: 60,
+    revalidate: 300, // 5 min
   }
 }
 
