@@ -69,14 +69,14 @@ export const getDocs = async (lib: string): Promise<Doc[]> => {
   const paths = await getPaths(lib)
 
   // Generate docs
-  const docs = (
+  const docs: Doc[] = (
     await Promise.all(
       paths.map(async (path) => {
         const slug = [lib, ...path.split('/')]
         return getDoc(slug)
       })
     )
-  ).sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
+  ).sort((a: Doc, b: Doc) => (a.nav > b.nav ? 1 : -1))
 
   return docs
 }
