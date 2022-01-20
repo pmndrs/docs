@@ -1,21 +1,33 @@
+import fetch from 'node-fetch'
+import matter from 'gray-matter'
 import setValue from 'set-value'
-import { data as libData } from 'data/libraries'
-import { getPaths, parseMDX } from 'utils/mdx'
+import { isDoc, sanitize } from './mdx'
+import libraries from 'data/libraries'
 import type { Doc } from 'hooks/useDocs'
 
 /**
- * Parses a doc into JSX with meta.
+ * Fetches a doc from a lib.
  */
-export const parseDoc = (lib: string, filePath: string): Doc => {
-  // Get lib docs settings
-  const target = libData.find(({ id }) => id === lib)
+export const getDoc = async (slug: string[]): Promise<Doc> => {
+  // Get target lib settings
+  const [lib, ...parts] = slug
+  const target = libraries[lib]
   if (!target?.docs) return
 
-  // Parse doc
-  const { localURL, data, ...rest } = parseMDX(filePath, target.docs)
+  // Generate doc url
+  const { dir, repo, branch = 'main' } = target.docs
+  const localPath = [dir, ...parts].filter(Boolean).join('/')
+  const editURL = `https://github.com/${repo}/blob/${branch}/${localPath}.mdx?raw=true`
+
+  // Fetch and sanitize doc source
+  const source = await fetch(`${editURL}?raw=true`)
+    .then((res) => res.text())
+    .then(sanitize)
+
+  // Parse it
+  const { data, content } = matter(source)
 
   // Create internal meta
-  const slug = [lib, ...localURL.split('/')]
   const url = `/${slug.join('/')}`
   const pathname = slug[slug.length - 1]
 
@@ -24,24 +36,47 @@ export const parseDoc = (lib: string, filePath: string): Doc => {
   data.description = data.description ?? ''
   data.nav = data.nav ?? Infinity
 
-  return { ...rest, ...data, data, slug, url }
+  return { ...data, data, content, editURL, slug, url }
+}
+
+export const getPaths = async (lib: string) => {
+  const target = libraries[lib]
+  if (!target) return []
+
+  const { repo, branch = 'main', dir } = target.docs
+
+  const { tree }: any = await fetch(
+    `https://api.github.com/repos/${repo}/git/trees/${branch}?recursive=1`,
+    {
+      headers: { Authorization: `token ${process.env.GITHUB_API_TOKEN}` },
+    }
+  ).then((res) => res.json())
+
+  const paths = tree
+    .map(({ path }) => path)
+    .filter((path) => isDoc(path, dir))
+    .map((path) => (dir ? path.replace(`${dir}/`, '') : path))
+    .map((path) => path.replace('.mdx', ''))
+
+  return paths
 }
 
 /**
  * Fetches docs for a lib.
  */
 export const getDocs = async (lib: string): Promise<Doc[]> => {
-  // Get target lib settings
-  const target = libData.find(({ id }) => id === lib)
-  if (!target?.docs) return
-
   // Get docs paths
-  const paths = await getPaths(target.docs)
+  const paths = await getPaths(lib)
 
   // Generate docs
-  const docs = paths
-    .map((filePath) => parseDoc(lib, filePath))
-    .sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
+  const docs = (
+    await Promise.all(
+      paths.map(async (path) => {
+        const slug = [lib, ...path.split('/')]
+        return getDoc(slug)
+      })
+    )
+  ).sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
 
   return docs
 }
@@ -51,8 +86,8 @@ export const getDocs = async (lib: string): Promise<Doc[]> => {
  */
 export const getAllDocs = async (): Promise<Doc[]> => {
   // Get ids of libs who have opted into hosting docs
-  const libs = libData.filter(({ docs }) => docs)
-  const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id)))
+  const libs = Object.entries(libraries).filter(([_, lib]) => lib.docs)
+  const docs = await Promise.all(libs.map(async ([key]) => getDocs(key)))
 
   return docs.flat()
 }
@@ -62,11 +97,14 @@ export type NavItems = { [lib: string]: { [category: string]: Doc | { [page: str
 /**
  * Builds a nested list of docs, organized by lib, category, and page keys.
  */
-export const getNavItems = (docs: Doc[]): NavItems => {
-  const nav = docs.reduce((nav, file) => {
-    const [lib, ...rest] = file.slug
-    const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
-    setValue(nav, _path, file)
+export const getNavItems = (lib: string, docs: Doc[]): NavItems => {
+  const nav = docs.reduce((nav, doc) => {
+    if (doc.slug[0] === lib) {
+      const [lib, ...rest] = doc.slug
+      const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
+      setValue(nav, _path, doc)
+    }
+
     return nav
   }, {})
 

@@ -86,7 +86,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
   }
 
   const allDocs = await getAllDocs()
-  const nav = getNavItems(allDocs)
+  const nav = getNavItems(lib, allDocs)
 
   const { content, data } = post
   const toc: TOCItem[] = []
@@ -108,6 +108,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       source,
       data,
     },
+    revalidate: 60,
   }
 }
 
@@ -132,5 +133,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
     return acc
   }, [])
 
-  return { paths, fallback: false }
+  return { paths, fallback: 'blocking' }
 }

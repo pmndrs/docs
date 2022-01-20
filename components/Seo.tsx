@@ -1,8 +1,8 @@
 import Head from 'next/head'
-import { data } from 'data/libraries'
+import libraries from 'data/libraries'
 
 export default function SEO({ lib }: { lib: string }) {
-  const currentSeo = data.find(({ id }) => id === lib)
+  const currentSeo = libraries[lib]
   if (!currentSeo) return null
 
   return (
