@@ -39,7 +39,7 @@ export const getDoc = async (slug: string[]): Promise<Doc> => {
   return { ...data, data, content, editURL, slug, url }
 }
 
-export const getPaths = async (lib: string) => {
+export const getPaths = async (lib: string): Promise<string[]> => {
   const target = libraries[lib]
   if (!target) return []
 
@@ -66,10 +66,10 @@ export const getPaths = async (lib: string) => {
  */
 export const getDocs = async (lib: string): Promise<Doc[]> => {
   // Get docs paths
-  const paths = await getPaths(lib)
+  const paths: string[] = await getPaths(lib)
 
   // Generate docs
-  const docs: Doc[] = (
+  const docs = (
     await Promise.all(
       paths.map(async (path) => {
         const slug = [lib, ...path.split('/')]
