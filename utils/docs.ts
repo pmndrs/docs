@@ -52,6 +52,8 @@ export const getPaths = async (lib: string): Promise<string[]> => {
     }
   ).then((res) => res.json())
 
+  if (!tree) throw 'Rate limited!'
+
   const paths = tree
     .map(({ path }) => path)
     .filter((path) => isDoc(path, dir))
