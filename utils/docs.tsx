@@ -9,7 +9,20 @@ import prism from 'mdx-prism'
 import { embeds, tableOfContents } from './rehype'
 import libs from 'data/libraries'
 
-const MDX_REGEX = /\.mdx?$/
+/**
+ * Checks for .md(x) file extension
+ */
+export const MARKDOWN_REGEX = /\.mdx?$/
+
+/**
+ * Uncomments frontMatter from vanilla markdown
+ */
+export const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
+
+/**
+ * Removes multi and single-line comments from markdown
+ */
+export const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
 
 /**
  * Recursively crawls a directory, returning an array of file paths.
@@ -66,17 +79,21 @@ export const getDocs = async (lib?: keyof typeof libs) => {
   })
 
   // Crawl and parse docs
-  const files = await crawl(params.entry, MDX_REGEX)
+  const files = await crawl(params.entry, MARKDOWN_REGEX)
 
   const docs = new Map()
   files.forEach((file) => {
     // Get slug from local path
     const path = file.replace(`${params.entry}/`, '')
-    const slug = [lib, ...path.replace(MDX_REGEX, '').split('/')]
+    const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
 
-    // Parse frontmatter
-    const source = fs.readFileSync(file)
-    const { data, content } = matter(source)
+    // Sanitize & parse frontmatter
+    const { data, ...compiled } = matter(fs.readFileSync(file))
+    const content = compiled.content
+      // Remove <!-- --> comments from frontMatter
+      .replace(FRONTMATTER_REGEX, '')
+      // Remove extraneous comments from post
+      .replace(COMMENT_REGEX, '')
 
     // Write params to docs map
     docs.set(slug.join('/'), { path, slug, data, content })
