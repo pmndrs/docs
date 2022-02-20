@@ -1,30 +1,9 @@
-const providers = ['codesandbox.io']
-
 export interface ASTNode {
   type: string
   value: string
   tagName: string
   properties: any
   children: ASTNode[]
-}
-
-/**
- * Replaces links from whitelisted providers with preview iframes.
- */
-export const embeds = () => {
-  return (root: ASTNode) => {
-    for (const node of root.children) {
-      if (node.type === 'element' && node.tagName === 'p') {
-        const textContent = node.children[0]?.value
-
-        if (new RegExp(`^https:\\/{2}(${providers.join('|')})[^\\s]*?$`).test(textContent)) {
-          node.tagName = 'iframe'
-          node.properties.src = textContent
-          node.children = []
-        }
-      }
-    }
-  }
 }
 
 export interface TocItem {

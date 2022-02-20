@@ -6,7 +6,7 @@ import { compileSync } from '@mdx-js/mdx'
 import * as mdx from '@mdx-js/react'
 import * as runtime from 'react/jsx-runtime.js'
 import prism from 'mdx-prism'
-import { embeds, tableOfContents } from './rehype'
+import { tableOfContents } from './rehype'
 import libs from 'data/libraries'
 
 /**
@@ -132,7 +132,7 @@ export const hydrate = (content: string) => {
   // Compile MDX into JS source
   const toc = []
   const compiled = compileSync(content, {
-    rehypePlugins: [prism, embeds, tableOfContents(toc)],
+    rehypePlugins: [prism, tableOfContents(toc)],
     outputFormat: 'function-body',
     providerImportSource: '@mdx-js/react',
   })
