@@ -106,7 +106,7 @@ export const getDocs = async (lib?: keyof typeof libs) => {
     const compiled = matter(fs.readFileSync(file))
 
     // Add fallback frontmatter
-    const pathname = slug.at(-1)
+    const pathname = slug[slug.length - 1]
     const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
     const description = compiled.data.description ?? ''
     const nav = compiled.data.nav ?? Infinity
