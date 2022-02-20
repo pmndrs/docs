@@ -14,7 +14,7 @@ import useMenu from 'hooks/useMenu'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import useDocs from 'hooks/useDocs'
 
-export default function Layout({ contentRef, nav, toc, children }) {
+export default function Layout({ children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { docs, currentDocs, getPrevAndNext } = useDocs()
 
@@ -81,7 +81,7 @@ export default function Layout({ contentRef, nav, toc, children }) {
                 <div className="mt-8 md:mt-0 mb-4">
                   <LibSwitcher />
                 </div>
-                <Nav nav={nav[lib]} />
+                {/* <Nav nav={nav[lib]} /> */}
               </nav>
             </a.div>
             <a.button
@@ -142,7 +142,7 @@ export default function Layout({ contentRef, nav, toc, children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {toc.length ? <Toc contentRef={contentRef} toc={toc} /> : null}
+                {/* {toc.length ? <Toc contentRef={contentRef} toc={toc} /> : null} */}
               </div>
             </div>
           </div>

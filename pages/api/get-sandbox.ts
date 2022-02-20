@@ -1,4 +1,3 @@
-import fetch from 'node-fetch'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export interface ICodesandbox {
