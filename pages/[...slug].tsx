@@ -8,12 +8,12 @@ import { hydrate, getDocs, Doc } from 'utils/docs'
 
 export default function PostPage({ docs, title, description, content }) {
   const { setDocs } = useDocs()
-  const post = useMemo(() => hydrate(content), [content])
+  const { toc, ...post } = useMemo(() => hydrate(content), [content])
 
   useEffect(() => void setDocs(docs), [setDocs])
 
   return (
-    <Layout>
+    <Layout toc={toc}>
       <SEO />
       <main className="max-w-3xl mx-auto">
         <div className="pb-6 mb-4 border-b post-header">

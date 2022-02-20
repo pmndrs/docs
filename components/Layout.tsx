@@ -4,7 +4,7 @@ import { useSpring, animated as a } from 'react-spring'
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import { MenuIcon } from 'components/Icons'
-// import Toc from 'components/Toc'
+import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -14,7 +14,7 @@ import useMenu from 'hooks/useMenu'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import useDocs from 'hooks/useDocs'
 
-export default function Layout({ children }) {
+export default function Layout({ toc, children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { docs, getPrevAndNext } = useDocs()
 
@@ -138,7 +138,7 @@ export default function Layout({ children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {/* {toc.length ? <Toc contentRef={contentRef} toc={toc} /> : null} */}
+                {toc.length ? <Toc toc={toc} /> : null}
               </div>
             </div>
           </div>

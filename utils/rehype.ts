@@ -27,6 +27,13 @@ export const embeds = () => {
   }
 }
 
+export interface TocItem {
+  id: string
+  level: number
+  title: string
+  parent?: TocItem
+}
+
 /**
  * Generates a table of contents from page headings.
  */
@@ -35,27 +42,22 @@ export const tableOfContents = (target = []) => {
     const previous = {}
 
     for (const node of root.children) {
-      if (node.type === 'element' && /^h[1-3]$/.test(node.tagName)) {
+      if (node.type === 'element' && /^h[1-4]$/.test(node.tagName)) {
         const level = parseInt(node.tagName[1])
 
         const title = node.children.reduce((acc, { value }) => `${acc}${value}`, '')
         const id = title.toLowerCase().replace(/\s+|-+/g, '-')
         node.properties.id = id
 
-        const item = {
+        const item: TocItem = {
           id,
           level,
           title,
-          children: [],
+          parent: previous[level - 2],
         }
         previous[level - 1] = item
 
-        const parent = previous[level - 2]
-        if (parent) {
-          parent.children.push(item)
-        } else {
-          target.push(item)
-        }
+        target.push(item)
       }
     }
   }

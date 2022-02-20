@@ -1,30 +1,17 @@
 import clsx from 'clsx'
-import { RefObject, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import type { TocItem } from 'utils/rehype'
 
-type TocItem = {
-  depth: number
-  slug: string
-  title: string
-  label: string
-}
-
-type Toc = TocItem[]
-
-type TocProps = {
-  contentRef: RefObject<Element>
-  toc: Toc
-}
-
-function Toc({ contentRef, toc }: TocProps) {
+function Toc({ toc }: { toc: TocItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
-    const headings = Array.from(contentRef.current.querySelectorAll('h2, h3, h4'))
+    const headings = toc.map(({ id }) => document.getElementById(id))
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          const headingIndex = headings.indexOf(entry.target)
+          const headingIndex = headings.indexOf(entry.target as HTMLElement)
           setActiveIndex(headingIndex)
         }
       },
@@ -35,7 +22,7 @@ function Toc({ contentRef, toc }: TocProps) {
     headings.forEach((element) => observer.observe(element as Element))
 
     return () => observer.disconnect()
-  }, [contentRef])
+  }, [toc])
 
   return (
     <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
@@ -43,15 +30,16 @@ function Toc({ contentRef, toc }: TocProps) {
         On This Page
       </h5>
       {toc.map((item, index) => (
-        <h4 key={item.slug} className={clsx(item.depth > 2 && 'ml-4')}>
+        <h4 key={item.id}>
           <a
-            aria-label={item.label}
+            aria-label={item.title}
             aria-current={index === activeIndex}
             className={clsx(
               'block py-1 text-sm font-normal leading-6 text-gray-500 hover:underline',
+              item.parent && 'ml-4',
               index === activeIndex && 'text-gray-900'
             )}
-            href={`#${item.slug}`}
+            href={`#${item.id}`}
           >
             {item.title}
           </a>
