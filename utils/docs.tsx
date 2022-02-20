@@ -53,6 +53,16 @@ const getParams = (lib: keyof typeof libs) => {
   return { repo, branch, gitDir, entry }
 }
 
+export interface Doc {
+  path: string
+  slug: string[]
+  url: string
+  nav: number
+  title: string
+  description: string
+  content: string
+}
+
 /**
  * Fetches all docs, filters to a lib if specified.
  */
@@ -60,7 +70,7 @@ export const getDocs = async (lib?: keyof typeof libs) => {
   // If a lib isn't specified, fetch all docs
   if (!lib) {
     const docs = await Promise.all(Object.keys(libs).map(getDocs))
-    return docs.filter(Boolean).flatMap((c: Map<string, any>) => Array.from(c.values()))
+    return docs.filter(Boolean).flatMap((c: Map<string, Doc>) => Array.from(c.values()))
   }
 
   // Init params, bail if lib not found
@@ -81,14 +91,23 @@ export const getDocs = async (lib?: keyof typeof libs) => {
   // Crawl and parse docs
   const files = await crawl(params.entry, MARKDOWN_REGEX)
 
-  const docs = new Map()
+  const docs = new Map<string, Doc>()
   files.forEach((file) => {
     // Get slug from local path
     const path = file.replace(`${params.entry}/`, '')
     const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
+    const url = `/${slug.join('/')}`
 
-    // Sanitize & parse frontmatter
-    const { data, ...compiled } = matter(fs.readFileSync(file))
+    // Read & parse doc
+    const compiled = matter(fs.readFileSync(file))
+
+    // Add fallback frontmatter
+    const pathname = slug.at(-1)
+    const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
+    const description = compiled.data.description ?? ''
+    const nav = compiled.data.nav ?? Infinity
+
+    // Sanitize markdown
     const content = compiled.content
       // Remove <!-- --> comments from frontMatter
       .replace(FRONTMATTER_REGEX, '')
@@ -96,7 +115,7 @@ export const getDocs = async (lib?: keyof typeof libs) => {
       .replace(COMMENT_REGEX, '')
 
     // Write params to docs map
-    docs.set(slug.join('/'), { path, slug, data, content })
+    docs.set(slug.join('/'), { path, slug, url, title, description, nav, content })
   })
 
   return docs

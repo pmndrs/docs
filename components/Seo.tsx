@@ -1,13 +1,17 @@
 import Head from 'next/head'
 import libs from 'data/libraries'
+import { useRouter } from 'next/router'
 
-export default function SEO({ lib }: { lib?: keyof typeof libs }) {
+export default function SEO() {
+  const { asPath } = useRouter()
+  const [lib] = asPath.split('/').filter(Boolean)
+
   const currentSeo = libs[lib]
   if (!currentSeo) return null
 
   return (
     <Head>
-      <title> {currentSeo.title} Documentation</title>
+      <title>{currentSeo.title} Documentation</title>
       <meta property="og:site_name" content={`${currentSeo.title} Documentation`} />
       <meta name="description" content={currentSeo.description} />
 

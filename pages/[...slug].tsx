@@ -3,22 +3,20 @@ import { MDXProvider } from '@mdx-js/react'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import components from 'components/mdx'
-import { hydrate, getDocs } from 'utils/docs'
+import { hydrate, getDocs, Doc } from 'utils/docs'
 
-export default function PostPage({ data, content }) {
+export default function PostPage({ nav, title, description, content }) {
   const post = useMemo(() => hydrate(content), [content])
   return (
-    <Layout>
-      {/* <SEO lib={lib} /> */}
+    <Layout nav={nav}>
+      <SEO />
       <main className="max-w-3xl mx-auto">
-        {data.title && (
-          <div className="pb-6 mb-4 border-b post-header">
-            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{data.title}</h1>
-            {data.description && (
-              <p className="text-base leading-4 text-gray-400 leading-5">{data.description}</p>
-            )}
-          </div>
-        )}
+        <div className="pb-6 mb-4 border-b post-header">
+          <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
+          {description?.length && (
+            <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
+          )}
+        </div>
         <main className="content-container">
           <MDXProvider {...post} components={components} />
         </main>
@@ -28,20 +26,35 @@ export default function PostPage({ data, content }) {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const docs = await getDocs(...params.slug)
+  const docs: Map<string, Doc> = await getDocs(...params.slug)
   if (!docs) return { notFound: true }
 
   const pathname = params.slug.join('/')
-  const props = docs.get(pathname)
 
-  if (!props) {
+  if (!docs.has(pathname)) {
     const alternate = Array.from(docs.keys()).find((key: string) => key.startsWith(pathname))
     return alternate
       ? { redirect: { permanent: false, destination: `/${alternate}` } }
       : { notFound: true }
   }
 
-  return { props, revalidate: 300 }
+  const doc = docs.get(pathname)
+
+  const nav = Array.from(docs.values())
+    .sort((a, b) => (a.nav > b.nav ? 1 : -1))
+    .reduce((acc, doc) => {
+      const [lib, ...rest] = doc.slug
+      const [page, category] = rest.reverse()
+
+      if (category && !acc[category]) acc[category] = {}
+
+      if (category) acc[category][page] = doc
+      else acc[page] = doc
+
+      return acc
+    }, {})
+
+  return { props: { ...doc, nav }, revalidate: 300 }
 }
 
 export const getStaticPaths = async () => {

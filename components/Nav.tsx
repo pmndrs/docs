@@ -2,48 +2,31 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
+import type { Doc } from 'utils/docs'
 
-type NavRoute = {
-  url: string
-  title: string
-}
-
-type NavProps = {
-  nav: Record<string, Record<string, NavRoute>>
-}
-
-function NavItem({ route }) {
+function Nav({ nav }: { nav: Record<string, Record<string, Doc>> }) {
   const { asPath } = useRouter()
-  const isActive = route.url === asPath
 
-  return (
-    <li>
-      <Link href={route.url.replace('index', '')}>
-        <a
-          className={clsx(
-            'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer',
-            isActive && 'bg-gray-100'
-          )}
-        >
-          {route.title}
-        </a>
-      </Link>
-    </li>
-  )
-}
-
-function Nav({ nav }: NavProps) {
   return (
     <ul>
-      {Object.entries(nav).map(([key, children], index) => (
-        <Fragment key={`${key}-${index}`}>
+      {Object.entries(nav).map(([key, children]) => (
+        <Fragment key={key}>
           <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold">
             {key.replace(/\-/g, ' ')}
           </h3>
-          {Object.entries(children).map(([key, route], index) => (
-            <Fragment key={`${key}-${index}`}>
-              <NavItem route={route} />
-            </Fragment>
+          {Object.entries(children).map(([key, doc]) => (
+            <li key={key}>
+              <Link href={doc.url}>
+                <a
+                  className={clsx(
+                    'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer',
+                    doc.url === asPath && 'bg-gray-100'
+                  )}
+                >
+                  {doc.title}
+                </a>
+              </Link>
+            </li>
           ))}
         </Fragment>
       ))}
