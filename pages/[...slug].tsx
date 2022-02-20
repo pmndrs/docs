@@ -1,16 +1,18 @@
-import { useMemo, useEffect } from 'react'
-import { MDXProvider } from '@mdx-js/react'
+import { useEffect } from 'react'
+import { MDXRemote } from 'next-mdx-remote'
+import { serialize } from 'next-mdx-remote/serialize'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import components from 'components/mdx'
 import useDocs from 'hooks/useDocs'
-import { hydrate, getDocs, Doc } from 'utils/docs'
+import prism from 'mdx-prism'
+import { tableOfContents } from 'utils/rehype'
+import { getDocs, Doc } from 'utils/docs'
 
-export default function PostPage({ docs, title, description, content }) {
+export default function PostPage({ docs, toc, title, description, source }) {
   const { setDocs } = useDocs()
-  const { toc, ...post } = useMemo(() => hydrate(content), [content])
 
-  useEffect(() => void setDocs(docs), [setDocs])
+  useEffect(() => void setDocs(docs), [setDocs, docs])
 
   return (
     <Layout toc={toc}>
@@ -23,7 +25,7 @@ export default function PostPage({ docs, title, description, content }) {
           )}
         </div>
         <main className="content-container">
-          <MDXProvider {...post} components={components} />
+          <MDXRemote {...source} components={components} />
         </main>
       </main>
     </Layout>
@@ -46,7 +48,14 @@ export const getStaticProps = async ({ params }) => {
   const docs = Array.from(matches.values()).sort((a, b) => (a.nav > b.nav ? 1 : -1))
   const { title, description, content } = matches.get(pathname)
 
-  return { props: { docs, title, description, content }, revalidate: 300 }
+  const toc = []
+  const source = await serialize(content, {
+    mdxOptions: {
+      rehypePlugins: [prism, tableOfContents(toc)],
+    },
+  })
+
+  return { props: { docs, toc, title, description, source }, revalidate: 300 }
 }
 
 export const getStaticPaths = async () => {

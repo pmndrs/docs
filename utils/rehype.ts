@@ -32,7 +32,7 @@ export const tableOfContents = (target = []) => {
           id,
           level,
           title,
-          parent: previous[level - 2],
+          parent: previous[level - 2] ?? null,
         }
         previous[level - 1] = item
 

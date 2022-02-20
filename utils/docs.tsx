@@ -2,11 +2,6 @@ import { fs } from 'memfs'
 import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
-import { compileSync } from '@mdx-js/mdx'
-import * as mdx from '@mdx-js/react'
-import * as runtime from 'react/jsx-runtime.js'
-import prism from 'mdx-prism'
-import { tableOfContents } from './rehype'
 import libs from 'data/libraries'
 
 /**
@@ -123,23 +118,4 @@ export const getDocs = async (lib?: keyof typeof libs) => {
   })
 
   return docs
-}
-
-/**
- * Transpiles and hydrates a doc and its meta.
- */
-export const hydrate = (content: string) => {
-  // Compile MDX into JS source
-  const toc = []
-  const compiled = compileSync(content, {
-    rehypePlugins: [prism, tableOfContents(toc)],
-    outputFormat: 'function-body',
-    providerImportSource: '@mdx-js/react',
-  })
-
-  // Eval and build JSX at runtime
-  const Content = new Function(String(compiled))({ ...mdx, ...runtime }).default
-  const children = <Content />
-
-  return { toc, children }
 }
