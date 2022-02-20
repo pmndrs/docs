@@ -17,7 +17,7 @@ const libraries = {
     image: 'https://docs.pmnd.rs/react-spring/share.jpg',
     docs: {
       repo: 'pmndrs/website',
-      branch: 'docs',
+      branch: 'docs-mdx2',
       dir: 'docs/react-spring',
     },
   },
@@ -29,7 +29,7 @@ const libraries = {
     image: 'https://docs.pmnd.rs/logo-drei.jpg',
     docs: {
       repo: 'pmndrs/website',
-      branch: 'docs',
+      branch: 'docs-mdx2',
       dir: 'docs/drei',
     },
   },
@@ -42,7 +42,7 @@ const libraries = {
     image: 'https://docs.pmnd.rs/zustand-resources/zustand-bear.jpg',
     docs: {
       repo: 'pmndrs/website',
-      branch: 'docs',
+      branch: 'docs-mdx2',
       dir: 'docs/zustand',
     },
   },
@@ -61,7 +61,7 @@ const libraries = {
     image: 'https://docs.pmnd.rs/a11y/react-three-a11y-header.jpg',
     docs: {
       repo: 'pmndrs/website',
-      branch: 'docs',
+      branch: 'docs-mdx2',
       dir: 'docs/a11y',
     },
   },
@@ -72,7 +72,7 @@ const libraries = {
     image: 'https://docs.pmnd.rs/react-processing.jpg',
     docs: {
       repo: 'pmndrs/website',
-      branch: 'docs',
+      branch: 'docs-mdx2',
       dir: 'docs/react-postprocessing',
     },
   },
