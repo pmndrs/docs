@@ -6,7 +6,7 @@ nav: 8
 
 ### Position of the accessible dom causing wrong hover detection
 
-In the demo, you may have noticed in App.js that the component ToggleButton is wrapped in an A11y component that use the prop a11yElStyle like so
+In the demo, you may have noticed in App.js that the component ToggleButton is wrapped in an A11y component that use the prop `a11yElStyle` like so
 
 ```jsx
 <A11y
@@ -31,7 +31,7 @@ If we inspect the DOM, you should see something roughly like this for the above 
 <button aria-pressed="false">Light intensity</button>
 ```
 
-By default this button is positionned in the center of your 3D object which would cause it to work like this.
+By default this button is positioned in the center of your 3D object which would cause it to work like this.
 
 1- Mouse is not over
 
@@ -57,7 +57,7 @@ If we display the button we can see that it's caused by the button being positio
   <img alt="" height="200" src="/a11y/hoverdefaultbecause.png" />
 </p>
 
-4- If we add a11yElStyle={{ marginLeft: '-40px' }} to the A11y component, the button is moved to the left and not in the center of the donut anymore
+4- If we add `a11yElStyle={{ marginLeft: '-40px' }}` to the A11y component, the button is moved to the left and not in the center of the donut anymore
 
 <p align="middle">
   <img alt="" height="200" src="/a11y/hoverfixbecause.png" />
