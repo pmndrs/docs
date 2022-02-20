@@ -6,20 +6,6 @@ export interface Node {
   children: Node[]
 }
 
-/**
- * Replaces codesandbox iframes with a custom Codesandbox component.
- */
-export const withCodesandbox = () => {
-  return (tree: Node) => {
-    tree.children.forEach((node) => {
-      if (node.type === 'jsx' && node.value.match(/iframe/) && node.value.match(/codesandbox/)) {
-        const url = node.value.match(/(?<=src=").*?(?=[\"])/)[0]
-        node.value = `<Codesandbox url={"${url}"} />`
-      }
-    })
-  }
-}
-
 export interface TOCItem {
   slug: string
   title: string

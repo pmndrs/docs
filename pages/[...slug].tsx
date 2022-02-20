@@ -8,7 +8,7 @@ import SEO from 'components/Seo'
 import components from 'components/mdx'
 import useDocs, { Doc } from 'hooks/useDocs'
 import prism from 'remark-prism'
-import { TOCItem, withCodesandbox, withTableofContents } from 'utils/remark'
+import { TOCItem, withTableofContents } from 'utils/remark'
 import { getAllDocs, getDocs, getNavItems, NavItems } from 'utils/docs'
 
 interface PostPageProps {
@@ -93,7 +93,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
 
   const source = await serialize(content, {
     mdxOptions: {
-      remarkPlugins: [prism, withCodesandbox, withTableofContents(toc)],
+      remarkPlugins: [prism, withTableofContents(toc)],
       rehypePlugins: [],
     },
     scope: data,
