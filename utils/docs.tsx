@@ -54,9 +54,9 @@ const getParams = (lib: keyof typeof libs) => {
 }
 
 export interface Doc {
-  path: string
   slug: string[]
   url: string
+  editURL: string
   nav: number
   title: string
   description: string
@@ -97,6 +97,10 @@ export const getDocs = async (lib?: keyof typeof libs) => {
     const path = file.replace(`${params.entry}/`, '')
     const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
     const url = `/${slug.join('/')}`
+    const editURL = file.replace(
+      params.gitDir,
+      `https://github.com/${params.repo}/tree/${params.branch}`
+    )
 
     // Read & parse doc
     const compiled = matter(fs.readFileSync(file))
@@ -115,7 +119,7 @@ export const getDocs = async (lib?: keyof typeof libs) => {
       .replace(COMMENT_REGEX, '')
 
     // Write params to docs map
-    docs.set(slug.join('/'), { path, slug, url, title, description, nav, content })
+    docs.set(slug.join('/'), { slug, url, editURL, title, description, nav, content })
   })
 
   return docs

@@ -1,14 +1,19 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import components from 'components/mdx'
+import useDocs from 'hooks/useDocs'
 import { hydrate, getDocs, Doc } from 'utils/docs'
 
-export default function PostPage({ nav, title, description, content }) {
+export default function PostPage({ docs, title, description, content }) {
+  const { setDocs } = useDocs()
   const post = useMemo(() => hydrate(content), [content])
+
+  useEffect(() => void setDocs(docs), [setDocs])
+
   return (
-    <Layout nav={nav}>
+    <Layout>
       <SEO />
       <main className="max-w-3xl mx-auto">
         <div className="pb-6 mb-4 border-b post-header">
@@ -26,35 +31,22 @@ export default function PostPage({ nav, title, description, content }) {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const docs: Map<string, Doc> = await getDocs(...params.slug)
-  if (!docs) return { notFound: true }
+  const matches: Map<string, Doc> = await getDocs(...params.slug)
+  if (!matches) return { notFound: true }
 
   const pathname = params.slug.join('/')
 
-  if (!docs.has(pathname)) {
-    const alternate = Array.from(docs.keys()).find((key: string) => key.startsWith(pathname))
+  if (!matches.has(pathname)) {
+    const alternate = Array.from(matches.keys()).find((key: string) => key.startsWith(pathname))
     return alternate
       ? { redirect: { permanent: false, destination: `/${alternate}` } }
       : { notFound: true }
   }
 
-  const doc = docs.get(pathname)
+  const docs = Array.from(matches.values()).sort((a, b) => (a.nav > b.nav ? 1 : -1))
+  const { title, description, content } = matches.get(pathname)
 
-  const nav = Array.from(docs.values())
-    .sort((a, b) => (a.nav > b.nav ? 1 : -1))
-    .reduce((acc, doc) => {
-      const [lib, ...rest] = doc.slug
-      const [page, category] = rest.reverse()
-
-      if (category && !acc[category]) acc[category] = {}
-
-      if (category) acc[category][page] = doc
-      else acc[page] = doc
-
-      return acc
-    }, {})
-
-  return { props: { ...doc, nav }, revalidate: 300 }
+  return { props: { docs, title, description, content }, revalidate: 300 }
 }
 
 export const getStaticPaths = async () => {

@@ -3,8 +3,8 @@ import libs from 'data/libraries'
 import { useRouter } from 'next/router'
 
 export default function SEO() {
-  const { asPath } = useRouter()
-  const [lib] = asPath.split('/').filter(Boolean)
+  const { query } = useRouter()
+  const [lib] = query.slug as string[]
 
   const currentSeo = libs[lib]
   if (!currentSeo) return null

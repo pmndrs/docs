@@ -1,11 +1,27 @@
+import { useMemo, Fragment } from 'react'
+import { useRouter } from 'next/router'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Fragment } from 'react'
-import type { Doc } from 'utils/docs'
+import useDocs from 'hooks/useDocs'
 
-function Nav({ nav }: { nav: Record<string, Record<string, Doc>> }) {
+function Nav() {
   const { asPath } = useRouter()
+  const { docs } = useDocs()
+  const nav = useMemo(
+    () =>
+      docs.reduce((acc, doc) => {
+        const [lib, ...rest] = doc.slug
+        const [page, category] = rest.reverse()
+
+        if (category && !acc[category]) acc[category] = {}
+
+        if (category) acc[category][page] = doc
+        else acc[page] = doc
+
+        return acc
+      }, {}),
+    [docs]
+  )
 
   return (
     <ul>

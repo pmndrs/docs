@@ -4,7 +4,7 @@ import { useSpring, animated as a } from 'react-spring'
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import { MenuIcon } from 'components/Icons'
-import Toc from 'components/Toc'
+// import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -14,17 +14,13 @@ import useMenu from 'hooks/useMenu'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import useDocs from 'hooks/useDocs'
 
-export default function Layout({ nav, children }) {
+export default function Layout({ children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
-  const { docs, currentDocs, getPrevAndNext } = useDocs()
+  const { docs, getPrevAndNext } = useDocs()
 
-  const {
-    query: { slug },
-    asPath,
-  } = useRouter()
+  const { asPath } = useRouter()
   const { isSwitcherOpen } = useSwitcher()
 
-  const [lib] = slug as string[]
   const { nextPage, previousPage, currentPageIndex } = getPrevAndNext(asPath)
   const animationConfig = { mass: 1, tension: 180, friction: 20 }
   const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
@@ -81,7 +77,7 @@ export default function Layout({ nav, children }) {
                 <div className="mt-8 md:mt-0 mb-4">
                   <LibSwitcher />
                 </div>
-                <Nav nav={nav} />
+                <Nav />
               </nav>
             </a.div>
             <a.button
@@ -103,7 +99,7 @@ export default function Layout({ nav, children }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                      href={currentDocs[currentPageIndex].editURL}
+                      href={docs[currentPageIndex].editURL}
                     >
                       Edit this page on GitHub
                     </a>
