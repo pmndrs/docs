@@ -1,6 +1,14 @@
 import Link from 'next/link'
 import { EnterIcon } from 'components/Icons'
-import { highlight } from 'utils/text'
+
+/**
+ * Bolds matching text, returning HTML.
+ */
+const highlight = (text: string, target: string | RegExp) =>
+  text.replace(
+    typeof target === 'string' ? new RegExp(target, 'gi') : target,
+    (match: string) => `<span class="font-bold">${match}</span>`
+  )
 
 const SearchItem = ({ url, search, title, description }) => (
   <Link href={url}>
