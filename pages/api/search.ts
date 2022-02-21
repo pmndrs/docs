@@ -8,14 +8,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { lib, query } = req.body
 
   // Fetch libs' docs
-  const docs: Map<string, Doc> = await getDocs(lib as keyof typeof libs)
+  const docs = await getDocs(lib as keyof typeof libs)
 
   // Get length of matched text in result
   const relevanceOf = (result: Doc) =>
     result.title.toLowerCase().indexOf((query as string).toLowerCase())
 
   // Search
-  const results = matchSorter(Array.from(docs.values()), query as string, {
+  const results = matchSorter(docs, query as string, {
     keys: ['title', 'description', 'content'],
     threshold: matchSorter.rankings.CONTAINS,
   })

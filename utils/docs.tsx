@@ -61,11 +61,11 @@ export interface Doc {
 /**
  * Fetches all docs, filters to a lib if specified.
  */
-export const getDocs = async (lib?: keyof typeof libs) => {
+export const getDocs = async (lib?: keyof typeof libs): Promise<Doc[]> => {
   // If a lib isn't specified, fetch all docs
   if (!lib) {
     const docs = await Promise.all(Object.keys(libs).map(getDocs))
-    return docs.filter(Boolean).flatMap((c: Map<string, Doc>) => Array.from(c.values()))
+    return docs.filter(Boolean).flat()
   }
 
   // Init params, bail if lib not found
@@ -86,36 +86,36 @@ export const getDocs = async (lib?: keyof typeof libs) => {
   // Crawl and parse docs
   const files = await crawl(params.entry, MARKDOWN_REGEX)
 
-  const docs = new Map<string, Doc>()
-  files.forEach((file) => {
-    // Get slug from local path
-    const path = file.replace(`${params.entry}/`, '')
-    const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
-    const url = `/${slug.join('/')}`
-    const editURL = file.replace(
-      params.gitDir,
-      `https://github.com/${params.repo}/tree/${params.branch}`
-    )
+  const docs = files
+    .map((file) => {
+      // Get slug from local path
+      const path = file.replace(`${params.entry}/`, '')
+      const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
+      const url = `/${slug.join('/')}`
+      const editURL = file.replace(
+        params.gitDir,
+        `https://github.com/${params.repo}/tree/${params.branch}`
+      )
 
-    // Read & parse doc
-    const compiled = matter(fs.readFileSync(file))
+      // Read & parse doc
+      const compiled = matter(fs.readFileSync(file))
 
-    // Add fallback frontmatter
-    const pathname = slug[slug.length - 1]
-    const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
-    const description = compiled.data.description ?? ''
-    const nav = compiled.data.nav ?? Infinity
+      // Add fallback frontmatter
+      const pathname = slug[slug.length - 1]
+      const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
+      const description = compiled.data.description ?? ''
+      const nav = compiled.data.nav ?? Infinity
 
-    // Sanitize markdown
-    const content = compiled.content
-      // Remove <!-- --> comments from frontMatter
-      .replace(FRONTMATTER_REGEX, '')
-      // Remove extraneous comments from post
-      .replace(COMMENT_REGEX, '')
+      // Sanitize markdown
+      const content = compiled.content
+        // Remove <!-- --> comments from frontMatter
+        .replace(FRONTMATTER_REGEX, '')
+        // Remove extraneous comments from post
+        .replace(COMMENT_REGEX, '')
 
-    // Write params to docs map
-    docs.set(slug.join('/'), { slug, url, editURL, title, description, nav, content })
-  })
+      return { slug, url, editURL, title, description, nav, content }
+    })
+    .sort((a, b) => (a.nav > b.nav ? 1 : -1))
 
   return docs
 }

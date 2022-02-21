@@ -7,7 +7,7 @@ import components from 'components/mdx'
 import useDocs from 'hooks/useDocs'
 import prism from 'mdx-prism'
 import { tableOfContents } from 'utils/rehype'
-import { getDocs, Doc } from 'utils/docs'
+import { getDocs } from 'utils/docs'
 
 export default function PostPage({ docs, toc, title, description, source }) {
   const { setDocs } = useDocs()
@@ -33,20 +33,20 @@ export default function PostPage({ docs, toc, title, description, source }) {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const matches: Map<string, Doc> = await getDocs(...params.slug)
-  if (!matches) return { notFound: true }
+  const docs = await getDocs(...params.slug)
+  if (!docs?.length) return { notFound: true }
 
-  const pathname = params.slug.join('/')
+  const url = `/${params.slug.join('/')}`
+  const doc = docs.find((doc) => doc.url === url)
 
-  if (!matches.has(pathname)) {
-    const alternate = Array.from(matches.keys()).find((key: string) => key.startsWith(pathname))
+  if (!doc) {
+    const alternate = docs.find((doc) => doc.url.startsWith(url))
     return alternate
-      ? { redirect: { permanent: false, destination: `/${alternate}` } }
+      ? { redirect: { permanent: false, destination: alternate.url } }
       : { notFound: true }
   }
 
-  const docs = Array.from(matches.values()).sort((a, b) => (a.nav > b.nav ? 1 : -1))
-  const { title, description, content } = matches.get(pathname)
+  const { title, description, content } = doc
 
   const toc = []
   const source = await serialize(content, {
