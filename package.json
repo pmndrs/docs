@@ -38,6 +38,7 @@
     "react-prism": "^4.3.2",
     "react-spring": "9.3.2",
     "react-twitter-widgets": "^1.10.0",
+    "remark-gfm": "^3.0.1",
     "set-value": "^4.0.0",
     "three": "^0.135.0",
     "threejs-meshline": "^2.0.12",

@@ -5,6 +5,7 @@ import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import components from 'components/mdx'
 import useDocs from 'hooks/useDocs'
+import gfm from 'remark-gfm'
 import prism from 'mdx-prism'
 import { tableOfContents } from 'utils/rehype'
 import { getDocs } from 'utils/docs'
@@ -51,6 +52,7 @@ export const getStaticProps = async ({ params }) => {
   const toc = []
   const source = await serialize(content, {
     mdxOptions: {
+      remarkPlugins: [gfm],
       rehypePlugins: [prism, tableOfContents(toc)],
     },
   })

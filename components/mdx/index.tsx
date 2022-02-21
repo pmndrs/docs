@@ -57,11 +57,6 @@ const components = {
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>,
-  inlineCode: ({ children }) => (
-    <code className="px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
-      {children}
-    </code>
-  ),
   p: ({ children }) => <p className="mb-4 text-base text-gray-700">{children}</p>,
   blockquote: ({ children }) => (
     <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>
@@ -71,7 +66,7 @@ const components = {
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-6 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow-lg overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table className="divide-y divide-gray-200 w-full"> {children}</table>
+            <table className="divide-y divide-gray-200 w-full">{children}</table>
           </div>
         </div>
       </div>
