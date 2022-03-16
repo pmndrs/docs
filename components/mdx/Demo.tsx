@@ -1,6 +1,8 @@
 import { useState, FC, useRef, useEffect } from 'react'
-import prettier from 'prettier/standalone'
-import parserBabel from 'prettier/parser-babel'
+// @ts-ignore
+import prettier from 'prettier/esm/standalone.mjs'
+// @ts-ignore
+import parserBabel from 'prettier/esm/parser-babel.mjs'
 import { ErrorBoundary } from '../ErrorBoundary'
 import { useObserver } from 'hooks/useObserver'
 import { SandpackRunner, Sandpack } from '@codesandbox/sandpack-react'
