@@ -17,11 +17,6 @@ export const data = [
     github: 'https://github.com/pmndrs/react-spring',
     description: 'Bring your components to life with simple spring animation primitives for React',
     image: 'https://docs.pmnd.rs/react-spring/share.jpg',
-    docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/react-spring',
-    },
   },
   {
     id: 'drei',
@@ -30,11 +25,6 @@ export const data = [
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
     image: 'https://docs.pmnd.rs/logo-drei.jpg',
-    docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/drei',
-    },
   },
   {
     id: 'zustand',
