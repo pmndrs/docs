@@ -37,7 +37,7 @@ module.exports = {
       },
       {
         source: '/drei',
-        destination: 'https://github.com/pmndrs/drei',
+        destination: 'https://github.com/pmndrs/drei#readme',
         permanent: true,
       },
       {
