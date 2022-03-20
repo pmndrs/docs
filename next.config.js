@@ -1,4 +1,5 @@
 module.exports = {
+  productionBrowserSourceMaps: true,
   images: {
     domains: ['codesandbox.io'],
   },
@@ -22,6 +23,26 @@ module.exports = {
       {
         source: '/jotai/:slug*',
         destination: 'https://jotai.pmnd.rs/docs/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/react-spring',
+        destination: 'https://react-spring.io',
+        permanent: true,
+      },
+      {
+        source: '/react-spring/:slug*',
+        destination: 'https://react-spring.io/#:slug*',
+        permanent: true,
+      },
+      {
+        source: '/drei',
+        destination: 'https://github.com/pmndrs/drei#readme',
+        permanent: true,
+      },
+      {
+        source: '/drei/:slug*',
+        destination: 'https://github.com/pmndrs/drei#:slug*',
         permanent: true,
       },
     ]

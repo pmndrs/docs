@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
-import { MDXRemote } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
-import components from 'components/mdx'
+import Post from 'components/Post'
 import useDocs from 'hooks/useDocs'
 import gfm from 'remark-gfm'
 import prism from 'mdx-prism'
@@ -26,7 +25,7 @@ export default function PostPage({ docs, toc, title, description, source }) {
           )}
         </div>
         <main className="content-container">
-          <MDXRemote {...source} components={components} />
+          <Post {...source} />
         </main>
       </main>
     </Layout>

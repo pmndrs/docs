@@ -1,20 +1,9 @@
-import Codesandbox from './Codesandbox'
-import StoryBook from './Storybook'
-import Sandbox from './Sandbox'
-import { TweetGrid } from './TweetGrid'
-import { YouTubeEmbed } from './YoutubeEmbed'
-import { GridUsedBy } from './GridUsedBy'
-import { Demo } from './Demo'
-import { DemoGrid } from './DemoGrid'
+import clsx from 'clsx'
+import Codesandbox from 'components/Codesandbox'
+import { MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
 
 const components = {
-  StoryBook,
-  Demo,
-  DemoGrid,
-  YouTubeEmbed,
-  GridUsedBy,
-  Sandbox,
-  TweetGrid,
+  Codesandbox,
   Hint: ({ children }) => (
     <div className="shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 mb-6">
       {children}
@@ -36,8 +25,6 @@ const components = {
       {children}
     </ul>
   ),
-  Callout: ({ children }) => children,
-  Bleed: ({ children }) => children,
   Codesandbox,
   h2: ({ children, id }) => (
     <a href={`#${id}`} className="heading text-3xl mb-6 mt-8 tracking-light">
@@ -72,17 +59,19 @@ const components = {
       </div>
     </div>
   ),
-  a: ({ href, children }) => {
-    if (href.startsWith('https://')) {
-      return (
-        <a href={href} target="_blank" rel="noopener noreferrer">
-          {children}
-        </a>
-      )
-    }
+  a: ({ href, target, rel, children }) => {
+    const isAnchor = href.startsWith('https://')
+    target = isAnchor ? '_blank' : target
+    rel = isAnchor ? 'noopener noreferrer' : rel
 
-    return <a href={href}>{children}</a>
+    return (
+      <a href={href} target={target} rel={rel}>
+        {children}
+      </a>
+    )
   },
 }
 
-export default components
+export default function Post(props: MDXRemoteSerializeResult) {
+  return <MDXRemote {...props} components={components} />
+}

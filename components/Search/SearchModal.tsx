@@ -1,4 +1,4 @@
-import { useSpring, a } from '@react-spring/web'
+import { useSpring, a } from 'react-spring'
 import { SearchIcon } from 'components/Icons'
 import SearchItem from './SearchItem'
 import type { Doc } from 'utils/docs'

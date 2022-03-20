@@ -9,7 +9,6 @@ node_modules/
 # dependency lock files
 package-lock.json
 pnpm-lock.yaml
-yarn.lock
 
 # other
 .next/
