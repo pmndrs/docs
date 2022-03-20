@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import Codesandbox from 'components/Codesandbox'
 import { MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
 
@@ -25,7 +24,6 @@ const components = {
       {children}
     </ul>
   ),
-  Codesandbox,
   h2: ({ children, id }) => (
     <a href={`#${id}`} className="heading text-3xl mb-6 mt-8 tracking-light">
       <h2 id={id}>{children}</h2>
