@@ -153,6 +153,20 @@ td:first-child {
   max-width: 150px;
 }
 
+.grid-list li {
+  @apply text-base text-gray-700;
+  font-size: 0.9375rem;
+  line-height: 1.35rem;
+}
+
+.grid-list li a {
+  @apply mb-2 block;
+}
+
+ul.grid-list > li:before {
+  display: none;
+}
+
 @layer utilities {
   @responsive {
     .scrolling-touch {
@@ -162,6 +176,43 @@ td:first-child {
       -webkit-overflow-scrolling: auto;
     }
   }
+}
+
+#intro-demos {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+  margin: 2em auto;
+  max-width: 900px;
+}
+#intro-demos .demo-cell {
+  padding-right: 10px;
+}
+
+#intro-demos .demo-cell img.laptop {
+  max-width: 410px;
+}
+
+#intro-demos .demo-cell img {
+  width: 100%;
+  margin-right: 10px;
+}
+
+#intro-demos .demo-cell img.tablet {
+  max-width: 280px;
+}
+
+#intro-demos .demo-cell img.phone {
+  max-width: 90px;
+}
+
+.demo-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.demo-grid > div:last-of-type:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .search-item.focus-visible li > div {
