@@ -1,50 +1,60 @@
+import { useMemo, Fragment } from 'react'
+import { useRouter } from 'next/router'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Fragment } from 'react'
+import useDocs from 'hooks/useDocs'
+import type { Doc } from 'utils/docs'
 
-type NavRoute = {
-  url: string
-  title: string
-}
-
-type NavProps = {
-  nav: Record<string, Record<string, NavRoute>>
-}
-
-function NavItem({ route }) {
-  const { asPath } = useRouter()
-  const isActive = route.url === asPath
-
+function NavItem({ doc, active, ...props }) {
   return (
-    <li>
-      <Link href={route.url.replace('index', '')}>
+    <li {...props}>
+      <Link href={doc.url ?? '/'}>
         <a
           className={clsx(
             'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer',
-            isActive && 'bg-gray-100'
+            active && 'bg-gray-100'
           )}
         >
-          {route.title}
+          {doc.title}
         </a>
       </Link>
     </li>
   )
 }
 
-function Nav({ nav }: NavProps) {
+function Nav() {
+  const { asPath } = useRouter()
+  const { docs } = useDocs()
+  const nav = useMemo(
+    () =>
+      docs.reduce((acc, doc) => {
+        const [lib, ...rest] = doc.slug
+        const [page, category] = rest.reverse()
+
+        if (category && !acc[category]) acc[category] = {}
+
+        if (category) acc[category][page] = doc
+        else acc[page] = doc
+
+        return acc
+      }, {}),
+    [docs]
+  )
+
   return (
     <ul>
-      {Object.entries(nav).map(([key, children], index) => (
-        <Fragment key={`${key}-${index}`}>
+      {Object.entries(nav).map(([key, doc]) => (
+        <Fragment key={key}>
           <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold">
             {key.replace(/\-/g, ' ')}
           </h3>
-          {Object.entries(children).map(([key, route], index) => (
-            <Fragment key={`${key}-${index}`}>
-              <NavItem route={route} />
-            </Fragment>
-          ))}
+          {(doc as Doc).url ? (
+            <NavItem key={key} active={(doc as Doc).url === asPath} doc={doc} />
+          ) : (
+            Object.entries(doc).map(([key, doc]) => (
+              <NavItem key={key} active={doc.url === asPath} doc={doc} />
+            ))
+          )}
         </Fragment>
       ))}
     </ul>

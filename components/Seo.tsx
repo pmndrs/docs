@@ -1,13 +1,17 @@
 import Head from 'next/head'
-import { data } from 'data/libraries'
+import libs from 'data/libraries'
+import { useRouter } from 'next/router'
 
-export default function SEO({ lib }: { lib: string }) {
-  const currentSeo = data.find(({ id }) => id === lib)
+export default function SEO() {
+  const { query } = useRouter()
+  const [lib] = query.slug as string[]
+
+  const currentSeo = libs[lib]
   if (!currentSeo) return null
 
   return (
     <Head>
-      <title> {currentSeo.title} Documentation</title>
+      <title>{currentSeo.title} Documentation</title>
       <meta property="og:site_name" content={`${currentSeo.title} Documentation`} />
       <meta name="description" content={currentSeo.description} />
 

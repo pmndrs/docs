@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import Codesandbox from 'components/Codesandbox'
 import { MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
 
@@ -25,35 +24,24 @@ const components = {
       {children}
     </ul>
   ),
-  Heading: ({ children, id, level, ...rest }) => {
-    const headingStyle = {
-      2: 'text-3xl mb-6 mt-8',
-      3: 'text-xl mb-4 mt-6',
-      4: 'text-base mb-4 mt-4',
-    }
-
-    const clampedLevel = Math.min(Math.max(level, 2), 4)
-    const Comp = `h${clampedLevel}`
-
-    return (
-      <a
-        href={`#${id}`}
-        className={clsx('heading', headingStyle[clampedLevel], 'tracking-tight')}
-        {...rest}
-      >
-        {/* @ts-expect-error */}
-        <Comp id={id}>{children}</Comp>
-      </a>
-    )
-  },
+  h2: ({ children, id }) => (
+    <a href={`#${id}`} className="heading text-3xl mb-6 mt-8 tracking-light">
+      <h2 id={id}>{children}</h2>
+    </a>
+  ),
+  h3: ({ children, id }) => (
+    <a href={`#${id}`} className="heading text-xl mb-4 mt-6 tracking-light">
+      <h3 id={id}>{children}</h3>
+    </a>
+  ),
+  h4: ({ children, id }) => (
+    <a href={`#${id}`} className="heading text-base mb-4 mt-4 tracking-light">
+      <h4 id={id}>{children}</h4>
+    </a>
+  ),
   ul: ({ children }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }) => <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>,
-  inlineCode: ({ children }) => (
-    <code className="px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100">
-      {children}
-    </code>
-  ),
   p: ({ children }) => <p className="mb-4 text-base text-gray-700">{children}</p>,
   blockquote: ({ children }) => (
     <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>

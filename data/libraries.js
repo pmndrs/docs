@@ -1,6 +1,5 @@
-export const data = [
-  {
-    id: 'react-three-fiber',
+const libraries = {
+  'react-three-fiber': {
     title: 'React Three Fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
@@ -11,23 +10,20 @@ export const data = [
       dir: 'docs',
     },
   },
-  {
-    id: 'react-spring',
+  'react-spring': {
     title: 'React Spring',
     github: 'https://github.com/pmndrs/react-spring',
     description: 'Bring your components to life with simple spring animation primitives for React',
     image: 'https://docs.pmnd.rs/react-spring/share.jpg',
   },
-  {
-    id: 'drei',
+  drei: {
     title: 'Drei',
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
     image: 'https://docs.pmnd.rs/logo-drei.jpg',
   },
-  {
-    id: 'zustand',
+  zustand: {
     title: 'Zustand',
     github: 'https://github.com/pmndrs/zustand',
     description:
@@ -40,16 +36,14 @@ export const data = [
       dir: 'docs/zustand',
     },
   },
-  {
-    id: 'jotai',
+  jotai: {
     title: 'Jotai',
     github: 'https://github.com/pmndrs/jotai',
     description: 'Jotai is a primitive and flexible state management library for React',
     icon: '/jotai-icon.png',
     // image: 'https://docs.pmnd.rs/jotai-ghost.png',
   },
-  {
-    id: 'a11y',
+  a11y: {
     title: 'A11y',
     github: 'https://github.com/pmndrs/react-three-a11y',
     description:
@@ -61,8 +55,7 @@ export const data = [
       dir: 'docs/a11y',
     },
   },
-  {
-    id: 'react-postprocessing',
+  'react-postprocessing': {
     title: 'React Postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
@@ -73,4 +66,6 @@ export const data = [
       dir: 'docs/react-postprocessing',
     },
   },
-]
+}
+
+export default libraries

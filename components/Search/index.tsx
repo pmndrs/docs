@@ -1,29 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import useSearch, { Result } from 'hooks/useSearch'
 import useKeyPress from 'hooks/useKeyPress'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
-import useDocs from 'hooks/useDocs'
 
 const Search = () => {
-  const { query, asPath } = useRouter()
-  const { docs } = useDocs()
+  const router = useRouter()
   const [showSearchModal, setShowSearchModal] = useState(false)
-  const [search, setSearch] = useState('')
-  // @ts-ignore
-  const [folder] = query.slug
-  const [results, isThreeD]: [Result[], boolean] = useSearch({
-    search,
-    folder,
-    docs,
-  })
+  const [query, setQuery] = useState('')
+  const [lib] = router.query.slug as string[]
+  const [results, setResults] = useState([])
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('/')
   useLockBodyScroll(showSearchModal)
 
   useEffect(() => {
-    setSearch('')
+    if (!query) return void setResults([])
+
+    const controller = new AbortController()
+
+    fetch('/api/search', {
+      signal: controller.signal,
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ lib, query }),
+    })
+      .then(async (res) => {
+        const results = await res.json()
+        setResults(results)
+      })
+      .catch((e) => {
+        if (e.name !== 'AbortError') console.error(e)
+      })
+
+    return () => controller.abort()
+  }, [lib, query])
+
+  useEffect(() => {
+    setQuery('')
   }, [showSearchModal])
 
   useEffect(() => {
@@ -38,21 +54,18 @@ const Search = () => {
     }
   }, [slashPressed, showSearchModal])
 
-  useEffect(() => setShowSearchModal(false), [asPath])
+  useEffect(() => setShowSearchModal(false), [router.asPath])
 
   return (
     <>
-      {showSearchModal ? (
+      {showSearchModal && (
         <SearchModal
-          isThreeD={isThreeD}
-          onChange={(e) => {
-            setSearch(e.target.value)
-          }}
-          search={search}
+          onChange={(e) => setQuery(e.target.value)}
+          search={query}
           results={results}
           close={() => setShowSearchModal(false)}
         />
-      ) : null}
+      )}
       <div className="relative w-full">
         <div className="flex items-center justify-between flex-auto h-16 px-4">
           <button

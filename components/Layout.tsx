@@ -14,17 +14,13 @@ import useMenu from 'hooks/useMenu'
 import useLockBodyScroll from 'hooks/useLockBodyScroll'
 import useDocs from 'hooks/useDocs'
 
-export default function Layout({ contentRef, nav, toc, children }) {
+export default function Layout({ toc, children }) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
-  const { docs, currentDocs, getPrevAndNext } = useDocs()
+  const { docs, getPrevAndNext } = useDocs()
 
-  const {
-    query: { slug },
-    asPath,
-  } = useRouter()
+  const { asPath } = useRouter()
   const { isSwitcherOpen } = useSwitcher()
 
-  const [lib] = slug as string[]
   const { nextPage, previousPage, currentPageIndex } = getPrevAndNext(asPath)
   const animationConfig = { mass: 1, tension: 180, friction: 20 }
   const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
@@ -81,7 +77,7 @@ export default function Layout({ contentRef, nav, toc, children }) {
                 <div className="mt-8 md:mt-0 mb-4">
                   <LibSwitcher />
                 </div>
-                <Nav nav={nav[lib]} />
+                <Nav />
               </nav>
             </a.div>
             <a.button
@@ -103,7 +99,7 @@ export default function Layout({ contentRef, nav, toc, children }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
-                      href={currentDocs[currentPageIndex].editURL}
+                      href={docs[currentPageIndex].editURL}
                     >
                       Edit this page on GitHub
                     </a>
@@ -142,7 +138,7 @@ export default function Layout({ contentRef, nav, toc, children }) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 mr-8 xl:text-sm xl:block">
-                {toc.length ? <Toc contentRef={contentRef} toc={toc} /> : null}
+                {toc.length ? <Toc toc={toc} /> : null}
               </div>
             </div>
           </div>

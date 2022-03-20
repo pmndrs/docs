@@ -1,74 +1,121 @@
-import setValue from 'set-value'
-import { data as libData } from 'data/libraries'
-import { getPaths, parseMDX } from 'utils/mdx'
-import type { Doc } from 'hooks/useDocs'
+import { fs } from 'memfs'
+import git from 'isomorphic-git'
+import http from 'isomorphic-git/http/node'
+import matter from 'gray-matter'
+import libs from 'data/libraries'
 
 /**
- * Parses a doc into JSX with meta.
+ * Checks for .md(x) file extension
  */
-export const parseDoc = (lib: string, filePath: string): Doc => {
-  // Get lib docs settings
-  const target = libData.find(({ id }) => id === lib)
-  if (!target?.docs) return
+export const MARKDOWN_REGEX = /\.mdx?$/
 
-  // Parse doc
-  const { localURL, data, ...rest } = parseMDX(filePath, target.docs)
+/**
+ * Uncomments frontMatter from vanilla markdown
+ */
+export const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
 
-  // Create internal meta
-  const slug = [lib, ...localURL.split('/')]
-  const url = `/${slug.join('/')}`
-  const pathname = slug[slug.length - 1]
+/**
+ * Removes multi and single-line comments from markdown
+ */
+export const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
 
-  // Internal meta fallbacks
-  data.title = data.title ?? pathname.replace(/\-/g, ' ')
-  data.description = data.description ?? ''
-  data.nav = data.nav ?? Infinity
+/**
+ * Recursively crawls a directory, returning an array of file paths.
+ */
+const crawl = async (dir: string, filter?: RegExp, files: string[] = []) => {
+  if (fs.lstatSync(dir).isDirectory()) {
+    const filenames = fs.readdirSync(dir)
+    await Promise.all(filenames.map(async (filename) => crawl(`${dir}/${filename}`, filter, files)))
+  } else if (!filter || filter.test(dir)) {
+    files.push(dir)
+  }
 
-  return { ...rest, ...data, data, slug, url }
+  return files
 }
 
 /**
- * Fetches docs for a lib.
+ * Gets a lib's doc params if configured.
  */
-export const getDocs = async (lib: string): Promise<Doc[]> => {
-  // Get target lib settings
-  const target = libData.find(({ id }) => id === lib)
-  if (!target?.docs) return
+const getParams = (lib: keyof typeof libs) => {
+  const config = libs[lib]
+  if (!config?.docs) return
 
-  // Get docs paths
-  const paths = await getPaths(target.docs)
+  const { dir = '', repo, branch = 'main' } = config.docs
 
-  // Generate docs
-  const docs = paths
-    .map((filePath) => parseDoc(lib, filePath))
-    .sort((a: any, b: any) => (a.nav > b.nav ? 1 : -1))
+  const gitDir = `/${repo.replace('/', '-')}-${branch}`
+  const entry = dir ? `${gitDir}/${dir}` : gitDir
+
+  return { repo, branch, gitDir, entry }
+}
+
+export interface Doc {
+  slug: string[]
+  url: string
+  editURL: string
+  nav: number
+  title: string
+  description: string
+  content: string
+}
+
+/**
+ * Fetches all docs, filters to a lib if specified.
+ */
+export const getDocs = async (lib?: keyof typeof libs): Promise<Doc[]> => {
+  // If a lib isn't specified, fetch all docs
+  if (!lib) {
+    const docs = await Promise.all(Object.keys(libs).map(getDocs))
+    return docs.filter(Boolean).flat()
+  }
+
+  // Init params, bail if lib not found
+  const params = getParams(lib)
+  if (!params) return
+
+  // Clone remote
+  await git.clone({
+    fs,
+    http,
+    dir: params.gitDir,
+    url: `https://github.com/${params.repo}`,
+    ref: params.branch,
+    singleBranch: true,
+    depth: 1,
+  })
+
+  // Crawl and parse docs
+  const files = await crawl(params.entry, MARKDOWN_REGEX)
+
+  const docs = files
+    .map((file) => {
+      // Get slug from local path
+      const path = file.replace(`${params.entry}/`, '')
+      const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
+      const url = `/${slug.join('/')}`
+      const editURL = file.replace(
+        params.gitDir,
+        `https://github.com/${params.repo}/tree/${params.branch}`
+      )
+
+      // Read & parse doc
+      const compiled = matter(fs.readFileSync(file))
+
+      // Add fallback frontmatter
+      const pathname = slug[slug.length - 1]
+      const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
+      const description = compiled.data.description ?? ''
+      const nav = compiled.data.nav ?? Infinity
+
+      // Sanitize markdown
+      const content = compiled.content
+        // Remove <!-- --> comments from frontMatter
+        .replace(FRONTMATTER_REGEX, '')
+        // Remove extraneous comments from post
+        .replace(COMMENT_REGEX, '')
+
+      return { slug, url, editURL, title, description, nav, content }
+    })
+    .sort((a, b) => (a.nav > b.nav ? 1 : -1))
 
   return docs
-}
-
-/**
- * Fetches docs for all libs.
- */
-export const getAllDocs = async (): Promise<Doc[]> => {
-  // Get ids of libs who have opted into hosting docs
-  const libs = libData.filter(({ docs }) => docs)
-  const docs = await Promise.all(libs.map(async ({ id }) => getDocs(id)))
-
-  return docs.flat()
-}
-
-export type NavItems = { [lib: string]: { [category: string]: Doc | { [page: string]: Doc } } }
-
-/**
- * Builds a nested list of docs, organized by lib, category, and page keys.
- */
-export const getNavItems = (docs: Doc[]): NavItems => {
-  const nav = docs.reduce((nav, file) => {
-    const [lib, ...rest] = file.slug
-    const _path = `${lib}${rest.length === 1 ? '..' : '.'}${rest.join('.')}`
-    setValue(nav, _path, file)
-    return nav
-  }, {})
-
-  return nav
 }

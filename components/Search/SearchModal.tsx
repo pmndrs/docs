@@ -1,8 +1,9 @@
 import { useSpring, a } from 'react-spring'
 import { SearchIcon } from 'components/Icons'
 import SearchItem from './SearchItem'
+import type { Doc } from 'utils/docs'
 
-const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
+const SearchModal = ({ search, results, close, onChange }) => {
   const renderList = results.length > 0
 
   const { opacity } = useSpring({
@@ -36,13 +37,8 @@ const SearchModal = ({ search, results, close, onChange, isThreeD }) => {
 
           {renderList && (
             <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
-              {results.map((result, index) => (
-                <SearchItem
-                  key={`search-item-${index}`}
-                  search={search}
-                  multipleLibs={isThreeD}
-                  {...result}
-                />
+              {(results as Doc[]).map((result, index) => (
+                <SearchItem key={`search-item-${index}`} search={search} {...result} />
               ))}
             </ul>
           )}
