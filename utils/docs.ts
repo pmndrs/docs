@@ -90,7 +90,7 @@ export const getDocs = async (lib?: keyof typeof libs): Promise<Doc[]> => {
     .map((file) => {
       // Get slug from local path
       const path = file.replace(`${params.entry}/`, '')
-      const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').split('/')]
+      const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
       const url = `/${slug.join('/')}`
       const editURL = file.replace(
         params.gitDir,

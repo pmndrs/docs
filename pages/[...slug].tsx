@@ -36,7 +36,7 @@ export const getStaticProps = async ({ params }) => {
   const docs = await getDocs(...params.slug)
   if (!docs?.length) return { notFound: true }
 
-  const url = `/${params.slug.join('/')}`
+  const url = `/${params.slug.join('/')}`.toLowerCase()
   const doc = docs.find((doc) => doc.url === url)
 
   if (!doc) {
