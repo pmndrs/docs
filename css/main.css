@@ -242,3 +242,7 @@ ul.grid-list > li:before {
   position: absolute;
   transform: translateX(-100%);
 }
+
+.hint p.mb-4:last-of-type {
+  margin-bottom: 0;
+}
