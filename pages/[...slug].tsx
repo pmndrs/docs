@@ -20,7 +20,7 @@ export default function PostPage({ docs, toc, title, description, source }) {
       <main className="max-w-3xl mx-auto">
         <div className="pb-6 mb-4 border-b post-header">
           <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
-          {description?.length && (
+          {!!description?.length && (
             <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
           )}
         </div>

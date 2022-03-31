@@ -93,7 +93,7 @@ export default function Layout({ toc, children }) {
               <div className="flex-auto min-w-0 px-4 pt-8 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{children}</div>
 
-                {docs[currentPageIndex] && (
+                {!!docs[currentPageIndex] && (
                   <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
                     <a
                       target="_blank"
@@ -106,9 +106,9 @@ export default function Layout({ toc, children }) {
                   </div>
                 )}
 
-                {(previousPage || nextPage) && (
+                {(!!previousPage || !!nextPage) && (
                   <div className="flex justify-between w-full max-w-3xl mx-auto mt-12">
-                    {previousPage && (
+                    {!!previousPage && (
                       <div className="">
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
                           Previous
@@ -121,7 +121,7 @@ export default function Layout({ toc, children }) {
                       </div>
                     )}
 
-                    {nextPage && (
+                    {!!nextPage && (
                       <div className="ml-auto text-right">
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
                           Next
