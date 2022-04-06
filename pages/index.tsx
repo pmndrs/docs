@@ -45,7 +45,7 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="flex w-full border-t border-gray-200 divide-x divide-gray-200">
-                  <Link href={`/${id}`}>
+                  <Link href={data.url}>
                     <a className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 transition-colors">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
