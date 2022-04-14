@@ -18,7 +18,7 @@ export default function LibSwitcher() {
       <Popover.Panel className="absolute z-10 w-full mt-4 p-3 shadow-2xl bg-white rounded-md">
         <div className="flex flex-col space-y-3">
           {Object.entries(libs).map(([id, data]) => (
-            <Link key={id} href={`/${id}`}>
+            <Link key={id} href={data.url}>
               <a
                 className={cx(
                   'px-3 py-2 hover:bg-gray-50 rounded-md font-normal text-base',
