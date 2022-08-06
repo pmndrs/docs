@@ -168,13 +168,11 @@ ul.grid-list > li:before {
 }
 
 @layer utilities {
-  @responsive {
-    .scrolling-touch {
-      -webkit-overflow-scrolling: touch;
-    }
-    .scrolling-auto {
-      -webkit-overflow-scrolling: auto;
-    }
+  .scrolling-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+  .scrolling-auto {
+    -webkit-overflow-scrolling: auto;
   }
 }
 
