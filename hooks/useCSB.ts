@@ -15,17 +15,11 @@ export const CSBContext = React.createContext<Record<string, CSB>>({})
 export async function fetchCSB(ids: string[]) {
   const boxes: Record<string, CSB> = {}
 
-  await Promise.all(
-    ids.map(async (id) => {
-      try {
-        boxes[id] = await fetch(`https://codesandbox.io/api/v1/sandboxes/${id}`).then(
-          async (res) => (await res.json()).data
-        )
-      } catch (_) {
-        boxes[id] = null
-      }
-    })
-  )
+  for (const id of ids) {
+    boxes[id] = await fetch(`https://codesandbox.io/api/v1/sandboxes/${id}`).then(
+      async (res) => (await res.json()).data
+    )
+  }
 
   return boxes
 }
