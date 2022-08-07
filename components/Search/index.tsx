@@ -3,9 +3,13 @@ import { useRouter } from 'next/router'
 import { useKeyPress } from 'hooks/useKeyPress'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
+import { matchSorter } from 'match-sorter'
+import { Doc } from 'utils/docs'
+import { useDocs } from 'hooks/useDocs'
 
 function Search() {
   const router = useRouter()
+  const { docs } = useDocs()
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
   const [lib] = router.query.slug as string[]
@@ -15,28 +19,26 @@ function Search() {
   useLockBodyScroll(showSearchModal)
 
   React.useEffect(() => {
-    if (!query) return void setResults([])
+    React.startTransition(() => {
+      if (!query) return setResults([])
 
-    const controller = new AbortController()
+      // Get length of matched text in result
+      const relevanceOf = (result: Doc) =>
+        result.title.toLowerCase().indexOf((query as string).toLowerCase())
 
-    fetch('/api/search', {
-      signal: controller.signal,
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({ lib, query }),
+      // Search
+      const results = matchSorter(docs, query as string, {
+        keys: ['title', 'description', 'content'],
+        threshold: matchSorter.rankings.CONTAINS,
+      })
+        // Sort by relevance
+        .sort((a: Doc, b: Doc) => relevanceOf(b) - relevanceOf(a))
+        // Truncate to top four results
+        .slice(0, 4) as unknown as Doc[]
+
+      setResults(results)
     })
-      .then(async (res) => {
-        const results = await res.json()
-        setResults(results)
-      })
-      .catch((e) => {
-        if (e.name !== 'AbortError') console.error(e)
-      })
-
-    return () => controller.abort()
-  }, [lib, query])
+  }, [docs, lib, query])
 
   React.useEffect(() => void setQuery(''), [showSearchModal])
 
