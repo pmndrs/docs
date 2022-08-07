@@ -40,12 +40,13 @@ const getParams = (lib: keyof typeof libs) => {
   const config = libs[lib]
   if (!config?.docs) return
 
-  const { dir = '', repo, branch = 'main' } = config.docs
+  const [user, repo, branch, ...rest] = config.docs.split('/')
+  const dir = rest.join('/')
 
-  const gitDir = `/${repo.replace('/', '-')}-${branch}`
+  const gitDir = `/${user}-${repo}-${branch}`
   const entry = dir ? `${gitDir}/${dir}` : gitDir
 
-  return { repo, branch, gitDir, entry }
+  return { user, repo, branch, gitDir, entry }
 }
 
 export interface Doc {
@@ -77,7 +78,7 @@ export const getDocs = async (lib?: keyof typeof libs): Promise<Doc[]> => {
     fs,
     http,
     dir: params.gitDir,
-    url: `https://github.com/${params.repo}`,
+    url: `https://github.com/${params.user}/${params.repo}`,
     ref: params.branch,
     singleBranch: true,
     depth: 1,

@@ -1,11 +1,3 @@
-export interface LibraryDocs {
-  repo: string
-  // Defaults to the repository root
-  dir?: string
-  // Defaults to the `main` branch
-  branch?: string
-}
-
 export interface Library {
   title: string
   url: string
@@ -15,8 +7,9 @@ export interface Library {
   image?: string
   // Optional project icon
   icon?: string
-  // Optional remote docs to fetch and serve
-  docs?: LibraryDocs
+  // Optional repository to fetch and serve docs from
+  // <user>/<repo>/<branch>/<path/to/dir>
+  docs?: string
 }
 
 const libraries: Record<string, Library> = {
@@ -26,11 +19,7 @@ const libraries: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
     image: 'https://docs.pmnd.rs/react-three-fiber/share.jpg',
-    docs: {
-      repo: 'pmndrs/react-three-fiber',
-      branch: 'master',
-      dir: 'docs',
-    },
+    docs: 'pmndrs/react-three-fiber/master/docs',
   },
   'react-spring': {
     title: 'React Spring',
@@ -55,11 +44,7 @@ const libraries: Record<string, Library> = {
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     icon: '/zustand-icon.png',
     image: 'https://docs.pmnd.rs/zustand-resources/zustand-bear.jpg',
-    docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/zustand',
-    },
+    docs: 'pmndrs/website/docs/docs/zustand',
   },
   jotai: {
     title: 'Jotai',
@@ -76,11 +61,7 @@ const libraries: Record<string, Library> = {
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     image: 'https://docs.pmnd.rs/a11y/react-three-a11y-header.jpg',
-    docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/a11y',
-    },
+    docs: 'pmndrs/website/docs/docs/a11y',
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
@@ -88,11 +69,7 @@ const libraries: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     image: 'https://docs.pmnd.rs/react-processing.jpg',
-    docs: {
-      repo: 'pmndrs/website',
-      branch: 'docs',
-      dir: 'docs/react-postprocessing',
-    },
+    docs: 'pmndrs/website/docs/docs/react-postprocessing',
   },
 }
 
