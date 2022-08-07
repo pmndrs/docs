@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { EnterIcon } from 'components/Icons'
+import Icon from 'components/Icon'
 
 /**
  * Bolds matching text, returning HTML.
@@ -33,7 +33,7 @@ function SearchItem({ url, search, title, description }: SearchItemProps) {
               `,
               }}
             />
-            <EnterIcon />
+            <Icon icon="enter" className="text-gray-400" />
           </div>
         </li>
       </a>

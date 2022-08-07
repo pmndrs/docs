@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { useSpring, animated as a } from 'react-spring'
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
-import { MenuIcon } from 'components/Icons'
+import Icon from 'components/Icon'
 import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
@@ -52,7 +52,7 @@ export default function Layout({ toc, children }: LayoutProps) {
         </Link>
         <Search />
         <button className="block lg:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
-          <MenuIcon />
+          <Icon icon="menu" />
         </button>
       </div>
 
