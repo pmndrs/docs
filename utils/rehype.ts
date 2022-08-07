@@ -1,9 +1,11 @@
-export interface ASTNode {
+export interface Node {
   type: string
+  name?: string
   value: string
-  tagName: string
+  tagName?: string
+  attributes: Node[]
   properties: any
-  children: ASTNode[]
+  children: Node[]
 }
 
 export interface TocItem {
@@ -17,7 +19,7 @@ export interface TocItem {
  * Generates a table of contents from page headings.
  */
 export const tableOfContents = (target = []) => {
-  return () => (root: ASTNode) => {
+  return () => (root: Node) => {
     const previous = {}
 
     for (const node of root.children) {
@@ -39,5 +41,22 @@ export const tableOfContents = (target = []) => {
         target.push(item)
       }
     }
+  }
+}
+
+/**
+ * Fetches a list of generated codesandbox components.
+ */
+export const codesandbox = (ids = []) => {
+  return () => (root: Node) => {
+    const traverse = (node: Node) => {
+      if (node.name === 'Codesandbox') {
+        const id = node.attributes.find(({ name }) => name === 'id')
+        return ids.push(id.value)
+      }
+
+      if (node.children) for (const child of node.children) traverse(child)
+    }
+    traverse(root)
   }
 }

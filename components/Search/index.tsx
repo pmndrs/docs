@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import * as React from 'react'
 import { useRouter } from 'next/router'
-import useKeyPress from 'hooks/useKeyPress'
-import useLockBodyScroll from 'hooks/useLockBodyScroll'
+import { useKeyPress } from 'hooks/useKeyPress'
+import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 
 const Search = () => {
   const router = useRouter()
-  const [showSearchModal, setShowSearchModal] = useState(false)
-  const [query, setQuery] = useState('')
+  const [showSearchModal, setShowSearchModal] = React.useState(false)
+  const [query, setQuery] = React.useState('')
   const [lib] = router.query.slug as string[]
-  const [results, setResults] = useState([])
+  const [results, setResults] = React.useState([])
   const escPressed = useKeyPress('Escape')
-  const slashPressed = useKeyPress('/')
+  const slashPressed = useKeyPress('Slash')
   useLockBodyScroll(showSearchModal)
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!query) return void setResults([])
 
     const controller = new AbortController()
@@ -38,23 +38,21 @@ const Search = () => {
     return () => controller.abort()
   }, [lib, query])
 
-  useEffect(() => {
-    setQuery('')
-  }, [showSearchModal])
+  React.useEffect(() => void setQuery(''), [showSearchModal])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (escPressed && showSearchModal) {
       setShowSearchModal(false)
     }
-  }, [escPressed, showSearchModal])
+  }, [escPressed, slashPressed, showSearchModal])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (slashPressed && !showSearchModal) {
       setShowSearchModal(true)
     }
   }, [slashPressed, showSearchModal])
 
-  useEffect(() => setShowSearchModal(false), [router.asPath])
+  React.useEffect(() => setShowSearchModal(false), [router.asPath])
 
   return (
     <>

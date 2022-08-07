@@ -1,14 +1,11 @@
-import { createRef, RefObject } from 'react'
 import create from 'zustand'
 
-export type SwitcherModal = {
+export interface SwitcherModal {
   key: number
   opacity: number
 }
 
-export const switcherModalRef = createRef<RefObject<SwitcherModal>>()
-
-export type SwitcherState = {
+export interface SwitcherState {
   isSwitcherOpen: boolean
   setIsSwitcherOpen: (isSwitcherOpen: boolean) => void
   openSwitcher: () => void
@@ -16,12 +13,10 @@ export type SwitcherState = {
   toggleSwitcher: () => void
 }
 
-const useSwitcher = create<SwitcherState>((set) => ({
+export const useSwitcher = create<SwitcherState>((set) => ({
   isSwitcherOpen: false,
   setIsSwitcherOpen: (isSwitcherOpen) => set({ isSwitcherOpen }),
   openSwitcher: () => set({ isSwitcherOpen: true }),
   closeSwitcher: () => set({ isSwitcherOpen: false }),
   toggleSwitcher: () => set((state) => ({ isSwitcherOpen: !state.isSwitcherOpen })),
 }))
-
-export default useSwitcher

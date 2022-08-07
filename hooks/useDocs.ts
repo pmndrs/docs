@@ -1,7 +1,7 @@
 import create from 'zustand'
 import type { Doc } from 'utils/docs'
 
-export type DocState = {
+export interface DocState {
   docs: Doc[]
   setDocs: (doc: Doc[]) => void
   getPrevAndNext: (asPath: string) => {
@@ -11,7 +11,7 @@ export type DocState = {
   }
 }
 
-const useDocs = create<DocState>((set, get) => ({
+export const useDocs = create<DocState>((set, get) => ({
   docs: [],
   currentDocs: [],
   setDocs: (docs: Doc[]) => set({ docs }),
@@ -26,5 +26,3 @@ const useDocs = create<DocState>((set, get) => ({
     }
   },
 }))
-
-export default useDocs
