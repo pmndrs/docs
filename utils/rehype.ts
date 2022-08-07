@@ -18,7 +18,7 @@ export interface TocItem {
 /**
  * Generates a table of contents from page headings.
  */
-export const tableOfContents = (target = []) => {
+export function tableOfContents(target = []) {
   return () => (root: Node) => {
     const previous = {}
 
@@ -47,7 +47,7 @@ export const tableOfContents = (target = []) => {
 /**
  * Fetches a list of generated codesandbox components.
  */
-export const codesandbox = (ids = []) => {
+export function codesandbox(ids = []) {
   return () => (root: Node) => {
     const traverse = (node: Node) => {
       if (node.name === 'Codesandbox') {

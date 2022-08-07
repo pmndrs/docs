@@ -4,8 +4,7 @@ import { useKeyPress } from 'hooks/useKeyPress'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 import { matchSorter } from 'match-sorter'
-import { Doc } from 'utils/docs'
-import { useDocs } from 'hooks/useDocs'
+import { Doc, useDocs } from 'hooks/useDocs'
 import { escape } from 'utils/text'
 
 function Search() {

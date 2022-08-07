@@ -8,10 +8,10 @@ import prism from 'mdx-prism'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import Post from 'components/Post'
-import { useDocs } from 'hooks/useDocs'
+import { Doc, useDocs } from 'hooks/useDocs'
 import { CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
 import { tableOfContents, codesandbox, TocItem } from 'utils/rehype'
-import { Doc, getDocs } from 'utils/docs'
+import { getDocs } from 'utils/docs'
 
 export interface PostPageProps {
   docs: Doc[]

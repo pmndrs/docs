@@ -2,8 +2,7 @@ import * as React from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useDocs } from 'hooks/useDocs'
-import type { Doc } from 'utils/docs'
+import { Doc, useDocs } from 'hooks/useDocs'
 
 function NavItem({ doc, active, ...props }) {
   return (

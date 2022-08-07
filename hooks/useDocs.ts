@@ -1,5 +1,14 @@
 import create from 'zustand'
-import type { Doc } from 'utils/docs'
+
+export interface Doc {
+  slug: string[]
+  url: string
+  editURL: string
+  nav: number
+  title: string
+  description: string
+  content: string
+}
 
 export interface DocState {
   docs: Doc[]

@@ -7,6 +7,7 @@ export interface CodesandboxProps {
 
 export default function Codesandbox({ id }: CodesandboxProps) {
   const data = useCSB(id)
+  if (!data) return null
 
   return (
     <>
