@@ -6,6 +6,7 @@ import SearchModal from './SearchModal'
 import { matchSorter } from 'match-sorter'
 import { Doc } from 'utils/docs'
 import { useDocs } from 'hooks/useDocs'
+import { escape } from 'utils/text'
 
 function Search() {
   const router = useRouter()
@@ -63,7 +64,7 @@ function Search() {
           search={query}
           results={results}
           onClose={() => setShowSearchModal(false)}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(escape(e.target.value))}
         />
       )}
       <div className="relative w-full">

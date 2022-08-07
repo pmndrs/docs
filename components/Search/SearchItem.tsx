@@ -1,14 +1,6 @@
 import Link from 'next/link'
 import Icon from 'components/Icon'
-
-/**
- * Bolds matching text, returning HTML.
- */
-const highlight = (text: string, target: string | RegExp) =>
-  text.replace(
-    typeof target === 'string' ? new RegExp(target, 'gi') : target,
-    (match: string) => `<span class="font-bold">${match}</span>`
-  )
+import { highlight } from 'utils/text'
 
 export interface SearchItemProps {
   url: string
