@@ -1,6 +1,8 @@
 export interface LibraryDocs {
   repo: string
-  dir: string
+  // Defaults to the repository root
+  dir?: string
+  // Defaults to the `main` branch
   branch?: string
 }
 
@@ -9,8 +11,11 @@ export interface Library {
   url: string
   github: string
   description: string
+  // Optional banner image
   image?: string
+  // Optional project icon
   icon?: string
+  // Optional remote docs to fetch and serve
   docs?: LibraryDocs
 }
 
