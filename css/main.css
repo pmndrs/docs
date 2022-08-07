@@ -217,30 +217,6 @@ ul.grid-list > li:before {
   @apply bg-gray-800 text-gray-200;
 }
 
-.loading {
-  --fillColor: 243 244 246;
-  --revealColor: 255 255 255;
-
-  background: rgb(var(--fillColor));
-  color: transparent;
-  position: relative;
-}
-
-.loading::after {
-  animation: loading 2s infinite;
-  background-image: linear-gradient(
-    90deg,
-    rgb(var(--revealColor) / 0) 0,
-    rgb(var(--revealColor) / 0.2) 20%,
-    rgb(var(--revealColor) / 0.5) 60%,
-    rgb(var(--revealColor) / 0)
-  );
-  content: '';
-  inset: 0;
-  position: absolute;
-  transform: translateX(-100%);
-}
-
 .hint p.mb-4:last-of-type {
   margin-bottom: 0;
 }
