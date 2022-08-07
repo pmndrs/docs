@@ -1,37 +1,12 @@
-# Pmndrs libraries docs
+# Poimandres Docs
 
-## Current libraries
-
-- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
-- [React Spring](https://docs.pmnd.rs/react-spring)
-- [Drei](https://docs.pmnd.rs/drei)
-- [Zustand](https://docs.pmnd.rs/zustand)
-- [Jotai](https://docs.pmnd.rs/jotai)
-- [React Three A11y](https://docs.pmnd.rs/a11y)
-- [React Postprocessing](https://docs.pmnd.rs/react-postprocessing)
-
-## How to run locally
-
-```sh
-git clone git@github.com:pmndrs/website.git
-cd website
+```bash
+git clone https://github.com/pmndrs/website.git
 git checkout docs
+cd website
+
 yarn
 yarn dev
 ```
 
-## How to add a library
-
-- Add all the docs in `/docs/your-library`
-- Add the menu item for it in [components/LibSwitcher](https://github.com/pmndrs/website/blob/docs/components/LibSwitcher.tsx#L21)
-- Add SEO and share images in [components/Seo](https://github.com/pmndrs/website/blob/docs/components/Seo.tsx)
-- Add any redirects by creating a new page at `your-library/index.jsx` and placing the redirect in it.
-  - You should redirect to the first chapter of your docs.
-  - You can see an example [here](https://github.com/pmndrs/website/blob/docs/pages/react-spring/index.tsx)
-
-## Stack
-
-- Next.js
-- Tailwind
-- MDX
-- React Spring
+[![Powered by Vercel](public/vercel.svg)](https://vercel.com/?utm_source=pmndrs&utm_campaign=oss)
