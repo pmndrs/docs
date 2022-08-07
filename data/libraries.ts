@@ -44,7 +44,7 @@ const libraries: Record<string, Library> = {
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     icon: '/zustand-icon.png',
     image: 'https://docs.pmnd.rs/zustand-resources/zustand-bear.jpg',
-    docs: 'pmndrs/website/docs/docs/zustand',
+    docs: 'pmndrs/zustand/main/docs',
   },
   jotai: {
     title: 'Jotai',
