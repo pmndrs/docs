@@ -1,7 +1,11 @@
 import Image from 'next/image'
 import { useCSB } from 'hooks/useCSB'
 
-export default function Codesandbox({ id }: { id: string }) {
+export interface CodesandboxProps {
+  id: string
+}
+
+export default function Codesandbox({ id }: CodesandboxProps) {
   const data = useCSB(id)
 
   return (

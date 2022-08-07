@@ -1,4 +1,4 @@
-export const MenuIcon = (props) => (
+export const MenuIcon = () => (
   <svg
     width="24"
     height="24"
@@ -8,7 +8,6 @@ export const MenuIcon = (props) => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    {...props}
   >
     <line x1="3" y1="12" x2="21" y2="12"></line>
     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -16,7 +15,7 @@ export const MenuIcon = (props) => (
   </svg>
 )
 
-export const EnterIcon = (props) => (
+export const EnterIcon = () => (
   <svg
     width="24"
     height="24"
@@ -26,7 +25,6 @@ export const EnterIcon = (props) => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    {...props}
     className="h-5 w-5 text-gray-400"
   >
     <polyline points="9 10 4 15 9 20"></polyline>
@@ -34,7 +32,7 @@ export const EnterIcon = (props) => (
   </svg>
 )
 
-export const SearchIcon = (props) => (
+export const SearchIcon = () => (
   <svg
     className="h-5 w-5 text-gray-300"
     aria-hidden
@@ -46,7 +44,6 @@ export const SearchIcon = (props) => (
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      {...props}
       strokeWidth={2}
       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
     />

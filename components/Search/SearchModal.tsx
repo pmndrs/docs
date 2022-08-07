@@ -1,9 +1,17 @@
+import * as React from 'react'
 import { useSpring, a } from 'react-spring'
 import { SearchIcon } from 'components/Icons'
 import SearchItem from './SearchItem'
 import type { Doc } from 'utils/docs'
 
-const SearchModal = ({ search, results, close, onChange }) => {
+export interface SearchModelProps {
+  search: string
+  results: Doc[]
+  onClose: React.MouseEventHandler<HTMLButtonElement>
+  onChange: React.ChangeEventHandler<HTMLInputElement>
+}
+
+function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
   const renderList = results.length > 0
 
   const { opacity } = useSpring({
@@ -16,7 +24,7 @@ const SearchModal = ({ search, results, close, onChange }) => {
 
   return (
     <a.div className="absolute top-0 left-0 bottom-0 right-0 h-screen z-99" style={{ opacity }}>
-      <button className="opacity-50 bg-gray-900 w-full h-screen" onClick={close}></button>
+      <button className="opacity-50 bg-gray-900 w-full h-screen" onClick={onClose}></button>
       <div className="absolute top-20 left-2/4 w-[500px] max-w-[90%] z-100 -translate-x-1/2 transform">
         <div className="mt-1 relative rounded-md shadow-sm">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -37,7 +45,7 @@ const SearchModal = ({ search, results, close, onChange }) => {
 
           {renderList && (
             <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
-              {(results as Doc[]).map((result, index) => (
+              {results.map((result, index) => (
                 <SearchItem key={`search-item-${index}`} search={search} {...result} />
               ))}
             </ul>

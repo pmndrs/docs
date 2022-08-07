@@ -4,7 +4,7 @@ import { useKeyPress } from 'hooks/useKeyPress'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 
-const Search = () => {
+function Search() {
   const router = useRouter()
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
@@ -58,10 +58,10 @@ const Search = () => {
     <>
       {showSearchModal && (
         <SearchModal
-          onChange={(e) => setQuery(e.target.value)}
           search={query}
           results={results}
-          close={() => setShowSearchModal(false)}
+          onClose={() => setShowSearchModal(false)}
+          onChange={(e) => setQuery(e.target.value)}
         />
       )}
       <div className="relative w-full">

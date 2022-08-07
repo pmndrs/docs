@@ -12,8 +12,14 @@ import { useSwitcher } from 'hooks/useSwitcher'
 import { useMenu } from 'hooks/useMenu'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import { useDocs } from 'hooks/useDocs'
+import { TocItem } from 'utils/rehype'
 
-export default function Layout({ toc, children }) {
+export interface LayoutProps {
+  toc: TocItem[]
+  children: React.ReactNode
+}
+
+export default function Layout({ toc, children }: LayoutProps) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { docs, getPrevAndNext } = useDocs()
 

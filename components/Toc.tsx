@@ -2,7 +2,11 @@ import * as React from 'react'
 import clsx from 'clsx'
 import type { TocItem } from 'utils/rehype'
 
-function Toc({ toc }: { toc: TocItem[] }) {
+export interface ToCProps {
+  toc: TocItem[]
+}
+
+function Toc({ toc }: ToCProps) {
   const [activeIndex, setActiveIndex] = React.useState(0)
 
   React.useEffect(() => {
