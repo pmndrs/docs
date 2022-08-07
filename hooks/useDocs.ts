@@ -13,7 +13,6 @@ export interface DocState {
 
 export const useDocs = create<DocState>((set, get) => ({
   docs: [],
-  currentDocs: [],
   setDocs: (docs: Doc[]) => set({ docs }),
   getPrevAndNext: (asPath: string) => {
     const currentPageIndex = get().docs.findIndex((item) => item.url === asPath)

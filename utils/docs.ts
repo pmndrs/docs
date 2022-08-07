@@ -95,7 +95,7 @@ export const getDocs = async (lib?: keyof typeof libs): Promise<Doc[]> => {
       const url = `/${slug.join('/')}`
       const editURL = file.replace(
         params.gitDir,
-        `https://github.com/${params.repo}/tree/${params.branch}`
+        `https://github.com/${params.user}/${params.repo}/tree/${params.branch}`
       )
 
       // Read & parse doc
