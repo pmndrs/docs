@@ -1,31 +1,24 @@
-import { useEffect, useState } from 'react'
+import * as React from 'react'
 
-export default function useKeyPress(targetKey) {
-  // State for keeping track of whether key is pressed
-  const [keyPressed, setKeyPressed] = useState<boolean>(false)
-  // If pressed key is our target key then set to true
-  function downHandler({ key }) {
-    if (key === targetKey) {
-      setKeyPressed(true)
+export function useKeyPress(code: string) {
+  const [pressed, setPressed] = React.useState(false)
+
+  React.useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.code === code) setPressed(true)
     }
-  }
-  // If released key is our target key then set to false
-  const upHandler = ({ key }) => {
-    if (key === targetKey) {
-      setKeyPressed(false)
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.code === code) setPressed(false)
     }
-  }
-  // Add event listeners
-  useEffect(() => {
-    window.addEventListener('keydown', downHandler)
-    window.addEventListener('keyup', upHandler)
-    // Remove event listeners on cleanup
+
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
+
     return () => {
-      window.removeEventListener('keydown', downHandler)
-      window.removeEventListener('keyup', upHandler)
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
     }
+  }, [code])
 
-    // Empty array ensures that effect is only run on mount and unmount
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  return keyPressed
+  return pressed
 }

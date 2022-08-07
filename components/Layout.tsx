@@ -1,6 +1,6 @@
+import * as React from 'react'
 import clsx from 'clsx'
 import { useSpring, animated as a } from 'react-spring'
-
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import { MenuIcon } from 'components/Icons'
@@ -8,13 +8,18 @@ import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import useSwitcher from 'hooks/useSwitcher'
-import useMenu from 'hooks/useMenu'
-import useLockBodyScroll from 'hooks/useLockBodyScroll'
-import useDocs from 'hooks/useDocs'
+import { useSwitcher } from 'hooks/useSwitcher'
+import { useMenu } from 'hooks/useMenu'
+import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
+import { useDocs } from 'hooks/useDocs'
+import { TocItem } from 'utils/rehype'
 
-export default function Layout({ toc, children }) {
+export interface LayoutProps {
+  toc: TocItem[]
+  children: React.ReactNode
+}
+
+export default function Layout({ toc, children }: LayoutProps) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { docs, getPrevAndNext } = useDocs()
 
@@ -26,7 +31,7 @@ export default function Layout({ toc, children }) {
   const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
   const overlayStyles = useSpring({ opacity: isMenuOpen ? 1 : 0.4, config: animationConfig })
   useLockBodyScroll(isMenuOpen)
-  useEffect(() => closeMenu(), [asPath]) // eslint-disable-line react-hooks/exhaustive-deps
+  React.useEffect(() => closeMenu(), [asPath]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

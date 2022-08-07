@@ -1,18 +1,31 @@
-import { useEffect } from 'react'
+import * as React from 'react'
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
+import type { GetStaticProps } from 'next'
+import type libs from 'data/libraries'
 import { serialize } from 'next-mdx-remote/serialize'
+import gfm from 'remark-gfm'
+import prism from 'mdx-prism'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import Post from 'components/Post'
-import useDocs from 'hooks/useDocs'
-import gfm from 'remark-gfm'
-import prism from 'mdx-prism'
-import { tableOfContents } from 'utils/rehype'
-import { getDocs } from 'utils/docs'
+import { useDocs } from 'hooks/useDocs'
+import { CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
+import { tableOfContents, codesandbox, TocItem } from 'utils/rehype'
+import { Doc, getDocs } from 'utils/docs'
 
-export default function PostPage({ docs, toc, title, description, source }) {
+export interface PostPageProps {
+  docs: Doc[]
+  toc: TocItem[]
+  boxes: Record<string, CSB>
+  title: string
+  description?: string
+  source: MDXRemoteSerializeResult
+}
+
+export default function PostPage({ docs, toc, boxes, title, description, source }: PostPageProps) {
   const { setDocs } = useDocs()
 
-  useEffect(() => void setDocs(docs), [setDocs, docs])
+  React.useEffect(() => void setDocs(docs), [setDocs, docs])
 
   return (
     <Layout toc={toc}>
@@ -25,18 +38,23 @@ export default function PostPage({ docs, toc, title, description, source }) {
           )}
         </div>
         <main className="content-container">
-          <Post {...source} />
+          <CSBContext.Provider value={boxes}>
+            <Post {...source} />
+          </CSBContext.Provider>
         </main>
       </main>
     </Layout>
   )
 }
 
-export const getStaticProps = async ({ params }) => {
-  const docs = await getDocs(...params.slug)
+export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
+  const slug = params.slug as string[]
+  const lib = slug[0] as keyof typeof libs
+
+  const docs = await getDocs(lib)
   if (!docs?.length) return { notFound: true }
 
-  const url = `/${params.slug.join('/')}`.toLowerCase()
+  const url = `/${slug.join('/')}`.toLowerCase()
   const doc = docs.find((doc) => doc.url === url)
 
   if (!doc) {
@@ -49,14 +67,17 @@ export const getStaticProps = async ({ params }) => {
   const { title, description, content } = doc
 
   const toc = []
+  const ids = []
   const source = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [gfm],
-      rehypePlugins: [prism, tableOfContents(toc)],
+      rehypePlugins: [prism, tableOfContents(toc), codesandbox(ids)],
     },
   })
 
-  return { props: { docs, toc, title, description, source }, revalidate: 300 }
+  const boxes = await fetchCSB(ids)
+
+  return { props: { docs, toc, boxes, title, description, source }, revalidate: 300 }
 }
 
 export const getStaticPaths = async () => {

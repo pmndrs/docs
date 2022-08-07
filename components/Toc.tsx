@@ -1,11 +1,15 @@
+import * as React from 'react'
 import clsx from 'clsx'
-import { useState, useEffect } from 'react'
 import type { TocItem } from 'utils/rehype'
 
-function Toc({ toc }: { toc: TocItem[] }) {
-  const [activeIndex, setActiveIndex] = useState(0)
+export interface ToCProps {
+  toc: TocItem[]
+}
 
-  useEffect(() => {
+function Toc({ toc }: ToCProps) {
+  const [activeIndex, setActiveIndex] = React.useState(0)
+
+  React.useEffect(() => {
     const headings = toc.map(({ id }) => document.getElementById(id))
 
     const observer = new IntersectionObserver(

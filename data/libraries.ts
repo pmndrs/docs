@@ -1,4 +1,20 @@
-const libraries = {
+export interface LibraryDocs {
+  repo: string
+  dir: string
+  branch?: string
+}
+
+export interface Library {
+  title: string
+  url: string
+  github: string
+  description: string
+  image?: string
+  icon?: string
+  docs?: LibraryDocs
+}
+
+const libraries: Record<string, Library> = {
   'react-three-fiber': {
     title: 'React Three Fiber',
     url: '/react-three-fiber',

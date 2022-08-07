@@ -1,14 +1,14 @@
-import { useMemo } from 'react'
+import * as React from 'react'
+import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import cx from 'clsx'
 import { Popover } from '@headlessui/react'
 import libs from '../data/libraries'
 
 export default function LibSwitcher() {
   const router = useRouter()
   const { query } = router
-  const currentPage = useMemo(() => libs[query.slug[0]].title, [query])
+  const currentPage = React.useMemo(() => libs[query.slug[0]].title, [query])
 
   return (
     <Popover className="relative mt-4">
@@ -20,7 +20,7 @@ export default function LibSwitcher() {
           {Object.entries(libs).map(([id, data]) => (
             <Link key={id} href={data.url}>
               <a
-                className={cx(
+                className={clsx(
                   'px-3 py-2 hover:bg-gray-50 rounded-md font-normal text-base',
                   id === query.slug[0] && 'sr-only'
                 )}
