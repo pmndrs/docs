@@ -1,16 +1,11 @@
 import Link from 'next/link'
 import Icon from 'components/Icon'
 import { highlight } from 'utils/text'
-
-export interface SearchResult {
-  title: string
-  description: string
-  url: string
-}
+import type { DocToC } from 'hooks/useDocs'
 
 export interface SearchItemProps {
   search: string
-  result: SearchResult
+  result: DocToC
 }
 
 function SearchItem({ search, result }: SearchItemProps) {
@@ -22,6 +17,7 @@ function SearchItem({ search, result }: SearchItemProps) {
             <span
               dangerouslySetInnerHTML={{
                 __html: `
+                <span class="block text-xs text-gray-400 pb-1">${result.page}</span>
                 ${highlight(result.title, search)}
                 <span class="block text-sm text-gray-600 pt-2">
                   ${highlight(result.description, search)}
