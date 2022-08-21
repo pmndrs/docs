@@ -41,7 +41,11 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
 export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
   // If a lib isn't specified, fetch all docs
   if (!lib) {
-    const docs = await Promise.all(Object.keys(libs).map(getDocs))
+    const docs = await Promise.all(
+      Object.keys(libs)
+        .filter((lib) => libs[lib].docs)
+        .map(getDocs)
+    )
     return docs.filter(Boolean).flat()
   }
 
