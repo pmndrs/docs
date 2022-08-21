@@ -36,35 +36,35 @@ By default this button is positioned in the center of your 3D object which would
 1- Mouse is not over
 
 <p align="middle">
-  <img alt="" height="200" src="/a11y/beforehoverdefault.png" />
+  <img alt="" height="200" src="beforehoverdefault.png" />
 </p>
 
 2- Mouse is over the donut, color change is triggered and the cursor pointer is displayed
 
 <p align="middle">
-  <img alt="" height="200" src="/a11y/hoverdefaultout.png" />
+  <img alt="" height="200" src="hoverdefaultout.png" />
 </p>
 
 3- Mouse is not over the donut, but the color change is still triggered as is the cursor pointer
 
 <p align="middle">
-  <img alt="" height="200" src="/a11y/hoverdefault.png" />
+  <img alt="" height="200" src="hoverdefault.png" />
 </p>
 
 If we display the button we can see that it's caused by the button being positioned in the middle of the donut
 
 <p align="middle">
-  <img alt="" height="200" src="/a11y/hoverdefaultbecause.png" />
+  <img alt="" height="200" src="hoverdefaultbecause.png" />
 </p>
 
 4- If we add `a11yElStyle={{ marginLeft: '-40px' }}` to the A11y component, the button is moved to the left and not in the center of the donut anymore
 
 <p align="middle">
-  <img alt="" height="200" src="/a11y/hoverfixbecause.png" />
+  <img alt="" height="200" src="hoverfixbecause.png" />
 </p>
 
 5- And as we can see, it fixes our issue. The cursor is default and no color change while the cursor is in the hole of the donut.
 
 <p align="middle">
-  <img alt="" height="200" src="/a11y/hoverfix.png" />
+  <img alt="" height="200" src="hoverfix.png" />
 </p>
