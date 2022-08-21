@@ -12,17 +12,12 @@ function Toc({ toc }: ToCProps) {
   React.useEffect(() => {
     const headings = toc.map(({ id }) => document.getElementById(id))
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const headingIndex = headings.indexOf(entry.target as HTMLElement)
-          setActiveIndex(headingIndex)
-        }
-      },
-      {
-        rootMargin: '0px 0px -40% 0px',
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.intersectionRatio > 0) {
+        const headingIndex = headings.indexOf(entry.target as HTMLElement)
+        setActiveIndex(headingIndex)
       }
-    )
+    })
     headings.forEach((element) => observer.observe(element as Element))
 
     return () => observer.disconnect()
