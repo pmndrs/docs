@@ -65,7 +65,7 @@ const libraries: Record<string, Library> = {
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     image: reactThreeA11yShare.src,
-    docs: 'pmndrs/website/docs/docs/a11y',
+    docs: 'pmndrs/website/test/docs/a11y',
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
@@ -73,7 +73,7 @@ const libraries: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     image: reactPostprocessingShare.src,
-    docs: 'pmndrs/website/docs/docs/react-postprocessing',
+    docs: 'pmndrs/website/test/docs/react-postprocessing',
   },
 }
 
