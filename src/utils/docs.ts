@@ -41,15 +41,16 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
 export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
   // If a lib isn't specified, fetch all docs
   if (!lib) {
-    const docs = await Promise.all(Object.keys(libs).map(getDocs))
+    const docs = await Promise.all(
+      Object.keys(libs)
+        .filter((lib) => libs[lib].docs)
+        .map(getDocs)
+    )
     return docs.filter(Boolean).flat()
   }
 
-  // Get config, bail if lib not found
   const config = libs[lib]
-  if (!config?.docs) return
-
-  const [user, repo, branch, ...rest] = config.docs.split('/')
+  const [user, repo, branch, ...rest] = config.docs!.split('/')
 
   const dir = `/${user}-${repo}-${branch}`
   const root = `${dir}/${rest.join('/')}`
@@ -117,7 +118,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
 
         const description = sanitize(
           content
-            .substring(match.index)
+            .substring(match.index!)
             .match(/^(\n|\s)*^\w[^\n]+/m)?.[0]
             .trim() ?? ''
         )

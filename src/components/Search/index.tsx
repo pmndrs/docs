@@ -14,7 +14,7 @@ function Search() {
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
   const [lib] = router.query.slug as string[]
-  const [results, setResults] = React.useState([])
+  const [results, setResults] = React.useState<SearchResult[]>([])
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('Slash')
   useLockBodyScroll(showSearchModal)

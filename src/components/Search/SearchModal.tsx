@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { useSpring, a } from 'react-spring'
 import Icon from 'components/Icon'
-import SearchItem from './SearchItem'
-import type { Doc } from 'hooks/useDocs'
+import SearchItem, { SearchResult } from './SearchItem'
 
 export interface SearchModelProps {
   search: string
-  results: Doc[]
+  results: SearchResult[]
   onClose: React.MouseEventHandler<HTMLButtonElement>
   onChange: React.ChangeEventHandler<HTMLInputElement>
 }
