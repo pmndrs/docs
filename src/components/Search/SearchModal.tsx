@@ -1,11 +1,12 @@
+import clsx from 'clsx'
 import * as React from 'react'
 import Icon from 'components/Icon'
-import SearchItem, { SearchResult } from './SearchItem'
-import clsx from 'clsx'
+import SearchItem from './SearchItem'
+import type { DocToC } from 'hooks/useDocs'
 
 export interface SearchModelProps {
   search: string
-  results: SearchResult[]
+  results: DocToC[]
   onClose: React.MouseEventHandler<HTMLButtonElement>
   onChange: React.ChangeEventHandler<HTMLInputElement>
 }

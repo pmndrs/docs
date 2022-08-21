@@ -5,9 +5,8 @@ import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 import Icon from 'components/Icon'
 import { matchSorter } from 'match-sorter'
-import { useDocs } from 'hooks/useDocs'
+import { useDocs, DocToC } from 'hooks/useDocs'
 import { escape } from 'utils/text'
-import type { SearchResult } from './SearchItem'
 
 function Search() {
   const router = useRouter()
@@ -15,7 +14,7 @@ function Search() {
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
   const [lib] = router.query.slug as string[]
-  const [results, setResults] = React.useState<SearchResult[]>([])
+  const [results, setResults] = React.useState<DocToC[]>([])
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('Slash')
   useLockBodyScroll(showSearchModal)
@@ -25,12 +24,12 @@ function Search() {
       if (!query) return setResults([])
 
       // Get length of matched text in result
-      const relevanceOf = (result: SearchResult) =>
+      const relevanceOf = (result: DocToC) =>
         (result.title.toLowerCase().match(query.toLowerCase())?.length ?? 0) / result.title.length
 
       // Search
-      const entries: SearchResult[] = (docs as SearchResult[])
-        .concat(docs.flatMap(({ tableOfContents }) => tableOfContents))
+      const entries = docs
+        .flatMap(({ tableOfContents }) => tableOfContents)
         .filter((entry) => entry.description.length > 0)
 
       const results = matchSorter(entries, query, {

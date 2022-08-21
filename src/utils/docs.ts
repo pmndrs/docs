@@ -108,6 +108,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
       const previous: Record<number, DocToC> = {}
 
       const tableOfContents: DocToC[] = []
+      const page = title
 
       for (const match of headings) {
         const [heading] = match
@@ -130,6 +131,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
           url: `${url}#${id}`,
           description,
           parent: previous[level - 2] ?? null,
+          page,
         }
         previous[level - 1] = item
 
