@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useKeyPress } from 'hooks/useKeyPress'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
+import Icon from 'components/Icon'
 import { matchSorter } from 'match-sorter'
 import { useDocs } from 'hooks/useDocs'
 import { escape } from 'utils/text'
@@ -79,20 +80,10 @@ function Search() {
             className="group leading-6 font-medium flex items-center space-x-3 sm:space-x-4 text-gray-400 hover:text-gray-600 transition-colors duration-200 w-full py-2"
             onFocus={() => setShowSearchModal(true)}
           >
-            <svg
-              width="24"
-              height="24"
-              fill="none"
-              className="text-gray-400 group-hover:text-gray-500 transition-colors duration-200"
-            >
-              <path
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
+            <Icon
+              icon="search"
+              className="h-6 w-6 text-gray-400 group-hover:text-gray-500 transition-colors duration-200"
+            />
             <span>
               Quick search
               <span className="hidden sm:inline"> for anything</span>

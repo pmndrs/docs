@@ -14,9 +14,9 @@ const icons = {
       strokeLinejoin="round"
       {...props}
     >
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="18" x2="21" y2="18" />
     </svg>
   ),
   enter: (props: SVGProps) => (
@@ -29,8 +29,8 @@ const icons = {
       strokeLinejoin="round"
       {...props}
     >
-      <polyline points="9 10 4 15 9 20"></polyline>
-      <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+      <polyline points="9 10 4 15 9 20" />
+      <path d="M20 4v7a4 4 0 0 1-4 4H4" />
     </svg>
   ),
   search: (props: SVGProps) => (
