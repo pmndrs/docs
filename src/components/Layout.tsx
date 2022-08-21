@@ -1,5 +1,5 @@
+import clsx from 'clsx'
 import * as React from 'react'
-import { useSpring, animated } from 'react-spring'
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import Icon from 'components/Icon'
@@ -27,10 +27,6 @@ export default function Layout({ doc, children }: LayoutProps) {
 
   React.useEffect(() => setMenuOpen(false), [asPath])
 
-  const animationConfig = { mass: 1, tension: 180, friction: 20 }
-  const navStyles = useSpring({ left: menuOpen ? 0 : -200, config: animationConfig })
-  const overlayStyles = useSpring({ opacity: menuOpen ? 1 : 0.4, config: animationConfig })
-
   return (
     <>
       <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50">
@@ -47,19 +43,18 @@ export default function Layout({ doc, children }: LayoutProps) {
           <Icon icon="menu" />
         </button>
       </div>
-
       <div className="w-full mx-auto max-w-8xl">
         <div className="lg:flex">
           <div
             id="sidebar"
-            className={`fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block ${
-              menuOpen ? '' : 'hidden'
-            }`}
+            className={clsx(
+              'fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block',
+              !menuOpen && 'hidden'
+            )}
           >
-            <animated.div
+            <div
               id="nav-wrapper"
               className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
-              style={navStyles}
             >
               <nav
                 id="nav"
@@ -70,20 +65,19 @@ export default function Layout({ doc, children }: LayoutProps) {
                 </div>
                 <Nav />
               </nav>
-            </animated.div>
-            <animated.button
+            </div>
+            <button
               onClick={() => setMenuOpen(false)}
-              className={`w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 ${
-                menuOpen ? '' : 'hidden'
-              }`}
-              style={overlayStyles}
+              className={clsx(
+                'w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 opacity-0',
+                !menuOpen && 'hidden'
+              )}
             />
           </div>
-          <div id="content-wrapper" className={`flex-auto ${menuOpen ? 'overflow-hidden' : ''}`}>
+          <div id="content-wrapper" className={clsx('flex-auto', menuOpen && 'overflow-hidden')}>
             <div className="flex w-full">
               <div className="flex-auto min-w-0 px-4 pt-8 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{children}</div>
-
                 {!!docs[currentPageIndex] && (
                   <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
                     <a
@@ -96,7 +90,6 @@ export default function Layout({ doc, children }: LayoutProps) {
                     </a>
                   </div>
                 )}
-
                 {(!!previousPage || !!nextPage) && (
                   <div className="flex justify-between w-full max-w-3xl mx-auto mt-12">
                     {!!previousPage && (
@@ -111,7 +104,6 @@ export default function Layout({ doc, children }: LayoutProps) {
                         </div>
                       </div>
                     )}
-
                     {!!nextPage && (
                       <div className="ml-auto text-right">
                         <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
@@ -127,7 +119,6 @@ export default function Layout({ doc, children }: LayoutProps) {
                   </div>
                 )}
               </div>
-
               <div className="flex-none hidden w-64 pl-8 pr-8 xl:text-sm xl:block">
                 {doc.tableOfContents.length ? <Toc toc={doc.tableOfContents} /> : null}
               </div>

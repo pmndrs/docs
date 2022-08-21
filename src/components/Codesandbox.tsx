@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useCSB } from 'hooks/useCSB'
+import clsx from 'clsx'
 
 export interface CodesandboxProps {
   id: string
@@ -27,9 +28,10 @@ export default function Codesandbox({ id }: CodesandboxProps) {
         {data.tags.map((tag, i) => (
           <span
             key={i}
-            className={`inline-block mt-2 text-gray-500 bg-gray-100 rounded px-1 py-1 text-xs ${
-              i !== data.tags.length - 1 ? 'mr-1' : ''
-            }`}
+            className={clsx(
+              'inline-block mt-2 text-gray-500 bg-gray-100 rounded px-1 py-1 text-xs',
+              i !== data.tags.length - 1 && 'mr-1'
+            )}
           >
             {tag}
           </span>
