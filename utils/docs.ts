@@ -4,7 +4,7 @@ import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
 import libs from 'data/libraries'
 import type { Doc, DocToC } from 'hooks/useDocs'
-import { sanitize } from './text'
+import { sanitize, slugify } from './text'
 
 /**
  * Checks for .md(x) file extension
@@ -102,7 +102,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         const [prefix, ...rest] = heading.trim().split(' ')
         const level = prefix.length
         const title = sanitize(rest.join(' '))
-        const id = title.toLowerCase().replace(/\s+|-+/g, '-')
+        const id = slugify(title)
 
         const description = sanitize(
           content

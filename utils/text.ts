@@ -38,6 +38,11 @@ export const sanitize = (markdown?: string) =>
     .replace(/~(.*?)~/g, '$1')
 
 /**
+ * Converts a TitleCase string into a url-safe slug.
+ */
+export const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
+
+/**
  * Escapes special characters from text input.
  */
 export const escape = (text: string) => text.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
