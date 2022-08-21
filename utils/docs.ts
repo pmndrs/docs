@@ -91,6 +91,14 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         .replace(FRONTMATTER_REGEX, '')
         // Remove extraneous comments from post
         .replace(COMMENT_REGEX, '')
+        // Require inline images
+        .replace(/\(([^\.]+\.(?:png|jpg))\)|src="([^\.]+\.(?:png|jpg))"/g, (_, ...matches) => {
+          const [src] = matches.filter(Boolean)
+          const parts = file.split('/')
+          parts.pop()
+
+          return fs.readFileSync(`${parts.join('/')}/${src}`, 'base64') as string
+        })
 
       const headings = content.matchAll(/^#{1,4}\s[^\n]+/gm)
       const previous: Record<number, DocToC> = {}
