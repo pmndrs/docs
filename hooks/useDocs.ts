@@ -1,5 +1,14 @@
 import create from 'zustand'
 
+export interface DocToC {
+  id: string
+  level: number
+  title: string
+  description: string
+  url: string
+  parent?: DocToC
+}
+
 export interface Doc {
   slug: string[]
   url: string
@@ -8,6 +17,7 @@ export interface Doc {
   title: string
   description: string
   content: string
+  tableOfContents: DocToC[]
 }
 
 export interface DocState {

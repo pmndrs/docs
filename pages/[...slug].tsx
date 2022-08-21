@@ -10,25 +10,25 @@ import SEO from 'components/Seo'
 import Post from 'components/Post'
 import { Doc, useDocs } from 'hooks/useDocs'
 import { CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
-import { tableOfContents, codesandbox, TocItem } from 'utils/rehype'
+import { headings, codesandbox } from 'utils/rehype'
 import { getDocs } from 'utils/docs'
 
 export interface PostPageProps {
   docs: Doc[]
-  toc: TocItem[]
+  doc: Doc
   boxes: Record<string, CSB>
   title: string
   description?: string
   source: MDXRemoteSerializeResult
 }
 
-export default function PostPage({ docs, toc, boxes, title, description, source }: PostPageProps) {
+export default function PostPage({ docs, doc, boxes, title, description, source }: PostPageProps) {
   const { setDocs } = useDocs()
 
   React.useEffect(() => void setDocs(docs), [setDocs, docs])
 
   return (
-    <Layout toc={toc}>
+    <Layout doc={doc}>
       <SEO />
       <main className="max-w-3xl mx-auto">
         <div className="pb-6 mb-4 border-b post-header">
@@ -66,18 +66,17 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
 
   const { title, description, content } = doc
 
-  const toc = []
   const ids = []
   const source = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [gfm],
-      rehypePlugins: [prism, tableOfContents(toc), codesandbox(ids)],
+      rehypePlugins: [prism, headings, codesandbox(ids)],
     },
   })
 
   const boxes = await fetchCSB(ids)
 
-  return { props: { docs, toc, boxes, title, description, source }, revalidate: 300 }
+  return { props: { docs, doc, boxes, title, description, source }, revalidate: 300 }
 }
 
 export const getStaticPaths = async () => {

@@ -11,15 +11,14 @@ import { useRouter } from 'next/router'
 import { useSwitcher } from 'hooks/useSwitcher'
 import { useMenu } from 'hooks/useMenu'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
-import { useDocs } from 'hooks/useDocs'
-import { TocItem } from 'utils/rehype'
+import { Doc, useDocs } from 'hooks/useDocs'
 
 export interface LayoutProps {
-  toc: TocItem[]
+  doc: Doc
   children: React.ReactNode
 }
 
-export default function Layout({ toc, children }: LayoutProps) {
+export default function Layout({ doc, children }: LayoutProps) {
   const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
   const { docs, getPrevAndNext } = useDocs()
 
@@ -143,7 +142,7 @@ export default function Layout({ toc, children }: LayoutProps) {
               </div>
 
               <div className="flex-none hidden w-64 pl-8 pr-8 xl:text-sm xl:block">
-                {toc.length ? <Toc toc={toc} /> : null}
+                {doc.tableOfContents.length ? <Toc toc={doc.tableOfContents} /> : null}
               </div>
             </div>
           </div>

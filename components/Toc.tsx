@@ -1,9 +1,9 @@
 import * as React from 'react'
 import clsx from 'clsx'
-import type { TocItem } from 'utils/rehype'
+import type { DocToC } from 'hooks/useDocs'
 
 export interface ToCProps {
-  toc: TocItem[]
+  toc: DocToC[]
 }
 
 function Toc({ toc }: ToCProps) {

@@ -3,7 +3,8 @@ import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
 import libs from 'data/libraries'
-import type { Doc } from 'hooks/useDocs'
+import type { Doc, DocToC } from 'hooks/useDocs'
+import { sanitize, slugify } from './text'
 
 /**
  * Checks for .md(x) file extension
@@ -80,8 +81,8 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
 
       // Add fallback frontmatter
       const pathname = slug[slug.length - 1]
-      const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
-      const description = compiled.data.description ?? ''
+      const title = sanitize(compiled.data.title ?? pathname.replace(/\-/g, ' '))
+      const description = sanitize(compiled.data.description ?? '')
       const nav = compiled.data.nav ?? Infinity
 
       // Sanitize markdown
@@ -91,9 +92,41 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         // Remove extraneous comments from post
         .replace(COMMENT_REGEX, '')
 
-      return { slug, url, editURL, title, description, nav, content }
+      const headings = content.matchAll(/^#{1,4}\s[^\n]+/gm)
+      const previous: Record<number, DocToC> = {}
+
+      const tableOfContents: DocToC[] = []
+
+      for (const match of headings) {
+        const [heading] = match
+        const [prefix, ...rest] = heading.trim().split(' ')
+        const level = prefix.length
+        const title = sanitize(rest.join(' '))
+        const id = slugify(title)
+
+        const description = sanitize(
+          content
+            .substring(match.index)
+            .match(/^(\n|\s)*^\w[^\n]+/m)?.[0]
+            .trim() ?? ''
+        )
+
+        const item: DocToC = {
+          level,
+          title,
+          id,
+          url: `${url}#${id}`,
+          description,
+          parent: previous[level - 2] ?? null,
+        }
+        previous[level - 1] = item
+
+        tableOfContents.push(item)
+      }
+
+      return { slug, url, editURL, title, description, nav, content, tableOfContents }
     })
   )
 
-  return docs.sort((a, b) => (a.nav > b.nav ? 1 : -1))
+  return docs.sort((a, b) => a.nav - b.nav)
 }
