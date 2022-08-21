@@ -3,7 +3,6 @@ import zustandShare from 'assets/zustand.jpg'
 import zustandIcon from 'assets/zustand-icon.png'
 import jotaiIcon from 'assets/jotai-icon.png'
 import reactThreeA11yShare from 'assets/react-three-a11y.jpg'
-import reactPostprocessingShare from 'assets/react-postprocessing.jpg'
 
 export interface Library {
   title: string
@@ -65,15 +64,13 @@ const libraries: Record<string, Library> = {
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     image: reactThreeA11yShare.src,
-    docs: 'pmndrs/website/docs/docs/a11y',
+    docs: 'CodyJasonBennett/react-three-a11y/migrate-docs/docs',
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
-    url: 'react-postprocessing',
+    url: 'https://github.com/pmndrs/react-postprocessing#readme',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
-    image: reactPostprocessingShare.src,
-    docs: 'pmndrs/website/docs/docs/react-postprocessing',
   },
 }
 
