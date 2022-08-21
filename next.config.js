@@ -51,7 +51,7 @@ module.exports = {
         permanent: true,
       },
       {
-        source: '/drei/:react-postprocessing*',
+        source: '/react-postprocessing/:slug*',
         destination: 'https://github.com/pmndrs/react-three-postprocessing#:slug*',
         permanent: true,
       },
