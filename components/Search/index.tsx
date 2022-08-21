@@ -4,8 +4,9 @@ import { useKeyPress } from 'hooks/useKeyPress'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 import { matchSorter } from 'match-sorter'
-import { Doc, useDocs } from 'hooks/useDocs'
+import { useDocs } from 'hooks/useDocs'
 import { escape } from 'utils/text'
+import type { SearchResult } from './SearchItem'
 
 function Search() {
   const router = useRouter()
@@ -23,18 +24,22 @@ function Search() {
       if (!query) return setResults([])
 
       // Get length of matched text in result
-      const relevanceOf = (result: Doc) =>
-        result.title.toLowerCase().indexOf((query as string).toLowerCase())
+      const relevanceOf = (result: SearchResult) =>
+        (result.title.toLowerCase().match(query.toLowerCase())?.length ?? 0) / result.title.length
 
       // Search
-      const results = matchSorter(docs, query as string, {
-        keys: ['title', 'description', 'content'],
+      const entries: SearchResult[] = (docs as SearchResult[])
+        .concat(docs.flatMap(({ tableOfContents }) => tableOfContents))
+        .filter((entry) => entry.description.length > 0)
+
+      const results = matchSorter(entries, query, {
+        keys: ['title', 'description'],
         threshold: matchSorter.rankings.CONTAINS,
       })
         // Sort by relevance
-        .sort((a: Doc, b: Doc) => relevanceOf(b) - relevanceOf(a))
+        .sort((a, b) => relevanceOf(b) - relevanceOf(a))
         // Truncate to top four results
-        .slice(0, 4) as unknown as Doc[]
+        .slice(0, 4)
 
       setResults(results)
     })

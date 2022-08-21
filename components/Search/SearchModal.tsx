@@ -46,7 +46,7 @@ function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
           {renderList && (
             <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
               {results.map((result, index) => (
-                <SearchItem key={`search-item-${index}`} search={search} {...result} />
+                <SearchItem key={`search-item-${index}`} search={search} result={result} />
               ))}
             </ul>
           )}
