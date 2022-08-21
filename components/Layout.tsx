@@ -1,6 +1,5 @@
 import * as React from 'react'
-import clsx from 'clsx'
-import { useSpring, animated as a } from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import LibSwitcher from 'components/LibSwitcher'
 import Nav from 'components/Nav'
 import Icon from 'components/Icon'
@@ -8,8 +7,6 @@ import Toc from 'components/Toc'
 import Search from 'components/Search'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useSwitcher } from 'hooks/useSwitcher'
-import { useMenu } from 'hooks/useMenu'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import { Doc, useDocs } from 'hooks/useDocs'
 
@@ -19,28 +16,24 @@ export interface LayoutProps {
 }
 
 export default function Layout({ doc, children }: LayoutProps) {
-  const { isMenuOpen, toggleMenu, closeMenu } = useMenu()
-  const { docs, getPrevAndNext } = useDocs()
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  useLockBodyScroll(menuOpen)
 
+  const docs = useDocs()
   const { asPath } = useRouter()
-  const { isSwitcherOpen } = useSwitcher()
+  const currentPageIndex = docs.findIndex((item) => item.url === asPath)
+  const previousPage = currentPageIndex > 0 && docs[currentPageIndex - 1]
+  const nextPage = currentPageIndex < docs.length - 1 && docs[currentPageIndex + 1]
 
-  const { nextPage, previousPage, currentPageIndex } = getPrevAndNext(asPath)
+  React.useEffect(() => setMenuOpen(false), [asPath])
+
   const animationConfig = { mass: 1, tension: 180, friction: 20 }
-  const navStyles = useSpring({ left: isMenuOpen ? 0 : -200, config: animationConfig })
-  const overlayStyles = useSpring({ opacity: isMenuOpen ? 1 : 0.4, config: animationConfig })
-  useLockBodyScroll(isMenuOpen)
-  React.useEffect(() => closeMenu(), [asPath]) // eslint-disable-line react-hooks/exhaustive-deps
+  const navStyles = useSpring({ left: menuOpen ? 0 : -200, config: animationConfig })
+  const overlayStyles = useSpring({ opacity: menuOpen ? 1 : 0.4, config: animationConfig })
 
   return (
     <>
-      <div id="modal" />
-      <div
-        className={clsx(
-          'sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl',
-          isSwitcherOpen ? 'z-30 lg:z-30' : 'z-40 lg:z-50'
-        )}
-      >
+      <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50">
         <Link href="/">
           <a aria-label="Poimandres Docs">
             <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
@@ -50,7 +43,7 @@ export default function Layout({ doc, children }: LayoutProps) {
           </a>
         </Link>
         <Search />
-        <button className="block lg:hidden p-2 mr-2 ml-2" onClick={toggleMenu}>
+        <button className="block lg:hidden p-2 mr-2 ml-2" onClick={() => setMenuOpen((v) => !v)}>
           <Icon icon="menu" />
         </button>
       </div>
@@ -60,39 +53,33 @@ export default function Layout({ doc, children }: LayoutProps) {
           <div
             id="sidebar"
             className={`fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block ${
-              isMenuOpen ? '' : 'hidden'
+              menuOpen ? '' : 'hidden'
             }`}
           >
-            <a.div
+            <animated.div
               id="nav-wrapper"
-              className={clsx(
-                isSwitcherOpen ? '' : 'overflow-hidden overflow-y-auto',
-                'h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative'
-              )}
+              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
               style={navStyles}
             >
               <nav
                 id="nav"
-                className={clsx(
-                  isSwitcherOpen ? 'overflow-y-hidden' : 'overflow-y-auto',
-                  'px-4 font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative'
-                )}
+                className="overflow-y-auto px-4 font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative"
               >
                 <div className="mt-8 md:mt-0 mb-4">
                   <LibSwitcher />
                 </div>
                 <Nav />
               </nav>
-            </a.div>
-            <a.button
-              onClick={closeMenu}
+            </animated.div>
+            <animated.button
+              onClick={() => setMenuOpen(false)}
               className={`w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 ${
-                isMenuOpen ? '' : 'hidden'
+                menuOpen ? '' : 'hidden'
               }`}
               style={overlayStyles}
-            ></a.button>
+            />
           </div>
-          <div id="content-wrapper" className={`flex-auto ${isMenuOpen ? 'overflow-hidden' : ''}`}>
+          <div id="content-wrapper" className={`flex-auto ${menuOpen ? 'overflow-hidden' : ''}`}>
             <div className="flex w-full">
               <div className="flex-auto min-w-0 px-4 pt-8 pb-24 sm:px-6 xl:px-8 lg:pb-16">
                 <div className="">{children}</div>

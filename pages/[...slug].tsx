@@ -8,7 +8,7 @@ import prism from 'mdx-prism'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import Post from 'components/Post'
-import { Doc, useDocs } from 'hooks/useDocs'
+import { Doc, DocsContext } from 'hooks/useDocs'
 import { CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
 import { headings, codesandbox } from 'utils/rehype'
 import { getDocs } from 'utils/docs'
@@ -23,27 +23,25 @@ export interface PostPageProps {
 }
 
 export default function PostPage({ docs, doc, boxes, title, description, source }: PostPageProps) {
-  const { setDocs } = useDocs()
-
-  React.useEffect(() => void setDocs(docs), [setDocs, docs])
-
   return (
-    <Layout doc={doc}>
-      <SEO />
-      <main className="max-w-3xl mx-auto">
-        <div className="pb-6 mb-4 border-b post-header">
-          <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
-          {!!description?.length && (
-            <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
-          )}
-        </div>
-        <main className="content-container">
-          <CSBContext.Provider value={boxes}>
-            <Post {...source} />
-          </CSBContext.Provider>
+    <DocsContext.Provider value={docs}>
+      <Layout doc={doc}>
+        <SEO />
+        <main className="max-w-3xl mx-auto">
+          <div className="pb-6 mb-4 border-b post-header">
+            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
+            {!!description?.length && (
+              <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
+            )}
+          </div>
+          <main className="content-container">
+            <CSBContext.Provider value={boxes}>
+              <Post {...source} />
+            </CSBContext.Provider>
+          </main>
         </main>
-      </main>
-    </Layout>
+      </Layout>
+    </DocsContext.Provider>
   )
 }
 

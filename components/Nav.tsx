@@ -21,7 +21,7 @@ function NavItem({ doc, active, ...props }) {
 
 function Nav() {
   const { asPath } = useRouter()
-  const { docs } = useDocs()
+  const docs = useDocs()
   const nav = React.useMemo(
     () =>
       docs.reduce((acc, doc) => {

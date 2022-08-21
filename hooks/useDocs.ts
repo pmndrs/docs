@@ -1,4 +1,4 @@
-import create from 'zustand'
+import * as React from 'react'
 
 export interface DocToC {
   id: string
@@ -20,27 +20,8 @@ export interface Doc {
   tableOfContents: DocToC[]
 }
 
-export interface DocState {
-  docs: Doc[]
-  setDocs: (doc: Doc[]) => void
-  getPrevAndNext: (asPath: string) => {
-    previousPage: Doc
-    nextPage: Doc
-    currentPageIndex: number
-  }
-}
+export const DocsContext = React.createContext<Doc[]>(null!)
 
-export const useDocs = create<DocState>((set, get) => ({
-  docs: [],
-  setDocs: (docs: Doc[]) => set({ docs }),
-  getPrevAndNext: (asPath: string) => {
-    const currentPageIndex = get().docs.findIndex((item) => item.url === asPath)
-    const previousPage = currentPageIndex > 0 && get().docs[currentPageIndex - 1]
-    const nextPage = currentPageIndex < get().docs.length - 1 && get().docs[currentPageIndex + 1]
-    return {
-      previousPage,
-      nextPage,
-      currentPageIndex,
-    }
-  },
-}))
+export function useDocs() {
+  return React.useContext(DocsContext)
+}
