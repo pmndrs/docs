@@ -1,9 +1,9 @@
 /**
  * Sanitizes markdown formatting from a string, returning plaintext.
  */
-export const sanitize = (markdown?: string) =>
+export const sanitize = (markdown: string) =>
   markdown // Remove HTML tags
-    ?.replace(/<[^>]*>/g, '')
+    .replace(/<[^>]*>/g, '')
     // Remove setext-style headers
     .replace(/^[=\-]{2,}\s*$/g, '')
     // Remove footnotes?

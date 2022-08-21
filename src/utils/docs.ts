@@ -45,11 +45,8 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
     return docs.filter(Boolean).flat()
   }
 
-  // Get config, bail if lib not found
   const config = libs[lib]
-  if (!config?.docs) return
-
-  const [user, repo, branch, ...rest] = config.docs.split('/')
+  const [user, repo, branch, ...rest] = config.docs!.split('/')
 
   const dir = `/${user}-${repo}-${branch}`
   const root = `${dir}/${rest.join('/')}`
@@ -117,7 +114,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
 
         const description = sanitize(
           content
-            .substring(match.index)
+            .substring(match.index!)
             .match(/^(\n|\s)*^\w[^\n]+/m)?.[0]
             .trim() ?? ''
         )

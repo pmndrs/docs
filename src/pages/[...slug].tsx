@@ -4,6 +4,7 @@ import type { GetStaticProps } from 'next'
 import type libs from 'data/libraries'
 import { serialize } from 'next-mdx-remote/serialize'
 import gfm from 'remark-gfm'
+// @ts-ignore
 import prism from 'mdx-prism'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
@@ -46,7 +47,7 @@ export default function PostPage({ docs, doc, boxes, title, description, source 
 }
 
 export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
-  const slug = params.slug as string[]
+  const slug = params!.slug as string[]
   const lib = slug[0] as keyof typeof libs
 
   const docs = await getDocs(lib)
@@ -64,7 +65,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
 
   const { title, description, content } = doc
 
-  const ids = []
+  const ids: string[] = []
   const source = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [gfm],

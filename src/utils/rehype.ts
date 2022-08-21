@@ -4,7 +4,7 @@ export interface Node {
   type: string
   name?: string
   value: string
-  tagName?: string
+  tagName: string
   attributes: Node[]
   properties: any
   children: Node[]
@@ -28,11 +28,11 @@ export function headings() {
 /**
  * Fetches a list of generated codesandbox components.
  */
-export function codesandbox(ids = []) {
+export function codesandbox(ids: string[] = []) {
   return () => (root: Node) => {
     const traverse = (node: Node) => {
       if (node.name === 'Codesandbox') {
-        const id = node.attributes.find(({ name }) => name === 'id')
+        const id = node.attributes.find(({ name }) => name === 'id')!
         return ids.push(id.value)
       }
 

@@ -1,16 +1,16 @@
 {
-  "name": "website--docs",
-  "version": "0.0.1",
-  "description": "",
-  "scripts": {
-    "dev": "next",
-    "start": "next start",
-    "build": "next build",
-    "test": "jest",
-    "lint": "eslint ."
+  "devDependencies": {
+    "@types/node": "^18.6.4",
+    "@types/react": "^18.0.15",
+    "autoprefixer": "^10.4.8",
+    "eslint": "^8.21.0",
+    "eslint-config-next": "^12.2.4",
+    "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
+    "sharp": "^0.30.7",
+    "tailwindcss": "^3.1.8",
+    "typescript": "^4.7.4"
   },
-  "author": "Poimandres",
-  "license": "MIT",
   "dependencies": {
     "@headlessui/react": "^1.6.6",
     "@tailwindcss/aspect-ratio": "^0.4.0",
@@ -23,40 +23,15 @@
     "memfs": "^3.4.7",
     "next": "^12.2.4",
     "next-mdx-remote": "^4.1.0",
-    "pretty-quick": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-spring": "^9.5.2",
     "remark-gfm": "^3.0.1"
   },
-  "devDependencies": {
-    "@types/node": "^18.6.4",
-    "@types/react": "^18.0.15",
-    "autoprefixer": "^10.4.8",
-    "eslint": "^8.21.0",
-    "eslint-config-next": "^12.2.4",
-    "husky": "^8.0.1",
-    "postcss": "^8.4.16",
-    "prettier": "^2.7.1",
-    "sharp": "^0.30.7",
-    "tailwindcss": "^3.1.8",
-    "typescript": "^4.7.4"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "printWidth": 100
-  },
-  "eslintConfig": {
-    "extends": "next",
-    "rules": {
-      "react/jsx-no-target-blank": 0,
-      "import/no-anonymous-default-export": 0
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
+  "scripts": {
+    "dev": "next",
+    "start": "next start",
+    "build": "next build",
+    "lint": "eslint src/**/*.{ts,tsx} && prettier . --check"
   }
 }

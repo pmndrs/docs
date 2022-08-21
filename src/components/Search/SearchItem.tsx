@@ -4,7 +4,7 @@ import { highlight } from 'utils/text'
 
 export interface SearchResult {
   title: string
-  description: string | null
+  description: string
   url: string
 }
 
