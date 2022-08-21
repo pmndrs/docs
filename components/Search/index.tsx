@@ -10,7 +10,7 @@ import type { SearchResult } from './SearchItem'
 
 function Search() {
   const router = useRouter()
-  const { docs } = useDocs()
+  const docs = useDocs()
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
   const [lib] = router.query.slug as string[]
