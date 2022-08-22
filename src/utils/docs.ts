@@ -100,8 +100,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
           const url = `${parts.join('/')}/${src}`
           if (!fs.existsSync(url)) return input
 
-          const type = src.endsWith('.jpg') ? 'jpg' : 'png'
-          return `${prefix}data:image/${type};base64,${fs.readFileSync(url, 'base64')}${suffix}`
+          return `${prefix}/api/get-image?lib=${lib}&url=${url}${suffix}`
         })
 
       const headings = content.matchAll(/^#{1,4}\s[^\n]+/gm)
