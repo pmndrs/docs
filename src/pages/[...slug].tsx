@@ -23,17 +23,7 @@ export interface PostPageProps {
   source: MDXRemoteSerializeResult
 }
 
-export default function PostPage({
-  docs,
-  doc,
-  boxes: initialBoxes,
-  title,
-  description,
-  source,
-}: PostPageProps) {
-  const [boxes, setBoxes] = React.useState(initialBoxes)
-  React.useEffect(() => void fetchCSB(docs.flatMap((doc) => doc.boxes)).then(setBoxes), [docs])
-
+export default function PostPage({ docs, doc, boxes, title, description, source }: PostPageProps) {
   return (
     <DocsContext.Provider value={docs}>
       <CSBContext.Provider value={boxes}>
@@ -82,7 +72,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
     },
   })
 
-  const boxes = await fetchCSB(doc.boxes)
+  const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
 
   return { props: { docs, doc, boxes, title, description, source }, revalidate: 300 }
 }
