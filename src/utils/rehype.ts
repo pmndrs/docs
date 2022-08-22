@@ -24,20 +24,3 @@ export function headings() {
     }
   }
 }
-
-/**
- * Fetches a list of generated codesandbox components.
- */
-export function codesandbox(ids: string[] = []) {
-  return () => (root: Node) => {
-    const traverse = (node: Node) => {
-      if (node.name === 'Codesandbox') {
-        const id = node.attributes.find(({ name }) => name === 'id')!
-        return ids.push(id.value)
-      }
-
-      if (node.children) for (const child of node.children) traverse(child)
-    }
-    traverse(root)
-  }
-}

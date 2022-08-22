@@ -7,7 +7,7 @@ export interface DocToC {
   description: string
   url: string
   parent?: DocToC
-  page: string
+  label: string
 }
 
 export interface Doc {
@@ -19,6 +19,7 @@ export interface Doc {
   description: string
   content: string
   tableOfContents: DocToC[]
+  boxes: string[]
 }
 
 export const DocsContext = React.createContext<Doc[]>(null!)

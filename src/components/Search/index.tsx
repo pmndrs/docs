@@ -5,16 +5,26 @@ import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import SearchModal from './SearchModal'
 import Icon from 'components/Icon'
 import { matchSorter } from 'match-sorter'
-import { useDocs, DocToC } from 'hooks/useDocs'
+import { useDocs } from 'hooks/useDocs'
 import { escape } from 'utils/text'
+import { useCSB } from 'hooks/useCSB'
+
+export interface SearchResult {
+  title: string
+  description: string
+  url: string
+  label: string
+  image?: string
+}
 
 function Search() {
   const router = useRouter()
+  const boxes = useCSB()
   const docs = useDocs()
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
   const [lib] = router.query.slug as string[]
-  const [results, setResults] = React.useState<DocToC[]>([])
+  const [results, setResults] = React.useState<SearchResult[]>([])
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('Slash')
   useLockBodyScroll(showSearchModal)
@@ -24,13 +34,21 @@ function Search() {
       if (!query) return setResults([])
 
       // Get length of matched text in result
-      const relevanceOf = (result: DocToC) =>
+      const relevanceOf = (result: SearchResult) =>
         (result.title.toLowerCase().match(query.toLowerCase())?.length ?? 0) / result.title.length
 
       // Search
-      const entries = docs
-        .flatMap(({ tableOfContents }) => tableOfContents)
+      const entries = (docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[])
         .filter((entry) => entry.description.length > 0)
+        .concat(
+          Object.entries(boxes).flatMap(([id, data]) => ({
+            ...data,
+            label: 'codesandbox.io',
+            description: data.description ?? '',
+            url: `https://codesandbox.io/s/${data.alias}`,
+            image: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
+          }))
+        )
 
       const results = matchSorter(entries, query, {
         keys: ['title', 'description'],
@@ -43,7 +61,7 @@ function Search() {
 
       setResults(results)
     })
-  }, [docs, lib, query])
+  }, [boxes, docs, lib, query])
 
   React.useEffect(() => void setQuery(''), [showSearchModal])
 

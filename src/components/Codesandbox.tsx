@@ -7,7 +7,8 @@ export interface CodesandboxProps {
 }
 
 export default function Codesandbox({ id }: CodesandboxProps) {
-  const data = useCSB(id)
+  const boxes = useCSB()
+  const data = boxes[id]
 
   return (
     <>

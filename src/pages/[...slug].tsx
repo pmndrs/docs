@@ -11,7 +11,7 @@ import SEO from 'components/Seo'
 import Post from 'components/Post'
 import { Doc, DocsContext } from 'hooks/useDocs'
 import { CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
-import { headings, codesandbox } from 'utils/rehype'
+import { headings } from 'utils/rehype'
 import { getDocs } from 'utils/docs'
 
 export interface PostPageProps {
@@ -23,25 +23,35 @@ export interface PostPageProps {
   source: MDXRemoteSerializeResult
 }
 
-export default function PostPage({ docs, doc, boxes, title, description, source }: PostPageProps) {
+export default function PostPage({
+  docs,
+  doc,
+  boxes: initialBoxes,
+  title,
+  description,
+  source,
+}: PostPageProps) {
+  const [boxes, setBoxes] = React.useState(initialBoxes)
+  React.useEffect(() => void fetchCSB(docs.flatMap((doc) => doc.boxes)).then(setBoxes), [docs])
+
   return (
     <DocsContext.Provider value={docs}>
-      <Layout doc={doc}>
-        <SEO />
-        <main className="max-w-3xl mx-auto">
-          <div className="pb-6 mb-4 border-b post-header">
-            <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
-            {!!description?.length && (
-              <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
-            )}
-          </div>
-          <main className="content-container">
-            <CSBContext.Provider value={boxes}>
+      <CSBContext.Provider value={boxes}>
+        <Layout doc={doc}>
+          <SEO />
+          <main className="max-w-3xl mx-auto">
+            <div className="pb-6 mb-4 border-b post-header">
+              <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
+              {!!description?.length && (
+                <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
+              )}
+            </div>
+            <main className="content-container">
               <Post {...source} />
-            </CSBContext.Provider>
+            </main>
           </main>
-        </main>
-      </Layout>
+        </Layout>
+      </CSBContext.Provider>
     </DocsContext.Provider>
   )
 }
@@ -65,15 +75,14 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
 
   const { title, description, content } = doc
 
-  const ids: string[] = []
   const source = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [gfm],
-      rehypePlugins: [prism, headings, codesandbox(ids)],
+      rehypePlugins: [prism, headings],
     },
   })
 
-  const boxes = await fetchCSB(ids)
+  const boxes = await fetchCSB(doc.boxes)
 
   return { props: { docs, doc, boxes, title, description, source }, revalidate: 300 }
 }

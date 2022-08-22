@@ -131,14 +131,18 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
           url: `${url}#${id}`,
           description,
           parent: previous[level - 2] ?? null,
-          page,
+          label: page,
         }
         previous[level - 1] = item
 
         tableOfContents.push(item)
       }
 
-      return { slug, url, editURL, title, description, nav, content, tableOfContents }
+      const boxes = Array.from(content.matchAll(/(?:Codesandbox\s+id=")([^"]+)(?:")/g)).map(
+        (match) => match[1].trim()
+      )
+
+      return { slug, url, editURL, title, description, nav, content, tableOfContents, boxes }
     })
   )
 
