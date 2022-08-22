@@ -8,14 +8,7 @@ import { matchSorter } from 'match-sorter'
 import { useDocs } from 'hooks/useDocs'
 import { escape } from 'utils/text'
 import { useCSB } from 'hooks/useCSB'
-
-export interface SearchResult {
-  title: string
-  description: string
-  url: string
-  label: string
-  image?: string
-}
+import type { SearchResult } from './SearchItem'
 
 function Search() {
   const router = useRouter()
