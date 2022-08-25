@@ -64,7 +64,7 @@ const libraries: Record<string, Library> = {
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     image: reactThreeA11yShare.src,
-    docs: 'CodyJasonBennett/react-three-a11y/migrate-docs/docs',
+    docs: 'pmndrs/react-three-a11y/main/docs',
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
