@@ -29,7 +29,7 @@ function Toc({ toc }: ToCProps) {
         On This Page
       </h5>
       {toc.map((item, index) => (
-        <h4 key={item.id}>
+        <h4 key={`${item.title}-${index}`}>
           <a
             aria-label={item.title}
             aria-current={index === activeIndex}
