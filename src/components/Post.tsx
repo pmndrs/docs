@@ -77,6 +77,13 @@ const components = {
     target = isAnchor ? '_blank' : target
     rel = isAnchor ? 'noopener noreferrer' : rel
 
+    const [path, hash] = href.split('#')
+    const isMarkdown = path.endsWith('.md')
+
+    if(!isAnchor && isMarkdown) {
+      href = path.slice(0, -3) + (hash ? `#${hash}` : '')
+    }
+
     return (
       <a href={href} target={target} rel={rel}>
         {children}
