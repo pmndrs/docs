@@ -9,7 +9,7 @@ import { sanitize, slugify } from './text'
 /**
  * Checks for .md(x) file extension
  */
-const MARKDOWN_REGEX = /\.mdx?$/
+export const MARKDOWN_REGEX = /\.mdx?/
 
 /**
  * Uncomments frontMatter from vanilla markdown

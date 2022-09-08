@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Codesandbox from 'components/Codesandbox'
 import { MDXRemoteProps, MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
+import { MARKDOWN_REGEX } from 'utils/docs';
 
 const components = {
   Codesandbox,
@@ -76,6 +77,7 @@ const components = {
     const isAnchor = href.startsWith('https://')
     target = isAnchor ? '_blank' : target
     rel = isAnchor ? 'noopener noreferrer' : rel
+    href = isAnchor ? href : href.replace(MARKDOWN_REGEX, '')
 
     return (
       <a href={href} target={target} rel={rel}>
