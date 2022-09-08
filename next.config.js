@@ -47,12 +47,12 @@ module.exports = {
       },
       {
         source: '/react-postprocessing',
-        destination: 'https://github.com/pmndrs/react-three-postprocessing#readme',
+        destination: 'https://github.com/pmndrs/react-postprocessing#readme',
         permanent: true,
       },
       {
         source: '/react-postprocessing/:slug*',
-        destination: 'https://github.com/pmndrs/react-three-postprocessing#:slug*',
+        destination: 'https://github.com/pmndrs/react-postprocessing#:slug*',
         permanent: true,
       },
     ]
