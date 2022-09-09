@@ -45,16 +45,6 @@ module.exports = {
         destination: 'https://github.com/pmndrs/drei#:slug*',
         permanent: true,
       },
-      {
-        source: '/react-postprocessing',
-        destination: 'https://github.com/pmndrs/react-postprocessing#readme',
-        permanent: true,
-      },
-      {
-        source: '/react-postprocessing/:slug*',
-        destination: 'https://github.com/pmndrs/react-postprocessing#:slug*',
-        permanent: true,
-      },
     ]
   },
 }

@@ -3,6 +3,7 @@ import zustandShare from 'assets/zustand.jpg'
 import zustandIcon from 'assets/zustand-icon.png'
 import jotaiIcon from 'assets/jotai-icon.png'
 import reactThreeA11yShare from 'assets/react-three-a11y.jpg'
+import reactPostprocessingShare from 'assets/react-postprocessing.jpg'
 
 export interface Library {
   title: string
@@ -68,9 +69,11 @@ const libraries: Record<string, Library> = {
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
-    url: 'https://github.com/pmndrs/react-postprocessing#readme',
+    url: '/react-postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
+    image: reactPostprocessingShare.src,
+    docs: 'CodyJasonBennett/react-postprocessing/migrate-docs/docs',
   },
 }
 
