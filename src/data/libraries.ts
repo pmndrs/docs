@@ -58,6 +58,12 @@ const libraries: Record<string, Library> = {
     description: 'Jotai is a primitive and flexible state management library for React',
     icon: jotaiIcon.src,
   },
+  valtio: {
+    title: 'Valtio',
+    url: 'https://valtio.pmnd.rs',
+    github: 'https://github.com/pmndrs/valtio',
+    description: 'Valtio makes proxy-state simple for React and Vanilla',
+  },
   a11y: {
     title: 'A11y',
     url: '/a11y',
