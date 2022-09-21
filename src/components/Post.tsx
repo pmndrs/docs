@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Codesandbox from 'components/Codesandbox'
 import { MDXRemoteProps, MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
-import { MARKDOWN_REGEX } from 'utils/docs';
+import { MARKDOWN_REGEX } from 'utils/docs'
 
 const components = {
   Codesandbox,
