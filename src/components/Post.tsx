@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Codesandbox from 'components/Codesandbox'
 import { MDXRemoteProps, MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
-import { MARKDOWN_REGEX } from 'utils/docs'
+import { MARKDOWN_REGEX, prepareTitleId } from 'utils/docs'
 
 const components = {
   Codesandbox,
@@ -31,9 +31,9 @@ const components = {
       <h2 id={id}>{children}</h2>
     </a>
   ),
-  h3: ({ children, id }: { children: React.ReactNode; id: string }) => (
-    <a href={`#${id}`} className="heading text-xl mb-4 mt-6 tracking-light">
-      <h3 id={id}>{children}</h3>
+  h3: ({ children }: { children: React.ReactNode }) => (
+    <a href={`#${prepareTitleId(children)}`} className="heading text-xl mb-4 mt-6 tracking-light">
+      <h3 id={prepareTitleId(children)}>{children}</h3>
     </a>
   ),
   h4: ({ children, id }: { children: React.ReactNode; id: string }) => (
