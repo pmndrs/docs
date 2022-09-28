@@ -5,6 +5,7 @@ import matter from 'gray-matter'
 import libs from 'data/libraries'
 import type { Doc, DocToC } from 'hooks/useDocs'
 import { sanitize, slugify } from './text'
+import React from 'react'
 
 /**
  * Checks for .md(x) file extension
@@ -142,4 +143,15 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
   )
 
   return docs.sort((a, b) => a.nav - b.nav)
+}
+
+/**
+ * Converts a React Node to a flat string safe for use as element ids
+ */
+export function prepareTitleId(title: React.ReactNode) {
+  const flatTitle =
+    React.Children.map(title, (element) => {
+      return React.isValidElement(element) ? element.props.children : element
+    }) ?? []
+  return slugify(flatTitle.join(''))
 }
