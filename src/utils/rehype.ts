@@ -1,4 +1,4 @@
-import { slugify } from './text'
+import type { DocToC } from 'hooks/useDocs'
 
 export interface Node {
   type: string
@@ -11,15 +11,49 @@ export interface Node {
 }
 
 /**
- * Makes page headings linkable.
+ * Extracts the text content of a Node and its descendants.
  */
-export function headings() {
-  return (root: Node) => {
-    for (const node of root.children) {
+const toString = (node: Node): string => node.children?.map(toString).join('') ?? node.value ?? ''
+
+/**
+ * Converts a TitleCase string into a url-safe slug.
+ */
+const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
+
+/**
+ * Generates a table of contents from page headings.
+ */
+export const toc = (target: DocToC[] = [], url: string, page: string) => {
+  return () => (root: Node) => {
+    const previous: Record<number, DocToC> = {}
+
+    for (let i = 0; i < root.children.length; i++) {
+      const node = root.children[i]
+
       if (node.type === 'element' && /^h[1-4]$/.test(node.tagName)) {
-        const title = node.children.reduce((acc, { value }) => `${acc}${value}`, '')
+        const level = parseInt(node.tagName[1])
+
+        const title = toString(node)
         const id = slugify(title)
         node.properties.id = id
+
+        let siblingIndex = i + 1
+        let sibling: Node | undefined = root.children[siblingIndex]
+        while (sibling?.type === 'text') sibling = root.children[siblingIndex++]
+        const description = sibling?.tagName === 'p' ? toString(sibling) : ''
+
+        const item: DocToC = {
+          id,
+          level,
+          page,
+          url: `${url}#${id}`,
+          title,
+          description,
+          parent: previous[level - 2] ?? null,
+        }
+        previous[level - 1] = item
+
+        target.push(item)
       }
     }
   }
