@@ -45,7 +45,7 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
         const item: DocToC = {
           id,
           level,
-          page,
+          label: page,
           url: `${url}#${id}`,
           title,
           description,

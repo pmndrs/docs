@@ -24,6 +24,6 @@ export async function fetchCSB(ids: string[]) {
   return boxes
 }
 
-export function useCSB(id: string) {
-  return React.useContext(CSBContext)[id]
+export function useCSB() {
+  return React.useContext(CSBContext)
 }

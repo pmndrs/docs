@@ -8,7 +8,7 @@ export interface DocToC {
   description: string
   url: string
   parent: DocToC | null
-  page: string
+  label: string
 }
 
 export interface Doc {
