@@ -21,7 +21,6 @@ export interface Doc {
   source: MDXRemoteSerializeResult
   boxes: string[]
   tableOfContents: DocToC[]
-  boxes: string[]
 }
 
 export const DocsContext = React.createContext<Doc[]>(null!)
