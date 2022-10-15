@@ -6,10 +6,14 @@ import { Doc, useDocs } from 'hooks/useDocs'
 
 interface NavItemProps {
   doc: Doc
-  active: boolean
 }
 
-function NavItem({ doc, active }: NavItemProps) {
+function NavItem({ doc }: NavItemProps) {
+  const { asPath } = useRouter()
+  const [active, setActive] = React.useState(false)
+
+  React.useEffect(() => setActive(doc.url === asPath), [doc.url, asPath])
+
   return (
     <Link href={doc.url ?? '/'}>
       <a
@@ -27,7 +31,6 @@ function NavItem({ doc, active }: NavItemProps) {
 type NavList = Record<string, Doc | Record<string, Doc>>
 
 function Nav() {
-  const { asPath } = useRouter()
   const docs = useDocs()
   const nav = React.useMemo(
     () =>
@@ -54,11 +57,9 @@ function Nav() {
             {key.replace(/\-/g, ' ')}
           </h3>
           {doc.url ? (
-            <NavItem key={key} active={doc.url === asPath} doc={doc as Doc} />
+            <NavItem key={key} doc={doc as Doc} />
           ) : (
-            Object.entries(doc).map(([key, doc]: [string, Doc]) => (
-              <NavItem key={key} active={doc.url === asPath} doc={doc} />
-            ))
+            Object.entries(doc).map(([key, doc]: [string, Doc]) => <NavItem key={key} doc={doc} />)
           )}
         </li>
       ))}
