@@ -2,14 +2,17 @@ import { fs } from 'memfs'
 import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
+import { serialize } from 'next-mdx-remote/serialize'
+import remarkGFM from 'remark-gfm'
+import rehypePrismPlus from 'rehype-prism-plus'
+import { codesandbox, toc } from 'utils/rehype'
 import libs from 'data/libraries'
 import type { Doc, DocToC } from 'hooks/useDocs'
-import { sanitize, slugify } from './text'
 
 /**
  * Checks for .md(x) file extension
  */
-const MARKDOWN_REGEX = /\.mdx?$/
+export const MARKDOWN_REGEX = /\.mdx?/
 
 /**
  * Uncomments frontMatter from vanilla markdown
@@ -82,8 +85,8 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
 
       // Add fallback frontmatter
       const pathname = slug[slug.length - 1]
-      const title = sanitize(compiled.data.title ?? pathname.replace(/\-/g, ' '))
-      const description = sanitize(compiled.data.description ?? '')
+      const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
+      const description = compiled.data.description ?? ''
       const nav = compiled.data.nav ?? Infinity
 
       // Sanitize markdown
@@ -103,45 +106,27 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
           return `${prefix}/api/get-image?lib=${lib}&url=${url}${suffix}`
         })
 
-      const headings = content.matchAll(/^#{1,4}\s[^\n]+/gm)
-      const previous: Record<number, DocToC> = {}
-
+      const boxes: string[] = []
       const tableOfContents: DocToC[] = []
-      const page = title
 
-      for (const match of headings) {
-        const [heading] = match
-        const [prefix, ...rest] = heading.trim().split(' ')
-        const level = prefix.length
-        const title = sanitize(rest.join(' '))
-        const id = slugify(title)
+      const source = await serialize(content, {
+        mdxOptions: {
+          remarkPlugins: [remarkGFM],
+          rehypePlugins: [rehypePrismPlus, codesandbox(boxes), toc(tableOfContents, url, title)],
+        },
+      })
 
-        const description = sanitize(
-          content
-            .substring(match.index!)
-            .match(/^(\n|\s)*^\w[^\n]+/m)?.[0]
-            .trim() ?? ''
-        )
-
-        const item: DocToC = {
-          level,
-          title,
-          id,
-          url: `${url}#${id}`,
-          description,
-          parent: previous[level - 2] ?? null,
-          label: page,
-        }
-        previous[level - 1] = item
-
-        tableOfContents.push(item)
+      return {
+        slug,
+        url,
+        editURL,
+        title,
+        description,
+        nav,
+        source,
+        boxes,
+        tableOfContents,
       }
-
-      const boxes = Array.from(content.matchAll(/(?:Codesandbox\s+id=")([^"]+)(?:")/g)).map(
-        (match) => match[1].trim()
-      )
-
-      return { slug, url, editURL, title, description, nav, content, tableOfContents, boxes }
     })
   )
 

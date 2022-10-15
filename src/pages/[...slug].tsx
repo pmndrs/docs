@@ -1,29 +1,20 @@
 import * as React from 'react'
-import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import type { GetStaticProps } from 'next'
 import type libs from 'data/libraries'
-import { serialize } from 'next-mdx-remote/serialize'
-import gfm from 'remark-gfm'
-// @ts-ignore
-import prism from 'mdx-prism'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
 import Post from 'components/Post'
 import { Doc, DocsContext } from 'hooks/useDocs'
-import { CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
-import { headings } from 'utils/rehype'
+import { type CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
 import { getDocs } from 'utils/docs'
 
 export interface PostPageProps {
   docs: Doc[]
   doc: Doc
   boxes: Record<string, CSB>
-  title: string
-  description?: string
-  source: MDXRemoteSerializeResult
 }
 
-export default function PostPage({ docs, doc, boxes, title, description, source }: PostPageProps) {
+export default function PostPage({ docs, doc, boxes }: PostPageProps) {
   return (
     <DocsContext.Provider value={docs}>
       <CSBContext.Provider value={boxes}>
@@ -31,13 +22,13 @@ export default function PostPage({ docs, doc, boxes, title, description, source 
           <SEO />
           <main className="max-w-3xl mx-auto">
             <div className="pb-6 mb-4 border-b post-header">
-              <h1 className="mb-4 text-5xl font-bold tracking-tighter">{title}</h1>
-              {!!description?.length && (
-                <p className="text-base leading-4 text-gray-400 leading-5">{description}</p>
+              <h1 className="mb-4 text-5xl font-bold tracking-tighter">{doc.title}</h1>
+              {!!doc.description?.length && (
+                <p className="text-base leading-4 text-gray-400 leading-5">{doc.description}</p>
               )}
             </div>
             <main className="content-container">
-              <Post {...source} />
+              <Post {...doc.source} />
             </main>
           </main>
         </Layout>
@@ -63,21 +54,20 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       : { notFound: true }
   }
 
-  const { title, description, content } = doc
-
-  const source = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [gfm],
-      rehypePlugins: [prism, headings],
-    },
-  })
-
   const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
 
-  return { props: { docs, doc, boxes, title, description, source }, revalidate: 300 }
+  return {
+    props: {
+      // Don't send other pages' source blobs
+      docs: docs.map(({ source, ...rest }) => ({ ...rest, source: null! })),
+      doc,
+      boxes,
+    },
+    revalidate: 300,
+  }
 }
 
 export const getStaticPaths = async () => {
-  const paths = (await getDocs()).map((params) => ({ params }))
+  const paths = (await getDocs()).map(({ slug }) => ({ params: { slug } }))
   return { paths, fallback: 'blocking' }
 }

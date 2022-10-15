@@ -3,6 +3,7 @@ import zustandShare from 'assets/zustand.jpg'
 import zustandIcon from 'assets/zustand-icon.png'
 import jotaiIcon from 'assets/jotai-icon.png'
 import reactThreeA11yShare from 'assets/react-three-a11y.jpg'
+import reactPostprocessingShare from 'assets/react-postprocessing.jpg'
 
 export interface Library {
   title: string
@@ -57,6 +58,12 @@ const libraries: Record<string, Library> = {
     description: 'Jotai is a primitive and flexible state management library for React',
     icon: jotaiIcon.src,
   },
+  valtio: {
+    title: 'Valtio',
+    url: 'https://valtio.pmnd.rs',
+    github: 'https://github.com/pmndrs/valtio',
+    description: 'Valtio makes proxy-state simple for React and Vanilla',
+  },
   a11y: {
     title: 'A11y',
     url: '/a11y',
@@ -64,13 +71,15 @@ const libraries: Record<string, Library> = {
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     image: reactThreeA11yShare.src,
-    docs: 'CodyJasonBennett/react-three-a11y/migrate-docs/docs',
+    docs: 'pmndrs/react-three-a11y/main/docs',
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
-    url: 'https://github.com/pmndrs/react-postprocessing#readme',
+    url: '/react-postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
+    image: reactPostprocessingShare.src,
+    docs: 'CodyJasonBennett/react-postprocessing/migrate-docs/docs',
   },
 }
 

@@ -54,7 +54,11 @@ code span {
 
 /* Inline code */
 :not(pre) > code {
-  @apply px-2 py-1 rounded font-mono text-sm text-gray-800 bg-gray-100;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+  background: rgb(243, 244, 246);
+  color: rgb(31, 41, 55);
 }
 
 /* Start purging... */
@@ -117,8 +121,12 @@ blockquote p {
   @apply text-gray-400 !important;
 }
 
+details {
+  @apply ml-4;
+}
+
 summary {
-  @apply select-none cursor-pointer mb-2;
+  @apply select-none cursor-pointer mb-2 -ml-4;
 }
 
 table {
