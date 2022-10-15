@@ -1,4 +1,5 @@
 import * as React from 'react'
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 
 export interface DocToC {
   id: string
@@ -6,7 +7,7 @@ export interface DocToC {
   title: string
   description: string
   url: string
-  parent?: DocToC
+  parent: DocToC | null
   page: string
 }
 
@@ -17,7 +18,8 @@ export interface Doc {
   nav: number
   title: string
   description: string
-  content: string
+  source: MDXRemoteSerializeResult
+  boxes: string[]
   tableOfContents: DocToC[]
 }
 
