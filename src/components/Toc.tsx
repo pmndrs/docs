@@ -9,19 +9,22 @@ export interface ToCProps {
 function Toc({ toc }: ToCProps) {
   const [activeIndex, setActiveIndex] = React.useState(0)
 
-  // React.useEffect(() => {
-  //   const headings = toc.map(({ id }) => document.getElementById(id))
+  React.useEffect(() => {
+    const headings = toc.map((heading) => document.getElementById(heading.id))
 
-  //   const observer = new IntersectionObserver(([entry]) => {
-  //     if (entry.intersectionRatio > 0) {
-  //       const headingIndex = headings.indexOf(entry.target as HTMLElement)
-  //       setActiveIndex(headingIndex)
-  //     }
-  //   })
-  //   headings.forEach((element) => observer.observe(element as Element))
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.intersectionRatio > 0) {
+        const headingIndex = headings.indexOf(entry.target as HTMLElement)
+        setActiveIndex(headingIndex)
+      }
+    })
 
-  //   return () => observer.disconnect()
-  // }, [toc])
+    for (const heading of headings) {
+      if (heading) observer.observe(heading)
+    }
+
+    return () => observer.disconnect()
+  }, [toc])
 
   return (
     <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
