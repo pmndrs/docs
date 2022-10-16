@@ -25,9 +25,9 @@ function Toc({ toc }: ToCProps) {
 
   return (
     <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
-      <h5 className="text-gray-900 uppercase tracking-wide font-semibold mt-12 mb-2 text-sm lg:text-xs">
+      <label className="text-gray-900 uppercase tracking-wide font-semibold mt-12 mb-2 text-sm lg:text-xs">
         On This Page
-      </h5>
+      </label>
       {toc.map((item, index) => (
         <h4 key={`${item.title}-${index}`}>
           <a

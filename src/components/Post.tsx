@@ -85,6 +85,29 @@ const components = {
       </a>
     )
   },
+  img: ({
+    src,
+    alt,
+    width,
+    height,
+    ...rest
+  }: {
+    src: string
+    alt: string
+    width: number
+    height: number
+  }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      decoding="async"
+      loading="lazy"
+      alt={alt}
+      width={width}
+      height={height}
+      {...rest}
+    />
+  ),
 }
 
 export default function Post(props: MDXRemoteSerializeResult) {
