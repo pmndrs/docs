@@ -39,7 +39,11 @@ export default function Layout({ doc, children }: LayoutProps) {
           </a>
         </Link>
         <Search />
-        <button className="block lg:hidden p-2 mr-2 ml-2" onClick={() => setMenuOpen((v) => !v)}>
+        <button
+          className="block lg:hidden p-2 mr-2 ml-2"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Menu"
+        >
           <Icon icon="menu" />
         </button>
       </div>
@@ -94,9 +98,9 @@ export default function Layout({ doc, children }: LayoutProps) {
                   <div className="flex justify-between w-full max-w-3xl mx-auto mt-12">
                     {!!previousPage && (
                       <div className="">
-                        <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
+                        <label className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
                           Previous
-                        </h5>
+                        </label>
                         <div className="text-xl">
                           <Link href={previousPage.url}>
                             <a className="text-gray-900">{previousPage.title}</a>
@@ -106,9 +110,9 @@ export default function Layout({ doc, children }: LayoutProps) {
                     )}
                     {!!nextPage && (
                       <div className="ml-auto text-right">
-                        <h5 className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
+                        <label className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
                           Next
-                        </h5>
+                        </label>
                         <div className="text-xl">
                           <Link href={nextPage.url}>
                             <a className="text-gray-900">{nextPage.title}</a>
