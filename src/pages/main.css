@@ -157,8 +157,17 @@ td {
 }
 
 td:first-child {
-  @apply px-6 py-4 text-sm font-medium text-gray-900;
-  max-width: 150px;
+  @apply font-medium;
+}
+
+@media (max-width: 600px) {
+  table {
+    min-width: auto;
+  }
+
+  table td {
+    max-width: 100%;
+  }
 }
 
 .grid-list li {
