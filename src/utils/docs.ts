@@ -96,15 +96,18 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         // Remove extraneous comments from post
         .replace(COMMENT_REGEX, '')
         // Require inline images
-        .replace(/(src="|\()([^\.]+\.(?:png|jpg))("|\))/g, (input, prefix, src, suffix) => {
-          const parts = file.split('/')
-          parts.pop()
+        .replace(
+          /(src="|\()([^\.]+\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
+          (input, prefix, src, suffix) => {
+            const parts = file.split('/')
+            parts.pop()
 
-          const url = `${parts.join('/')}/${src}`
-          if (!fs.existsSync(url)) return input
+            const url = `${parts.join('/')}/${src}`
+            if (!fs.existsSync(url)) return input
 
-          return `${prefix}/api/get-image?lib=${lib}&url=${url}${suffix}`
-        })
+            return `${prefix}/api/get-image?lib=${lib}&url=${url}${suffix}`
+          }
+        )
 
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []
