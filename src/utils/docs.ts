@@ -97,7 +97,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         .replace(COMMENT_REGEX, '')
         // Require inline images
         .replace(
-          /(src="|\()([^\.]+\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
+          /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
           (input, prefix, src, suffix) => {
             const parts = file.split('/')
             parts.pop()
