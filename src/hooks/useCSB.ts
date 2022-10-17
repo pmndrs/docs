@@ -14,11 +14,16 @@ export async function fetchCSB(ids: string[]) {
   const boxes: Record<string, CSB> = {}
 
   for (const id of ids) {
-    const { title, description, alias, screenshot_url, tags } = await fetch(
-      `https://codesandbox.io/api/v1/sandboxes/${id}`
-    ).then(async (res) => (await res.json()).data)
+    try {
+      const { title, description, alias, screenshot_url, tags } = await fetch(
+        `https://codesandbox.io/api/v1/sandboxes/${id}`
+      ).then(async (res) => (await res.json()).data)
 
-    boxes[id] = { title, description, alias, screenshot_url, tags }
+      boxes[id] = { title, description, alias, screenshot_url, tags }
+    } catch (_) {
+      console.warn(`fetchCSB: couldn't fetch ${id}`)
+      boxes[id] = { title: '', description: '', alias: '', screenshot_url: '', tags: [] }
+    }
   }
 
   return boxes
