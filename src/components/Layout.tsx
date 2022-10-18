@@ -42,6 +42,7 @@ export default function Layout({ doc, children }: LayoutProps) {
         <button
           className="block lg:hidden p-2 mr-2 ml-2"
           onClick={() => setMenuOpen((v) => !v)}
+          type="button"
           aria-label="Menu"
         >
           <Icon icon="menu" />
