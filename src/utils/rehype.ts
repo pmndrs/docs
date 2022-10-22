@@ -64,9 +64,10 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
 export function codesandbox(ids: string[] = []) {
   return () => (root: Root) => {
     const traverse = (node: Root | Content) => {
-      if (node.type === 'mdxJsxFlowElement' && node.name === 'codesandbox') {
+      if ('name' in node && node.name === 'Codesandbox') {
         // @ts-ignore
-        ids.push(node.attributes.find(({ name }) => name === 'id').value)
+        const id: string | undefined = node.attributes.find(({ name }) => name === 'id')?.value
+        if (id) ids.push(id)
       } else if ('children' in node) {
         for (const child of node.children) traverse(child)
       }
