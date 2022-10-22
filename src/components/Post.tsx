@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Codesandbox from 'components/Codesandbox'
-import { MDXRemoteProps, MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
+import * as mdx from '@mdx-js/react'
+import * as runtime from 'react/jsx-runtime'
 import { MARKDOWN_REGEX } from 'utils/docs'
 
 const components = {
@@ -110,6 +111,20 @@ const components = {
   ),
 }
 
-export default function Post(props: MDXRemoteSerializeResult) {
-  return <MDXRemote {...props} components={components as MDXRemoteProps['components']} />
+export interface PostProps {
+  compiled: string
+}
+
+export default function Post(props: PostProps) {
+  const Content: React.ElementType = React.useMemo(
+    () => new Function(props.compiled)({ ...mdx, ...runtime }).default,
+    [props.compiled]
+  )
+
+  return (
+    // @ts-ignore
+    <mdx.MDXProvider components={components}>
+      <Content />
+    </mdx.MDXProvider>
+  )
 }

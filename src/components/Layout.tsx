@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import * as React from 'react'
 import LibSwitcher from 'components/LibSwitcher'
-import Nav from 'components/Nav'
+import Nav, { NavList } from 'components/Nav'
 import Icon from 'components/Icon'
 import Toc from 'components/Toc'
 import Search from 'components/Search'
@@ -12,10 +12,11 @@ import { Doc, useDocs } from 'hooks/useDocs'
 
 export interface LayoutProps {
   doc: Doc
+  nav: NavList
   children: React.ReactNode
 }
 
-export default function Layout({ doc, children }: LayoutProps) {
+export default function Layout({ doc, nav, children }: LayoutProps) {
   const [menuOpen, setMenuOpen] = React.useState(false)
   useLockBodyScroll(menuOpen)
 
@@ -68,7 +69,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                 <div className="mt-8 md:mt-0 mb-4">
                   <LibSwitcher />
                 </div>
-                <Nav />
+                <Nav nav={nav} />
               </nav>
             </div>
             <button

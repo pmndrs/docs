@@ -19,7 +19,7 @@ function Search() {
       (docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[])
         .filter((entry) => entry.description.length > 0)
         .concat(
-          Object.entries(boxes).flatMap(([id, data]) => ({
+          boxes.flatMap(({ id, ...data }) => ({
             ...data,
             label: 'codesandbox.io',
             description: data.description ?? '',

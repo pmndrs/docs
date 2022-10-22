@@ -1,14 +1,19 @@
-/// <reference types="mdast-util-mdx-jsx" />
-import type { Root, Content } from 'mdast'
 import type { DocToC } from 'hooks/useDocs'
+
+export interface Node {
+  type: string
+  name?: string
+  value: string
+  tagName: string
+  attributes: Node[]
+  properties: any
+  children: Node[]
+}
 
 /**
  * Extracts the text content of a Node and its descendants.
  */
-const toString = (node: Content): string =>
-  ('value' in node && node.value) ||
-  ('children' in node && node.children.map(toString).join('')) ||
-  ''
+const toString = (node: Node): string => node.children?.map(toString).join('') ?? node.value ?? ''
 
 /**
  * Converts a TitleCase string into a url-safe slug.
@@ -19,42 +24,37 @@ const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
  * Generates a table of contents from page headings.
  */
 export const toc = (target: DocToC[] = [], url: string, page: string) => {
-  return () => (root: Root) => {
-    const parents: Record<number, DocToC> = {}
-    let needsDescription: DocToC | null = null
+  return () => (root: Node) => {
+    const previous: Record<number, DocToC> = {}
 
-    const traverse = (node: Root | Content) => {
-      switch (node.type) {
-        case 'heading': {
-          const title = toString(node)
-          const id = slugify(title)
+    for (let i = 0; i < root.children.length; i++) {
+      const node = root.children[i]
 
-          const item: DocToC = {
-            title,
-            id,
-            label: page,
-            url: `${url}#${id}`,
-            description: '',
-            parent: parents[node.depth - 2] ?? null,
-          }
-          needsDescription = parents[node.depth - 1] = item
-          target.push(item)
+      if (node.type === 'element' && /^h[1-4]$/.test(node.tagName)) {
+        const level = parseInt(node.tagName[1])
 
-          break
+        const title = toString(node)
+        const id = slugify(title)
+        node.properties.id = id
+
+        let siblingIndex = i + 1
+        let sibling: Node | undefined = root.children[siblingIndex]
+        while (sibling?.type === 'text') sibling = root.children[siblingIndex++]
+        const description = sibling?.tagName === 'p' ? toString(sibling) : ''
+
+        const item: DocToC = {
+          id,
+          label: page,
+          url: `${url}#${id}`,
+          title,
+          description,
+          parent: previous[level - 2] ?? null,
         }
-        case 'paragraph': {
-          if (needsDescription) {
-            needsDescription.description = toString(node)
-            needsDescription = null
-          }
-          break
-        }
-        case 'root':
-          for (const child of root.children) traverse(child)
+        previous[level - 1] = item
+
+        target.push(item)
       }
     }
-
-    traverse(root)
   }
 }
 
@@ -62,17 +62,15 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
  * Fetches a list of generated codesandbox components.
  */
 export function codesandbox(ids: string[] = []) {
-  return () => (root: Root) => {
-    const traverse = (node: Root | Content) => {
-      if ('name' in node && node.name === 'Codesandbox') {
-        // @ts-ignore
-        const id: string | undefined = node.attributes.find(({ name }) => name === 'id')?.value
-        if (id) ids.push(id)
-      } else if ('children' in node) {
-        for (const child of node.children) traverse(child)
+  return () => (root: Node) => {
+    const traverse = (node: Node) => {
+      if (node.name === 'Codesandbox') {
+        const id = node.attributes.find(({ name }) => name === 'id')!
+        return ids.push(id.value)
       }
-    }
 
+      if (node.children) for (const child of node.children) traverse(child)
+    }
     traverse(root)
   }
 }

@@ -7,18 +7,28 @@ import Post from 'components/Post'
 import { Doc, DocsContext } from 'hooks/useDocs'
 import { type CSB, CSBContext, fetchCSB } from 'hooks/useCSB'
 import { getDocs } from 'utils/docs'
+import { useIsomorphicLayoutEffect } from 'hooks/useIsomorphicLayoutEffect'
+import { NavList } from 'components/Nav'
 
 export interface PostPageProps {
-  docs: Doc[]
   doc: Doc
-  boxes: Record<string, CSB>
+  boxes: CSB[]
+  nav: NavList
 }
 
-export default function PostPage({ docs, doc, boxes }: PostPageProps) {
+export default function PostPage({ doc, boxes: initialBoxes, nav }: PostPageProps) {
+  const [docs, setDocs] = React.useState<Doc[]>([])
+  const [boxes, setBoxes] = React.useState<CSB[]>(initialBoxes)
+
+  useIsomorphicLayoutEffect(() => {
+    fetch('/api/get-docs').then(async (res) => res.ok && setDocs(await res.json()))
+    fetch('/api/get-boxes').then(async (res) => res.ok && setBoxes(await res.json()))
+  }, [])
+
   return (
     <DocsContext.Provider value={docs}>
       <CSBContext.Provider value={boxes}>
-        <Layout doc={doc}>
+        <Layout doc={doc} nav={nav}>
           <SEO />
           <main className="max-w-3xl mx-auto">
             <div className="pb-6 mb-4 border-b post-header">
@@ -28,7 +38,7 @@ export default function PostPage({ docs, doc, boxes }: PostPageProps) {
               )}
             </div>
             <main className="content-container">
-              <Post {...doc.source} />
+              <Post compiled={doc.compiled} />
             </main>
           </main>
         </Layout>
@@ -54,15 +64,27 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       : { notFound: true }
   }
 
-  const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
+  const boxes = await fetchCSB(doc.boxes)
+
+  const nav = docs.reduce((acc, { slug, title, url }) => {
+    const [, ...rest] = slug
+    const [page, category] = rest.reverse()
+
+    const entry = { title, url }
+
+    if (category) {
+      acc[category] ??= {}
+      // @ts-ignore
+      acc[category][page] = entry
+    } else {
+      acc[page] = entry
+    }
+
+    return acc
+  }, {} as NavList)
 
   return {
-    props: {
-      // Don't send other pages' source blobs
-      docs: docs.map(({ source, ...rest }) => ({ ...rest, source: null! })),
-      doc,
-      boxes,
-    },
+    props: { doc, boxes, nav },
     revalidate: 300,
   }
 }

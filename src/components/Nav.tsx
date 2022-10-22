@@ -2,7 +2,7 @@ import * as React from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Doc, useDocs } from 'hooks/useDocs'
+import { Doc } from 'hooks/useDocs'
 
 interface NavItemProps {
   doc: Doc
@@ -28,30 +28,20 @@ function NavItem({ doc }: NavItemProps) {
   )
 }
 
-type NavList = Record<string, Doc | Record<string, Doc>>
+export interface NavListItem {
+  title: string
+  url: string
+}
+export type NavList = Record<string, NavListItem | Record<string, NavListItem>>
 
-function Nav() {
-  const docs = useDocs()
-  const nav = React.useMemo(
-    () =>
-      docs.reduce((acc, doc) => {
-        const [, ...rest] = doc.slug
-        const [page, category] = rest.reverse()
+export interface NavProps {
+  nav: NavList
+}
 
-        if (category && !acc[category]) acc[category] = {}
-
-        // @ts-ignore
-        if (category) acc[category][page] = doc
-        else acc[page] = doc
-
-        return acc
-      }, {} as NavList),
-    [docs]
-  )
-
+function Nav(props: NavProps) {
   return (
     <ul>
-      {Object.entries(nav).map(([key, doc]) => (
+      {Object.entries(props.nav).map(([key, doc]) => (
         <li key={key}>
           <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold">
             {key.replace(/\-/g, ' ')}

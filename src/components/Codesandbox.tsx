@@ -8,7 +8,7 @@ export interface CodesandboxProps {
 
 export default function Codesandbox({ id }: CodesandboxProps) {
   const boxes = useCSB()
-  const data = boxes[id]
+  const data = boxes.find((box) => box.id === id)!
 
   return (
     <>

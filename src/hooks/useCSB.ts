@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 export interface CSB {
+  id: string
   title: string
   description: string
   alias: string
@@ -8,10 +9,12 @@ export interface CSB {
   tags: string[]
 }
 
-export const CSBContext = React.createContext<Record<string, CSB>>({})
+export const CSBContext = React.createContext<CSB[]>(null!)
 
 export async function fetchCSB(ids: string[]) {
-  const boxes: Record<string, CSB> = {}
+  const boxes: CSB[] = []
+
+  let rateLimited = 0
 
   for (const id of ids) {
     try {
@@ -19,12 +22,14 @@ export async function fetchCSB(ids: string[]) {
         `https://codesandbox.io/api/v1/sandboxes/${id}`
       ).then(async (res) => (await res.json()).data)
 
-      boxes[id] = { title, description, alias, screenshot_url, tags }
+      boxes.push({ id, title, description, alias, screenshot_url, tags })
     } catch (_) {
-      console.warn(`fetchCSB: couldn't fetch ${id}`)
-      boxes[id] = { title: '', description: '', alias: '', screenshot_url: '', tags: [] }
+      rateLimited++
+      boxes.push({ id, title: '', description: '', alias: '', screenshot_url: '', tags: [] })
     }
   }
+
+  if (rateLimited) console.warn(`fetchCSB: rate-limited for ${rateLimited} boxes`)
 
   return boxes
 }

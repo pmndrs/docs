@@ -2,7 +2,7 @@ import { fs } from 'memfs'
 import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
-import { serialize } from 'next-mdx-remote/serialize'
+import { compile } from '@mdx-js/mdx'
 import remarkGFM from 'remark-gfm'
 import rehypePrismPlus from 'rehype-prism-plus'
 import { codesandbox, toc } from 'utils/rehype'
@@ -81,16 +81,16 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
       const editURL = file.replace(dir, `https://github.com/${user}/${repo}/tree/${branch}`)
 
       // Read & parse doc
-      const compiled = matter(await fs.promises.readFile(file))
+      const { data, content } = matter(await fs.promises.readFile(file))
 
       // Add fallback frontmatter
       const pathname = slug[slug.length - 1]
-      const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
-      const description = compiled.data.description ?? ''
-      const nav = compiled.data.nav ?? Infinity
+      const title = data.title ?? pathname.replace(/\-/g, ' ')
+      const description = data.description ?? ''
+      const nav = data.nav ?? Infinity
 
       // Sanitize markdown
-      const content = compiled.content
+      const markdown = content
         // Remove <!-- --> comments from frontMatter
         .replace(FRONTMATTER_REGEX, '')
         // Remove extraneous comments from post
@@ -112,12 +112,14 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []
 
-      const source = await serialize(content, {
-        mdxOptions: {
+      const compiled = String(
+        await compile(markdown, {
           remarkPlugins: [remarkGFM],
           rehypePlugins: [rehypePrismPlus, codesandbox(boxes), toc(tableOfContents, url, title)],
-        },
-      })
+          outputFormat: 'function-body',
+          providerImportSource: '@mdx-js/react',
+        })
+      )
 
       return {
         slug,
@@ -126,9 +128,9 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         title,
         description,
         nav,
-        source,
         boxes,
         tableOfContents,
+        compiled,
       }
     })
   )
