@@ -1,7 +1,6 @@
 /// <reference types="mdast-util-mdx-jsx" />
 import type { Root, Content } from 'mdast'
 import type { DocToC } from 'hooks/useDocs'
-import { visit } from 'unist-util-visit'
 
 /**
  * Extracts the text content of a Node and its descendants.
@@ -24,27 +23,38 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
     const parents: Record<number, DocToC> = {}
     let needsDescription: DocToC | null = null
 
-    visit(root, (node) => {
-      if (node.type === 'heading') {
-        const title = toString(node)
-        const id = slugify(title)
+    const traverse = (node: Root | Content) => {
+      switch (node.type) {
+        case 'heading': {
+          const title = toString(node)
+          const id = slugify(title)
 
-        const item: DocToC = {
-          title,
-          id,
-          label: page,
-          url: `${url}#${id}`,
-          description: '',
-          parent: parents[node.depth - 2] ?? null,
+          const item: DocToC = {
+            title,
+            id,
+            label: page,
+            url: `${url}#${id}`,
+            description: '',
+            parent: parents[node.depth - 2] ?? null,
+          }
+          needsDescription = parents[node.depth - 1] = item
+          target.push(item)
+
+          break
         }
-        needsDescription = parents[node.depth - 1] = item
-
-        target.push(item)
-      } else if (node.type === 'paragraph' && needsDescription) {
-        needsDescription.description = toString(node)
-        needsDescription = null
+        case 'paragraph': {
+          if (needsDescription) {
+            needsDescription.description = toString(node)
+            needsDescription = null
+          }
+          break
+        }
+        case 'root':
+          for (const child of root.children) traverse(child)
       }
-    })
+    }
+
+    traverse(root)
   }
 }
 
@@ -53,11 +63,15 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
  */
 export function codesandbox(ids: string[] = []) {
   return () => (root: Root) => {
-    visit(root, (node) => {
+    const traverse = (node: Root | Content) => {
       if (node.type === 'mdxJsxFlowElement' && node.name === 'codesandbox') {
         // @ts-ignore
         ids.push(node.attributes.find(({ name }) => name === 'id').value)
+      } else if ('children' in node) {
+        for (const child of node.children) traverse(child)
       }
-    })
+    }
+
+    traverse(root)
   }
 }
