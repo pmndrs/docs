@@ -3,7 +3,6 @@ import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 
 export interface DocToC {
   id: string
-  level: number
   title: string
   description: string
   url: string

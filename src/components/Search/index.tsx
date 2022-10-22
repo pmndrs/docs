@@ -14,9 +14,23 @@ function Search() {
   const router = useRouter()
   const boxes = useCSB()
   const docs = useDocs()
+  const entries = React.useMemo(
+    () =>
+      (docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[])
+        .filter((entry) => entry.description.length > 0)
+        .concat(
+          Object.entries(boxes).flatMap(([id, data]) => ({
+            ...data,
+            label: 'codesandbox.io',
+            description: data.description ?? '',
+            url: `https://codesandbox.io/s/${data.alias}`,
+            image: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
+          }))
+        ),
+    [boxes, docs]
+  )
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const [query, setQuery] = React.useState('')
-  const [lib] = router.query.slug as string[]
   const [results, setResults] = React.useState<SearchResult[]>([])
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('Slash')
@@ -31,18 +45,6 @@ function Search() {
         (result.title.toLowerCase().match(query.toLowerCase())?.length ?? 0) / result.title.length
 
       // Search
-      const entries = (docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[])
-        .filter((entry) => entry.description.length > 0)
-        .concat(
-          Object.entries(boxes).flatMap(([id, data]) => ({
-            ...data,
-            label: 'codesandbox.io',
-            description: data.description ?? '',
-            url: `https://codesandbox.io/s/${data.alias}`,
-            image: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
-          }))
-        )
-
       const results = matchSorter(entries, query, {
         keys: ['title', 'description'],
         threshold: matchSorter.rankings.CONTAINS,
@@ -54,7 +56,7 @@ function Search() {
 
       setResults(results)
     })
-  }, [boxes, docs, lib, query])
+  }, [entries, query])
 
   React.useEffect(() => void setQuery(''), [showSearchModal])
 

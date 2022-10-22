@@ -13,8 +13,6 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.6.6",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
-    "@tailwindcss/typography": "^0.5.4",
     "clsx": "^1.2.1",
     "gray-matter": "^4.0.2",
     "isomorphic-git": "^1.19.1",

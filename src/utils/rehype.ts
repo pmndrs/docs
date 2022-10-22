@@ -1,19 +1,15 @@
+/// <reference types="mdast-util-mdx-jsx" />
+import type { Root, Content } from 'mdast'
 import type { DocToC } from 'hooks/useDocs'
-
-export interface Node {
-  type: string
-  name?: string
-  value: string
-  tagName: string
-  attributes: Node[]
-  properties: any
-  children: Node[]
-}
+import { visit } from 'unist-util-visit'
 
 /**
  * Extracts the text content of a Node and its descendants.
  */
-const toString = (node: Node): string => node.children?.map(toString).join('') ?? node.value ?? ''
+const toString = (node: Content): string =>
+  ('value' in node && node.value) ||
+  ('children' in node && node.children.map(toString).join('')) ||
+  ''
 
 /**
  * Converts a TitleCase string into a url-safe slug.
@@ -24,38 +20,31 @@ const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
  * Generates a table of contents from page headings.
  */
 export const toc = (target: DocToC[] = [], url: string, page: string) => {
-  return () => (root: Node) => {
-    const previous: Record<number, DocToC> = {}
+  return () => (root: Root) => {
+    const parents: Record<number, DocToC> = {}
+    let needsDescription: DocToC | null = null
 
-    for (let i = 0; i < root.children.length; i++) {
-      const node = root.children[i]
-
-      if (node.type === 'element' && /^h[1-4]$/.test(node.tagName)) {
-        const level = parseInt(node.tagName[1])
-
+    visit(root, (node) => {
+      if (node.type === 'heading') {
         const title = toString(node)
         const id = slugify(title)
-        node.properties.id = id
-
-        let siblingIndex = i + 1
-        let sibling: Node | undefined = root.children[siblingIndex]
-        while (sibling?.type === 'text') sibling = root.children[siblingIndex++]
-        const description = sibling?.tagName === 'p' ? toString(sibling) : ''
 
         const item: DocToC = {
+          title,
           id,
-          level,
           label: page,
           url: `${url}#${id}`,
-          title,
-          description,
-          parent: previous[level - 2] ?? null,
+          description: '',
+          parent: parents[node.depth - 2] ?? null,
         }
-        previous[level - 1] = item
+        needsDescription = parents[node.depth - 1] = item
 
         target.push(item)
+      } else if (node.type === 'paragraph' && needsDescription) {
+        needsDescription.description = toString(node)
+        needsDescription = null
       }
-    }
+    })
   }
 }
 
@@ -63,15 +52,12 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
  * Fetches a list of generated codesandbox components.
  */
 export function codesandbox(ids: string[] = []) {
-  return () => (root: Node) => {
-    const traverse = (node: Node) => {
-      if (node.name === 'Codesandbox') {
-        const id = node.attributes.find(({ name }) => name === 'id')!
-        return ids.push(id.value)
+  return () => (root: Root) => {
+    visit(root, (node) => {
+      if (node.type === 'mdxJsxFlowElement' && node.name === 'codesandbox') {
+        // @ts-ignore
+        ids.push(node.attributes.find(({ name }) => name === 'id').value)
       }
-
-      if (node.children) for (const child of node.children) traverse(child)
-    }
-    traverse(root)
+    })
   }
 }
