@@ -6,7 +6,7 @@ export interface ToCProps {
   toc: DocToC[]
 }
 
-function Toc({ toc }: ToCProps) {
+export default function Toc({ toc }: ToCProps) {
   const [activeIndex, setActiveIndex] = React.useState(0)
 
   React.useEffect(() => {
@@ -50,5 +50,3 @@ function Toc({ toc }: ToCProps) {
     </div>
   )
 }
-
-export default Toc

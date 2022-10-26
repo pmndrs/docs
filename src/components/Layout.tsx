@@ -31,13 +31,11 @@ export default function Layout({ doc, nav, children }: LayoutProps) {
   return (
     <>
       <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50">
-        <Link href="/">
-          <a aria-label="Poimandres Docs">
-            <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
-              <span className="font-bold">Pmndrs</span>
-              <span className="font-normal">.docs</span>
-            </div>
-          </a>
+        <Link aria-label="Poimandres Docs" href="/">
+          <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
+            <span className="font-bold">Pmndrs</span>
+            <span className="font-normal">.docs</span>
+          </div>
         </Link>
         <Search />
         <button
@@ -104,8 +102,8 @@ export default function Layout({ doc, nav, children }: LayoutProps) {
                           Previous
                         </label>
                         <div className="text-xl">
-                          <Link href={previousPage.url}>
-                            <a className="text-gray-900">{previousPage.title}</a>
+                          <Link className="text-gray-900" href={previousPage.url}>
+                            {previousPage.title}
                           </Link>
                         </div>
                       </div>
@@ -116,8 +114,8 @@ export default function Layout({ doc, nav, children }: LayoutProps) {
                           Next
                         </label>
                         <div className="text-xl">
-                          <Link href={nextPage.url}>
-                            <a className="text-gray-900">{nextPage.title}</a>
+                          <Link className="text-gray-900" href={nextPage.url}>
+                            {nextPage.title}
                           </Link>
                         </div>
                       </div>

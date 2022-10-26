@@ -11,11 +11,13 @@ export default function HomePage() {
         <title>pmnd.rs docs</title>
       </Head>
       <div className="min-h-screen p-8 lg:p-32 bg-gray-50">
-        <Link href="/">
-          <a aria-label="Poimandres Docs" className="p-2 block text-3xl text-center lg:text-left">
-            <span className="font-bold">Pmndrs</span>
-            <span className="font-normal">.docs</span>
-          </a>
+        <Link
+          aria-label="Poimandres Docs"
+          className="p-2 block text-3xl text-center lg:text-left"
+          href="/"
+        >
+          <span className="font-bold">Pmndrs</span>
+          <span className="font-normal">.docs</span>
         </Link>
         <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-20">
           {Object.entries(libs).map(([id, data]) => (
@@ -35,23 +37,24 @@ export default function HomePage() {
                     <div className="relative flex-shrink-0 w-20 h-20">
                       <a href={data.github} target="_blank" rel="noopener" className="block">
                         <Image
-                          src={data.icon}
-                          layout="fill"
-                          className="object-contain"
-                          alt={data.title}
                           aria-hidden
+                          className="object-contain"
+                          fill
+                          src={data.icon}
+                          alt={data.title}
                         />
                       </a>
                     </div>
                   )}
                 </div>
                 <div className="flex w-full border-t border-gray-200 divide-x divide-gray-200">
-                  <Link href={data.url}>
-                    <a className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 transition-colors">
-                      <Icon icon="docs" />
-                      <span className="sm:hidden">Docs</span>
-                      <span className="hidden sm:inline">Documentation</span>
-                    </a>
+                  <Link
+                    className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 transition-colors"
+                    href={data.url}
+                  >
+                    <Icon icon="docs" />
+                    <span className="sm:hidden">Docs</span>
+                    <span className="hidden sm:inline">Documentation</span>
                   </Link>
                   <a
                     href={data.github}

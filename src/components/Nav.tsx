@@ -15,15 +15,14 @@ function NavItem({ doc }: NavItemProps) {
   React.useEffect(() => setActive(doc.url === asPath), [doc.url, asPath])
 
   return (
-    <Link href={doc.url ?? '/'}>
-      <a
-        className={clsx(
-          'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer',
-          active && 'bg-gray-100'
-        )}
-      >
-        {doc.title}
-      </a>
+    <Link
+      className={clsx(
+        'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer',
+        active && 'bg-gray-100'
+      )}
+      href={doc.url}
+    >
+      {doc.title}
     </Link>
   )
 }
@@ -38,7 +37,7 @@ export interface NavProps {
   nav: NavList
 }
 
-function Nav(props: NavProps) {
+export default function Nav(props: NavProps) {
   return (
     <ul>
       {Object.entries(props.nav).map(([key, doc]) => (
@@ -56,5 +55,3 @@ function Nav(props: NavProps) {
     </ul>
   )
 }
-
-export default Nav

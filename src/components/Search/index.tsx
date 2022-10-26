@@ -10,7 +10,7 @@ import { escape } from 'utils/text'
 import { useCSB } from 'hooks/useCSB'
 import type { SearchResult } from './SearchItem'
 
-function Search() {
+export default function Search() {
   const router = useRouter()
   const boxes = useCSB()
   const docs = useDocs()
@@ -118,5 +118,3 @@ function Search() {
     </>
   )
 }
-
-export default Search
