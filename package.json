@@ -23,7 +23,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rehype-prism-plus": "^1.5.0",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "undici": "^5.12.0"
   },
   "scripts": {
     "dev": "next",
