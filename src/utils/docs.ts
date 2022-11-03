@@ -1,6 +1,6 @@
-import { fs } from 'memfs'
-import git from 'isomorphic-git'
-import http from 'isomorphic-git/http/node'
+import * as path from 'path'
+import * as fs from 'fs'
+import { execSync } from 'child_process'
 import matter from 'gray-matter'
 import { serialize } from 'next-mdx-remote/serialize'
 import remarkGFM from 'remark-gfm'
@@ -55,19 +55,12 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
   const config = libs[lib]
   const [user, repo, branch, ...rest] = config.docs!.split('/')
 
-  const dir = `/${user}-${repo}-${branch}`
+  const dir = path.resolve(process.cwd(), `temp/${user}-${repo}-${branch}`)
   const root = `${dir}/${rest.join('/')}`
 
   // Clone remote
-  await git.clone({
-    fs,
-    http,
-    dir,
-    url: `https://github.com/${user}/${repo}`,
-    ref: branch,
-    singleBranch: true,
-    depth: 1,
-  })
+  if (!fs.existsSync(dir))
+    execSync(`git clone https://github.com/${user}/${repo}.git ${dir} -b ${branch} -q`)
 
   // Crawl and parse docs
   const files = await crawl(root, MARKDOWN_REGEX)
