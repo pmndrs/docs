@@ -98,14 +98,15 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         // Require inline images
         .replace(
           /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
-          (input, prefix, src, suffix) => {
-            const parts = file.split('/')
-            parts.pop()
+          (_input, prefix, src, suffix) => {
+            if (src.includes('//')) return `${prefix}${src}${suffix}`
 
-            const url = `${parts.join('/')}/${src}`
-            if (!fs.existsSync(url)) return input
+            const [, _dir, ...parts] = file.split('/')
+            parts.pop() // remove MDX file from path
 
-            return `${prefix}/api/get-image?lib=${lib}&url=${url}${suffix}`
+            const url = `https://github.com/${user}/${repo}/raw/${branch}/${parts.join('/')}/${src}`
+
+            return `${prefix}${url}${suffix}`
           }
         )
 
