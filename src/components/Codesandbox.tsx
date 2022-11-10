@@ -15,7 +15,7 @@ export default function Codesandbox({ id }: CodesandboxProps) {
       <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
         <Image
           className="rounded shadow-lg"
-          src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
+          src={data.screenshot_url}
           placeholder="empty"
           alt={data.title}
           width={1763}

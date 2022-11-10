@@ -12,22 +12,37 @@ export const CSBContext = React.createContext<Record<string, CSB>>({})
 export async function fetchCSB(ids: string[]) {
   const boxes: Record<string, CSB> = {}
 
-  let failed = 0
+  const slimData = await fetch('https://codesandbox.io/api/v1/sandboxes/mslim', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  }).then((res) => res.json())
 
-  for (const id of ids) {
-    try {
-      const { title, description, screenshot_url, tags } = await fetch(
-        `https://codesandbox.io/api/v1/sandboxes/${id}`
-      ).then(async (res) => (await res.json()).data)
-
-      boxes[id] = { title, description, screenshot_url, tags }
-    } catch (_) {
-      failed++
-      boxes[id] = { title: '', description: '', screenshot_url: '', tags: [] }
+  for (const { id, title } of slimData) {
+    boxes[id] = {
+      title,
+      description: '',
+      screenshot_url: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
+      tags: [],
     }
-  }
 
-  if (failed) console.warn(`fetchCSB: couldn't fetch ${failed}/${ids.length} boxes`)
+    // try {
+    //   const { description, screenshot_url, tags } = await fetch(
+    //     `https://codesandbox.io/api/v1/sandboxes/${id}`
+    //   ).then(async (res) => (await res.json()).data)
+
+    //   boxes[id] = { title, description, screenshot_url, tags }
+    // } catch (_) {
+    //   boxes[id] = {
+    //     title,
+    //     description: '',
+    //     screenshot_url: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
+    //     tags: [],
+    //   }
+    // }
+  }
 
   return boxes
 }
