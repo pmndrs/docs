@@ -12,7 +12,7 @@ export default function Codesandbox({ id }: CodesandboxProps) {
 
   return (
     <>
-      <a href={`https://codesandbox.io/s/${data.alias}`} target="_blank" rel="noreferrer">
+      <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
         <Image
           className="rounded shadow-lg"
           src={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}

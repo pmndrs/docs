@@ -38,7 +38,7 @@ function Search() {
             ...data,
             label: 'codesandbox.io',
             description: data.description ?? '',
-            url: `https://codesandbox.io/s/${data.alias}`,
+            url: `https://codesandbox.io/s/${id}`,
             image: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
           }))
         )
