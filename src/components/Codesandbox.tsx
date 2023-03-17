@@ -19,6 +19,8 @@ export default function Codesandbox({
 }: CodesandboxProps) {
   const boxes = useCSB()
   const data = boxes[id]
+  if (!data) return
+
   const tags = defaultTags || data?.tags || []
   const description = defaultDescription || data?.description || ''
   const title = defaultTitle || data?.title || ''
@@ -30,7 +32,7 @@ export default function Codesandbox({
           className="rounded shadow-lg"
           src={data.screenshot_url}
           placeholder="empty"
-          alt={data.title}
+          alt={title}
           width={1763}
           height={926}
           loading="lazy"
