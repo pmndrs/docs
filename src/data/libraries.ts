@@ -79,7 +79,7 @@ const libraries: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     image: reactPostprocessingShare.src,
-    docs: 'CodyJasonBennett/react-postprocessing/migrate-docs/docs',
+    docs: 'CodyJasonBennett/react-postprocessing/master/docs',
   },
 }
 
