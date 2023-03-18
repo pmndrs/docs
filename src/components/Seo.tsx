@@ -16,6 +16,7 @@ export default function SEO() {
       <title>{title}</title>
       <meta property="og:site_name" content={title} />
       <meta name="description" content={currentSeo.description} />
+      <link rel="icon" href={`/${lib}.ico`} />
 
       <meta property="og:type" content="website" />
       <meta property="og:url" content={`https://docs.pmnd.rs/${lib}`} />
