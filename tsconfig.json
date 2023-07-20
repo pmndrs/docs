@@ -17,5 +17,5 @@
     "resolveJsonModule": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "temp"]
+  "exclude": ["node_modules"]
 }
