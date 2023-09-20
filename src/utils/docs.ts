@@ -25,6 +25,11 @@ const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
 const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
 
 /**
+ * Removes <https://inline.links> formatting from markdown
+ */
+const INLINE_LINK_REGEX = /<(http[^>]+)>/g
+
+/**
  * Recursively crawls a directory, returning an array of file paths.
  */
 async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
@@ -96,7 +101,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         // Remove extraneous comments from post
         .replace(COMMENT_REGEX, '')
         // Remove inline link syntax
-        .replace(/<(http[^>]+)>/, '$1')
+        .replace(INLINE_LINK_REGEX, '$1')
         // Require inline images
         .replace(
           /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
