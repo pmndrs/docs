@@ -96,7 +96,7 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
         // Remove extraneous comments from post
         .replace(COMMENT_REGEX, '')
         // Remove inline link syntax
-        .replace(/<([^>]+)>/, '$1')
+        .replace(/<(http[^>]+)>/, '$1')
         // Require inline images
         .replace(
           /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
