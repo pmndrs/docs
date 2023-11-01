@@ -12,7 +12,7 @@ export interface SearchModelProps {
 
 function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
   return (
-    <div className="absolute top-0 left-0 bottom-0 right-0 w-screen h-screen z-99">
+    <div className="absolute top-0 left-0 bottom-0 right-0 w-screen h-screen z-[99]">
       <button type="button" className="opacity-50 bg-gray-900 w-full h-full" onClick={onClose} />
       <div className="absolute top-20 bottom-20 overflow-y-auto left-2/4 w-[500px] max-w-[90%] z-100 -translate-x-1/2 transform">
         <div className="mt-1 relative rounded-md shadow-sm">
