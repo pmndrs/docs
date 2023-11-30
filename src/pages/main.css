@@ -54,16 +54,9 @@ code span {
 
 /* Inline code */
 :not(pre) > code {
-  padding: 0.25em 0.5em;
-  border-radius: 0.25em;
-  font-size: 0.875em;
-  background: rgb(243, 244, 246);
-  color: rgb(31, 41, 55);
+  @apply py-1 px-2 rounded-lg bg-gray-100 dark:bg-gray-800 dark:text-gray-300
 }
-:not(pre)>code,
-.dark {
-  @apply text-gray-300 bg-gray-700;
-}
+
 /* Start purging... */
 @tailwind components;
 /* Stop purging. */
