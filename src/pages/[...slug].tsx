@@ -21,10 +21,10 @@ export default function PostPage({ docs, doc, boxes }: PostPageProps) {
         <Layout doc={doc}>
           <SEO />
           <main className="max-w-3xl mx-auto">
-            <div className="pb-6 mb-4 border-b post-header">
+            <div className="pb-6 mb-4 border-b dark:border-gray-700 post-header ">
               <h1 className="mb-4 text-5xl font-bold tracking-tighter">{doc.title}</h1>
               {!!doc.description?.length && (
-                <p className="text-base leading-4 text-gray-400 leading-5">{doc.description}</p>
+                <p className="text-base text-gray-400 leading-5">{doc.description}</p>
               )}
             </div>
             <main className="content-container">

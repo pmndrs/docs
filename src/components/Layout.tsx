@@ -29,7 +29,7 @@ export default function Layout({ doc, children }: LayoutProps) {
 
   return (
     <>
-      <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50">
+      <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100">
         <Link href="/">
           <a aria-label="Poimandres Docs">
             <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
@@ -48,18 +48,18 @@ export default function Layout({ doc, children }: LayoutProps) {
           <Icon icon="menu" />
         </button>
       </div>
-      <div className="w-full mx-auto max-w-8xl">
+      <div className="w-full mx-auto max-w-8xl dark:bg-gray-900 dark:text-gray-100">
         <div className="lg:flex">
           <div
             id="sidebar"
             className={clsx(
-              'fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block',
+              'fixed inset-0 z-40 flex-none w-full h-full bg-opacity-25  lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block bg-white dark:!bg-gray-900 dark:text-gray-100',
               !menuOpen && 'hidden'
             )}
           >
             <div
               id="nav-wrapper"
-              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
+              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
             >
               <nav
                 id="nav"
@@ -74,7 +74,7 @@ export default function Layout({ doc, children }: LayoutProps) {
             <button
               onClick={() => setMenuOpen(false)}
               className={clsx(
-                'w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 opacity-0',
+                'w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 opacity-0 dark:bg-gray-200',
                 !menuOpen && 'hidden'
               )}
             />

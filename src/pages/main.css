@@ -60,7 +60,10 @@ code span {
   background: rgb(243, 244, 246);
   color: rgb(31, 41, 55);
 }
-
+:not(pre)>code,
+.dark {
+  @apply text-gray-300 bg-gray-700;
+}
 /* Start purging... */
 @tailwind components;
 /* Stop purging. */
@@ -114,7 +117,7 @@ main a {
 }
 
 .content-container .heading {
-  @apply block font-bold text-gray-900 no-underline hover:text-gray-600 hover:underline;
+  @apply block font-bold text-gray-900 dark:text-gray-300 no-underline hover:underline;
 }
 
 blockquote p {
@@ -243,8 +246,9 @@ ul.grid-list > li:before {
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 4px solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-  border-radius: 9999px;
-  background-color: rgb(209 213 219);
+  @apply border-4 border-black border-opacity-0 bg-gray-300 rounded-full dark:bg-gray-700;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply dark:bg-gray-800;
 }

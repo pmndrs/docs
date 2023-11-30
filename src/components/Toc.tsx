@@ -39,7 +39,7 @@ function Toc({ toc }: ToCProps) {
             className={clsx(
               'block py-1 text-sm font-normal leading-6 text-gray-500 hover:underline',
               item.parent && 'ml-4',
-              index === activeIndex && 'text-gray-900'
+              index === activeIndex && 'text-gray-900 dark:text-gray-200'
             )}
             href={`#${item.id}`}
           >
