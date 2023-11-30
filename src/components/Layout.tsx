@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import { Doc, useDocs } from 'hooks/useDocs'
+import ToggleTheme from './ToggleTheme'
 
 export interface LayoutProps {
   doc: Doc
@@ -30,23 +31,26 @@ export default function Layout({ doc, children }: LayoutProps) {
   return (
     <>
       <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100">
-        <Link href="/">
-          <a aria-label="Poimandres Docs">
-            <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
-              <span className="font-bold">Pmndrs</span>
-              <span className="font-normal">.docs</span>
-            </div>
-          </a>
-        </Link>
-        <Search />
-        <button
-          className="block lg:hidden p-2 mr-2 ml-2"
-          onClick={() => setMenuOpen((v) => !v)}
-          type="button"
-          aria-label="Menu"
-        >
-          <Icon icon="menu" />
-        </button>
+        <div className="flex justify-between items-center w-full pr-2">
+          <Link href="/">
+            <a aria-label="Poimandres Docs">
+              <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
+                <span className="font-bold">Pmndrs</span>
+                <span className="font-normal">.docs</span>
+              </div>
+            </a>
+          </Link>
+          <Search />
+          <button
+            className="block lg:hidden p-2 mr-2 ml-2"
+            onClick={() => setMenuOpen((v) => !v)}
+            type="button"
+            aria-label="Menu"
+          >
+            <Icon icon="menu" />
+          </button>
+          <ToggleTheme />
+        </div>
       </div>
       <div className="w-full mx-auto max-w-8xl dark:bg-gray-900 dark:text-gray-100">
         <div className="lg:flex">

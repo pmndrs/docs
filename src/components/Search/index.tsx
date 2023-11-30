@@ -82,7 +82,7 @@ function Search() {
           onChange={(e) => setQuery(escape(e.target.value))}
         />
       )}
-      <div className="relative w-full">
+      <div className="relative grow">
         <div className="flex items-center justify-between flex-auto h-16 px-4">
           <button
             type="button"
