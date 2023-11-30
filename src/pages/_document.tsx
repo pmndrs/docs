@@ -1,5 +1,4 @@
 import { Head, Html, Main, NextScript } from 'next/document'
-import cookie from 'cookiejs'
 
 export default function Document() {
   return (
