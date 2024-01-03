@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
 import { Doc, useDocs } from 'hooks/useDocs'
+import ToggleTheme from './ToggleTheme'
 
 export interface LayoutProps {
   doc: Doc
@@ -29,37 +30,40 @@ export default function Layout({ doc, children }: LayoutProps) {
 
   return (
     <>
-      <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50">
-        <Link href="/">
-          <a aria-label="Poimandres Docs">
-            <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-8 lg:w-60 xl:w-72">
-              <span className="font-bold">Pmndrs</span>
-              <span className="font-normal">.docs</span>
-            </div>
-          </a>
-        </Link>
-        <Search />
-        <button
-          className="block lg:hidden p-2 mr-2 ml-2"
-          onClick={() => setMenuOpen((v) => !v)}
-          type="button"
-          aria-label="Menu"
-        >
-          <Icon icon="menu" />
-        </button>
+      <div className="sticky top-0 flex flex-none w-full mx-auto border-b border-gray-200 bg-white max-w-8xl z-40 lg:z-50 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-100">
+        <div className="flex justify-between items-center w-full pr-2">
+          <Link href="/">
+            <a aria-label="Poimandres Docs">
+              <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
+                <span className="font-bold">Pmndrs</span>
+                <span className="font-normal">.docs</span>
+              </div>
+            </a>
+          </Link>
+          <Search />
+          <button
+            className="block lg:hidden p-2 mr-2 ml-2"
+            onClick={() => setMenuOpen((v) => !v)}
+            type="button"
+            aria-label="Menu"
+          >
+            <Icon icon="menu" />
+          </button>
+          <ToggleTheme />
+        </div>
       </div>
-      <div className="w-full mx-auto max-w-8xl">
+      <div className="w-full mx-auto max-w-8xl dark:bg-gray-900 dark:text-gray-100">
         <div className="lg:flex">
           <div
             id="sidebar"
             className={clsx(
-              'fixed inset-0 z-40 flex-none w-full h-full bg-black bg-opacity-25 lg:bg-white lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block',
+              'fixed inset-0 z-40 flex-none w-full h-full bg-opacity-25  lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block bg-white dark:!bg-gray-900 dark:text-gray-100',
               !menuOpen && 'hidden'
             )}
           >
             <div
               id="nav-wrapper"
-              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch bg-white lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
+              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
             >
               <nav
                 id="nav"
@@ -74,7 +78,7 @@ export default function Layout({ doc, children }: LayoutProps) {
             <button
               onClick={() => setMenuOpen(false)}
               className={clsx(
-                'w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 opacity-0',
+                'w-screen h-screen z-0 fixed top-0 right-0 bg-gray-900 opacity-0 dark:bg-gray-200',
                 !menuOpen && 'hidden'
               )}
             />
@@ -88,7 +92,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
+                      className="mb-2 text-base text-gray-500 hover:underline"
                       href={docs[currentPageIndex].editURL}
                     >
                       Edit this page on GitHub
@@ -104,7 +108,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                         </label>
                         <div className="text-xl">
                           <Link href={previousPage.url}>
-                            <a className="text-gray-900">{previousPage.title}</a>
+                            <a className="text-gray-900 dark:text-gray-300">{previousPage.title}</a>
                           </Link>
                         </div>
                       </div>
@@ -116,7 +120,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                         </label>
                         <div className="text-xl">
                           <Link href={nextPage.url}>
-                            <a className="text-gray-900">{nextPage.title}</a>
+                            <a className="text-gray-900 dark:text-gray-300">{nextPage.title}</a>
                           </Link>
                         </div>
                       </div>

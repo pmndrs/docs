@@ -6,7 +6,7 @@ import { MARKDOWN_REGEX } from 'utils/docs'
 const components = {
   Codesandbox,
   Hint: ({ children }: { children: React.ReactNode }) => (
-    <div className="hint shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 mb-6">
+    <div className="hint shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 mb-6 dark:text-gray-500">
       {children}
     </div>
   ),
@@ -44,10 +44,10 @@ const components = {
   ul: ({ children }: { children: React.ReactNode }) => <ul className="px-4 mb-8">{children}</ul>,
   ol: ({ children }: { children: React.ReactNode }) => <ol className="px-4 mb-8">{children}</ol>,
   li: ({ children }: { children: React.ReactNode }) => (
-    <li className="mb-4 text-base leading-6 text-gray-700">{children}</li>
+    <li className="mb-4 text-base leading-6 text-gray-700 dark:text-gray-400">{children}</li>
   ),
   p: ({ children }: { children: React.ReactNode }) => (
-    <p className="mb-4 text-base text-gray-700">{children}</p>
+    <p className="mb-4 text-base text-gray-700 dark:text-gray-400">{children}</p>
   ),
   blockquote: ({ children }: { children: React.ReactNode }) => (
     <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>
@@ -56,8 +56,10 @@ const components = {
     <div className="flex flex-col my-6">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-6 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="shadow-lg overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table className="divide-y divide-gray-200 w-full">{children}</table>
+          <div className="shadow-lg overflow-hidden border-b border-gray-200 sm:rounded-lg dark:border-gray-700">
+            <table className="divide-y divide-gray-200 w-full dark:divide-gray-700">
+              {children}
+            </table>
           </div>
         </div>
       </div>

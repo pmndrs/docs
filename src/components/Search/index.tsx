@@ -82,17 +82,17 @@ function Search() {
           onChange={(e) => setQuery(escape(e.target.value))}
         />
       )}
-      <div className="relative w-full">
+      <div className="relative grow">
         <div className="flex items-center justify-between flex-auto h-16 px-4">
           <button
             type="button"
             onClick={() => setShowSearchModal(true)}
-            className="group leading-6 font-medium flex items-center space-x-3 sm:space-x-4 text-gray-400 hover:text-gray-600 transition-colors duration-200 w-full py-2"
+            className="group leading-6 font-medium flex items-center space-x-3 sm:space-x-4 text-gray-400 hover:text-gray-600 transition-colors duration-200 w-full py-2 dark:text-gray-500 dark:hover:text-gray-400"
             onFocus={() => setShowSearchModal(true)}
           >
             <Icon
               icon="search"
-              className="h-6 w-6 text-gray-400 group-hover:text-gray-500 transition-colors duration-200"
+              className="h-6 w-6 text-gray-400 group-hover:text-gray-500 transition-colors duration-200 dark:group-hover:text-gray-400 dark:text-gray-500"
             />
             <span>
               Quick search
@@ -100,7 +100,7 @@ function Search() {
             </span>
             <span
               style={{ opacity: 1 }}
-              className="hidden sm:block text-gray-400 text-sm leading-5 py-0.5 px-1.5 border border-gray-300 rounded-md"
+              className="hidden sm:block text-gray-400 text-sm leading-5 py-0.5 px-1.5 border border-gray-300 rounded-md dark:border-gray-700"
             >
               <span className="sr-only">Press </span>
               <kbd className="font-sans">

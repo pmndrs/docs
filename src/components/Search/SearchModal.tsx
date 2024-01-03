@@ -24,7 +24,7 @@ function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
             name="search"
             id="search"
             className={clsx(
-              'outline-none focus:ring-gray-200 focus:border-gray-200 block w-full pl-10 sm:text-sm border-gray-300 bg-white px-4 py-6 text-gray-700',
+              'outline-none focus:ring-gray-200 focus:border-gray-200 block w-full pl-10 sm:text-sm border-gray-300 dark:bg-gray-800 dark:text-gray-400 px-4 py-6 text-gray-700',
               results.length > 0 ? 'rounded-t-md' : 'rounded-md'
             )}
             autoComplete="off"
@@ -33,7 +33,7 @@ function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
             onChange={onChange}
           />
           {results.length > 0 && (
-            <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md">
+            <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md dark:bg-gray-800 dark:text-gray-400">
               {results.map((result, index) => (
                 <SearchItem key={`search-item-${index}`} search={search} result={result} />
               ))}

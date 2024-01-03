@@ -23,14 +23,16 @@ function SearchItem({ search, result }: SearchItemProps) {
         target={result.url.startsWith('http') ? '_blank' : undefined}
       >
         <li className="px-2 py-1">
-          <div className="p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200 flex justify-between items-center transition-all">
+          <div className="p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200 flex justify-between items-center transition-all dark:bg-gray-900/50 dark:text-gray-100 dark:hover:bg-gray-900/70">
             <span
               className="pr-3"
               dangerouslySetInnerHTML={{
                 __html: `
-                  <span class="block text-xs text-gray-400 pb-1">${result.label}</span>
+                  <span class="block text-xs text-gray-400 dark:text-gray-500 pb-1">${
+                    result.label
+                  }</span>
                   ${highlight(result.title, search)}
-                  <span class="block text-sm text-gray-600 pt-2">
+                  <span class="block text-sm text-gray-600 dark:text-gray-400 pt-2">
                     ${highlight(result.description, search)}
                   </span>
                 `,

@@ -28,7 +28,7 @@ function Toc({ toc }: ToCProps) {
 
   return (
     <div className="flex flex-col justify-between overflow-y-auto sticky max-h-(screen-16) pb-6 top-16">
-      <label className="text-gray-900 uppercase tracking-wide font-semibold mt-12 mb-2 text-sm lg:text-xs">
+      <label className="text-gray-900 uppercase tracking-wide font-semibold mt-12 mb-2 text-sm lg:text-xs dark:text-gray-300">
         On This Page
       </label>
       {toc.map((item, index) => (
@@ -39,7 +39,7 @@ function Toc({ toc }: ToCProps) {
             className={clsx(
               'block py-1 text-sm font-normal leading-6 text-gray-500 hover:underline',
               item.parent && 'ml-4',
-              index === activeIndex && 'text-gray-900'
+              index === activeIndex && 'text-gray-900 dark:text-gray-200'
             )}
             href={`#${item.id}`}
           >
