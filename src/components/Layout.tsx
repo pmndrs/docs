@@ -92,7 +92,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mb-2 text-base text-gray-500 hover:text-gray-900 hover:underline"
+                      className="mb-2 text-base text-gray-500 hover:underline"
                       href={docs[currentPageIndex].editURL}
                     >
                       Edit this page on GitHub
@@ -108,7 +108,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                         </label>
                         <div className="text-xl">
                           <Link href={previousPage.url}>
-                            <a className="text-gray-900">{previousPage.title}</a>
+                            <a className="text-gray-900 dark:text-gray-300">{previousPage.title}</a>
                           </Link>
                         </div>
                       </div>
@@ -120,7 +120,7 @@ export default function Layout({ doc, children }: LayoutProps) {
                         </label>
                         <div className="text-xl">
                           <Link href={nextPage.url}>
-                            <a className="text-gray-900">{nextPage.title}</a>
+                            <a className="text-gray-900 dark:text-gray-300">{nextPage.title}</a>
                           </Link>
                         </div>
                       </div>

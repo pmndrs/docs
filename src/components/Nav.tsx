@@ -53,7 +53,7 @@ function Nav() {
     <ul>
       {Object.entries(nav).map(([key, doc]) => (
         <li key={key}>
-          <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold">
+          <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold dark:text-gray-300">
             {key.replace(/\-/g, ' ')}
           </h3>
           {doc.url ? (

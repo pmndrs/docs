@@ -54,7 +54,7 @@ code span {
 
 /* Inline code */
 :not(pre) > code {
-  @apply py-1 px-2 rounded-lg bg-gray-100 dark:bg-gray-800 dark:text-gray-300
+  @apply py-1 px-2 rounded-lg bg-gray-100 dark:bg-gray-800 dark:text-gray-300;
 }
 
 /* Start purging... */
@@ -134,19 +134,19 @@ th {
 }
 
 thead {
-  @apply bg-gray-50;
+  @apply bg-gray-50 dark:bg-gray-800;
 }
 
 tbody tr:nth-child(even) {
-  @apply bg-white;
+  @apply bg-white dark:bg-gray-900;
 }
 
 tbody tr:nth-child(odd) {
-  @apply bg-gray-50;
+  @apply bg-gray-50 dark:bg-gray-800;
 }
 
 td {
-  @apply px-6 py-4 text-sm text-gray-900 break-all;
+  @apply px-6 py-4 text-sm text-gray-900 dark:text-gray-300 break-all;
   max-width: 150px;
   white-space: pre-wrap;
   word-break: break-word;
@@ -230,6 +230,10 @@ ul.grid-list > li:before {
   @apply bg-gray-800 text-gray-200;
 }
 
+.hint p {
+  @apply dark:text-gray-500;
+}
+
 .hint p.mb-4:last-of-type {
   margin-bottom: 0;
 }
@@ -240,8 +244,8 @@ ul.grid-list > li:before {
 
 ::-webkit-scrollbar-thumb {
   @apply border-4 border-black border-opacity-0 bg-gray-300 rounded-full dark:bg-gray-700;
-  }
-  
-  ::-webkit-scrollbar-track {
-    @apply dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-track {
+  @apply dark:bg-gray-800;
 }
