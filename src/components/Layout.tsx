@@ -63,7 +63,7 @@ export default function Layout({ doc, children }: LayoutProps) {
           >
             <div
               id="nav-wrapper"
-              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative"
+              className="overflow-hidden overflow-y-auto h-full mr-24 scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent lg:top-16 lg:mr-0 z-10 relative bg-white dark:bg-gray-900"
             >
               <nav
                 id="nav"
