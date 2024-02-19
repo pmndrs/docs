@@ -123,7 +123,11 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
       const source = await serialize(content, {
         mdxOptions: {
           remarkPlugins: [remarkGFM],
-          rehypePlugins: [rehypePrismPlus, codesandbox(boxes), toc(tableOfContents, url, title)],
+          rehypePlugins: [
+            rehypePrismPlus,
+            codesandbox(boxes),
+            toc(tableOfContents, url, title, content),
+          ],
         },
       })
 
