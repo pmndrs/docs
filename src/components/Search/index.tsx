@@ -1,62 +1,18 @@
 import * as React from 'react'
 import { useRouter } from 'next/router'
+
 import { useKeyPress } from 'hooks/useKeyPress'
 import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
-import SearchModal from './SearchModal'
+
 import Icon from 'components/Icon'
-import { matchSorter } from 'match-sorter'
-import { useDocs } from 'hooks/useDocs'
-import { escape } from 'utils/text'
-import { useCSB } from 'hooks/useCSB'
-import type { SearchResult } from './SearchItem'
+import { SearchModalContainer } from './SearchModalContainer'
 
 function Search() {
   const router = useRouter()
-  const boxes = useCSB()
-  const docs = useDocs()
   const [showSearchModal, setShowSearchModal] = React.useState(false)
-  const [query, setQuery] = React.useState('')
-  const [lib] = router.query.slug as string[]
-  const [results, setResults] = React.useState<SearchResult[]>([])
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('Slash')
   useLockBodyScroll(showSearchModal)
-
-  React.useEffect(() => {
-    React.startTransition(() => {
-      if (!query) return setResults([])
-
-      // Get length of matched text in result
-      const relevanceOf = (result: SearchResult) =>
-        (result.title.toLowerCase().match(query.toLowerCase())?.length ?? 0) / result.title.length
-
-      // Search
-      const entries = (docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[])
-        .filter((entry) => entry.description.length > 0)
-        .concat(
-          Object.entries(boxes).flatMap(([id, data]) => ({
-            ...data,
-            label: 'codesandbox.io',
-            description: data.description ?? '',
-            url: `https://codesandbox.io/s/${id}`,
-            image: data.screenshot_url,
-          }))
-        )
-
-      const results = matchSorter(entries, query, {
-        keys: ['title', 'description'],
-        threshold: matchSorter.rankings.CONTAINS,
-      })
-        // Sort by relevance
-        .sort((a, b) => relevanceOf(b) - relevanceOf(a))
-        // Truncate to top four results
-        .slice(0, 4)
-
-      setResults(results)
-    })
-  }, [boxes, docs, lib, query])
-
-  React.useEffect(() => void setQuery(''), [showSearchModal])
 
   React.useEffect(() => {
     if (escPressed && showSearchModal) {
@@ -75,11 +31,9 @@ function Search() {
   return (
     <>
       {showSearchModal && (
-        <SearchModal
-          search={query}
-          results={results}
+        <SearchModalContainer
+          key={showSearchModal ? 'show' : 'hide'}
           onClose={() => setShowSearchModal(false)}
-          onChange={(e) => setQuery(escape(e.target.value))}
         />
       )}
       <div className="relative grow">
