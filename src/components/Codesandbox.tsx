@@ -21,7 +21,7 @@ export default function Codesandbox({
   const data = boxes[id]
   if (!data) return
 
-  const tags = defaultTags || data?.tags || []
+  const tags = defaultTags || data?.tags || []
   const description = defaultDescription || data?.description || ''
   const title = defaultTitle || data?.title || ''
 

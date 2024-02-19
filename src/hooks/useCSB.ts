@@ -29,21 +29,6 @@ export async function fetchCSB(ids: string[]) {
       screenshot_url: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
       tags: [],
     }
-
-    // try {
-    //   const { description, screenshot_url, tags } = await fetch(
-    //     `https://codesandbox.io/api/v1/sandboxes/${id}`
-    //   ).then(async (res) => (await res.json()).data)
-
-    //   boxes[id] = { title, description, screenshot_url, tags }
-    // } catch (_) {
-    //   boxes[id] = {
-    //     title,
-    //     description: '',
-    //     screenshot_url: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
-    //     tags: [],
-    //   }
-    // }
   }
 
   return boxes
