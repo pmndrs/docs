@@ -6,6 +6,7 @@ export interface DocToC {
   level: number
   title: string
   description: string
+  content: string
   url: string
   parent: DocToC | null
   label: string
