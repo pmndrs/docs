@@ -32,6 +32,7 @@
     "dev": "next",
     "start": "next start",
     "build": "next build",
+    "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check"
   }
 }

@@ -23,7 +23,7 @@ const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
 /**
  * Generates a table of contents from page headings.
  */
-export const toc = (target: DocToC[] = [], url: string, page: string) => {
+export const toc = (target: DocToC[] = [], url: string, page: string, content: string) => {
   return () => (root: Node) => {
     const previous: Record<number, DocToC> = {}
 
@@ -49,6 +49,7 @@ export const toc = (target: DocToC[] = [], url: string, page: string) => {
           url: `${url}#${id}`,
           title,
           description,
+          content,
           parent: previous[level - 2] ?? null,
         }
         previous[level - 1] = item
