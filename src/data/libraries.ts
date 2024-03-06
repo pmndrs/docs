@@ -81,6 +81,13 @@ const libraries: Record<string, Library> = {
     image: reactPostprocessingShare.src,
     docs: 'pmndrs/react-postprocessing/master/docs',
   },
+  uikit: {
+    title: 'uikit',
+    url: '/uikit',
+    github: 'https://github.com/pmndrs/uikit',
+    description: 'uikit brings user interfaces to @react-three/fiber',
+    docs: 'pmndrs/uikit/docs/docs',
+  },
 }
 
 export default libraries
