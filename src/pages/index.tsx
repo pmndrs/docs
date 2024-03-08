@@ -48,7 +48,7 @@ export default function HomePage() {
             <ToggleTheme />
           </div>
         </header>
-        <div className="px-4 lg:px-28">
+        <div className="px-4 pb-4 lg:px-28">
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-20">
             {Object.entries(libs).map(([id, data]) => (
               <div
