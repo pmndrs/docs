@@ -86,7 +86,7 @@ const libraries: Record<string, Library> = {
     url: '/uikit',
     github: 'https://github.com/pmndrs/uikit',
     description: 'uikit brings user interfaces to @react-three/fiber',
-    docs: 'pmndrs/uikit/docs/docs',
+    docs: 'pmndrs/uikit/main/docs',
   },
 }
 
