@@ -88,6 +88,13 @@ const libraries: Record<string, Library> = {
     description: 'uikit brings user interfaces to @react-three/fiber',
     docs: 'pmndrs/uikit/main/docs',
   },
+  xr: {
+    title: 'xr',
+    url: '/xr',
+    github: 'https://github.com/pmndrs/xr',
+    description: 'XR for @react-three/fiber',
+    docs: 'bbohlender/xr-docs-clone/main/docs',
+  },
 }
 
 export default libraries
