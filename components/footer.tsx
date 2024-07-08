@@ -22,11 +22,11 @@ export function Footer() {
 						</div>
 					</a>
 				</div>
-				<div className="text-center flex flex-row gap-3">
+				<div className="text-center flex flex-row justify-center gap-3">
 					<Link href="https://docs.pmnd.rs/home">Docs</Link>
 					<Link href="https://pmnd.rs/github">GitHub</Link>
 					<Link href="https://pmnd.rs/twitter">Twitter</Link>
-					<Link href="https://pmnd.rs/discord">Community</Link>
+					<Link href="https://pmnd.rs/discord">Discord</Link>
 				</div>
 				<div className="text-right"></div>
 			</div>
@@ -36,7 +36,7 @@ export function Footer() {
 
 function Link({ href, children }: { href: string; children: React.ReactNode }) {
 	return (
-		<a className="text-s justify-center" href={href} target="_blank" rel="noopener noreferrer">
+		<a className="text-s" href={href} target="_blank" rel="noopener noreferrer">
 			{children}
 		</a>
 	);
