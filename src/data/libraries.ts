@@ -93,7 +93,7 @@ const libraries: Record<string, Library> = {
     url: '/xr',
     github: 'https://github.com/pmndrs/xr',
     description: 'XR for @react-three/fiber',
-    docs: 'bbohlender/xr-docs-clone/main/docs',
+    docs: 'pmndrs/react-xr/v6/docs',
   },
 }
 
