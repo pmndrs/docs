@@ -92,8 +92,8 @@ const libraries: Record<string, Library> = {
     title: 'xr',
     url: '/xr',
     github: 'https://github.com/pmndrs/xr',
-    description: 'XR for @react-three/fiber',
-    docs: 'pmndrs/react-xr/v6/docs',
+    description: 'VR/AR for @react-three/fiber',
+    docs: 'pmndrs/react-xr/main/docs',
   },
 }
 
