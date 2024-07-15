@@ -46,13 +46,16 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
 /**
  * Fetches all docs, filters to a lib if specified.
  */
-export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
+export async function getDocs(
+  lib: keyof typeof libs | undefined,
+  onlySlug: boolean
+): Promise<Doc[]> {
   // If a lib isn't specified, fetch all docs
   if (!lib) {
     const docs = await Promise.all(
       Object.keys(libs)
         .filter((lib) => libs[lib].docs)
-        .map(getDocs)
+        .map((lib) => getDocs(lib, onlySlug))
     )
     return docs.filter(Boolean).flat()
   }
@@ -82,6 +85,9 @@ export async function getDocs(lib?: keyof typeof libs): Promise<Doc[]> {
       // Get slug from local path
       const path = file.replace(`${root}/`, '')
       const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
+      if (onlySlug) {
+        return { slug } as any
+      }
       const url = `/${slug.join('/')}`
       const editURL = file.replace(dir, `https://github.com/${user}/${repo}/tree/${branch}`)
 
