@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type { GetServerSideProps, GetStaticProps } from 'next'
+import type { GetStaticProps } from 'next'
 import type libs from 'data/libraries'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
@@ -37,7 +37,7 @@ export default function PostPage({ docs, doc, boxes }: PostPageProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<PostPageProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
   const slug = params!.slug as string[]
   const lib = slug[0] as keyof typeof libs
 
@@ -54,20 +54,20 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async ({ pa
       : { notFound: true }
   }
 
-  // const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
+  const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
 
   return {
     props: {
       // Don't send other pages' source blobs
       docs: docs.map(({ source, ...rest }) => ({ ...rest, source: null! })),
       doc,
-      boxes: {},
+      boxes,
     },
-    // revalidate: 300,
+    revalidate: 300,
   }
 }
 
-// export const getStaticPaths = async () => {
-//   const paths = (await getDocs(undefined, true)).map(({ slug }) => ({ params: { slug } }))
-//   return { paths, fallback: 'blocking' }
-// }
+export const getStaticPaths = async () => {
+  const paths = (await getDocs(undefined, true)).map(({ slug }) => ({ params: { slug } }))
+  return { paths, fallback: 'blocking' }
+}
