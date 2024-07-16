@@ -54,14 +54,14 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async ({ pa
       : { notFound: true }
   }
 
-  const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
+  // const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
 
   return {
     props: {
       // Don't send other pages' source blobs
       docs: docs.map(({ source, ...rest }) => ({ ...rest, source: null! })),
       doc,
-      boxes,
+      boxes: {},
     },
     // revalidate: 300,
   }
