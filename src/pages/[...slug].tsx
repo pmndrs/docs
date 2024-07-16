@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type { GetStaticProps } from 'next'
+import type { GetStaticPaths, GetStaticProps } from 'next'
 import type libs from 'data/libraries'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
@@ -63,11 +63,10 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       doc,
       boxes,
     },
-    revalidate: 300,
   }
 }
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const paths = (await getDocs(undefined, true)).map(({ slug }) => ({ params: { slug } }))
-  return { paths, fallback: 'blocking' }
+  return { paths, fallback: false }
 }
