@@ -20,6 +20,20 @@ export interface Library {
 }
 
 const libraries: Record<string, Library> = {
+  uikit: {
+    title: 'uikit',
+    url: '/uikit',
+    github: 'https://github.com/pmndrs/uikit',
+    description: 'uikit brings user interfaces to @react-three/fiber',
+    docs: 'pmndrs/uikit/main/docs',
+  },
+  xr: {
+    title: 'xr',
+    url: '/xr',
+    github: 'https://github.com/pmndrs/xr',
+    description: 'VR/AR for @react-three/fiber',
+    docs: 'pmndrs/react-xr/main/docs',
+  },
   'react-three-fiber': {
     title: 'React Three Fiber',
     url: '/react-three-fiber',
@@ -80,20 +94,6 @@ const libraries: Record<string, Library> = {
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     image: reactPostprocessingShare.src,
     docs: 'pmndrs/react-postprocessing/master/docs',
-  },
-  uikit: {
-    title: 'uikit',
-    url: '/uikit',
-    github: 'https://github.com/pmndrs/uikit',
-    description: 'uikit brings user interfaces to @react-three/fiber',
-    docs: 'pmndrs/uikit/main/docs',
-  },
-  xr: {
-    title: 'xr',
-    url: '/xr',
-    github: 'https://github.com/pmndrs/xr',
-    description: 'VR/AR for @react-three/fiber',
-    docs: 'pmndrs/react-xr/main/docs',
   },
 }
 
