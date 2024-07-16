@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type { GetStaticProps } from 'next'
+import type { GetServerSideProps, GetStaticProps } from 'next'
 import type libs from 'data/libraries'
 import Layout from 'components/Layout'
 import SEO from 'components/Seo'
@@ -37,7 +37,7 @@ export default function PostPage({ docs, doc, boxes }: PostPageProps) {
   )
 }
 
-export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<PostPageProps> = async ({ params }) => {
   const slug = params!.slug as string[]
   const lib = slug[0] as keyof typeof libs
 
@@ -63,11 +63,11 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       doc,
       boxes,
     },
-    revalidate: 300,
+    // revalidate: 300,
   }
 }
 
-export const getStaticPaths = async () => {
-  const paths = (await getDocs(undefined, true)).map(({ slug }) => ({ params: { slug } }))
-  return { paths, fallback: 'blocking' }
-}
+// export const getStaticPaths = async () => {
+//   const paths = (await getDocs(undefined, true)).map(({ slug }) => ({ params: { slug } }))
+//   return { paths, fallback: 'blocking' }
+// }
