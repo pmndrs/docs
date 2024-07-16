@@ -16,6 +16,11 @@ module.exports = {
         permanent: true,
       },
       {
+        source: '/xr',
+        destination: '/xr/getting-started/introduction',
+        permanent: true,
+      },
+      {
         source: '/jotai',
         destination: 'https://jotai.pmnd.rs/docs/introduction',
         permanent: true,

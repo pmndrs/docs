@@ -41,7 +41,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
   const slug = params!.slug as string[]
   const lib = slug[0] as keyof typeof libs
 
-  const docs = await getDocs(lib)
+  const docs = await getDocs(lib, false)
   if (!docs?.length) return { notFound: true }
 
   const url = `/${slug.join('/')}`.toLowerCase()
@@ -68,6 +68,6 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
 }
 
 export const getStaticPaths = async () => {
-  const paths = (await getDocs()).map(({ slug }) => ({ params: { slug } }))
+  const paths = (await getDocs(undefined, true)).map(({ slug }) => ({ params: { slug } }))
   return { paths, fallback: 'blocking' }
 }
