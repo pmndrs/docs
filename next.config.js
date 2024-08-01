@@ -2,6 +2,7 @@ module.exports = {
   productionBrowserSourceMaps: true,
   images: {
     domains: ['codesandbox.io'],
+    unoptimized: true,
   },
   async redirects() {
     return [
