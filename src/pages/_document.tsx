@@ -5,15 +5,12 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="utf-8" />
-        {/* @ts-expect-error it should be changed  */}
-        <link rel="preload" href="/fonts/inter-regular.woff2" as="font" crossOrigin="true" />
-        {/* @ts-expect-error it should be changed  */}
-        <link rel="preload" href="/fonts/inter-medium.woff2" as="font" crossOrigin="true" />
-        {/* @ts-expect-error it should be changed  */}
-        <link rel="preload" href="/fonts/inter-semibold.woff2" as="font" crossOrigin="true" />
-        {/* @ts-expect-error it should be changed  */}
-        <link rel="preload" href="/fonts/inter-bold.woff2" as="font" crossOrigin="true" />
-        <link rel="preload" href="/fonts/meslo.woff2" as="font" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

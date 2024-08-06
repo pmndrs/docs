@@ -2,40 +2,8 @@
 
 /* Write your own custom base styles here */
 
-@font-face {
-  font-family: 'Inter';
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/inter-regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/inter-medium.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/inter-semibold.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/inter-bold.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Meslo';
-  src: url('/fonts/meslo.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+body {
+  font-optical-sizing: auto;
 }
 
 * {
@@ -49,7 +17,8 @@ body {
 pre,
 code,
 code span {
-  font-family: 'Meslo', monospace !important;
+  font-family: 'Inconsolata', monospace !important;
+  font-size: 1rem;
 }
 
 /* Inline code */
