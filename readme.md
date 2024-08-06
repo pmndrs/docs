@@ -1,10 +1,6 @@
 # Poimandres Docs
 
 ```bash
-git clone https://github.com/pmndrs/docs.git
-git checkout docs
-cd website
-
 yarn
 yarn dev
 ```
