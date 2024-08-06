@@ -1,7 +1,7 @@
 # Poimandres Docs
 
 ```bash
-git clone https://github.com/pmndrs/website.git
+git clone https://github.com/pmndrs/docs.git
 git checkout docs
 cd website
 
