@@ -60,8 +60,9 @@ export async function getDocs(
     return docs.filter(Boolean).flat()
   }
 
-  const config = libs[lib]
-  const [user, repo, branch, ...rest] = config.docs!.split('/')
+  const libDocs = libs[lib].docs
+  if (!libDocs) return []
+  const [user, repo, branch, ...rest] = libDocs.split('/')
 
   const dir = `/${user}-${repo}-${branch}`
   const root = `${dir}/${rest.join('/')}`

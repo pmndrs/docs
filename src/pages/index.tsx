@@ -36,14 +36,13 @@ export default function HomePage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
         <header className="pt-2">
           <div className="max-w-7xl mx-auto flex justify-between">
-            <Link href="/">
-              <a
-                aria-label="Poimandres Docs"
-                className="p-2 block text-3xl text-center lg:text-left"
-              >
-                <span className="font-bold">Pmndrs</span>
-                <span className="font-normal">.docs</span>
-              </a>
+            <Link
+              href="/"
+              aria-label="Poimandres Docs"
+              className="p-2 block text-3xl text-center lg:text-left"
+            >
+              <span className="font-bold">Pmndrs</span>
+              <span className="font-normal">.docs</span>
             </Link>
             <ToggleTheme />
           </div>
@@ -68,10 +67,11 @@ export default function HomePage() {
                         <a href={data.github} target="_blank" rel="noopener" className="block">
                           <Image
                             src={data.icon}
-                            layout="fill"
                             className="object-contain"
                             alt={data.title}
                             aria-hidden
+                            width={data.iconWidth}
+                            height={data.iconHeight}
                           />
                         </a>
                       </div>
@@ -79,11 +79,11 @@ export default function HomePage() {
                   </div>
                   <div className="flex w-full border-t border-gray-200 dark:border-gray-700 divide-x divide-gray-200 dark:divide-gray-700">
                     <Link href={data.url}>
-                      <a className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <span className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                         <Icon icon="docs" />
                         <span className="sm:hidden">Docs</span>
                         <span className="hidden sm:inline">Documentation</span>
-                      </a>
+                      </span>
                     </Link>
                     <a
                       href={data.github}

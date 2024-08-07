@@ -17,17 +17,17 @@ export interface SearchItemProps {
 
 function SearchItem({ search, result }: SearchItemProps) {
   return (
-    <Link href={result.url}>
-      <a
-        className="block no-underline search-item outline-none"
-        target={result.url.startsWith('http') ? '_blank' : undefined}
-      >
-        <li className="px-2 py-1">
-          <div className="p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200 flex justify-between items-center transition-all dark:bg-gray-900/50 dark:text-gray-100 dark:hover:bg-gray-900/70">
-            <span
-              className="pr-3"
-              dangerouslySetInnerHTML={{
-                __html: `
+    <Link
+      href={result.url}
+      className="block no-underline search-item outline-none"
+      target={result.url.startsWith('http') ? '_blank' : undefined}
+    >
+      <li className="px-2 py-1">
+        <div className="p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200 flex justify-between items-center transition-all dark:bg-gray-900/50 dark:text-gray-100 dark:hover:bg-gray-900/70">
+          <span
+            className="pr-3"
+            dangerouslySetInnerHTML={{
+              __html: `
                   <span class="block text-xs text-gray-400 dark:text-gray-500 pb-1">${
                     result.label
                   }</span>
@@ -36,17 +36,16 @@ function SearchItem({ search, result }: SearchItemProps) {
                     ${highlight(result.description, search)}
                   </span>
                 `,
-              }}
-            />
-            {result.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img className="rounded max-w-[40%]" src={result.image} alt={result.title} />
-            ) : (
-              <Icon icon="enter" className="text-gray-400" />
-            )}
-          </div>
-        </li>
-      </a>
+            }}
+          />
+          {result.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="rounded max-w-[40%]" src={result.image} alt={result.title} />
+          ) : (
+            <Icon icon="enter" className="text-gray-400" />
+          )}
+        </div>
+      </li>
     </Link>
   )
 }
