@@ -1,7 +1,8 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   productionBrowserSourceMaps: true,
   images: {
-    domains: ['codesandbox.io'],
+    // domains: ['codesandbox.io'],
     unoptimized: true,
   },
   async redirects() {
@@ -54,3 +55,5 @@ module.exports = {
     ]
   },
 }
+
+export default nextConfig

@@ -14,6 +14,8 @@ export interface Library {
   image?: string
   // Optional project icon
   icon?: string
+  iconWidth?: number
+  iconHeight?: number
   // Optional repository to fetch and serve docs from
   // <user>/<repo>/<branch>/<path/to/dir>
   docs?: string
@@ -48,6 +50,8 @@ const libraries: Record<string, Library> = {
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     icon: zustandIcon.src,
+    iconWidth: zustandIcon.width,
+    iconHeight: zustandIcon.height,
     image: zustandShare.src,
     docs: 'pmndrs/zustand/main/docs',
   },
@@ -57,6 +61,8 @@ const libraries: Record<string, Library> = {
     github: 'https://github.com/pmndrs/jotai',
     description: 'Jotai is a primitive and flexible state management library for React',
     icon: jotaiIcon.src,
+    iconWidth: jotaiIcon.width,
+    iconHeight: jotaiIcon.height,
   },
   valtio: {
     title: 'Valtio',
