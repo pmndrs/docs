@@ -41,25 +41,58 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
   const slug = params!.slug as string[]
   const lib = slug[0] as keyof typeof libs
 
-  const docs = await getDocs(lib, false)
-  if (!docs?.length) return { notFound: true }
+  const allDocs = await getDocs(lib, false)
+  // console.log('allDocs', allDocs)
+  if (!allDocs?.length) return { notFound: true }
 
   const url = `/${slug.join('/')}`.toLowerCase()
-  const doc = docs.find((doc) => doc.url === url)
+  const theDoc = allDocs.find((doc) => doc.url === url)
 
-  if (!doc) {
-    const alternate = docs.find((doc) => doc.url.startsWith(url))
+  if (!theDoc) {
+    const alternate = allDocs.find((doc) => doc.url.startsWith(url))
     return alternate
       ? { redirect: { permanent: false, destination: alternate.url } }
       : { notFound: true }
   }
 
-  const boxes = await fetchCSB(docs.flatMap((doc) => doc.boxes))
+  const boxes = await fetchCSB(allDocs.flatMap((doc) => doc.boxes))
+
+  //
+  // Clean useless datas
+  //
+
+  //
+  // step 1. Clean `docs`: no source / no tableOfContents (will be provided by `doc` itself)
+  //
+  const docs = allDocs.map((doc) => ({
+    ...doc,
+    source: null!,
+    tableOfContents: [],
+  }))
+  // console.log('docs', JSON.stringify(docs, null, 2))
+
+  //
+  // Step 2. Clean `doc`: tableOfContents[].content|description => useless
+  //
+  const noContentNoDesc = (tocItem: Doc['tableOfContents'][number]) => {
+    // Recursively clear parent
+    if (tocItem.parent) tocItem.parent = noContentNoDesc({ ...tocItem.parent })
+
+    return {
+      ...tocItem,
+      content: 'NO_CONTENT',
+      description: 'NO_DESC',
+    }
+  }
+  const doc = {
+    ...theDoc,
+    tableOfContents: theDoc.tableOfContents.map(noContentNoDesc), // Clear all content
+  }
+  // console.log('doc', JSON.stringify(doc, null, 2))
 
   return {
     props: {
-      // Don't send other pages' source blobs
-      docs: docs.map(({ source, ...rest }) => ({ ...rest, source: null! })),
+      docs,
       doc,
       boxes,
     },
