@@ -96,7 +96,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({ params }) 
       doc,
       boxes,
     },
-    revalidate: 300,
+    revalidate: 3600,
   }
 }
 
