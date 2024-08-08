@@ -1,14 +1,14 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import Icon from 'components/Icon'
-import libs from 'data/libraries'
-import ToggleTheme from 'components/ToggleTheme'
+import Icon from '@/components/Icon'
+import libs from '@/data/libraries'
+import ToggleTheme from '@/components/ToggleTheme'
 
 export default function HomePage() {
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>pmnd.rs docs</title>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -32,7 +32,7 @@ export default function HomePage() {
         <meta name="twitter:site" content="@pmndrs" />
         <meta property="og:locale" content="en_us" />
         <meta property="og:type" content="website" />
-      </Head>
+      </Head> */}
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
         <header className="pt-2">
           <div className="max-w-7xl mx-auto flex justify-between">

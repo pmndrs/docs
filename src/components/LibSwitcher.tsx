@@ -1,14 +1,22 @@
+'use client'
+
 import * as React from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { Popover } from '@headlessui/react'
-import libs from 'data/libraries'
+import libs from '@/data/libraries'
 
-export default function LibSwitcher() {
-  const router = useRouter()
-  const { query } = router
-  const currentPage = React.useMemo(() => libs[query.slug![0]].title, [query])
+export default function LibSwitcher({
+  currentPage,
+  lib,
+}: {
+  currentPage: string
+  lib: keyof typeof libs
+}) {
+  // const router = useRouter()
+  // const { query } = router
+  // const currentPage = React.useMemo(() => libs[query.slug![0]].title, [query])
 
   return (
     <Popover className="relative mt-4">
@@ -23,7 +31,7 @@ export default function LibSwitcher() {
               href={data.url}
               className={clsx(
                 'px-3 py-2 hover:bg-gray-50 rounded-md font-normal text-base dark:hover:bg-gray-600/30',
-                id === query.slug![0] && 'sr-only'
+                id === lib && 'sr-only'
               )}
             >
               {data.title}

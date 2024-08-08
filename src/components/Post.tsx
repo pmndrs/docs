@@ -1,10 +1,15 @@
 import * as React from 'react'
-import Codesandbox from 'components/Codesandbox'
-import { MDXRemoteProps, MDXRemoteSerializeResult, MDXRemote } from 'next-mdx-remote'
-import { MARKDOWN_REGEX } from 'utils/docs'
+import Codesandbox from '@/components/Codesandbox'
+import { MDXRemote } from 'next-mdx-remote/rsc'
+import { MARKDOWN_REGEX } from '@/utils/docs'
+import { fetchCSB } from '@/components/Codesandbox'
+
+import remarkGFM from 'remark-gfm'
+import rehypePrismPlus from 'rehype-prism-plus'
+import { codesandbox, toc } from '@/utils/rehype'
+import { Doc } from '@/app/[...slug]/DocsContext'
 
 const components = {
-  Codesandbox,
   Hint: ({ children }: { children: React.ReactNode }) => (
     <div className="hint shadow overflow-hidden bg-yellow-100 border-b border-gray-200 sm:rounded-lg px-6 py-4 mb-6 dark:text-gray-500">
       {children}
@@ -80,7 +85,6 @@ const components = {
     target = isAnchor ? '_blank' : target
     rel = isAnchor ? 'noopener noreferrer' : rel
     href = isAnchor ? href : href.replace(MARKDOWN_REGEX, '')
-
     return (
       <a href={href} target={target} rel={rel}>
         {children}
@@ -112,6 +116,34 @@ const components = {
   ),
 }
 
-export default function Post(props: MDXRemoteSerializeResult) {
-  return <MDXRemote {...props} components={components as MDXRemoteProps['components']} />
+export default async function Post({ doc }: { doc: Doc }) {
+  const { content, url, title } = doc
+
+  return (
+    <MDXRemote
+      source={content}
+      components={
+        {
+          ...components,
+          Codesandbox: async (props: React.ComponentProps<typeof Codesandbox>) => {
+            const boxes = await fetchCSB(doc.boxes)
+            // console.log('boxes', boxes)
+            const data = boxes[props.id] // retrieve the data from its `id`
+
+            return <Codesandbox {...{ ...props, data }} />
+          },
+        } as React.ComponentProps<typeof MDXRemote>['components']
+      }
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkGFM],
+          rehypePlugins: [
+            rehypePrismPlus,
+            codesandbox(doc.boxes), // will populate `doc.boxes`
+            toc(doc.tableOfContents, url, title, content), // will populate `doc.tableOfContents`
+          ],
+        },
+      }}
+    />
+  )
 }

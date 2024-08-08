@@ -1,26 +1,30 @@
 import Image from 'next/image'
-import { useCSB } from 'hooks/useCSB'
+
 import clsx from 'clsx'
 
-export interface CodesandboxProps {
-  id: string
-  tags?: string[]
-  description?: string
-  title?: string
-  hideTitle?: boolean
+export type CSB = {
+  title: string
+  description: string
+  content: string
+  screenshot_url: string
+  tags: string[]
 }
 
 export default function Codesandbox({
   id,
+  data,
   tags: defaultTags,
   description: defaultDescription,
   title: defaultTitle,
   hideTitle = false,
-}: CodesandboxProps) {
-  const boxes = useCSB()
-  const data = boxes[id]
-  if (!data) return
-
+}: {
+  id: string
+  data: CSB
+  tags?: string[]
+  description?: string
+  title?: string
+  hideTitle?: boolean
+}) {
   const tags = defaultTags || data?.tags || []
   const description = defaultDescription || data?.description || ''
   const title = defaultTitle || data?.title || ''
@@ -28,15 +32,17 @@ export default function Codesandbox({
   return (
     <>
       <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
-        <Image
-          className="rounded shadow-lg"
-          src={data.screenshot_url}
-          placeholder="empty"
-          alt={title}
-          width={1763}
-          height={926}
-          loading="lazy"
-        />
+        {data?.screenshot_url && (
+          <Image
+            className="rounded shadow-lg"
+            src={data.screenshot_url}
+            placeholder="empty"
+            alt={title}
+            width={1763}
+            height={926}
+            loading="lazy"
+          />
+        )}
       </a>
       {!hideTitle && (
         <>
@@ -59,4 +65,30 @@ export default function Codesandbox({
       )}
     </>
   )
+}
+
+export async function fetchCSB(ids: string[]) {
+  // console.log('fetchCSB', ids)
+
+  const boxes: Record<string, CSB> = {}
+
+  const slimData = await fetch('https://codesandbox.io/api/v1/sandboxes/mslim', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  }).then((res) => res.json())
+
+  for (const { id, title } of slimData) {
+    boxes[id] = {
+      title,
+      description: '',
+      content: '',
+      screenshot_url: `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`,
+      tags: [],
+    }
+  }
+
+  return boxes
 }

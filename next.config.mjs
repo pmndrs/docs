@@ -5,6 +5,7 @@ const nextConfig = {
     // domains: ['codesandbox.io'],
     unoptimized: true,
   },
+  output: 'export',
   async redirects() {
     return [
       {

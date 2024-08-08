@@ -1,23 +1,23 @@
 import * as React from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { matchSorter } from 'match-sorter'
 
-import { useCSB } from 'hooks/useCSB'
-import { useDocs } from 'hooks/useDocs'
+import { useDocs } from '../../app/[...slug]/DocsContext'
 
 import SearchModal from './SearchModal'
 import type { SearchResult } from './SearchItem'
-import { escape } from 'utils/text'
+import { escape } from '@/utils/text'
 
 export interface SearchModalContainerProps {
   onClose: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => {
-  const router = useRouter()
-  const boxes = useCSB()
+  // const router = useRouter()
+  // const boxes = useCSB()
   const docs = useDocs()
-  const [lib] = router.query.slug as string[]
+  console.log('docs', docs)
+  // const [lib] = router.query.slug as string[]
   const [query, setQuery] = React.useState('')
   const deferredQuery = React.useDeferredValue(query)
   const [results, setResults] = React.useState<SearchResult[]>([])
@@ -32,18 +32,19 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
         result.title.length
 
       // Search
-      const entries = (docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[])
-        .filter((entry) => entry.description.length > 0)
-        .concat(
-          Object.entries(boxes).flatMap(([id, data]) => ({
-            ...data,
-            label: 'codesandbox.io',
-            description: data.description ?? '',
-            content: data.content ?? '',
-            url: `https://codesandbox.io/s/${id}`,
-            image: data.screenshot_url,
-          }))
-        )
+      const entries = (
+        docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[]
+      ).filter((entry) => entry.description.length > 0)
+      // .concat(
+      //   Object.entries(boxes).flatMap(([id, data]) => ({
+      //     ...data,
+      //     label: 'codesandbox.io',
+      //     description: data.description ?? '',
+      //     content: data.content ?? '',
+      //     url: `https://codesandbox.io/s/${id}`,
+      //     image: data?.screenshot_url,
+      //   }))
+      // )
 
       const results = matchSorter(entries, deferredQuery, {
         keys: ['title', 'description', 'content'],
@@ -56,7 +57,7 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
 
       setResults(results)
     })
-  }, [boxes, docs, lib, deferredQuery])
+  }, [docs, deferredQuery])
 
   return (
     <SearchModal

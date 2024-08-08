@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 import { CiDark, CiLight } from 'react-icons/ci'
 

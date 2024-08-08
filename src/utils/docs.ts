@@ -2,12 +2,12 @@ import { fs } from 'memfs'
 import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
-import { serialize } from 'next-mdx-remote/serialize'
-import remarkGFM from 'remark-gfm'
-import rehypePrismPlus from 'rehype-prism-plus'
-import { codesandbox, toc } from 'utils/rehype'
-import libs from 'data/libraries'
-import type { Doc, DocToC } from 'hooks/useDocs'
+
+import libs, { Lib } from '@/data/libraries'
+import type { Doc, DocToC } from '../app/[...slug]/DocsContext'
+import pMemoize from 'p-memoize'
+import { cache } from 'react'
+import { type CSB } from '@/components/Codesandbox'
 
 /**
  * Checks for .md(x) file extension
@@ -46,49 +46,44 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
 /**
  * Fetches all docs, filters to a lib if specified.
  */
-export async function getDocs(
-  lib: keyof typeof libs | undefined,
-  onlySlug: boolean
-): Promise<Doc[]> {
-  // If a lib isn't specified, fetch all docs
-  if (!lib) {
-    const docs = await Promise.all(
-      Object.keys(libs)
-        .filter((lib) => libs[lib].docs)
-        .map((lib) => getDocs(lib, onlySlug))
-    )
-    return docs.filter(Boolean).flat()
-  }
+
+async function _getDocs(lib: Lib): Promise<Doc[]> {
+  console.log('getDocs', lib)
 
   const libDocs = libs[lib].docs
-  if (!libDocs) return []
+  if (!libDocs) throw new Error(`No docs found for ${lib}`)
+
   const [user, repo, branch, ...rest] = libDocs.split('/')
 
   const dir = `/${user}-${repo}-${branch}`
   const root = `${dir}/${rest.join('/')}`
+  const url = `https://github.com/${user}/${repo}`
+
+  // console.log('cloning', url)
 
   // Clone remote
   await git.clone({
     fs,
     http,
     dir,
-    url: `https://github.com/${user}/${repo}`,
+    url,
     ref: branch,
     singleBranch: true,
     depth: 1,
   })
 
+  // console.log('cloned', url)
+
   // Crawl and parse docs
   const files = await crawl(root, MARKDOWN_REGEX)
+  // console.log('files', files)
 
   const docs = await Promise.all(
     files.map(async (file) => {
       // Get slug from local path
       const path = file.replace(`${root}/`, '')
       const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
-      if (onlySlug) {
-        return { slug } as any
-      }
+
       const url = `/${slug.join('/')}`
       const editURL = file.replace(dir, `https://github.com/${user}/${repo}/tree/${branch}`)
 
@@ -127,17 +122,6 @@ export async function getDocs(
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []
 
-      const source = await serialize(content, {
-        mdxOptions: {
-          remarkPlugins: [remarkGFM],
-          rehypePlugins: [
-            rehypePrismPlus,
-            codesandbox(boxes),
-            toc(tableOfContents, url, title, content),
-          ],
-        },
-      })
-
       return {
         slug,
         url,
@@ -145,12 +129,40 @@ export async function getDocs(
         title,
         description,
         nav,
-        source,
+        content,
         boxes,
         tableOfContents,
       }
     })
   )
 
-  return docs.sort((a, b) => a.nav - b.nav)
+  // console.log('docs', docs)
+
+  docs.sort(({ nav: navA = 0 }, { nav: navB = 0 }) => navA - navB)
+
+  return docs
 }
+// export const getDocs = pMemoize(_getDocs, { cacheKey: ([lib]) => lib })
+export const getDocs = cache(_getDocs)
+
+// export const getDocs = cache(_getDocs)
+
+async function _getData(...slug: string[]) {
+  console.log('getData', slug)
+
+  const [lib] = slug
+
+  const docs = await getDocs(lib as Lib)
+  // console.log('allDocs', allDocs)
+
+  const url = `/${slug.join('/')}`.toLowerCase()
+  // console.log('url', url)
+  const doc = docs.find((doc) => doc.url === url)
+  // console.log('doc', doc)
+
+  return {
+    docs,
+    doc,
+  }
+}
+export const getData = cache(_getData)

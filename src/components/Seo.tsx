@@ -1,13 +1,8 @@
 import Head from 'next/head'
-import libs from 'data/libraries'
-import { useRouter } from 'next/router'
+import libs from '@/data/libraries'
 
-export default function SEO() {
-  const { query } = useRouter()
-  const [lib] = query.slug as string[]
-
+export default function SEO({ lib }: { lib: keyof typeof libs }) {
   const currentSeo = libs[lib]
-  if (!currentSeo) return null
 
   const title = `${currentSeo.title} Documentation`
 

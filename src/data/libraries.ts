@@ -1,9 +1,9 @@
-import reactThreeFiberShare from 'assets/react-three-fiber.jpg'
-import zustandShare from 'assets/zustand.jpg'
-import zustandIcon from 'assets/zustand-icon.png'
-import jotaiIcon from 'assets/jotai-icon.png'
-import reactThreeA11yShare from 'assets/react-three-a11y.jpg'
-import reactPostprocessingShare from 'assets/react-postprocessing.jpg'
+import reactThreeFiberShare from '@/assets/react-three-fiber.jpg'
+import zustandShare from '@/assets/zustand.jpg'
+import zustandIcon from '@/assets/zustand-icon.png'
+import jotaiIcon from '@/assets/jotai-icon.png'
+import reactThreeA11yShare from '@/assets/react-three-a11y.jpg'
+import reactPostprocessingShare from '@/assets/react-postprocessing.jpg'
 
 export interface Library {
   title: string
@@ -21,7 +21,7 @@ export interface Library {
   docs?: string
 }
 
-const libraries: Record<string, Library> = {
+const libraries = {
   'react-three-fiber': {
     title: 'React Three Fiber',
     url: '/react-three-fiber',
@@ -30,77 +30,79 @@ const libraries: Record<string, Library> = {
     image: reactThreeFiberShare.src,
     docs: 'pmndrs/react-three-fiber/master/docs',
   },
-  'react-spring': {
-    title: 'React Spring',
-    url: 'https://react-spring.io',
-    github: 'https://github.com/pmndrs/react-spring',
-    description: 'Bring your components to life with simple spring animation primitives for React',
-  },
-  drei: {
-    title: 'Drei',
-    url: 'https://github.com/pmndrs/drei#readme',
-    github: 'https://github.com/pmndrs/drei',
-    description:
-      'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
-  },
-  zustand: {
-    title: 'Zustand',
-    url: '/zustand',
-    github: 'https://github.com/pmndrs/zustand',
-    description:
-      'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
-    icon: zustandIcon.src,
-    iconWidth: zustandIcon.width,
-    iconHeight: zustandIcon.height,
-    image: zustandShare.src,
-    docs: 'pmndrs/zustand/main/docs',
-  },
-  jotai: {
-    title: 'Jotai',
-    url: 'https://jotai.org/docs/introduction',
-    github: 'https://github.com/pmndrs/jotai',
-    description: 'Jotai is a primitive and flexible state management library for React',
-    icon: jotaiIcon.src,
-    iconWidth: jotaiIcon.width,
-    iconHeight: jotaiIcon.height,
-  },
-  valtio: {
-    title: 'Valtio',
-    url: 'https://valtio.pmnd.rs',
-    github: 'https://github.com/pmndrs/valtio',
-    description: 'Valtio makes proxy-state simple for React and Vanilla',
-  },
-  a11y: {
-    title: 'A11y',
-    url: '/a11y',
-    github: 'https://github.com/pmndrs/react-three-a11y',
-    description:
-      '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
-    image: reactThreeA11yShare.src,
-    docs: 'pmndrs/react-three-a11y/main/docs',
-  },
-  'react-postprocessing': {
-    title: 'React Postprocessing',
-    url: '/react-postprocessing',
-    github: 'https://github.com/pmndrs/react-postprocessing',
-    description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
-    image: reactPostprocessingShare.src,
-    docs: 'pmndrs/react-postprocessing/master/docs',
-  },
-  uikit: {
-    title: 'uikit',
-    url: '/uikit',
-    github: 'https://github.com/pmndrs/uikit',
-    description: 'uikit brings user interfaces to @react-three/fiber',
-    docs: 'pmndrs/uikit/main/docs',
-  },
-  xr: {
-    title: 'xr',
-    url: '/xr',
-    github: 'https://github.com/pmndrs/xr',
-    description: 'VR/AR for @react-three/fiber',
-    docs: 'pmndrs/xr/main/docs',
-  },
-}
+  // 'react-spring': {
+  //   title: 'React Spring',
+  //   url: 'https://react-spring.io',
+  //   github: 'https://github.com/pmndrs/react-spring',
+  //   description: 'Bring your components to life with simple spring animation primitives for React',
+  // },
+  // drei: {
+  //   title: 'Drei',
+  //   url: 'https://github.com/pmndrs/drei#readme',
+  //   github: 'https://github.com/pmndrs/drei',
+  //   description:
+  //     'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
+  // },
+  // zustand: {
+  //   title: 'Zustand',
+  //   url: '/zustand',
+  //   github: 'https://github.com/pmndrs/zustand',
+  //   description:
+  //     'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
+  //   icon: zustandIcon.src,
+  //   iconWidth: zustandIcon.width,
+  //   iconHeight: zustandIcon.height,
+  //   image: zustandShare.src,
+  //   docs: 'pmndrs/zustand/main/docs',
+  // },
+  // jotai: {
+  //   title: 'Jotai',
+  //   url: 'https://jotai.org/docs/introduction',
+  //   github: 'https://github.com/pmndrs/jotai',
+  //   description: 'Jotai is a primitive and flexible state management library for React',
+  //   icon: jotaiIcon.src,
+  //   iconWidth: jotaiIcon.width,
+  //   iconHeight: jotaiIcon.height,
+  // },
+  // valtio: {
+  //   title: 'Valtio',
+  //   url: 'https://valtio.pmnd.rs',
+  //   github: 'https://github.com/pmndrs/valtio',
+  //   description: 'Valtio makes proxy-state simple for React and Vanilla',
+  // },
+  // a11y: {
+  //   title: 'A11y',
+  //   url: '/a11y',
+  //   github: 'https://github.com/pmndrs/react-three-a11y',
+  //   description:
+  //     '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
+  //   image: reactThreeA11yShare.src,
+  //   docs: 'pmndrs/react-three-a11y/main/docs',
+  // },
+  // 'react-postprocessing': {
+  //   title: 'React Postprocessing',
+  //   url: '/react-postprocessing',
+  //   github: 'https://github.com/pmndrs/react-postprocessing',
+  //   description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
+  //   image: reactPostprocessingShare.src,
+  //   docs: 'pmndrs/react-postprocessing/master/docs',
+  // },
+  // uikit: {
+  //   title: 'uikit',
+  //   url: '/uikit',
+  //   github: 'https://github.com/pmndrs/uikit',
+  //   description: 'uikit brings user interfaces to @react-three/fiber',
+  //   docs: 'pmndrs/uikit/main/docs',
+  // },
+  // xr: {
+  //   title: 'xr',
+  //   url: '/xr',
+  //   github: 'https://github.com/pmndrs/xr',
+  //   description: 'VR/AR for @react-three/fiber',
+  //   docs: 'pmndrs/xr/main/docs',
+  // },
+} satisfies Record<string, Library>
+
+export type Lib = keyof typeof libraries
 
 export default libraries
