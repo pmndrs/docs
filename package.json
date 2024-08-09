@@ -37,7 +37,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next",
     "start": "next start",
-    "build": "rm -rf out && next build",
+    "build": "next build",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check"
   },

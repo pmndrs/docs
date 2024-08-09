@@ -1,3 +1,5 @@
+const distDir = process.env.DIST_DIR || undefined
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: true,
@@ -6,6 +8,7 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'export',
+  distDir,
   // async redirects() {
   //   return [
   //     {
