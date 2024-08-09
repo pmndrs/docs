@@ -1,7 +1,6 @@
 'use client'
 
 import { ReactNode } from 'react'
-
 import { createRequiredContext } from '@/lib/createRequiredContext'
 
 export type DocToC = {
