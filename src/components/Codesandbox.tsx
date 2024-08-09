@@ -13,6 +13,7 @@ export type CSB = {
 export default function Codesandbox({
   id,
   data,
+  embed = false,
   tags: defaultTags,
   description: defaultDescription,
   title: defaultTitle,
@@ -20,6 +21,7 @@ export default function Codesandbox({
 }: {
   id: string
   data: CSB
+  embed: boolean
   tags?: string[]
   description?: string
   title?: string
@@ -31,19 +33,30 @@ export default function Codesandbox({
 
   return (
     <>
-      <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
-        {data?.screenshot_url && (
-          <Image
-            className="rounded shadow-lg"
-            src={data.screenshot_url}
-            placeholder="empty"
-            alt={title}
-            width={1763}
-            height={926}
-            loading="lazy"
-          />
-        )}
-      </a>
+      {embed ? (
+        <iframe
+          src={`https://codesandbox.io/embed/${id}`}
+          className="w-full h-[500px]"
+          title={title}
+          allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+        />
+      ) : (
+        <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
+          {data?.screenshot_url && (
+            <Image
+              className="rounded shadow-lg"
+              src={data.screenshot_url}
+              placeholder="empty"
+              alt={title}
+              width={1763}
+              height={926}
+              loading="lazy"
+            />
+          )}
+        </a>
+      )}
+
       {!hideTitle && (
         <>
           <h6 className="text-gray-700 font-bold mt-4">{title}</h6>
