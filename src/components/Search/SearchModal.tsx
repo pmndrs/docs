@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import * as React from 'react'
-import Icon from 'components/Icon'
+import Icon from '@/components/Icon'
 import SearchItem, { SearchResult } from './SearchItem'
 
 export interface SearchModelProps {

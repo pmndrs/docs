@@ -1,14 +1,16 @@
+'use client'
+
 import * as React from 'react'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/navigation'
 
-import { useKeyPress } from 'hooks/useKeyPress'
-import { useLockBodyScroll } from 'hooks/useLockBodyScroll'
+import { useKeyPress } from '@/hooks/useKeyPress'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 
-import Icon from 'components/Icon'
+import Icon from '@/components/Icon'
 import { SearchModalContainer } from './SearchModalContainer'
 
 function Search() {
-  const router = useRouter()
+  // const router = useRouter()
   const [showSearchModal, setShowSearchModal] = React.useState(false)
   const escPressed = useKeyPress('Escape')
   const slashPressed = useKeyPress('Slash')
@@ -26,7 +28,7 @@ function Search() {
     }
   }, [slashPressed, showSearchModal])
 
-  React.useEffect(() => setShowSearchModal(false), [router.asPath])
+  React.useEffect(() => setShowSearchModal(false), [])
 
   return (
     <>
