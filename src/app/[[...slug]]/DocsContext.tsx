@@ -27,12 +27,12 @@ export type Doc = {
   tableOfContents: DocToC[]
 }
 
-export type Ctx = Doc[]
+export type Ctx = { docs: Doc[]; doc: Doc }
 
 const [hook, Provider] = createRequiredContext<Ctx>()
 
 export { hook as useDocs }
 
-export function DocsContext({ children, value = [] }: { children?: ReactNode; value: Ctx }) {
+export function DocsContext({ children, value }: { children?: ReactNode; value: Ctx }) {
   return <Provider value={value}>{children}</Provider>
 }

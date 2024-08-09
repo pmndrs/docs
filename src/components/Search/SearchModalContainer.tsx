@@ -15,7 +15,7 @@ export interface SearchModalContainerProps {
 export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => {
   // const router = useRouter()
   // const boxes = useCSB()
-  const docs = useDocs()
+  const { docs } = useDocs()
   console.log('docs', docs)
   // const [lib] = router.query.slug as string[]
   const [query, setQuery] = React.useState('')

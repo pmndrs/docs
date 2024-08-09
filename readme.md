@@ -1,14 +1,14 @@
 ```sh
-$ MDX=~/code/pmndrs/react-three-fiber/docs LIBNAME="React Three Fiber" yarn dev
+$ MDX=~/code/pmndrs/react-three-fiber/docs NEXT_PUBLIC_LIBNAME="React Three Fiber" yarn dev
 ```
 
 ```sh
-$ MDX=docs LIBNAME="React Three Fiber" yarn build
+$ MDX=docs NEXT_PUBLIC_LIBNAME="React Three Fiber" yarn build
 ```
 
-| var         | description                                               | default |
-| ----------- | --------------------------------------------------------- | ------- |
-| `MDX`       | Path to `*.mxd` folder<br>NB: can be relative or absolute | `docs`  |
-| `LIBNAME`\* | Library name                                              | none    |
+| var                     | description                                               | default |
+| ----------------------- | --------------------------------------------------------- | ------- |
+| `MDX`                   | Path to `*.mxd` folder<br>NB: can be relative or absolute | `docs`  |
+| `NEXT_PUBLIC_LIBNAME`\* | Library name                                              | none    |
 
 \* Required
