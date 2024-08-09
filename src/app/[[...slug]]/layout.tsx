@@ -8,6 +8,7 @@ import Nav from '@/components/Nav'
 import Link from 'next/link'
 import Search from '@/components/Search'
 import ToggleTheme from '@/components/ToggleTheme'
+import Toc from '@/components/Toc'
 
 export type Props = {
   params: { slug: string[] }
@@ -56,6 +57,7 @@ export default async function Layout({ params, children }: Props) {
                 <Nav docs={docs} asPath={asPath} />
               </>
             }
+            aside={<Toc toc={doc.tableOfContents} />}
             footer={
               <>
                 {!!currentPage && (

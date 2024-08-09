@@ -21,7 +21,7 @@ export type Doc = {
   nav: number
   title: string
   description: string
-  content: string
+  content: ReactNode
   boxes: string[]
   tableOfContents: DocToC[]
 }

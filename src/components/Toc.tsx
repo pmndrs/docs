@@ -9,6 +9,7 @@ export interface ToCProps {
 }
 
 function Toc({ toc }: ToCProps) {
+  // console.log('toc', toc)
   const [activeIndex, setActiveIndex] = React.useState(0)
 
   React.useEffect(() => {

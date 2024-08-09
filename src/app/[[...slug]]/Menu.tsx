@@ -1,8 +1,7 @@
 'use client'
 
-import clsx from 'clsx'
 import * as React from 'react'
-import Toc from '@/components/Toc'
+import clsx from 'clsx'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 import { useDocs } from './DocsContext'
 import { useMenu } from './MenuContext'
@@ -12,11 +11,13 @@ export function Menu({
   header,
   nav,
   children,
+  aside,
   footer,
 }: {
   header: React.ReactNode
   nav: React.ReactNode
   children: React.ReactNode
+  aside: React.ReactNode
   footer: React.ReactNode
 }) {
   const { doc } = useDocs()
@@ -80,9 +81,7 @@ export function Menu({
                 <footer>{footer}</footer>
               </main>
 
-              <aside className="flex-none hidden w-64 pl-8 pr-8 xl:text-sm xl:block">
-                {doc?.tableOfContents?.length ? <Toc toc={doc.tableOfContents} /> : null}
-              </aside>
+              <aside className="flex-none hidden w-64 pl-8 pr-8 xl:text-sm xl:block">{aside}</aside>
             </div>
           </div>
         </div>

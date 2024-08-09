@@ -7,9 +7,10 @@ export type Props = {
 }
 
 export default async function Page({ params }: Props) {
+  // console.log('page', params)
+
   const slug = params.slug
 
-  console.log('page', slug)
   const { doc } = await getData(...slug) // [ 'getting-started', 'introduction' ]
 
   return (
@@ -56,7 +57,7 @@ export async function generateStaticParams() {
   const MDX = process.env.MDX
   if (!MDX) throw new Error('MDX env var not set')
 
-  const docs = await getDocs(MDX)
+  const docs = await getDocs(MDX, null, true)
   const paths = docs.map(({ slug }) => ({ slug }))
   // console.log('paths', paths)
   return paths
