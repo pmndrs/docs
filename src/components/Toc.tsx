@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import clsx from 'clsx'
-import type { DocToC } from '../app/[...slug]/DocsContext'
+import type { DocToC } from '@/app/[[...slug]]/DocsContext'
 
 export interface ToCProps {
   toc: DocToC[]

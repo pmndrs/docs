@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { matchSorter } from 'match-sorter'
 
-import { useDocs } from '../../app/[...slug]/DocsContext'
+import { useDocs } from '@/app/[[...slug]]/DocsContext'
 
 import SearchModal from './SearchModal'
 import type { SearchResult } from './SearchItem'

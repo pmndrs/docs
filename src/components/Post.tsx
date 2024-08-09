@@ -7,7 +7,7 @@ import { fetchCSB } from '@/components/Codesandbox'
 import remarkGFM from 'remark-gfm'
 import rehypePrismPlus from 'rehype-prism-plus'
 import { codesandbox, toc } from '@/utils/rehype'
-import { Doc } from '@/app/[...slug]/DocsContext'
+import { Doc } from '@/app/[[...slug]]/DocsContext'
 
 const components = {
   Hint: ({ children }: { children: React.ReactNode }) => (

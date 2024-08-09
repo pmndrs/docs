@@ -8,7 +8,6 @@ import Search from '@/components/Search'
 import Link from 'next/link'
 // import { useRouter } from 'next/router'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
-import libs from '@/data/libraries'
 
 import ToggleTheme from '@/components/ToggleTheme'
 
@@ -90,7 +89,7 @@ export default async function Layout({ params, children }: Props) {
                   className="overflow-y-auto px-4 font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative"
                 >
                   <div className="mt-8 md:mt-0 mb-4">
-                    <LibSwitcher currentPage={libs[lib].title} lib={lib} />
+                    <LibSwitcher currentPage={libraries[lib].title} lib={lib} />
                   </div>
                   <Nav docs={docs} asPath={asPath} />
                 </nav>

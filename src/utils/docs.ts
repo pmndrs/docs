@@ -4,7 +4,7 @@ import http from 'isomorphic-git/http/node'
 import matter from 'gray-matter'
 
 import libs, { Lib } from '@/data/libraries'
-import type { Doc, DocToC } from '../app/[...slug]/DocsContext'
+import type { Doc, DocToC } from '@/app/[[...slug]]/DocsContext'
 import pMemoize from 'p-memoize'
 import { cache } from 'react'
 import { type CSB } from '@/components/Codesandbox'
