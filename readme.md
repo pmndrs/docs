@@ -1,8 +1,14 @@
-# Poimandres Docs
-
-```bash
-yarn
-yarn dev
+```sh
+$ MDX=~/code/pmndrs/react-three-fiber/docs LIBNAME="React Three Fiber" yarn dev
 ```
 
-[![Powered by Vercel](public/vercel.svg)](https://vercel.com/?utm_source=pmndrs&utm_campaign=oss)
+```sh
+$ MDX=docs LIBNAME="React Three Fiber" yarn build
+```
+
+| var         | description                                               | default |
+| ----------- | --------------------------------------------------------- | ------- |
+| `MDX`       | Path to `*.mxd` folder<br>NB: can be relative or absolute | `docs`  |
+| `LIBNAME`\* | Library name                                              | none    |
+
+\* Required

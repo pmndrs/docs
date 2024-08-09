@@ -1,5 +1,5 @@
 {
-  "name": "pmndrs-docs",
+  "name": "@pmndrs/docs",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -22,9 +22,7 @@
     "@tailwindcss/typography": "^0.5.4",
     "clsx": "^1.2.1",
     "gray-matter": "^4.0.2",
-    "isomorphic-git": "^1.19.1",
     "match-sorter": "^6.3.1",
-    "memfs": "^3.4.7",
     "next": "^14.2.5",
     "next-mdx-remote": "^4.4.1",
     "p-memoize": "^7.1.1",

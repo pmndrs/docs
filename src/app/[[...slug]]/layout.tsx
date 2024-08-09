@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import * as React from 'react'
-import LibSwitcher from '@/components/LibSwitcher'
 import Nav from '@/components/Nav'
 import Icon from '@/components/Icon'
 import Toc from '@/components/Toc'
@@ -11,10 +10,8 @@ import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 
 import ToggleTheme from '@/components/ToggleTheme'
 
-import { Doc, DocsContext } from './DocsContext'
-import libraries from '@/data/libraries'
-import { notFound } from 'next/navigation'
-import { getData, getDocs } from '@/utils/docs'
+import { DocsContext } from './DocsContext'
+import { getData } from '@/utils/docs'
 
 export type Props = {
   params: { slug: string[] }
@@ -24,14 +21,7 @@ export type Props = {
 export default async function Layout({ params, children }: Props) {
   const slug = params.slug
 
-  // 404
-  if (!(slug[0] in libraries)) {
-    return notFound()
-  }
-
   const asPath = `/${slug.join('/')}`
-
-  const lib = slug[0]
 
   const { docs, doc } = await getData(...slug)
   // console.log('docs', docs)
@@ -47,6 +37,8 @@ export default async function Layout({ params, children }: Props) {
 
   // React.useEffect(() => setMenuOpen(false), [asPath])
 
+  const { LIBNAME } = process.env
+
   return (
     <>
       <DocsContext value={docs}>
@@ -54,7 +46,7 @@ export default async function Layout({ params, children }: Props) {
           <div className="flex justify-between items-center w-full pr-2">
             <Link href="/" aria-label="Poimandres Docs">
               <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
-                <span className="font-bold">Pmndrs</span>
+                <span className="font-bold">pmndrs</span>
                 <span className="font-normal">.docs</span>
               </div>
             </Link>
@@ -89,7 +81,11 @@ export default async function Layout({ params, children }: Props) {
                   className="overflow-y-auto px-4 font-medium text-base lg:text-sm pb-10 lg:pb-14 sticky?lg:h-(screen-16) z-10 relative"
                 >
                   <div className="mt-8 md:mt-0 mb-4">
-                    <LibSwitcher currentPage={libraries[lib].title} lib={lib} />
+                    {LIBNAME?.length && (
+                      <span className="mt-4 block w-full px-6 py-2 focus:outline-none bg-black rounded-md font-bold text-lg text-white dark:bg-white dark:text-gray-900 text-center">
+                        {LIBNAME}
+                      </span>
+                    )}
                   </div>
                   <Nav docs={docs} asPath={asPath} />
                 </nav>
@@ -114,7 +110,7 @@ export default async function Layout({ params, children }: Props) {
                   <div>{children}</div>
 
                   <footer>
-                    {!!currentPage && (
+                    {/* {!!currentPage && (
                       <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
                         <a
                           target="_blank"
@@ -125,7 +121,7 @@ export default async function Layout({ params, children }: Props) {
                           Edit this page on GitHub
                         </a>
                       </div>
-                    )}
+                    )} */}
 
                     {(!!previousPage || !!nextPage) && (
                       <nav className="flex justify-between w-full max-w-3xl mx-auto mt-12">

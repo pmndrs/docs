@@ -1,13 +1,9 @@
-import { fs } from 'memfs'
-import git from 'isomorphic-git'
-import http from 'isomorphic-git/http/node'
+import fs from 'node:fs'
 import matter from 'gray-matter'
 
-import libs, { Lib } from '@/data/libraries'
 import type { Doc, DocToC } from '@/app/[[...slug]]/DocsContext'
 import pMemoize from 'p-memoize'
 import { cache } from 'react'
-import { type CSB } from '@/components/Codesandbox'
 
 /**
  * Checks for .md(x) file extension
@@ -45,35 +41,11 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
 
 /**
  * Fetches all docs, filters to a lib if specified.
+ *
+ * @param root - absolute or relative (to cwd) path to docs folder
  */
 
-async function _getDocs(lib: Lib): Promise<Doc[]> {
-  console.log('getDocs', lib)
-
-  const libDocs = libs[lib].docs
-  if (!libDocs) throw new Error(`No docs found for ${lib}`)
-
-  const [user, repo, branch, ...rest] = libDocs.split('/')
-
-  const dir = `/${user}-${repo}-${branch}`
-  const root = `${dir}/${rest.join('/')}`
-  const url = `https://github.com/${user}/${repo}`
-
-  // console.log('cloning', url)
-
-  // Clone remote
-  await git.clone({
-    fs,
-    http,
-    dir,
-    url,
-    ref: branch,
-    singleBranch: true,
-    depth: 1,
-  })
-
-  // console.log('cloned', url)
-
+async function _getDocs(root: string): Promise<Doc[]> {
   // Crawl and parse docs
   const files = await crawl(root, MARKDOWN_REGEX)
   // console.log('files', files)
@@ -82,10 +54,10 @@ async function _getDocs(lib: Lib): Promise<Doc[]> {
     files.map(async (file) => {
       // Get slug from local path
       const path = file.replace(`${root}/`, '')
-      const slug = [lib, ...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
+      const slug = [...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
 
       const url = `/${slug.join('/')}`
-      const editURL = file.replace(dir, `https://github.com/${user}/${repo}/tree/${branch}`)
+      // const editURL = file.replace(root, `https://github.com/pmndrs/${lib}`)
 
       // Read & parse doc
       const compiled = matter(await fs.promises.readFile(file))
@@ -104,20 +76,6 @@ async function _getDocs(lib: Lib): Promise<Doc[]> {
         .replace(COMMENT_REGEX, '')
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
-        // Require inline images
-        .replace(
-          /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
-          (_input, prefix, src, suffix) => {
-            if (src.includes('//')) return `${prefix}${src}${suffix}`
-
-            const [, _dir, ...parts] = file.split('/')
-            parts.pop() // remove MDX file from path
-
-            const url = `https://github.com/${user}/${repo}/raw/${branch}/${parts.join('/')}/${src}`
-
-            return `${prefix}${url}${suffix}`
-          }
-        )
 
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []
@@ -125,7 +83,7 @@ async function _getDocs(lib: Lib): Promise<Doc[]> {
       return {
         slug,
         url,
-        editURL,
+        // editURL,
         title,
         description,
         nav,
@@ -150,15 +108,18 @@ export const getDocs = cache(_getDocs)
 async function _getData(...slug: string[]) {
   console.log('getData', slug)
 
-  const [lib] = slug
+  const { MDX } = process.env
+  if (!MDX) throw new Error('MDX env var not set')
 
-  const docs = await getDocs(lib as Lib)
-  // console.log('allDocs', allDocs)
+  const docs = await getDocs(MDX)
+  // console.log('allDocs', docs)
 
   const url = `/${slug.join('/')}`.toLowerCase()
   // console.log('url', url)
   const doc = docs.find((doc) => doc.url === url)
   // console.log('doc', doc)
+
+  if (!doc) throw new Error(`Doc not found: ${url}`)
 
   return {
     docs,
