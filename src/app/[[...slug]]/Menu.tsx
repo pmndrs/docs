@@ -25,7 +25,7 @@ export function Menu({
   const [menuOpen, setMenuOpen] = useMenu()
   useLockBodyScroll(menuOpen)
 
-  React.useEffect(() => setMenuOpen(false), [])
+  React.useEffect(() => setMenuOpen(false), [setMenuOpen])
 
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
 
