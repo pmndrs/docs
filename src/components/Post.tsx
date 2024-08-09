@@ -126,11 +126,20 @@ export default async function Post({ doc }: { doc: Doc }) {
         {
           ...components,
           Codesandbox: async (props: React.ComponentProps<typeof Codesandbox>) => {
-            const boxes = await fetchCSB(doc.boxes)
-            // console.log('boxes', boxes)
-            const data = boxes[props.id] // retrieve the data from its `id`
+            const ids = doc.boxes // populated from 1.
+            // console.log('ids', ids)
 
-            return <Codesandbox {...{ ...props, data }} />
+            //
+            // Batch fetch all CSBs of the page
+            //
+            const boxes = await fetchCSB(...ids)
+            // console.log('boxes', boxes)
+            const data = boxes[props.id]
+            // console.log('data', data)
+
+            // Merge initial props with data
+            const merged = { ...props, ...data }
+            return <Codesandbox {...merged} />
           },
         } as React.ComponentProps<typeof MDXRemote>['components']
       }
@@ -139,8 +148,8 @@ export default async function Post({ doc }: { doc: Doc }) {
           remarkPlugins: [remarkGFM],
           rehypePlugins: [
             rehypePrismPlus,
-            codesandbox(doc.boxes), // will populate `doc.boxes`
-            toc(doc.tableOfContents, url, title, content), // will populate `doc.tableOfContents`
+            codesandbox(doc.boxes), // 1. put all Codesandbox[id] into `doc.boxes`
+            toc(doc.tableOfContents, url, title, content), // 2. will populate `doc.tableOfContents`
           ],
         },
       }}
