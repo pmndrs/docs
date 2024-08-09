@@ -1,0 +1,46 @@
+name: Reusable pmndrs/docs workflow
+
+on:
+  workflow_call:
+    inputs:
+      mdx:
+        required: true
+        type: string
+      libname:
+        required: true
+        type: string
+
+jobs:
+  build-job:
+    runs-on: ubuntu-latest
+
+    # container:
+    #   image: ghcr.io/pmndrs/playwright:main
+    #   credentials:
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - id: configurepages
+        uses: actions/configure-pages@v5
+      - run: |
+          set -ex
+
+          docker run --rm --init \
+            -v "$MDX":/app/docs \
+            -e BASE_PATH \
+            -e DIST_DIR=docs/out \
+            -e MDX \
+            -e NEXT_PUBLIC_NAME \
+            ghcr.io/pmndrs/docs:app-router yarn build
+        env:
+          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
+          MDX: ${{ inputs.mdx }}
+          NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
+
+      - run: ls -al ${{ inputs.mdx }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ inputs.mdx }}/out

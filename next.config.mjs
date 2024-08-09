@@ -1,3 +1,4 @@
+const basePath = process.env.BASE_PATH || ''
 const distDir = process.env.DIST_DIR || undefined
 
 /** @type {import('next').NextConfig} */
@@ -7,6 +8,7 @@ const nextConfig = {
     // domains: ['codesandbox.io'],
     unoptimized: true,
   },
+  basePath,
   output: 'export',
   distDir,
   // async redirects() {
