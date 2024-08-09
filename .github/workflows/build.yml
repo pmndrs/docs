@@ -32,7 +32,7 @@ jobs:
             -e BASE_PATH \
             -e DIST_DIR=docs/out \
             -e MDX \
-            -e NEXT_PUBLIC_NAME \
+            -e NEXT_PUBLIC_LIBNAME \
             ghcr.io/pmndrs/docs:app-router yarn build
         env:
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
