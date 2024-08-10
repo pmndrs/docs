@@ -48,7 +48,7 @@ $ export BASE_PATH=/uikit; \
     -e DIST_DIR="$MDX/out$BASE_PATH" \
     -e MDX \
     -e NEXT_PUBLIC_LIBNAME \
-    pmndrs-docs npm run build; \
+    pmndrs-docs npm run build && \
   npx -y serve "$MDX/out"
 ```
 
