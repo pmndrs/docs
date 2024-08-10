@@ -1,10 +1,24 @@
 ```sh
-$ MDX=~/code/pmndrs/react-three-fiber/docs NEXT_PUBLIC_LIBNAME="React Three Fiber" yarn dev
+$ MDX=docs \
+  NEXT_PUBLIC_LIBNAME="React Three Fiber" \
+  BASE_PATH= \
+  DIST_DIR= \
+    yarn dev
 ```
 
+http://localhost:3000/getting-started/introduction
+
 ```sh
-$ MDX=docs NEXT_PUBLIC_LIBNAME="React Three Fiber" yarn build
+$ rm -rf out; \
+  MDX=~/code/pmndrs/react-three-fiber/docs \
+  NEXT_PUBLIC_LIBNAME="React Three Fiber" \
+  BASE_PATH= \
+  DIST_DIR= \
+    yarn build; \
+  npx serve out
 ```
+
+http://localhost:3000/getting-started/introduction
 
 | var                     | description                                               | default |
 | ----------------------- | --------------------------------------------------------- | ------- |
