@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@types/minimist": "^1.2.5",
-    "@types/node": "^18.19.44",
+    "@types/node": "^22.2.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
@@ -43,7 +43,7 @@
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "packageManager": "npm@10.8.2"
 }
