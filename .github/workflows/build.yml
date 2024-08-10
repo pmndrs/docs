@@ -27,7 +27,7 @@ jobs:
             -e DIST_DIR="$MDX/out$BASE_PATH" \
             -e MDX \
             -e NEXT_PUBLIC_LIBNAME \
-            ghcr.io/pmndrs/docs:app-router yarn build
+            ghcr.io/pmndrs/docs:app-router npm run build
         env:
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
           MDX: ${{ inputs.mdx }}

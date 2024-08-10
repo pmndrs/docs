@@ -61,5 +61,6 @@ const nextConfig = {
   //   ]
   // },
 }
+// console.log('nextConfig=', nextConfig)
 
 export default nextConfig

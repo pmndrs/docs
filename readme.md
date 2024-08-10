@@ -3,7 +3,7 @@ $ MDX=~/code/pmndrs/react-three-fiber/docs \
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \
   BASE_PATH= \
   DIST_DIR= \
-    yarn dev
+    npm run dev
 ```
 
 http://localhost:3000/getting-started/introduction
@@ -14,7 +14,7 @@ $ rm -rf out; \
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \
   BASE_PATH= \
   DIST_DIR= \
-    yarn build && \
+    npm run build && \
   npx serve out
 ```
 
@@ -48,7 +48,7 @@ $ export BASE_PATH=/uikit; \
     -e DIST_DIR="$MDX/out$BASE_PATH" \
     -e MDX \
     -e NEXT_PUBLIC_LIBNAME \
-    pmndrs-docs yarn build; \
+    pmndrs-docs npm run build; \
   npx -y serve "$MDX/out"
 ```
 
