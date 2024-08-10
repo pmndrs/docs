@@ -1,4 +1,4 @@
-import type { DocToC } from '@/app/[[...slug]]/DocsContext'
+import type { DocToC } from '@/app/[...slug]/DocsContext'
 
 export interface Node {
   type: string

@@ -55,7 +55,10 @@ export async function generateStaticParams() {
   // ]
 
   const MDX = process.env.MDX
-  if (!MDX) throw new Error('MDX env var not set')
+  if (!MDX) {
+    console.warn('MDX env var not set')
+    return []
+  }
 
   const docs = await getDocs(MDX, null, true)
   const paths = docs.map(({ slug }) => ({ slug }))

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { Doc } from '@/app/[[...slug]]/DocsContext'
+import { Doc } from '@/app/[...slug]/DocsContext'
 
 interface NavItemProps {
   doc: Doc

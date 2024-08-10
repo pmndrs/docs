@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import matter from 'gray-matter'
 
-import type { Doc, DocToC } from '@/app/[[...slug]]/DocsContext'
+import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import { cache } from 'react'
 
 import { compileMDX } from 'next-mdx-remote/rsc'

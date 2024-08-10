@@ -23,7 +23,7 @@ http://localhost:3000/getting-started/introduction
 
 | var                     | description                                               | default |
 | ----------------------- | --------------------------------------------------------- | ------- |
-| `MDX`                   | Path to `*.mdx` folder<br>NB: can be relative or absolute | `docs`  |
+| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute | none    |
 | `NEXT_PUBLIC_LIBNAME`\* | Library name                                              | none    |
 | `BASE_PATH`             | base path for the final URL                               | none    |
 | `DIST_DIR`              | Path to the output folder                                 | `out`   |
