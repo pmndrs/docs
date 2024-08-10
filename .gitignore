@@ -6,11 +6,6 @@
 .pnp.js
 node_modules/
 
-# dependency lock files
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
-
 # other
 .next/
 .DS_Store
@@ -21,3 +16,5 @@ logs/
 out/
 tmp/
 temp/
+
+tsconfig.tsbuildinfo

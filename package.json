@@ -23,7 +23,7 @@
   "dependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.14",
-    "clsx": "^1.2.1",
+    "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "match-sorter": "^6.3.4",
     "next": "^14.2.5",
