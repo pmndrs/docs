@@ -24,6 +24,7 @@ const nextConfig = {
         destination: '/:slug*',
         permanent: true,
       },
+      //
       {
         source: '/xr',
         destination: '/xr/getting-started/introduction',
@@ -59,6 +60,37 @@ const nextConfig = {
         destination: 'https://github.com/pmndrs/drei#:slug*',
         permanent: true,
       },
+      //
+      {
+        source: '/react-three-fiber/:slug*',
+        destination: 'https://pmndrs.github.io/react-three-fiber/:slug*',
+        permanent: true,
+      },
+      // {
+      //   source: '/zustand/:slug*',
+      //   destination: 'https://pmndrs.github.io/zustand/:slug*',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/a11y/:slug*',
+      //   destination: 'https://pmndrs.github.io/a11y/:slug*',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/react-postprocessing/:slug*',
+      //   destination: 'https://pmndrs.github.io/react-postprocessing/:slug*',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/uikit/:slug*',
+      //   destination: 'https://pmndrs.github.io/uikit/:slug*',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/xr/:slug*',
+      //   destination: 'https://pmndrs.github.io/xr/:slug*',
+      //   permanent: true,
+      // },
     ]
   },
 }
