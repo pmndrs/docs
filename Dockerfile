@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:18-alpine
 
 RUN apk add --no-cache libc6-compat git && apk update
 WORKDIR /app
