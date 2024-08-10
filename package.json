@@ -21,7 +21,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.19",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.14",
     "clsx": "^1.2.1",
