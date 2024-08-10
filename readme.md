@@ -14,7 +14,7 @@ $ rm -rf out; \
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \
   BASE_PATH= \
   DIST_DIR= \
-    yarn build; \
+    yarn build && \
   npx serve out
 ```
 
