@@ -1,5 +1,5 @@
 ```sh
-$ MDX=docs \
+$ MDX=~/code/pmndrs/react-three-fiber/docs \
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \
   BASE_PATH= \
   DIST_DIR= \

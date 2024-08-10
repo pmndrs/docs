@@ -14,12 +14,6 @@ jobs:
   build-job:
     runs-on: ubuntu-latest
 
-    # container:
-    #   image: ghcr.io/pmndrs/playwright:main
-    #   credentials:
-    #     username: ${{ github.actor }}
-    #     password: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
       - uses: actions/checkout@v4
       - id: configurepages

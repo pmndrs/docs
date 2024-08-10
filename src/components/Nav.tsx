@@ -43,7 +43,6 @@ function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
       }, {} as NavList),
     [docs]
   )
-  console.log('nav', nav)
 
   return (
     <ul>
