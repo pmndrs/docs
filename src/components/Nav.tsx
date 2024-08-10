@@ -30,7 +30,7 @@ function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
   const nav = React.useMemo(
     () =>
       docs.reduce((acc, doc) => {
-        const [, ...rest] = doc.slug
+        const [...rest] = doc.slug
         const [page, category] = rest.reverse()
 
         if (category && !acc[category]) acc[category] = {}
@@ -43,6 +43,7 @@ function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
       }, {} as NavList),
     [docs]
   )
+  console.log('nav', nav)
 
   return (
     <ul>
