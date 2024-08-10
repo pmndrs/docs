@@ -2,7 +2,6 @@ import fs from 'node:fs'
 import matter from 'gray-matter'
 
 import type { Doc, DocToC } from '@/app/[[...slug]]/DocsContext'
-import pMemoize from 'p-memoize'
 import { cache } from 'react'
 
 import { compileMDX } from 'next-mdx-remote/rsc'
