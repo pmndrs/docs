@@ -9,7 +9,7 @@ on:
       libname:
         required: true
         type: string
-      INLINE_IMAGES_ORIGIN:
+      inline_images_origin:
         required: false
         type: string
         default: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}'
@@ -32,11 +32,13 @@ jobs:
             -e MDX \
             -e NEXT_PUBLIC_LIBNAME \
             -e OUTPUT=export \
+            -e INLINE_IMAGES_ORIGIN \
             ghcr.io/pmndrs/docs:app-router npm run build
         env:
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
+          INLINE_IMAGES_ORIGIN: ${{ inputs.inline_images_origin }}
 
       - run: ls -al ${{ inputs.mdx }}
 
