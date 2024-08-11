@@ -3,6 +3,7 @@ $ MDX=~/code/pmndrs/react-three-fiber/docs \
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \
   BASE_PATH= \
   DIST_DIR= \
+  OUTPUT=export \
     npm run dev
 ```
 
@@ -26,7 +27,7 @@ http://localhost:3000/getting-started/introduction
 | `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute | none    |
 | `NEXT_PUBLIC_LIBNAME`\* | Library name                                              | none    |
 | `BASE_PATH`             | base path for the final URL                               | none    |
-| `DIST_DIR`              | Path to the output folder                                 | `out`   |
+| `DIST_DIR`              | Path to the output folder                                 | none    |
 | `OUTPUT`                | Set to `export` for static `out`put                       | none    |
 
 \* Required

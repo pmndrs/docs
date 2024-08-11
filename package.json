@@ -43,7 +43,7 @@
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "packageManager": "npm@10.8.2"
 }
