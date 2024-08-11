@@ -1,14 +1,23 @@
-| var                     | description                                                                                                                                                                                                                                                                                              | example                                                | default |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------- |
-| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                                                                                                                                                | `docs` or `~/code/myproject/documentation`             | none    |
-| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                                                                                                                                                             | `React Three Fiber`                                    | none    |
-| `BASE_PATH`             | Base path for the final URL                                                                                                                                                                                                                                                                              | `/react-three-fiber`                                   | none    |
-| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory))                                                                                                                                 | `out` or `docs/out/react-three-fiber`                  | none    |
-| `OUTPUT`                | Set to `export` for static output                                                                                                                                                                                                                                                                        | `export`                                               | none    |
-| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                                                                                                                                                           | `/getting-started/introduction`                        | none    |
-| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images<br>Eg: in a `/advanced/introduction.mdx` file, `<img src="./dog.png" />` becomes `<img src="https://github.com/pmndrs/uikit/raw/main/advanced/dog.png" />`<br> NB: if none, don't use relative images | `https://github.com/pmndrs/react-three-fiber/raw/main` | none    |
+| var                     | description                                                                                                                                                              | example                                                | default |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ | ------- |
+| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`             | none    |
+| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                    | none    |
+| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                   | none    |
+| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                  | none    |
+| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                               | none    |
+| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                        | none    |
+| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `https://github.com/pmndrs/react-three-fiber/raw/main` | none    |
 
 \* Required
+
+<details>
+  <summary>`INLINE_IMAGES_ORIGIN`</summary>
+  In mdx `docs` folder, given a `advanced/introduction.mdx` file:
+  ```mdx
+  ![](dog.png)
+  ```
+  becomes `![](https://github.com/pmndrs/uikit/raw/main/docs/advanced/dog.png)`
+</details>
 
 # dev
 
