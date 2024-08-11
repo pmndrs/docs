@@ -66,21 +66,21 @@ const nextConfig = {
         destination: 'https://pmndrs.github.io/react-three-fiber/:slug*',
         permanent: true,
       },
-      // {
-      //   source: '/zustand/:slug*',
-      //   destination: 'https://pmndrs.github.io/zustand/:slug*',
-      //   permanent: true,
-      // },
-      // {
-      //   source: '/a11y/:slug*',
-      //   destination: 'https://pmndrs.github.io/a11y/:slug*',
-      //   permanent: true,
-      // },
-      // {
-      //   source: '/react-postprocessing/:slug*',
-      //   destination: 'https://pmndrs.github.io/react-postprocessing/:slug*',
-      //   permanent: true,
-      // },
+      {
+        source: '/zustand/:slug*',
+        destination: 'https://pmndrs.github.io/zustand/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/a11y/:slug*',
+        destination: 'https://pmndrs.github.io/a11y/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/react-postprocessing/:slug*',
+        destination: 'https://pmndrs.github.io/react-postprocessing/:slug*',
+        permanent: true,
+      },
       // {
       //   source: '/uikit/:slug*',
       //   destination: 'https://pmndrs.github.io/uikit/:slug*',
