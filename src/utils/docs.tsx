@@ -103,7 +103,7 @@ async function _getDocs(
       }
 
       //
-      // With MDX content (only for `theSlug` doc we are interested in -- better perfs)
+      // With MDX content (only for `slugOfInterest` doc we are interested in -- better perfs)
       //
 
       // Sanitize markdown
