@@ -128,10 +128,20 @@ async function _getDocs(
             // root: "/Users/abernier/code/pmndrs/uikit/docs"
             // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
             //
-            const relativePath = file.substring(root.length) // "/advanced/performance.md"
-            const folderPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
 
-            const url = `${inlineImagesOrigin}${folderPath}/${src}` // "https://github.com/pmndrs/uikit/raw/main/advanced/./basic-example.gif"
+            // Remove trailing slash from root if it exists
+            const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root
+            // Extract the last folder name from the root path
+            const lastFolderName = normalizedRoot.split('/').pop() // "docs"
+
+            // Calculate the relative path from the file path after the root
+            const relativePath = file.substring(normalizedRoot.length) // "/advanced/performance.md"
+            // Extract the directory path from the relative path (excluding the file name)
+            const directoryPath = relativePath.split('/').slice(0, -1).join('/') // "advanced"
+            // Combine the lastFolderName with the directoryPath using template literals
+            const folderPath = `/${lastFolderName}/${directoryPath}` // "/docs/advanced"
+
+            const url = `${inlineImagesOrigin}${folderPath}/${src}` // "https://github.com/pmndrs/uikit/raw/main/docs/advanced/./basic-example.gif"
 
             return `${prefix}${url}${suffix}`
           }
