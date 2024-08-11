@@ -73,7 +73,7 @@ const nextConfig = {
       },
       {
         source: '/a11y/:slug*',
-        destination: 'https://pmndrs.github.io/a11y/:slug*',
+        destination: 'https://pmndrs.github.io/react-three-a11y/:slug*',
         permanent: true,
       },
       {
