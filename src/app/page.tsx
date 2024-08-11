@@ -109,7 +109,8 @@ const libs: Record<string, Library> = {
 }
 
 export default function Page() {
-  if (process.env.OUTPUT === 'export') redirect('/getting-started/introduction')
+  const HOME_REDIRECT = process.env.HOME_REDIRECT
+  if (HOME_REDIRECT) redirect(HOME_REDIRECT)
 
   return (
     <>
