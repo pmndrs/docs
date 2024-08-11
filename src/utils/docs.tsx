@@ -140,11 +140,9 @@ async function _getDocs(
             // Calculate the relative path from the file path after the root
             const relativePath = file.substring(normalizedRoot.length) // "/advanced/performance.md"
             // Extract the directory path from the relative path (excluding the file name)
-            const directoryPath = relativePath.split('/').slice(0, -1).join('/') // "advanced"
-            // Combine the lastFolderName with the directoryPath using template literals
-            const folderPath = `/${lastFolderName}/${directoryPath}` // "/docs/advanced"
+            const directoryPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
 
-            const url = `${inlineImagesOrigin}${folderPath}/${src}` // "https://github.com/pmndrs/uikit/raw/main/docs/advanced/./basic-example.gif"
+            const url = `${inlineImagesOrigin}/${lastFolderName}${directoryPath}/${src}` // "https://github.com/pmndrs/uikit/raw/main/docs/advanced/./basic-example.gif"
 
             return `${prefix}${url}${suffix}`
           }
