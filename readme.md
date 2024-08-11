@@ -10,14 +10,21 @@
 
 \* Required
 
-<details>
-  <summary>`INLINE_IMAGES_ORIGIN`</summary>
+Details:
+
+- `INLINE_IMAGES_ORIGIN`:
+
   In mdx `docs` folder, given a `advanced/introduction.mdx` file:
+
   ```mdx
   ![](dog.png)
   ```
-  becomes `![](https://github.com/pmndrs/uikit/raw/main/docs/advanced/dog.png)`
-</details>
+
+  becomes
+
+  ```mdx
+  ![](https://github.com/pmndrs/uikit/raw/main/docs/advanced/dog.png)
+  ```
 
 # dev
 
