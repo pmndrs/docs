@@ -72,8 +72,18 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/a11y/introduction',
+        destination: 'https://pmndrs.github.io/react-three-a11y/getting-started/introduction',
+        permanent: true,
+      },
+      {
         source: '/a11y/:slug*',
         destination: 'https://pmndrs.github.io/react-three-a11y/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/react-postprocessing/introduction',
+        destination: 'https://pmndrs.github.io/react-postprocessing/getting-started/introduction',
         permanent: true,
       },
       {
