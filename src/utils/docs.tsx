@@ -107,13 +107,36 @@ async function _getDocs(
       //
 
       // Sanitize markdown
-      const content = compiled.content
+      let content = compiled.content
         // Remove <!-- --> comments from frontMatter
         .replace(FRONTMATTER_REGEX, '')
         // Remove extraneous comments from post
         .replace(COMMENT_REGEX, '')
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
+
+      // Require inline images
+      const inlineImagesOrigin = process.env.INLINE_IMAGES_ORIGIN
+      if (inlineImagesOrigin) {
+        content = content.replace(
+          /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g,
+          (_input, prefix, src, suffix) => {
+            if (src.includes('://')) return `${prefix}${src}${suffix}`
+
+            // Eg:
+            //
+            // root: "/Users/abernier/code/pmndrs/uikit/docs"
+            // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
+            //
+            const relativePath = file.substring(root.length) // "/advanced/performance.md"
+            const folderPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
+
+            const url = `${inlineImagesOrigin}${folderPath}/${src}` // "https://github.com/pmndrs/uikit/raw/main/advanced/./basic-example.gif"
+
+            return `${prefix}${url}${suffix}`
+          }
+        )
+      }
 
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []

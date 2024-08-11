@@ -9,6 +9,10 @@ on:
       libname:
         required: true
         type: string
+      INLINE_IMAGES_ORIGIN:
+        required: false
+        type: string
+        default: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}'
 
 jobs:
   build-job:

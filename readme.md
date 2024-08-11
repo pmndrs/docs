@@ -22,13 +22,14 @@ $ rm -rf out; \
 
 http://localhost:3000/getting-started/introduction
 
-| var                     | description                                               | default |
-| ----------------------- | --------------------------------------------------------- | ------- |
-| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute | none    |
-| `NEXT_PUBLIC_LIBNAME`\* | Library name                                              | none    |
-| `BASE_PATH`             | base path for the final URL                               | none    |
-| `DIST_DIR`              | Path to the output folder                                 | none    |
-| `OUTPUT`                | Set to `export` for static `out`put                       | none    |
+| var                     | description                                                                                                                                                                                                                                                                                              | default |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                                                                                                                                                | none    |
+| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                                                                                                                                                             | none    |
+| `BASE_PATH`             | base path for the final URL                                                                                                                                                                                                                                                                              | none    |
+| `DIST_DIR`              | Path to the output folder                                                                                                                                                                                                                                                                                | none    |
+| `OUTPUT`                | Set to `export` for static `out`put                                                                                                                                                                                                                                                                      | none    |
+| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images<br>Eg: in a `/advanced/introduction.mdx` file, `<img src="./dog.png" />` becomes `<img src="https://github.com/pmndrs/uikit/raw/main/advanced/dog.png" />`<br> NB: if none, don't use relative images | none    |
 
 \* Required
 
