@@ -2,7 +2,7 @@
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                                                                                                                                                | none    |
 | `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                                                                                                                                                             | none    |
-| `BASE_PATH`             | base path for the final URL                                                                                                                                                                                                                                                                              | none    |
+| `BASE_PATH`             | Base path for the final URL                                                                                                                                                                                                                                                                              | none    |
 | `DIST_DIR`              | Path to the output folder                                                                                                                                                                                                                                                                                | none    |
 | `OUTPUT`                | Set to `export` for static `out`put                                                                                                                                                                                                                                                                      | none    |
 | `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                                                                                                                                                           | none    |
@@ -79,3 +79,17 @@ $ export BASE_PATH=/react-three-fiber; \
 ```
 
 Then go to: http://localhost:3000/react-three-fiber
+
+# Reusable GitHub Actions workflow
+
+`pmndrs/docs` provides a [`build.yml`](.github/workflows/build.yml) reusable workflow, any project can use:
+
+```yml
+uses: pmndrs/docs/.github/workflows/build.yml@app-router
+  with:
+    mdx: './docs'
+    libname: 'React Three Fiber'
+    home_redirect: '/getting-started/introduction'
+```
+
+See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
