@@ -8,6 +8,8 @@
 | `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                                                                                                                                                           | none    |
 | `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images<br>Eg: in a `/advanced/introduction.mdx` file, `<img src="./dog.png" />` becomes `<img src="https://github.com/pmndrs/uikit/raw/main/advanced/dog.png" />`<br> NB: if none, don't use relative images | none    |
 
+\* Required
+
 # dev
 
 ```sh
@@ -44,8 +46,6 @@ $ rm -rf out; \
 ```
 
 http://localhost:3000/getting-started/introduction
-
-\* Required
 
 # Docker
 
