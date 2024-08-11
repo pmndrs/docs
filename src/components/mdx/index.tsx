@@ -8,36 +8,36 @@ export const h2 = ({ children, id }: { children: React.ReactNode; id: string }) 
     <h2 id={id}>{children}</h2>
   </a>
 )
-const h3 = ({ children, id }: { children: React.ReactNode; id: string }) => (
+export const h3 = ({ children, id }: { children: React.ReactNode; id: string }) => (
   <a href={`#${id}`} className="heading text-xl mb-4 mt-6 tracking-light">
     <h3 id={id}>{children}</h3>
   </a>
 )
-const h4 = ({ children, id }: { children: React.ReactNode; id: string }) => (
+export const h4 = ({ children, id }: { children: React.ReactNode; id: string }) => (
   <a href={`#${id}`} className="heading text-base mb-4 mt-4 tracking-light">
     <h4 id={id}>{children}</h4>
   </a>
 )
 
-const ul = ({ children }: { children: React.ReactNode }) => (
+export const ul = ({ children }: { children: React.ReactNode }) => (
   <ul className="px-4 mb-8">{children}</ul>
 )
-const ol = ({ children }: { children: React.ReactNode }) => (
+export const ol = ({ children }: { children: React.ReactNode }) => (
   <ol className="px-4 mb-8">{children}</ol>
 )
-const li = ({ children }: { children: React.ReactNode }) => (
+export const li = ({ children }: { children: React.ReactNode }) => (
   <li className="mb-4 text-base leading-6 text-gray-700 dark:text-gray-400">{children}</li>
 )
 
-const p = ({ children }: { children: React.ReactNode }) => (
+export const p = ({ children }: { children: React.ReactNode }) => (
   <p className="mb-4 text-base text-gray-700 dark:text-gray-400">{children}</p>
 )
 
-const blockquote = ({ children }: { children: React.ReactNode }) => (
+export const blockquote = ({ children }: { children: React.ReactNode }) => (
   <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>
 )
 
-const table = ({ children }: { children: React.ReactNode }) => (
+export const table = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col my-6">
     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div className="py-6 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -49,7 +49,7 @@ const table = ({ children }: { children: React.ReactNode }) => (
   </div>
 )
 
-const a = ({
+export const a = ({
   href,
   target,
   rel,
