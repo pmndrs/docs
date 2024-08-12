@@ -34,7 +34,7 @@ Details:
 # dev
 
 ```sh
-(
+$ (
   trap 'kill -9 0' SIGINT
 
   export MDX=~/code/pmndrs/react-three-fiber/docs
@@ -60,18 +60,26 @@ Then go to: http://localhost:3000
 # build
 
 ```sh
-$ rm -rf out; \
-  \
-  MDX=~/code/pmndrs/react-three-fiber/docs \
-  NEXT_PUBLIC_LIBNAME="React Three Fiber" \
-  BASE_PATH= \
-  DIST_DIR= \
-  OUTPUT=export \
-  HOME_REDIRECT=/getting-started/introduction \
-  INLINE_IMAGES_ORIGIN= \
-    npm run build && \
-  \
-  npx serve out
+$ (
+  trap 'kill -9 0' SIGINT
+
+  rm -rf out
+
+  export MDX=~/code/pmndrs/react-three-fiber/docs
+  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export BASE_PATH=
+  export DIST_DIR=
+  export OUTPUT=export
+  export HOME_REDIRECT=/getting-started/introduction
+  export INLINE_IMAGES_ORIGIN=http://localhost:60141
+
+  npm run build
+
+  npx serve $MDX -p $(echo $INLINE_IMAGES_ORIGIN | grep -oE '[0-9]+' | tail -1) --no-port-switching --no-clipboard &
+  npx serve out &
+
+  wait
+)
 ```
 
 http://localhost:3000/getting-started/introduction
@@ -84,15 +92,17 @@ $ docker build -t pmndrs-docs .
 
 ```sh
 $ cd ~/code/pmndrs/react-three-fiber
-$ export BASE_PATH=/react-three-fiber; \
-  export MDX=./docs; \
-  export NEXT_PUBLIC_LIBNAME="React Three Fiber"; \
-  export OUTPUT=export; \
-  export HOME_REDIRECT=/getting-started/introduction; \
-  export INLINE_IMAGES_ORIGIN=; \
-  \
-  rm -rf "$MDX/out"; \
-  \
+$ (
+  trap 'kill -9 0' SIGINT
+
+  export MDX=./docs
+  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export OUTPUT=export
+  export HOME_REDIRECT=/getting-started/introduction
+  export INLINE_IMAGES_ORIGIN=http://localhost:60141
+
+  rm -rf "$MDX/out"
+
   docker run --rm --init -it \
     -v "$MDX":/app/docs \
     -e BASE_PATH \
@@ -102,9 +112,13 @@ $ export BASE_PATH=/react-three-fiber; \
     -e OUTPUT \
     -e HOME_REDIRECT \
     -e INLINE_IMAGES_ORIGIN \
-    pmndrs-docs npm run build && \
-  \
-  npx -y serve "$MDX/out"
+    pmndrs-docs npm run build
+
+  npx serve $MDX -p $(echo $INLINE_IMAGES_ORIGIN | grep -oE '[0-9]+' | tail -1) --no-port-switching --no-clipboard &
+  npx -y serve "$MDX/out" &
+
+  wait
+)
 ```
 
 Then go to: http://localhost:3000/react-three-fiber
