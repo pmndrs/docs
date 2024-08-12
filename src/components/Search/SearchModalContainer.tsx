@@ -25,6 +25,7 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
   React.useEffect(() => {
     React.startTransition(() => {
       if (!deferredQuery) return setResults([])
+      // console.log('deferredQuery', deferredQuery)
 
       // Get length of matched text in result
       const relevanceOf = (result: SearchResult) =>
@@ -32,9 +33,11 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
         result.title.length
 
       // Search
-      const entries = (
-        docs.flatMap(({ tableOfContents }) => tableOfContents) as SearchResult[]
-      ).filter((entry) => entry.description.length > 0)
+      let candidateResults = docs.flatMap(
+        ({ tableOfContents }) => tableOfContents
+      ) satisfies SearchResult[]
+      // console.log('candidateResults', candidateResults)
+      candidateResults = candidateResults.filter((entry) => entry.description.length > 0)
       // .concat(
       //   Object.entries(boxes).flatMap(([id, data]) => ({
       //     ...data,
@@ -46,7 +49,7 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
       //   }))
       // )
 
-      const results = matchSorter(entries, deferredQuery, {
+      const results = matchSorter(candidateResults, deferredQuery, {
         keys: ['title', 'description', 'content'],
         threshold: matchSorter.rankings.CONTAINS,
       })

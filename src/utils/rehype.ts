@@ -49,7 +49,7 @@ export const toc = (target: DocToC[] = [], url: string, page: string, content: s
           url: `${url}#${id}`,
           title,
           description,
-          content,
+          // content, // potentially too big to be in the ToC (perfs issue)
           parent: previous[level - 2] ?? null,
         }
         previous[level - 1] = item

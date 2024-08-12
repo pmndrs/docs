@@ -95,20 +95,21 @@ async function _getDocs(
       const description = compiled.data.description ?? ''
       const nav = compiled.data.nav ?? Infinity
 
-      if (JSON.stringify(slug) !== JSON.stringify(slugOfInterest)) {
-        return {
-          slug,
-          url,
-          // editURL,
-          title,
-          description,
-          nav,
-        } as Doc
-      }
+      //
+      // MDX content
+      //
 
-      //
-      // With MDX content (only for `slugOfInterest` doc we are interested in -- better perfs)
-      //
+      // Skip docs other than `slugOfInterest` -- better perfs)
+      // if (JSON.stringify(slug) !== JSON.stringify(slugOfInterest)) {
+      //   return {
+      //     slug,
+      //     url,
+      //     // editURL,
+      //     title,
+      //     description,
+      //     nav,
+      //   } as Doc
+      // }
 
       // Sanitize markdown
       let content = compiled.content

@@ -4,7 +4,7 @@
 
 :root {
   scroll-behavior: smooth;
-  --header-height: 65px; /* TODO: make this value dynamic */
+  --header-height: 4rem; /* TODO: make this value dynamic */
   scroll-margin-top: var(--header-height);
 }
 
@@ -213,17 +213,15 @@ ul.grid-list > li:before {
   margin-bottom: 0;
 }
 
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
   width: 14px;
 }
-
 ::-webkit-scrollbar-thumb {
   @apply border-4 border-black border-opacity-0 bg-gray-300 rounded-full dark:bg-gray-700;
 }
-
 ::-webkit-scrollbar-track {
   @apply dark:bg-gray-800;
-}
+}*/
 
 /**
  * Pmndrs theme for JavaScript, CSS and HTML
