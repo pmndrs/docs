@@ -44,7 +44,7 @@ jobs:
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
-          INLINE_IMAGES_ORIGIN: ${{ inputs.inline_images_origin }}
+          INLINE_IMAGES_ORIGIN: ${{ inputs.inline_images_origin }}/${{ inputs.mdx }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

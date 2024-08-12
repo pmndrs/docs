@@ -61,6 +61,10 @@ async function _getDocs(
   const files = await crawl(root, MARKDOWN_REGEX)
   // console.log('files', files)
 
+  const inlineImagesOrigin = process.env.INLINE_IMAGES_ORIGIN
+  if (!inlineImagesOrigin?.startsWith('http'))
+    throw new Error('INLINE_IMAGES_ORIGIN must be a valid origin')
+
   const docs = await Promise.all(
     files.map(async (file) => {
       // Get slug from local path
@@ -119,7 +123,6 @@ async function _getDocs(
       // inline images
       //
 
-      const inlineImagesOrigin = process.env.INLINE_IMAGES_ORIGIN
       if (inlineImagesOrigin) {
         content = content.replace(
           /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g, // https://regexper.com/#%2F%28src%3D%22%7C%5C%28%29%28.%2B%3F%5C.%28%3F%3Apng%7Cjpe%3Fg%7Cgif%7Cwebp%7Cavif%29%29%28%22%7C%5C%29%29%2Fg
@@ -130,19 +133,19 @@ async function _getDocs(
             //
             // root: "/Users/abernier/code/pmndrs/uikit/docs"
             // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
+            // inlineImagesOrigin: "http://localhost:60141"
             //
 
             // Remove trailing slash from root if it exists
             const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root
-            // Extract the last folder name from the root path
-            const lastFolderName = normalizedRoot.split('/').pop() // "docs"
 
             // Calculate the relative path from the file path after the root
             const relativePath = file.substring(normalizedRoot.length) // "/advanced/performance.md"
             // Extract the directory path from the relative path (excluding the file name)
             const directoryPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
 
-            const url = `${inlineImagesOrigin}/${lastFolderName}${directoryPath}/${src}` // "https://github.com/pmndrs/uikit/raw/main/docs/advanced/./basic-example.gif"
+            let url = `${inlineImagesOrigin}${directoryPath}/${src}` // "http://localhost:60141/advanced/./basic-example.gif"
+            url = `${new URL(url)}` // resolve parts like "main/./docs" => "main/docs"
 
             return `${prefix}${url}${suffix}`
           }

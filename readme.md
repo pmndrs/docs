@@ -1,12 +1,12 @@
-| var                     | description                                                                                                                                                              | example                                                | default |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ | ------- |
-| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`             | none    |
-| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                    | none    |
-| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                   | none    |
-| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                  | none    |
-| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                               | none    |
-| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                        | none    |
-| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `https://github.com/pmndrs/react-three-fiber/raw/main` | none    |
+| var                     | description                                                                                                                                                              | example                                                                                | default |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------- |
+| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                             | none    |
+| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                                                    | none    |
+| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                   | none    |
+| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                  | none    |
+| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                               | none    |
+| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                        | none    |
+| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/main/docs` | none    |
 
 \* Required
 
@@ -14,29 +14,42 @@ Details:
 
 - `INLINE_IMAGES_ORIGIN`:
 
-  In mdx `docs` folder, given a `advanced/introduction.mdx` file:
+  Given a `advanced/introduction.mdx` file in the `MDX` folder:
 
   ```mdx
   ![](dog.png)
   ```
 
-  becomes
+  becomes (for a `INLINE_IMAGES_ORIGIN=http://localhost:60141` value):
 
   ```mdx
-  ![](https://github.com/pmndrs/uikit/raw/main/docs/advanced/dog.png)
+  ![](http://localhost:60141/advanced/dog.png)
   ```
+
+  `http://localhost:60141` is the `MDX` folder served.
+
+  > [!TIP]
+  > When deployed on GitHub Pages, `INLINE_IMAGES_ORIGIN` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
 
 # dev
 
 ```sh
-$ MDX=~/code/pmndrs/react-three-fiber/docs \
-  NEXT_PUBLIC_LIBNAME="React Three Fiber" \
-  BASE_PATH= \
-  DIST_DIR= \
-  OUTPUT=export \
-  HOME_REDIRECT=/getting-started/introduction \
-  INLINE_IMAGES_ORIGIN= \
-    npm run dev
+(
+  trap 'kill -9 0' SIGINT
+
+  export MDX=~/code/pmndrs/react-three-fiber/docs
+  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export BASE_PATH=
+  export DIST_DIR=
+  export OUTPUT=export
+  export HOME_REDIRECT=/getting-started/introduction
+  export INLINE_IMAGES_ORIGIN=http://localhost:60141
+
+  npx serve $MDX -p $(echo $INLINE_IMAGES_ORIGIN | grep -oE '[0-9]+' | tail -1) --no-port-switching --no-clipboard &
+  npm run dev &
+
+  wait
+)
 ```
 
 Then go to: http://localhost:3000
