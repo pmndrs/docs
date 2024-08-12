@@ -35,12 +35,15 @@ export default async function Layout({ params, children }: Props) {
           <Menu
             header={
               <>
-                <Link href="/" aria-label="Poimandres Docs">
-                  <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
+                <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
+                  <Link href="/" aria-label="Poimandres Docs">
                     <span className="font-bold">{NEXT_PUBLIC_LIBNAME}</span>
-                    <span className="font-normal">.docs</span>
-                  </div>
-                </Link>
+                  </Link>
+                  <span className="font-normal">
+                    .<a href="https://docs.pmnd.rs">docs</a>
+                  </span>
+                </div>
+
                 <Search />
                 <ToggleTheme />
               </>
