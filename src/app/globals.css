@@ -2,6 +2,12 @@
 
 /* Write your own custom base styles here */
 
+:root {
+  scroll-behavior: smooth;
+  --header-height: 65px; /* TODO: make this value dynamic */
+  scroll-margin-top: var(--header-height);
+}
+
 body {
   font-optical-sizing: auto;
 }
