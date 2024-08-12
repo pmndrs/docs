@@ -21,7 +21,7 @@ export default async function Layout({ params, children }: Props) {
 
   const asPath = slug.join('/')
 
-  const currentPageIndex = docs.findIndex((item) => item.url === asPath)
+  const currentPageIndex = docs.findIndex(({ url }) => url === `/${asPath}`)
   const currentPage = docs[currentPageIndex]
   const previousPage = currentPageIndex > 0 && docs[currentPageIndex - 1]
   const nextPage = currentPageIndex < docs.length - 1 && docs[currentPageIndex + 1]
