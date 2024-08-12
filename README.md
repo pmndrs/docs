@@ -95,7 +95,7 @@ $ (
 )
 ```
 
-http://localhost:3000/getting-started/introduction
+http://localhost:3000
 
 # Docker
 
@@ -141,7 +141,7 @@ $ (
 )
 ```
 
-Then go to: http://localhost:3000/react-three-fiber
+Then go to: http://localhost:3000
 
 # Reusable GitHub Actions workflow
 
