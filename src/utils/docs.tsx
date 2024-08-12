@@ -84,7 +84,10 @@ async function _getDocs(
       //
 
       const url = `/${slug.join('/')}`
-      // const editURL = file.replace(root, `https://github.com/pmndrs/${lib}`)
+
+      // editURL
+      const EDIT_ORIGIN = process.env.EDIT_ORIGIN
+      const editURL = EDIT_ORIGIN?.length ? file.replace(root, EDIT_ORIGIN) : undefined
 
       // Read & parse doc
       const compiled = matter(await fs.promises.readFile(file))
@@ -104,7 +107,7 @@ async function _getDocs(
       //   return {
       //     slug,
       //     url,
-      //     // editURL,
+      //     editURL,
       //     title,
       //     description,
       //     nav,
@@ -192,7 +195,7 @@ async function _getDocs(
       return {
         slug,
         url,
-        // editURL,
+        editURL,
         title,
         description,
         nav,

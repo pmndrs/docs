@@ -66,10 +66,9 @@ export default async function Layout({ params, children }: Props) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mb-2 text-base text-gray-500 hover:underline"
-                      // href={currentPage.editURL}
-                      href="#TODO"
+                      href={currentPage.editURL || '#no-edit-url'}
                     >
-                      Edit this page on GitHub
+                      Edit this page
                     </a>
                   </div>
                 )}

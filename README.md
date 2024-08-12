@@ -1,12 +1,15 @@
-| var                     | description                                                                                                                                                              | example                                                                                | default |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------- |
-| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                             | none    |
-| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                                                    | none    |
-| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                   | none    |
-| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                  | none    |
-| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                               | none    |
-| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                        | none    |
-| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/main/docs` | none    |
+# Configuration
+
+| var                     | description                                                                                                                                                              | example                                                                                  | default |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ------- |
+| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                               | none    |
+| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                                                      | none    |
+| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                     | none    |
+| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                    | none    |
+| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                                 | none    |
+| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          | none    |
+| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` | none    |
+| `EDIT_ORIGIN`           | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for displaying "Edit this page" URLs                                                               | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           | none    |
 
 \* Required
 
@@ -37,15 +40,20 @@ Details:
 $ (
   trap 'kill -9 0' SIGINT
 
+  export _PORT=60141
+
+  # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=~/code/pmndrs/react-three-fiber/docs
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_ORIGIN=http://localhost:60141
+  export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
+  export EDIT_ORIGIN="vscode://file/$MDX"
 
-  npx serve $MDX -p $(echo $INLINE_IMAGES_ORIGIN | grep -oE '[0-9]+' | tail -1) --no-port-switching --no-clipboard &
+  kill $(lsof -ti:"$_PORT")
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
   npm run dev &
 
   wait
@@ -65,17 +73,22 @@ $ (
 
   rm -rf out
 
+  export _PORT=60141
+
+  # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=~/code/pmndrs/react-three-fiber/docs
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_ORIGIN=http://localhost:60141
+  export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
+  export EDIT_ORIGIN=
 
   npm run build
 
-  npx serve $MDX -p $(echo $INLINE_IMAGES_ORIGIN | grep -oE '[0-9]+' | tail -1) --no-port-switching --no-clipboard &
+  kill $(lsof -ti:"$_PORT")
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
   npx serve out &
 
   wait
@@ -95,26 +108,33 @@ $ cd ~/code/pmndrs/react-three-fiber
 $ (
   trap 'kill -9 0' SIGINT
 
+  export _PORT=60141
+
+  # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=./docs
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export BASE_PATH=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_ORIGIN=http://localhost:60141
+  export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
+  export EDIT_ORIGIN=
 
   rm -rf "$MDX/out"
 
   docker run --rm --init -it \
     -v "$MDX":/app/docs \
-    -e BASE_PATH \
-    -e DIST_DIR="$MDX/out$BASE_PATH" \
     -e MDX \
     -e NEXT_PUBLIC_LIBNAME \
+    -e BASE_PATH \
+    -e DIST_DIR="$MDX/out$BASE_PATH" \
     -e OUTPUT \
     -e HOME_REDIRECT \
     -e INLINE_IMAGES_ORIGIN \
+    -e EDIT_ORIGIN \
     pmndrs-docs npm run build
 
-  npx serve $MDX -p $(echo $INLINE_IMAGES_ORIGIN | grep -oE '[0-9]+' | tail -1) --no-port-switching --no-clipboard &
+  kill $(lsof -ti:"$_PORT")
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
   npx -y serve "$MDX/out" &
 
   wait

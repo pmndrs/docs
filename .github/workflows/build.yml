@@ -38,6 +38,7 @@ jobs:
             -e OUTPUT=export \
             -e HOME_REDIRECT \
             -e INLINE_IMAGES_ORIGIN \
+            -e EDIT_ORIGIN \
             ghcr.io/pmndrs/docs:app-router npm run build
         env:
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
@@ -45,6 +46,7 @@ jobs:
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           INLINE_IMAGES_ORIGIN: ${{ inputs.inline_images_origin }}/${{ inputs.mdx }}
+          EDIT_ORIGIN: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
 
       - uses: actions/upload-pages-artifact@v3
         with:

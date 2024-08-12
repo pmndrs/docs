@@ -17,7 +17,7 @@ export type DocToC = {
 export type Doc = {
   slug: string[]
   url: string
-  // editURL: string
+  editURL?: string
   nav: number
   title: string
   description: string
