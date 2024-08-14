@@ -168,9 +168,10 @@ In your `MDX` folder, create any `path/to/my-document.mdx`:
 
 ```mdx
 ---
-title: TITLE
-description: DESCRIPTION
-image: IMAGE
+title: My Document
+description: Lorem ipsum...
+image: dog.png
+nav: 0
 ---
 
 MARKDOWN
@@ -180,10 +181,11 @@ MARKDOWN
 
 Any key is optional.
 
-- `TITLE`: if not provided, last part of the path like eg: `my document`
-- `IMAGE`:
-  - accepts relative (to the md file) paths, absolute, eg: `dog.png`, `./dog.png`, `../dog.png`, `/dog.png` or `https://animals.com/dog.png`
+- `title`: if not provided, last part of the path is used: `my document`
+- `image`:
+  - relative (to the md file) or absolute path, eg: `dog.png`, `./dog.png`, `../../dog.png`, `/dog.png` or `https://animals.com/dog.png`
   - will be used as metadata image if provided
+- `nav`: order in the navigation
 
 ## MARKDOWN
 
