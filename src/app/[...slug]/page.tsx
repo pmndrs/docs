@@ -1,9 +1,31 @@
 import * as React from 'react'
+
 import Post from '@/components/Post'
 import { getData, getDocs } from '@/utils/docs'
 
 export type Props = {
   params: { slug: string[] }
+}
+
+export async function generateMetadata({ params }: Props) {
+  const slug = params.slug
+
+  const { doc } = await getData(...slug)
+
+  const title = `${doc.title} - ${process.env.NEXT_PUBLIC_LIBNAME}`
+  const description = doc.description
+  const url = doc.url
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'article',
+    },
+  }
 }
 
 export default async function Page({ params }: Props) {

@@ -10,6 +10,7 @@
 | `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          | none    |
 | `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` | none    |
 | `EDIT_ORIGIN`           | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for displaying "Edit this page" URLs                                                               | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           | none    |
+| `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             | none    |
 
 \* Required
 
@@ -51,6 +52,7 @@ $ (
   export HOME_REDIRECT=/getting-started/introduction
   export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
   export EDIT_ORIGIN="vscode://file/$MDX"
+  export NEXT_PUBLIC_URL=
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -84,6 +86,7 @@ $ (
   export HOME_REDIRECT=/getting-started/introduction
   export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
   export EDIT_ORIGIN=
+  export NEXT_PUBLIC_URL=
 
   npm run build
 
@@ -118,6 +121,7 @@ $ (
   export HOME_REDIRECT=/getting-started/introduction
   export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
   export EDIT_ORIGIN=
+  export NEXT_PUBLIC_URL=
 
   rm -rf "$MDX/out"
 
@@ -131,6 +135,7 @@ $ (
     -e HOME_REDIRECT \
     -e INLINE_IMAGES_ORIGIN \
     -e EDIT_ORIGIN \
+    -e NEXT_PUBLIC_URL \
     pmndrs-docs npm run build
 
   kill $(lsof -ti:"$_PORT")
