@@ -186,7 +186,7 @@ Any key is optional.
 - `image`:
   - relative (to the md file) or absolute path, eg: `dog.png`, `./dog.png`, `../../dog.png`, `/dog.png` or `https://animals.com/dog.png`
   - will be used as metadata image if provided
-- `nav`: order in the navigation
+- `nav`: order in the navigation (on the same level)
 
 ## MARKDOWN
 
