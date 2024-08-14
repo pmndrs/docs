@@ -8,15 +8,15 @@
 | `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                    | none    |
 | `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                                 | none    |
 | `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          | none    |
-| `INLINE_IMAGES_ORIGIN`  | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for inlining relative images                                                                       | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` | none    |
-| `EDIT_ORIGIN`           | [Origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) for displaying "Edit this page" URLs                                                               | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           | none    |
+| `INLINE_IMAGES_BASEURL` | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` | none    |
+| `EDIT_BASEURL`          | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           | none    |
 | `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             | none    |
 
 \* Required
 
 Details:
 
-- `INLINE_IMAGES_ORIGIN`:
+- `INLINE_IMAGES_BASEURL`:
 
   Given a `advanced/introduction.mdx` file in the `MDX` folder:
 
@@ -24,7 +24,7 @@ Details:
   ![](dog.png)
   ```
 
-  becomes (for a `INLINE_IMAGES_ORIGIN=http://localhost:60141` value):
+  becomes (for a `INLINE_IMAGES_BASEURL=http://localhost:60141` value):
 
   ```mdx
   ![](http://localhost:60141/advanced/dog.png)
@@ -33,7 +33,7 @@ Details:
   `http://localhost:60141` is the `MDX` folder served.
 
   > [!TIP]
-  > When deployed on GitHub Pages, `INLINE_IMAGES_ORIGIN` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
+  > When deployed on GitHub Pages, `INLINE_IMAGES_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
 
 # dev
 
@@ -50,8 +50,8 @@ $ (
   export DIST_DIR=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
-  export EDIT_ORIGIN="vscode://file/$MDX"
+  export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
+  export EDIT_BASEURL="vscode://file/$MDX"
   export NEXT_PUBLIC_URL=
 
   kill $(lsof -ti:"$_PORT")
@@ -84,8 +84,8 @@ $ (
   export DIST_DIR=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
-  export EDIT_ORIGIN=
+  export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
+  export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
 
   npm run build
@@ -119,8 +119,8 @@ $ (
   export BASE_PATH=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_ORIGIN=http://localhost:$_PORT
-  export EDIT_ORIGIN=
+  export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
+  export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
 
   rm -rf "$MDX/out"
@@ -133,8 +133,8 @@ $ (
     -e DIST_DIR="$MDX/out$BASE_PATH" \
     -e OUTPUT \
     -e HOME_REDIRECT \
-    -e INLINE_IMAGES_ORIGIN \
-    -e EDIT_ORIGIN \
+    -e INLINE_IMAGES_BASEURL \
+    -e EDIT_BASEURL \
     -e NEXT_PUBLIC_URL \
     pmndrs-docs npm run build
 

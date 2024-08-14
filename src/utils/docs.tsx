@@ -53,8 +53,8 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
  * @param root - absolute or relative (to cwd) path to docs folder
  */
 
-const INLINE_IMAGES_ORIGIN = process.env.INLINE_IMAGES_ORIGIN
-// console.log('INLINE_IMAGES_ORIGIN', INLINE_IMAGES_ORIGIN)
+const INLINE_IMAGES_BASEURL = process.env.INLINE_IMAGES_BASEURL
+// console.log('INLINE_IMAGES_BASEURL', INLINE_IMAGES_BASEURL)
 
 async function _getDocs(
   root: string,
@@ -85,8 +85,8 @@ async function _getDocs(
       const url = `/${slug.join('/')}`
 
       // editURL
-      const EDIT_ORIGIN = process.env.EDIT_ORIGIN
-      const editURL = EDIT_ORIGIN?.length ? file.replace(root, EDIT_ORIGIN) : undefined
+      const EDIT_BASEURL = process.env.EDIT_BASEURL
+      const editURL = EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined
 
       // Read & parse doc
       const compiled = matter(await fs.promises.readFile(file))
@@ -127,13 +127,13 @@ async function _getDocs(
       // inline images
       //
 
-      function inlineImage(src: string, origin: string) {
+      function inlineImage(src: string, baseurl: string) {
         if (src.startsWith('http')) return src // Keep as is, in those cases
 
         // Eg:
         //
         // src: "./basic-example.gif"
-        // origin: "http://localhost:60141/foo"
+        // baseurl: "http://localhost:60141/foo"
         //
         // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
         // root: "/Users/abernier/code/pmndrs/uikit/docs"
@@ -148,15 +148,15 @@ async function _getDocs(
           directoryPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
         }
 
-        // console.log('url', origin, directoryPath, src)
-        return `${origin}${directoryPath}/${src}` // "http://localhost:60141/foo/advanced/./basic-example.gif"
+        // console.log('url', baseurl, directoryPath, src)
+        return `${baseurl}${directoryPath}/${src}` // "http://localhost:60141/foo/advanced/./basic-example.gif"
       }
 
-      if (INLINE_IMAGES_ORIGIN) {
+      if (INLINE_IMAGES_BASEURL) {
         content = content.replace(
           /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g, // https://regexper.com/#%2F%28src%3D%22%7C%5C%28%29%28.%2B%3F%5C.%28%3F%3Apng%7Cjpe%3Fg%7Cgif%7Cwebp%7Cavif%29%29%28%22%7C%5C%29%29%2Fg
           (_input, prefix: string, src: string, suffix: string) => {
-            const url = inlineImage(src, INLINE_IMAGES_ORIGIN)
+            const url = inlineImage(src, INLINE_IMAGES_BASEURL)
             return `${prefix}${url}${suffix}`
           }
         )
@@ -199,7 +199,7 @@ async function _getDocs(
       })
 
       const metadataImage =
-        image && INLINE_IMAGES_ORIGIN ? inlineImage(image, INLINE_IMAGES_ORIGIN) : undefined
+        image && INLINE_IMAGES_BASEURL ? inlineImage(image, INLINE_IMAGES_BASEURL) : undefined
 
       return {
         slug,
