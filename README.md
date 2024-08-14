@@ -14,26 +14,27 @@
 
 \* Required
 
-Details:
+<details>
+  <summary>`INLINE_IMAGES_BASEURL`</summary>
 
-- `INLINE_IMAGES_BASEURL`:
+Given a `advanced/introduction.mdx` file in the `MDX` folder:
 
-  Given a `advanced/introduction.mdx` file in the `MDX` folder:
+```mdx
+![](dog.png)
+```
 
-  ```mdx
-  ![](dog.png)
-  ```
+becomes (for a `INLINE_IMAGES_BASEURL=http://localhost:60141` value):
 
-  becomes (for a `INLINE_IMAGES_BASEURL=http://localhost:60141` value):
+```mdx
+![](http://localhost:60141/advanced/dog.png)
+```
 
-  ```mdx
-  ![](http://localhost:60141/advanced/dog.png)
-  ```
+`http://localhost:60141` being the `MDX` folder served.
 
-  `http://localhost:60141` is the `MDX` folder served.
+> [!TIP]
+> When deployed on GitHub Pages, `INLINE_IMAGES_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
 
-  > [!TIP]
-  > When deployed on GitHub Pages, `INLINE_IMAGES_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
+</details>
 
 # dev
 
