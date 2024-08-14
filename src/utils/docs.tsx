@@ -53,6 +53,9 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
  * @param root - absolute or relative (to cwd) path to docs folder
  */
 
+const INLINE_IMAGES_ORIGIN = process.env.INLINE_IMAGES_ORIGIN
+// console.log('INLINE_IMAGES_ORIGIN', INLINE_IMAGES_ORIGIN)
+
 async function _getDocs(
   root: string,
   slugOfInterest: string[] | null,
@@ -60,10 +63,6 @@ async function _getDocs(
 ): Promise<Doc[]> {
   const files = await crawl(root, MARKDOWN_REGEX)
   // console.log('files', files)
-
-  const inlineImagesOrigin = process.env.INLINE_IMAGES_ORIGIN
-  if (!inlineImagesOrigin?.startsWith('http'))
-    throw new Error('INLINE_IMAGES_ORIGIN must be a valid origin')
 
   const docs = await Promise.all(
     files.map(async (file) => {
@@ -94,9 +93,10 @@ async function _getDocs(
 
       // Add fallback frontmatter
       const pathname = slug[slug.length - 1]
-      const title = compiled.data.title ?? pathname.replace(/\-/g, ' ')
-      const description = compiled.data.description ?? ''
-      const nav = compiled.data.nav ?? Infinity
+      const title = compiled.data.title ?? (pathname.replace(/\-/g, ' ') as string)
+      const description = compiled.data.description ?? ('' as string)
+      const nav = compiled.data.nav ?? (Infinity as number)
+      const image = compiled.data.image as string | undefined
 
       //
       // MDX content
@@ -127,30 +127,36 @@ async function _getDocs(
       // inline images
       //
 
-      if (inlineImagesOrigin) {
+      function inlineImage(src: string, origin: string) {
+        if (src.startsWith('http')) return src // Keep as is, in those cases
+
+        // Eg:
+        //
+        // src: "./basic-example.gif"
+        // origin: "http://localhost:60141/foo"
+        //
+        // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
+        // root: "/Users/abernier/code/pmndrs/uikit/docs"
+        //
+
+        let directoryPath = ''
+
+        // Relative (not starting with "/") => get directoryPath from file
+        if (!src.startsWith('/')) {
+          const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root // Remove trailing slash (if exists)
+          const relativePath = file.substring(normalizedRoot.length) // "/advanced/performance.md"
+          directoryPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
+        }
+
+        // console.log('url', origin, directoryPath, src)
+        return `${origin}${directoryPath}/${src}` // "http://localhost:60141/foo/advanced/./basic-example.gif"
+      }
+
+      if (INLINE_IMAGES_ORIGIN) {
         content = content.replace(
           /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g, // https://regexper.com/#%2F%28src%3D%22%7C%5C%28%29%28.%2B%3F%5C.%28%3F%3Apng%7Cjpe%3Fg%7Cgif%7Cwebp%7Cavif%29%29%28%22%7C%5C%29%29%2Fg
-          (_input, prefix, src, suffix) => {
-            if (src.includes('://')) return `${prefix}${src}${suffix}`
-
-            // Eg:
-            //
-            // root: "/Users/abernier/code/pmndrs/uikit/docs"
-            // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
-            // inlineImagesOrigin: "http://localhost:60141"
-            //
-
-            // Remove trailing slash from root if it exists
-            const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root
-
-            // Calculate the relative path from the file path after the root
-            const relativePath = file.substring(normalizedRoot.length) // "/advanced/performance.md"
-            // Extract the directory path from the relative path (excluding the file name)
-            const directoryPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
-
-            let url = `${inlineImagesOrigin}${directoryPath}/${src}` // "http://localhost:60141/advanced/./basic-example.gif"
-            url = `${new URL(url)}` // resolve parts like "main/./docs" => "main/docs"
-
+          (_input, prefix: string, src: string, suffix: string) => {
+            const url = inlineImage(src, INLINE_IMAGES_ORIGIN)
             return `${prefix}${url}${suffix}`
           }
         )
@@ -192,11 +198,15 @@ async function _getDocs(
         },
       })
 
+      const metadataImage =
+        image && INLINE_IMAGES_ORIGIN ? inlineImage(image, INLINE_IMAGES_ORIGIN) : undefined
+
       return {
         slug,
         url,
         editURL,
         title,
+        metadataImage,
         description,
         nav,
         content: jsx,

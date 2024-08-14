@@ -15,12 +15,14 @@ export async function generateMetadata({ params }: Props) {
   const title = `${doc.title} - ${process.env.NEXT_PUBLIC_LIBNAME}`
   const description = doc.description
   const url = doc.url
+  const metadataImage = doc.metadataImage
 
   return {
     title,
     description,
     openGraph: {
       title,
+      images: [{ url: metadataImage }],
       description,
       url,
       type: 'article',
