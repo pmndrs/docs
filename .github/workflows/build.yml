@@ -9,10 +9,6 @@ on:
       libname:
         required: true
         type: string
-      inline_images_baseurl:
-        required: false
-        type: string
-        default: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}'
       home_redirect:
         required: true
         type: string
@@ -46,7 +42,7 @@ jobs:
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
-          INLINE_IMAGES_BASEURL: ${{ inputs.inline_images_baseurl }}/${{ inputs.mdx }}
+          INLINE_IMAGES_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
           EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
 
