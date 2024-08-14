@@ -161,3 +161,28 @@ uses: pmndrs/docs/.github/workflows/build.yml@app-router
 ```
 
 See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
+
+# Authoring
+
+```mdx
+---
+title: TITLE
+description: DESCRIPTION
+image: IMAGE
+---
+
+MARKDOWN
+```
+
+## Frontmatter
+
+Any key is optional.
+
+- `TITLE`: if not provided, last part of the path like: `/advanced/hello-there` -> `hello there`
+- `IMAGE`:
+  - accepts relative (to the md file) paths, absolute, eg: `dog.png`, `./dog.png`, `../dog.png`, `/dog.png` or `https://animals.com/dog.png`
+  - will be used as metadata image if provided
+
+## MARKDOWN
+
+TODO
