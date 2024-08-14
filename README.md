@@ -164,6 +164,8 @@ See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/p
 
 # Authoring
 
+In your `MDX` folder, create any `path/to/my-document.mdx`:
+
 ```mdx
 ---
 title: TITLE
@@ -178,7 +180,7 @@ MARKDOWN
 
 Any key is optional.
 
-- `TITLE`: if not provided, last part of the path like: `/advanced/hello-there` -> `hello there`
+- `TITLE`: if not provided, last part of the path like eg: `my document`
 - `IMAGE`:
   - accepts relative (to the md file) paths, absolute, eg: `dog.png`, `./dog.png`, `../dog.png`, `/dog.png` or `https://animals.com/dog.png`
   - will be used as metadata image if provided
