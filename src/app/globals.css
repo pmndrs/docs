@@ -2,6 +2,12 @@
 
 /* Write your own custom base styles here */
 
+:root {
+  scroll-behavior: smooth;
+  --header-height: 4rem; /* TODO: make this value dynamic */
+  scroll-margin-top: var(--header-height);
+}
+
 body {
   font-optical-sizing: auto;
 }
@@ -207,14 +213,151 @@ ul.grid-list > li:before {
   margin-bottom: 0;
 }
 
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
   width: 14px;
 }
-
 ::-webkit-scrollbar-thumb {
   @apply border-4 border-black border-opacity-0 bg-gray-300 rounded-full dark:bg-gray-700;
 }
-
 ::-webkit-scrollbar-track {
   @apply dark:bg-gray-800;
+}*/
+
+/**
+ * Pmndrs theme for JavaScript, CSS and HTML
+ * Loosely based on https://marketplace.visualstudio.com/items?itemName=pmndrs.pmndrs
+ * @author Paul Henschel
+ */
+
+code[class*='language-'],
+pre[class*='language-'] {
+  color: #e4f0fb;
+  background: none;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  font-family: Menlo, Monaco, 'Courier New', monospace;
+  font-size: 0.95em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*='language-'] {
+  --comment: #a6accd;
+  --punctuation: #e4f0fb;
+  --property: #e4f0fb;
+  --boolean: #5de4c7;
+  --string: #5de4c7;
+  --operator: #add7ff;
+  --function: #5de4c7;
+  --keyword: #add7ff;
+  --literal: #fffac2;
+  --falsy: #f087bd;
+
+  padding: 1.75em;
+  margin: 1.5em 0;
+  overflow: auto;
+  border-radius: 0.75em;
+}
+
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+  background: #252b37;
+}
+
+/* Inline code */
+:not(pre) > code[class*='language-'] {
+  padding: 0.1em;
+  border-radius: 0.3em;
+  white-space: normal;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--comment);
+}
+
+.token.punctuation {
+  color: var(--punctuation);
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: var(--property);
+}
+
+.token.boolean,
+.token.number {
+  color: var(--boolean);
+}
+
+.token.selector,
+.token.attr-value,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: var(--string);
+}
+
+.token.attr-name,
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+  color: var(--operator);
+}
+
+.token.atrule,
+.token.function,
+.token.class-name {
+  color: var(--function);
+}
+
+.token.keyword {
+  color: var(--keyword);
+}
+
+.token.regex,
+.token.important {
+  color: var(--literal);
+}
+
+.token.deleted {
+  color: var(--falsy);
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
 }

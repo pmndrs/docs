@@ -1,3 +1,7 @@
+const basePath = process.env.BASE_PATH || ''
+const distDir = process.env.DIST_DIR || undefined
+const output = process.env.OUTPUT || undefined
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: true,
@@ -5,6 +9,9 @@ const nextConfig = {
     // domains: ['codesandbox.io'],
     unoptimized: true,
   },
+  basePath,
+  distDir,
+  output,
   async redirects() {
     return [
       {
@@ -17,6 +24,7 @@ const nextConfig = {
         destination: '/:slug*',
         permanent: true,
       },
+      //
       {
         source: '/xr',
         destination: '/xr/getting-started/introduction',
@@ -52,8 +60,40 @@ const nextConfig = {
         destination: 'https://github.com/pmndrs/drei#:slug*',
         permanent: true,
       },
+      //
+      {
+        source: '/react-three-fiber/:slug*',
+        destination: 'https://pmndrs.github.io/react-three-fiber/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/zustand/:slug*',
+        destination: 'https://pmndrs.github.io/zustand/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/a11y/:slug*',
+        destination: 'https://pmndrs.github.io/react-three-a11y/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/react-postprocessing/:slug*',
+        destination: 'https://pmndrs.github.io/react-postprocessing/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/uikit/:slug*',
+        destination: 'https://pmndrs.github.io/uikit/docs/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/xr/:slug*',
+        destination: 'https://pmndrs.github.io/xr/docs/:slug*',
+        permanent: true,
+      },
     ]
   },
 }
+// console.log('nextConfig=', nextConfig)
 
 export default nextConfig

@@ -1,18 +1,15 @@
 import * as React from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Doc, useDocs } from 'hooks/useDocs'
+import { Doc } from '@/app/[...slug]/DocsContext'
 
 interface NavItemProps {
   doc: Doc
+  asPath: string
 }
 
-function NavItem({ doc }: NavItemProps) {
-  const { asPath } = useRouter()
-  const [active, setActive] = React.useState(false)
-
-  React.useEffect(() => setActive(doc.url === asPath), [doc.url, asPath])
+function NavItem({ doc, asPath }: NavItemProps) {
+  const active = doc.url === `/${asPath}`
 
   return (
     <Link
@@ -29,12 +26,11 @@ function NavItem({ doc }: NavItemProps) {
 
 type NavList = Record<string, Doc | Record<string, Doc>>
 
-function Nav() {
-  const docs = useDocs()
+function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
   const nav = React.useMemo(
     () =>
       docs.reduce((acc, doc) => {
-        const [, ...rest] = doc.slug
+        const [...rest] = doc.slug
         const [page, category] = rest.reverse()
 
         if (category && !acc[category]) acc[category] = {}
@@ -56,9 +52,11 @@ function Nav() {
             {key.replace(/\-/g, ' ')}
           </h3>
           {doc.url ? (
-            <NavItem key={key} doc={doc as Doc} />
+            <NavItem key={key} doc={doc as Doc} asPath={asPath} />
           ) : (
-            Object.entries(doc).map(([key, doc]: [string, Doc]) => <NavItem key={key} doc={doc} />)
+            Object.entries(doc).map(([key, doc]: [string, Doc]) => (
+              <NavItem key={key} doc={doc} asPath={asPath} />
+            ))
           )}
         </li>
       ))}

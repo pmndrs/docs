@@ -1,4 +1,4 @@
-import type { DocToC } from 'hooks/useDocs'
+import type { DocToC } from '@/app/[...slug]/DocsContext'
 
 export interface Node {
   type: string
@@ -49,7 +49,7 @@ export const toc = (target: DocToC[] = [], url: string, page: string, content: s
           url: `${url}#${id}`,
           title,
           description,
-          content,
+          // content, // potentially too big to be in the ToC (perfs issue)
           parent: previous[level - 2] ?? null,
         }
         previous[level - 1] = item
@@ -61,7 +61,7 @@ export const toc = (target: DocToC[] = [], url: string, page: string, content: s
 }
 
 /**
- * Fetches a list of generated codesandbox components.
+ * Retrieves CSB ids from page.
  */
 export function codesandbox(ids: string[] = []) {
   return () => (root: Node) => {

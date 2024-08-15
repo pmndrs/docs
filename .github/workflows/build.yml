@@ -1,0 +1,66 @@
+name: Reusable pmndrs/docs workflow
+
+on:
+  workflow_call:
+    inputs:
+      mdx:
+        required: true
+        type: string
+      libname:
+        required: true
+        type: string
+      home_redirect:
+        required: true
+        type: string
+        default: '/getting-started/introduction'
+      icon:
+        type: string
+        default: '🖨️'
+      logo:
+        type: string
+        default: '/logo.png'
+      base_path:
+        type: string
+
+jobs:
+  build-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - id: configurepages
+        uses: actions/configure-pages@v5
+      # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-of-setting-an-output-parameter
+      - id: set-base-path
+        run: echo "BASE_PATH=${{ inputs.base_path || steps.configurepages.outputs.base_path }}" >> "$GITHUB_OUTPUT"
+      - run: |
+          set -ex
+
+          docker run --rm --init \
+            -v "$MDX":/app/docs \
+            -e BASE_PATH \
+            -e DIST_DIR="$MDX/out$BASE_PATH" \
+            -e MDX \
+            -e NEXT_PUBLIC_LIBNAME \
+            -e OUTPUT=export \
+            -e HOME_REDIRECT \
+            -e MDX_BASEURL \
+            -e EDIT_BASEURL \
+            -e NEXT_PUBLIC_URL \
+            -e ICON \
+            -e LOGO \
+            ghcr.io/pmndrs/docs:main npm run build
+        env:
+          BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
+          MDX: ${{ inputs.mdx }}
+          NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
+          HOME_REDIRECT: ${{ inputs.home_redirect }}
+          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
+          EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
+          NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
+          ICON: '${{ inputs.icon }}'
+          LOGO: '${{ inputs.logo }}'
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}

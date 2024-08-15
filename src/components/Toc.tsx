@@ -1,12 +1,15 @@
+'use client'
+
 import * as React from 'react'
 import clsx from 'clsx'
-import type { DocToC } from 'hooks/useDocs'
+import type { DocToC } from '@/app/[...slug]/DocsContext'
 
 export interface ToCProps {
   toc: DocToC[]
 }
 
 function Toc({ toc }: ToCProps) {
+  // console.log('toc', toc)
   const [activeIndex, setActiveIndex] = React.useState(0)
 
   React.useEffect(() => {
