@@ -9,6 +9,8 @@ import reactThreeA11yShare from '@/assets/react-three-a11y.jpg'
 import reactPostprocessingShare from '@/assets/react-postprocessing.jpg'
 import Icon from '@/components/Icon'
 import { redirect } from 'next/navigation'
+import { Metadata } from 'next'
+import { svg } from '@/utils/icon'
 
 export interface Library {
   title: string
@@ -105,6 +107,28 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/xr',
     description: 'VR/AR for @react-three/fiber',
     docs: 'pmndrs/xr/main/docs',
+  },
+}
+
+const title = 'Poimandres documentation'
+const description = `Index of documentation for pmndrs/* libraries`
+const icon = []
+if (process.env.ICON) {
+  icon.push({
+    url: `data:image/svg+xml,${encodeURIComponent(svg('🖨️'))}`,
+  })
+}
+
+export const metadata: Metadata = {
+  title,
+  description,
+  icons: {
+    icon,
+  },
+  openGraph: {
+    title,
+    description,
+    images: [{ url: '/logo.png' }],
   },
 }
 
