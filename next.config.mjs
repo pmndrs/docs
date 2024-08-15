@@ -81,16 +81,16 @@ const nextConfig = {
         destination: 'https://pmndrs.github.io/react-postprocessing/:slug*',
         permanent: true,
       },
-      // {
-      //   source: '/uikit/:slug*',
-      //   destination: 'https://pmndrs.github.io/uikit/:slug*',
-      //   permanent: true,
-      // },
-      // {
-      //   source: '/xr/:slug*',
-      //   destination: 'https://pmndrs.github.io/xr/:slug*',
-      //   permanent: true,
-      // },
+      {
+        source: '/uikit/:slug*',
+        destination: 'https://pmndrs.github.io/uikit/docs/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/xr/:slug*',
+        destination: 'https://pmndrs.github.io/xr/docs/:slug*',
+        permanent: true,
+      },
     ]
   },
 }
