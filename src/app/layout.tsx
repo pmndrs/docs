@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { svg } from '@/utils/icon'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,6 +17,14 @@ export const metadata: Metadata = {
   metadataBase: NEXT_PUBLIC_URL ? new URL(NEXT_PUBLIC_URL) : undefined,
   title,
   description: `Documentation for ${NEXT_PUBLIC_LIBNAME}`,
+  icons: {
+    icon: [
+      {
+        url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.EMOJI ?? '🖨️'))}`,
+        // media: '(prefers-color-scheme: dark)'
+      },
+    ],
+  },
   openGraph: {
     title,
     description,

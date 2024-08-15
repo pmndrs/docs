@@ -11,6 +11,7 @@
 | `INLINE_IMAGES_BASEURL` | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` | none    |
 | `EDIT_BASEURL`          | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           | none    |
 | `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             | none    |
+| `EMOJI`                 | 1 char emoji that will be used for SVG favicon                                                                                                                           | `🖨️` or `🇨🇭` or `🐻`                                                                     | none    |
 
 \* Required
 
@@ -54,6 +55,7 @@ $ (
   export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL="vscode://file/$MDX"
   export NEXT_PUBLIC_URL=
+  export EMOJI=🇨🇭
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -88,6 +90,7 @@ $ (
   export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
+  export EMOJI=🇨🇭
 
   npm run build
 
@@ -123,6 +126,7 @@ $ (
   export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
+  export EMOJI=🇨🇭
 
   rm -rf "$MDX/out"
 
