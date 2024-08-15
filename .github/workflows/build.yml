@@ -21,7 +21,6 @@ on:
         default: '/logo.png'
       basePath:
         type: string
-        default: ${{ steps.configurepages.outputs.base_path }}
 
 jobs:
   build-job:
@@ -49,7 +48,7 @@ jobs:
             -e LOGO \
             ghcr.io/pmndrs/docs:app-router npm run build
         env:
-          BASE_PATH: ${{ inputs.basePath }}
+          BASE_PATH: ${{ inputs.basePath || steps.configurepages.outputs.base_path }}
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
