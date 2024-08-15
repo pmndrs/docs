@@ -22,7 +22,7 @@ if (process.env.ICON) {
       url: resolveMdxUrl(process.env.ICON, '/', process.env.MDX_BASEURL),
     })
   } else {
-    // SVG icon
+    // Emoji icon
     icon.push({
       url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.ICON))}`,
     })
