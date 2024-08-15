@@ -13,36 +13,26 @@ const description = `Documentation for ${NEXT_PUBLIC_LIBNAME}`
 const url = NEXT_PUBLIC_URL
 const siteName = NEXT_PUBLIC_LIBNAME
 
+const icon = []
+if (process.env.EMOJI) {
+  // SVG icon
+  icon.push({
+    url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.EMOJI))}`,
+  })
+}
+
 export const metadata: Metadata = {
   metadataBase: NEXT_PUBLIC_URL ? new URL(NEXT_PUBLIC_URL) : undefined,
   title,
   description: `Documentation for ${NEXT_PUBLIC_LIBNAME}`,
   icons: {
-    icon: [
-      {
-        url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.EMOJI ?? '🖨️'))}`,
-        // media: '(prefers-color-scheme: dark)'
-      },
-    ],
+    icon,
   },
   openGraph: {
     title,
     description,
     url,
     siteName,
-    // images: [
-    //   {
-    //     url: 'https://nextjs.org/og.png', // Must be an absolute URL
-    //     width: 800,
-    //     height: 600,
-    //   },
-    //   {
-    //     url: 'https://nextjs.org/og-alt.png', // Must be an absolute URL
-    //     width: 1800,
-    //     height: 1600,
-    //     alt: 'My custom alt',
-    //   },
-    // ],
     locale: 'en_US',
     type: 'website',
   },

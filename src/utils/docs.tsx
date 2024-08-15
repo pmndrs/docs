@@ -13,6 +13,8 @@ import Codesandbox, { fetchCSB } from '@/components/Codesandbox'
 
 import * as components from '@/components/mdx'
 
+import resolveMdxUrl from '@/utils/resolveMdxUrl'
+
 /**
  * Checks for .md(x) file extension
  */
@@ -53,8 +55,8 @@ async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
  * @param root - absolute or relative (to cwd) path to docs folder
  */
 
-const INLINE_IMAGES_BASEURL = process.env.INLINE_IMAGES_BASEURL
-// console.log('INLINE_IMAGES_BASEURL', INLINE_IMAGES_BASEURL)
+const MDX_BASEURL = process.env.MDX_BASEURL
+// console.log('MDX_BASEURL', MDX_BASEURL)
 
 async function _getDocs(
   root: string,
@@ -66,6 +68,8 @@ async function _getDocs(
 
   const docs = await Promise.all(
     files.map(async (file) => {
+      const relFilePath = file.substring(root.length) // "/getting-started/tutorials/store.mdx"
+
       // Get slug from local path
       const path = file.replace(`${root}/`, '')
       const slug = [...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
@@ -103,7 +107,10 @@ async function _getDocs(
 
       const description: string = frontmatter.description ?? ''
       const nav: number = frontmatter.nav ?? Infinity
-      const image: string = frontmatter.image ?? ''
+
+      const frontmatterImage: string | undefined = frontmatter.image
+      const src = frontmatterImage || process.env.LOGO
+      const image: string = src ? resolveMdxUrl(src, relFilePath, MDX_BASEURL) : ''
 
       //
       // MDX content
@@ -134,40 +141,13 @@ async function _getDocs(
       // inline images
       //
 
-      function inlineImage(src: string, baseurl: string) {
-        if (src.startsWith('http')) return src // Keep as is, in those cases
-
-        // Eg:
-        //
-        // src: "./basic-example.gif"
-        // baseurl: "http://localhost:60141/foo"
-        //
-        // file: "/Users/abernier/code/pmndrs/uikit/docs/advanced/performance.md"
-        // root: "/Users/abernier/code/pmndrs/uikit/docs"
-        //
-
-        let directoryPath = ''
-
-        // Relative (not starting with "/") => get directoryPath from file
-        if (!src.startsWith('/')) {
-          const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root // Remove trailing slash (if exists)
-          const relativePath = file.substring(normalizedRoot.length) // "/advanced/performance.md"
-          directoryPath = relativePath.split('/').slice(0, -1).join('/') // "/advanced"
+      content = content.replace(
+        /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g, // https://regexper.com/#%2F%28src%3D%22%7C%5C%28%29%28.%2B%3F%5C.%28%3F%3Apng%7Cjpe%3Fg%7Cgif%7Cwebp%7Cavif%29%29%28%22%7C%5C%29%29%2Fg
+        (_input, prefix: string, src: string, suffix: string) => {
+          const url = resolveMdxUrl(src, relFilePath, MDX_BASEURL)
+          return `${prefix}${url}${suffix}`
         }
-
-        // console.log('url', baseurl, directoryPath, src)
-        return `${baseurl}${directoryPath}/${src}` // "http://localhost:60141/foo/advanced/./basic-example.gif"
-      }
-
-      if (INLINE_IMAGES_BASEURL) {
-        content = content.replace(
-          /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g, // https://regexper.com/#%2F%28src%3D%22%7C%5C%28%29%28.%2B%3F%5C.%28%3F%3Apng%7Cjpe%3Fg%7Cgif%7Cwebp%7Cavif%29%29%28%22%7C%5C%29%29%2Fg
-          (_input, prefix: string, src: string, suffix: string) => {
-            const url = inlineImage(src, INLINE_IMAGES_BASEURL)
-            return `${prefix}${url}${suffix}`
-          }
-        )
-      }
+      )
 
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []
@@ -210,7 +190,7 @@ async function _getDocs(
         url,
         editURL,
         title,
-        image: INLINE_IMAGES_BASEURL ? inlineImage(image, INLINE_IMAGES_BASEURL) : image,
+        image,
         description,
         nav,
         content: jsx,

@@ -15,6 +15,10 @@ on:
         default: '/getting-started/introduction'
       emoji:
         type: string
+        default: '🖨️'
+      logo:
+        type: string
+        default: '/logo.png'
 
 jobs:
   build-job:
@@ -35,20 +39,22 @@ jobs:
             -e NEXT_PUBLIC_LIBNAME \
             -e OUTPUT=export \
             -e HOME_REDIRECT \
-            -e INLINE_IMAGES_BASEURL \
+            -e MDX_BASEURL \
             -e EDIT_BASEURL \
             -e NEXT_PUBLIC_URL \
             -e EMOJI \
+            -e LOGO \
             ghcr.io/pmndrs/docs:app-router npm run build
         env:
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
-          INLINE_IMAGES_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
+          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
           EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
           EMOJI: '${{ inputs.emoji }}'
+          LOGO: '${{ inputs.logo }}'
 
       - uses: actions/upload-pages-artifact@v3
         with:

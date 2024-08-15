@@ -1,22 +1,23 @@
 # Configuration
 
-| var                     | description                                                                                                                                                              | example                                                                                  | default |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ------- |
-| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                               | none    |
-| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                                                      | none    |
-| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                     | none    |
-| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                    | none    |
-| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                                 | none    |
-| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          | none    |
-| `INLINE_IMAGES_BASEURL` | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` | none    |
-| `EDIT_BASEURL`          | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           | none    |
-| `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             | none    |
-| `EMOJI`                 | 1 char emoji that will be used for SVG favicon                                                                                                                           | `🖨️` or `🇨🇭` or `🐻`                                                                     | none    |
+| var                     | description                                                                                                                                                              | example                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                               |
+| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                                                      |
+| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                     |
+| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                    |
+| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                                 |
+| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          |
+| `MDX_BASEURL`           | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` |
+| `EDIT_BASEURL`          | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           |
+| `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             |
+| `EMOJI`                 | 1 char emoji that will be used for SVG favicon                                                                                                                           | `🖨️` or `🇨🇭` or `🐻`                                                                     |
+| `LOGO`                  | Logo src/path (either FQURL or local to `MDX` path)                                                                                                                      | `/logo.png` or `https://worldvectorlogo.com/r3f.png`                                     |
 
 \* Required
 
 <details>
-  <summary>`INLINE_IMAGES_BASEURL`</summary>
+  <summary>`MDX_BASEURL`</summary>
 
 Given a `advanced/introduction.mdx` file in the `MDX` folder:
 
@@ -24,7 +25,7 @@ Given a `advanced/introduction.mdx` file in the `MDX` folder:
 ![](dog.png)
 ```
 
-becomes (for a `INLINE_IMAGES_BASEURL=http://localhost:60141` value):
+becomes (for a `MDX_BASEURL=http://localhost:60141` value):
 
 ```mdx
 ![](http://localhost:60141/advanced/dog.png)
@@ -33,7 +34,7 @@ becomes (for a `INLINE_IMAGES_BASEURL=http://localhost:60141` value):
 `http://localhost:60141` being the `MDX` folder served.
 
 > [!TIP]
-> When deployed on GitHub Pages, `INLINE_IMAGES_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
+> When deployed on GitHub Pages, `MDX_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
 
 </details>
 
@@ -52,10 +53,11 @@ $ (
   export DIST_DIR=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
+  export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL="vscode://file/$MDX"
   export NEXT_PUBLIC_URL=
   export EMOJI=🇨🇭
+  export LOGO=/logo.png
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -87,10 +89,11 @@ $ (
   export DIST_DIR=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
+  export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
   export EMOJI=🇨🇭
+  export LOGO=/logo.png
 
   npm run build
 
@@ -123,10 +126,11 @@ $ (
   export BASE_PATH=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
-  export INLINE_IMAGES_BASEURL=http://localhost:$_PORT
+  export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
   export EMOJI=🇨🇭
+  export LOGO=/logo.png
 
   rm -rf "$MDX/out"
 
@@ -138,9 +142,11 @@ $ (
     -e DIST_DIR="$MDX/out$BASE_PATH" \
     -e OUTPUT \
     -e HOME_REDIRECT \
-    -e INLINE_IMAGES_BASEURL \
+    -e MDX_BASEURL \
     -e EDIT_BASEURL \
     -e NEXT_PUBLIC_URL \
+    -e EMOJI \
+    -e LOGO \
     pmndrs-docs npm run build
 
   kill $(lsof -ti:"$_PORT")
@@ -163,6 +169,8 @@ uses: pmndrs/docs/.github/workflows/build.yml@app-router
     mdx: './docs'
     libname: 'React Three Fiber'
     home_redirect: '/getting-started/introduction'
+    emoji: '🇨🇭'
+    logo: '/logo.png'
 ```
 
 See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
