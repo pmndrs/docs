@@ -10,18 +10,8 @@ const config = {
     { name: 'beta', prerelease: true },
     { name: 'alpha', prerelease: true },
     // added:
-    { name: 'app-router', prerelease: true },
     { name: 'canary-*', prerelease: true, channel: 'canary' },
   ],
-  // plugins: [
-  //   [
-  //     '@semantic-release/github',
-  //     {
-  //       successComment: false,
-  //       failTitle: false,
-  //     },
-  //   ],
-  // ],
 }
 
 export default config

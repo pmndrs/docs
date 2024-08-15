@@ -49,7 +49,7 @@ jobs:
             -e NEXT_PUBLIC_URL \
             -e ICON \
             -e LOGO \
-            ghcr.io/pmndrs/docs:app-router npm run build
+            ghcr.io/pmndrs/docs:main npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}

@@ -164,7 +164,7 @@ Then go to: http://localhost:3000
 `pmndrs/docs` provides a [`build.yml`](.github/workflows/build.yml) reusable workflow, any project can use:
 
 ```yml
-uses: pmndrs/docs/.github/workflows/build.yml@app-router
+uses: pmndrs/docs/.github/workflows/build.yml@main
   with:
     mdx: './docs'
     libname: 'React Three Fiber'
