@@ -89,14 +89,21 @@ async function _getDocs(
       const editURL = EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined
 
       // Read & parse doc
-      const compiled = matter(await fs.promises.readFile(file))
 
-      // Add fallback frontmatter
-      const pathname = slug[slug.length - 1]
-      const title = compiled.data.title ?? (pathname.replace(/\-/g, ' ') as string)
-      const description = compiled.data.description ?? ('' as string)
-      const nav = compiled.data.nav ?? (Infinity as number)
-      const image = compiled.data.image as string | undefined
+      //
+      // frontmatter
+      //
+
+      const source = await fs.promises.readFile(file, { encoding: 'utf-8' })
+      const compiled = matter(source)
+      const frontmatter = compiled.data
+
+      const _lastSegment = slug[slug.length - 1]
+      const title: string = frontmatter.title ?? _lastSegment.replace(/\-/g, ' ')
+
+      const description: string = frontmatter.description ?? ''
+      const nav: number = frontmatter.nav ?? Infinity
+      const image: string = frontmatter.image ?? ''
 
       //
       // MDX content
@@ -198,15 +205,12 @@ async function _getDocs(
         },
       })
 
-      const metadataImage =
-        image && INLINE_IMAGES_BASEURL ? inlineImage(image, INLINE_IMAGES_BASEURL) : undefined
-
       return {
         slug,
         url,
         editURL,
         title,
-        metadataImage,
+        image: INLINE_IMAGES_BASEURL ? inlineImage(image, INLINE_IMAGES_BASEURL) : image,
         description,
         nav,
         content: jsx,
