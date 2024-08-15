@@ -16,15 +16,15 @@ const siteName = NEXT_PUBLIC_LIBNAME
 
 const icon = []
 if (process.env.ICON) {
-  // SVG icon
-  if (process.env.ICON.length === 1) {
-    icon.push({
-      url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.ICON))}`,
-    })
-  } else {
+  if (process.env.ICON.startsWith('/')) {
     // "normal" icon
     icon.push({
       url: resolveMdxUrl(process.env.ICON, '/', process.env.MDX_BASEURL),
+    })
+  } else {
+    // SVG icon
+    icon.push({
+      url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.ICON))}`,
     })
   }
 }
