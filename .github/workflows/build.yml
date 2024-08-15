@@ -13,7 +13,7 @@ on:
         required: true
         type: string
         default: '/getting-started/introduction'
-      emoji:
+      icon:
         type: string
         default: '🖨️'
       logo:
@@ -42,7 +42,7 @@ jobs:
             -e MDX_BASEURL \
             -e EDIT_BASEURL \
             -e NEXT_PUBLIC_URL \
-            -e EMOJI \
+            -e ICON \
             -e LOGO \
             ghcr.io/pmndrs/docs:app-router npm run build
         env:
@@ -53,7 +53,7 @@ jobs:
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
           EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
-          EMOJI: '${{ inputs.emoji }}'
+          ICON: '${{ inputs.icon }}'
           LOGO: '${{ inputs.logo }}'
 
       - uses: actions/upload-pages-artifact@v3

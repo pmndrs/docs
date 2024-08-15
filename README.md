@@ -11,7 +11,7 @@
 | `MDX_BASEURL`           | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` |
 | `EDIT_BASEURL`          | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           |
 | `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             |
-| `EMOJI`                 | 1 char emoji that will be used for SVG favicon                                                                                                                           | `🖨️` or `🇨🇭` or `🐻`                                                                     |
+| `ICON`                  | Emoji or image to use as (fav)icon (path local to `MDX`)                                                                                                                 | `🇨🇭` or `/icon.png` or `/favicon.ico`                                                    |
 | `LOGO`                  | Logo src/path (either FQURL or local to `MDX` path)                                                                                                                      | `/logo.png` or `https://worldvectorlogo.com/r3f.png`                                     |
 
 \* Required
@@ -56,7 +56,7 @@ $ (
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL="vscode://file/$MDX"
   export NEXT_PUBLIC_URL=
-  export EMOJI=🇨🇭
+  export ICON="/icon.ico"
   export LOGO=/logo.png
 
   kill $(lsof -ti:"$_PORT")
@@ -92,7 +92,7 @@ $ (
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
-  export EMOJI=🇨🇭
+  export ICON=🇨🇭
   export LOGO=/logo.png
 
   npm run build
@@ -129,7 +129,7 @@ $ (
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
-  export EMOJI=🇨🇭
+  export ICON=🇨🇭
   export LOGO=/logo.png
 
   rm -rf "$MDX/out"
@@ -145,7 +145,7 @@ $ (
     -e MDX_BASEURL \
     -e EDIT_BASEURL \
     -e NEXT_PUBLIC_URL \
-    -e EMOJI \
+    -e ICON \
     -e LOGO \
     pmndrs-docs npm run build
 
@@ -169,7 +169,7 @@ uses: pmndrs/docs/.github/workflows/build.yml@app-router
     mdx: './docs'
     libname: 'React Three Fiber'
     home_redirect: '/getting-started/introduction'
-    emoji: '🇨🇭'
+    icon: '🇨🇭'
     logo: '/logo.png'
 ```
 

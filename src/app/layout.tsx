@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { svg } from '@/utils/icon'
+import resolveMdxUrl from '@/utils/resolveMdxUrl'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,11 +15,18 @@ const url = NEXT_PUBLIC_URL
 const siteName = NEXT_PUBLIC_LIBNAME
 
 const icon = []
-if (process.env.EMOJI) {
+if (process.env.ICON) {
   // SVG icon
-  icon.push({
-    url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.EMOJI))}`,
-  })
+  if (process.env.ICON.length === 1) {
+    icon.push({
+      url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.ICON))}`,
+    })
+  } else {
+    // "normal" icon
+    icon.push({
+      url: resolveMdxUrl(process.env.ICON, '/', process.env.MDX_BASEURL),
+    })
+  }
 }
 
 export const metadata: Metadata = {
