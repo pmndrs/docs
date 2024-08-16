@@ -75,8 +75,12 @@ code span {
   @apply inline-block mr-3 text-gray-300;
 }
 
+.content-container :is(pre, code) {
+  @apply text-sm;
+}
+
 .content-container pre {
-  @apply p-4 mb-8 overflow-hidden overflow-x-auto text-sm bg-gray-900 rounded;
+  @apply p-4 mb-8 overflow-hidden overflow-x-auto bg-gray-900 rounded;
 }
 
 main a {
@@ -234,7 +238,6 @@ pre[class*='language-'] {
   background: none;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
   font-family: Menlo, Monaco, 'Courier New', monospace;
-  font-size: 0.95em;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
