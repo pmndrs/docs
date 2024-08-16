@@ -139,21 +139,15 @@ export default function Page() {
   return (
     <>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
-        <header className="pt-2">
-          <div className="max-w-7xl mx-auto flex justify-between">
-            <Link
-              href="/"
-              aria-label="Poimandres Docs"
-              className="p-2 block text-3xl text-center lg:text-left"
-            >
-              <span className="font-bold">Pmndrs</span>
-              <span className="font-normal">.docs</span>
+        <div className="px-4 py-8 pb-12 lg:py-12 lg:pb-20 lg:px-28">
+          <header className="text-3xl text-center lg:text-left">
+            <Link href="/" aria-label="Poimandres Docs" className="font-bold">
+              Documentation
             </Link>
-            {/* <ToggleTheme /> */}
-          </div>
-        </header>
-        <div className="px-4 pb-4 lg:px-28">
-          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-20">
+            .<Link href="https://pmnd.rs">pmndrs</Link>
+          </header>
+
+          <main className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-10">
             {Object.entries(libs).map(([id, data]) => (
               <div
                 key={id}
@@ -183,18 +177,19 @@ export default function Page() {
                     )}
                   </div>
                   <div className="flex w-full border-t border-gray-200 dark:border-gray-700 divide-x divide-gray-200 dark:divide-gray-700">
-                    <Link href={data.url}>
-                      <span className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                        <Icon icon="docs" />
-                        <span className="sm:hidden">Docs</span>
-                        <span className="hidden sm:inline">Documentation</span>
-                      </span>
+                    <Link
+                      href={data.url}
+                      className="inline-flex items-center space-x-2 flex-1 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <Icon icon="docs" />
+                      <span className="sm:hidden">Docs</span>
+                      <span className="hidden sm:inline">Documentation</span>
                     </Link>
                     <a
                       href={data.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 w-1/2 px-6 py-4 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800"
+                      className="inline-flex items-center space-x-2 flex-1 px-6 py-4 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800"
                     >
                       <Icon icon="github" />
                       <span>GitHub</span>
@@ -203,7 +198,7 @@ export default function Page() {
                 </div>
               </div>
             ))}
-          </div>
+          </main>
         </div>
       </div>
     </>
