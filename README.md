@@ -1,18 +1,19 @@
 # Configuration
 
-| var                     | description                                                                                                                                                              | example                                                                                  |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `MDX`\*                 | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                               |
-| `NEXT_PUBLIC_LIBNAME`\* | Library name                                                                                                                                                             | `React Three Fiber`                                                                      |
-| `BASE_PATH`             | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                     |
-| `DIST_DIR`              | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                    |
-| `OUTPUT`                | Set to `export` for static output                                                                                                                                        | `export`                                                                                 |
-| `HOME_REDIRECT`         | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          |
-| `MDX_BASEURL`           | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` |
-| `EDIT_BASEURL`          | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           |
-| `NEXT_PUBLIC_URL`       | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             |
-| `ICON`                  | Emoji or image to use as (fav)icon (path local to `MDX`)                                                                                                                 | `🇨🇭` or `/icon.png` or `/favicon.ico`                                                    |
-| `LOGO`                  | Logo src/path (either FQURL or local to `MDX` path)                                                                                                                      | `/logo.png` or `https://worldvectorlogo.com/r3f.png`                                     |
+| var                         | description                                                                                                                                                              | example                                                                                  |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `MDX`\*                     | Path to `*.mdx` folder<br>NB: can be relative or absolute                                                                                                                | `docs` or `~/code/myproject/documentation`                                               |
+| `NEXT_PUBLIC_LIBNAME`\*     | Library name                                                                                                                                                             | `React Three Fiber`                                                                      |
+| `NEXT_PUBLIC_LIBNAME_SHORT` | Library short name                                                                                                                                                       | `r3f`                                                                                    |
+| `BASE_PATH`                 | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                     |
+| `DIST_DIR`                  | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                    |
+| `OUTPUT`                    | Set to `export` for static output                                                                                                                                        | `export`                                                                                 |
+| `HOME_REDIRECT`             | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                          |
+| `MDX_BASEURL`               | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs` |
+| `EDIT_BASEURL`              | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                           |
+| `NEXT_PUBLIC_URL`           | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                             |
+| `ICON`                      | Emoji or image to use as (fav)icon (path local to `MDX`)                                                                                                                 | `🇨🇭` or `/icon.png` or `/favicon.ico`                                                    |
+| `LOGO`                      | Logo src/path (either FQURL or local to `MDX` path)                                                                                                                      | `/logo.png` or `https://worldvectorlogo.com/r3f.png`                                     |
 
 \* Required
 
@@ -49,6 +50,7 @@ $ (
   # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=~/code/pmndrs/react-three-fiber/docs
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
@@ -85,6 +87,7 @@ $ (
   # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=~/code/pmndrs/react-three-fiber/docs
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
@@ -123,6 +126,7 @@ $ (
   # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=./docs
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
+  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
   export BASE_PATH=
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
@@ -168,6 +172,7 @@ uses: pmndrs/docs/.github/workflows/build.yml@main
   with:
     mdx: './docs'
     libname: 'React Three Fiber'
+    libname_short: 'r3f'
     home_redirect: '/getting-started/introduction'
     icon: '🇨🇭'
     logo: '/logo.png'

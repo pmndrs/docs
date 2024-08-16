@@ -9,6 +9,8 @@ on:
       libname:
         required: true
         type: string
+      libname_short:
+        type: string
       home_redirect:
         required: true
         type: string
@@ -42,6 +44,7 @@ jobs:
             -e DIST_DIR="$MDX/out$BASE_PATH" \
             -e MDX \
             -e NEXT_PUBLIC_LIBNAME \
+            -e NEXT_PUBLIC_LIBNAME_SHORT \
             -e OUTPUT=export \
             -e HOME_REDIRECT \
             -e MDX_BASEURL \
@@ -54,6 +57,7 @@ jobs:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
+          NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
           EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'

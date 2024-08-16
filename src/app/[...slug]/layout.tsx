@@ -27,6 +27,7 @@ export default async function Layout({ params, children }: Props) {
   const nextPage = currentPageIndex < docs.length - 1 && docs[currentPageIndex + 1]
 
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
+  const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
 
   return (
     <>
@@ -37,7 +38,12 @@ export default async function Layout({ params, children }: Props) {
               <>
                 <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
                   <Link href="/" aria-label="Poimandres Docs">
-                    <span className="font-bold">{NEXT_PUBLIC_LIBNAME}</span>
+                    <span className="font-bold">
+                      {NEXT_PUBLIC_LIBNAME_SHORT && (
+                        <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
+                      )}
+                      <span className="hidden lg:inline">{NEXT_PUBLIC_LIBNAME}</span>
+                    </span>
                   </Link>
                   <span className="font-normal">
                     .<a href="https://docs.pmnd.rs">docs</a>
