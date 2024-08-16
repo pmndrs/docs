@@ -9,6 +9,7 @@ import Link from 'next/link'
 import Search from '@/components/Search'
 import ToggleTheme from '@/components/ToggleTheme'
 import Toc from '@/components/Toc'
+import cn from '@/lib/cn'
 
 export type Props = {
   params: { slug: string[] }
@@ -42,7 +43,14 @@ export default async function Layout({ params, children }: Props) {
                       {NEXT_PUBLIC_LIBNAME_SHORT && (
                         <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
                       )}
-                      <span className="hidden lg:inline">{NEXT_PUBLIC_LIBNAME}</span>
+                      <span
+                        className={cn(
+                          NEXT_PUBLIC_LIBNAME_SHORT ? 'hidden' : undefined,
+                          'lg:inline'
+                        )}
+                      >
+                        {NEXT_PUBLIC_LIBNAME}
+                      </span>
                     </span>
                   </Link>
                   <span className="font-normal">
