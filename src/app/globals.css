@@ -28,7 +28,7 @@ code span {
 
 /* Inline code */
 :not(pre) > code {
-  @apply py-1 px-2 rounded-lg bg-gray-100 dark:bg-gray-800 dark:text-gray-300;
+  @apply py-0.5 px-1.5 rounded-md bg-gray-100 dark:bg-gray-800 dark:text-gray-300;
 }
 
 /* Start purging... */
@@ -268,10 +268,10 @@ pre[class*='language-'] {
   --literal: #fffac2;
   --falsy: #f087bd;
 
-  padding: 1.75em;
-  margin: 1.5em 0;
-  overflow: auto;
-  border-radius: 0.75em;
+  @apply p-6;
+  @apply my-5;
+  @apply overflow-auto;
+  @apply rounded-lg;
 }
 
 :not(pre) > code[class*='language-'],
@@ -281,8 +281,7 @@ pre[class*='language-'] {
 
 /* Inline code */
 :not(pre) > code[class*='language-'] {
-  padding: 0.1em;
-  border-radius: 0.3em;
+  @apply rounded-lg;
   white-space: normal;
 }
 
