@@ -1,3 +1,5 @@
+![](docs/gutenberg.jpg)
+
 # Configuration
 
 | var                         | description                                                                                                                                                              | example                                                                                  |
