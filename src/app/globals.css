@@ -103,10 +103,6 @@ summary {
   @apply select-none cursor-pointer mb-2 -ml-4;
 }
 
-table {
-  min-width: 600px;
-}
-
 th {
   @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide;
 }
@@ -124,24 +120,11 @@ tbody tr:nth-child(odd) {
 }
 
 td {
-  @apply px-6 py-4 text-sm text-gray-900 dark:text-gray-300 break-all;
-  max-width: 150px;
-  white-space: pre-wrap;
-  word-break: break-word;
+  @apply px-6 py-4 text-sm text-gray-900 dark:text-gray-300;
 }
 
 td:first-child {
   @apply font-medium;
-}
-
-@media (max-width: 600px) {
-  table {
-    min-width: auto;
-  }
-
-  table td {
-    max-width: 100%;
-  }
 }
 
 .grid-list li {

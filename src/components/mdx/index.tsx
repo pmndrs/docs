@@ -38,14 +38,8 @@ export const blockquote = ({ children }: { children: React.ReactNode }) => (
 )
 
 export const table = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex flex-col my-6">
-    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="py-6 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-        <div className="shadow-lg overflow-hidden border-b border-gray-200 sm:rounded-lg dark:border-gray-700">
-          <table className="divide-y divide-gray-200 w-full dark:divide-gray-700">{children}</table>
-        </div>
-      </div>
-    </div>
+  <div className="my-8 overflow-auto rounded-lg border-gray-200 border dark:border-gray-700">
+    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">{children}</table>
   </div>
 )
 
