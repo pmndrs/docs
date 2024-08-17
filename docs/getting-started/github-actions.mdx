@@ -1,0 +1,20 @@
+---
+title: Reusable GitHub Actions workflow
+description: Call from your CI
+nav: 3
+---
+
+`pmndrs/docs` provides a [`build.yml`](.github/workflows/build.yml) reusable workflow, any project can use:
+
+```yml
+uses: pmndrs/docs/.github/workflows/build.yml@main
+  with:
+    mdx: './docs'
+    libname: 'React Three Fiber'
+    libname_short: 'r3f'
+    home_redirect: '/getting-started/introduction'
+    icon: '🇨🇭'
+    logo: '/logo.png'
+```
+
+See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.

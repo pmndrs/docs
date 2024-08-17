@@ -1,11 +1,20 @@
 ---
-title: Poimandres documentation
-description: A documentation generator for `pmndrs/*` projects.
+title: Introduction
+description: Documentation generator for `pmndrs/*` projects.
+nav: 0
 ---
 
 ![](gutenberg.jpg)
 
-# Configuration
+## INSTALL
+
+```sh
+$ git clone https://github.com/pmndrs/docs.git
+$ cd docs
+$ npm ci
+```
+
+## Configuration
 
 | var                         | description                                                                                                                                                              | example                                                                                  |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
@@ -46,7 +55,7 @@ becomes (for a `MDX_BASEURL=http://localhost:60141` value):
 
 </details>
 
-# dev
+## dev
 
 ```sh
 $ (
@@ -54,7 +63,6 @@ $ (
 
   export _PORT=60141
 
-  # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
   export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
@@ -81,7 +89,7 @@ Then go to: http://localhost:3000
 > [!TIP]
 > If `HOME_REDIRECT=` empty, `/` will not redirect, and instead displays an index of libraries.
 
-# build
+## build
 
 ```sh
 $ (
@@ -91,14 +99,13 @@ $ (
 
   export _PORT=60141
 
-  # [Config](https://github.com/pmndrs/docs#configuration)
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
   export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
-  export HOME_REDIRECT=/introduction
+  export HOME_REDIRECT=/getting-started/introduction
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
@@ -116,102 +123,3 @@ $ (
 ```
 
 http://localhost:3000
-
-# Docker
-
-```sh
-$ docker build -t pmndrs-docs .
-```
-
-```sh
-$ cd ~/code/pmndrs/react-three-fiber
-$ (
-  trap 'kill -9 0' SIGINT
-
-  export _PORT=60141
-
-  # [Config](https://github.com/pmndrs/docs#configuration)
-  export MDX=./docs
-  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
-  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
-  export BASE_PATH=
-  export OUTPUT=export
-  export HOME_REDIRECT=/getting-started/introduction
-  export MDX_BASEURL=http://localhost:$_PORT
-  export EDIT_BASEURL=
-  export NEXT_PUBLIC_URL=
-  export ICON=🇨🇭
-  export LOGO=/logo.png
-
-  rm -rf "$MDX/out"
-
-  docker run --rm --init -it \
-    -v "$MDX":/app/docs \
-    -e MDX \
-    -e NEXT_PUBLIC_LIBNAME \
-    -e BASE_PATH \
-    -e DIST_DIR="$MDX/out$BASE_PATH" \
-    -e OUTPUT \
-    -e HOME_REDIRECT \
-    -e MDX_BASEURL \
-    -e EDIT_BASEURL \
-    -e NEXT_PUBLIC_URL \
-    -e ICON \
-    -e LOGO \
-    pmndrs-docs npm run build
-
-  kill $(lsof -ti:"$_PORT")
-  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-  npx -y serve "$MDX/out" &
-
-  wait
-)
-```
-
-Then go to: http://localhost:3000
-
-# Reusable GitHub Actions workflow
-
-`pmndrs/docs` provides a [`build.yml`](.github/workflows/build.yml) reusable workflow, any project can use:
-
-```yml
-uses: pmndrs/docs/.github/workflows/build.yml@main
-  with:
-    mdx: './docs'
-    libname: 'React Three Fiber'
-    libname_short: 'r3f'
-    home_redirect: '/getting-started/introduction'
-    icon: '🇨🇭'
-    logo: '/logo.png'
-```
-
-See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
-
-# Authoring
-
-In your `MDX` folder, create any `path/to/my-document.mdx`:
-
-```md
----
-title: My Document
-description: Lorem ipsum...
-image: dog.png
-nav: 0
----
-
-MARKDOWN
-```
-
-## Frontmatter
-
-Any key is optional.
-
-- `title`: if not provided, last part of the path is used: `my document`
-- `image`:
-  - relative (to the md file) or absolute path, eg: `dog.png`, `./dog.png`, `../../dog.png`, `/dog.png` or `https://animals.com/dog.png`
-  - will be used as metadata image if provided
-- `nav`: order in the navigation (on the same level)
-
-## MARKDOWN
-
-TODO

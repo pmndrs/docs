@@ -112,7 +112,7 @@ const libs: Record<string, Library> = {
   },
   docs: {
     title: 'Docs',
-    url: '/introduction',
+    url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
     image: docsShare.src,

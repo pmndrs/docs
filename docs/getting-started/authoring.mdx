@@ -1,0 +1,32 @@
+---
+title: Authoring
+description: How to write documentation
+nav: 1
+---
+
+In your `MDX` folder, create any `path/to/my-document.mdx`:
+
+```md
+---
+title: My Document
+description: Lorem ipsum...
+nav: 0
+image: dog.png
+---
+
+MARKDOWN
+```
+
+### Frontmatter
+
+Any key is optional.
+
+- `title`: if not provided, last part of the path is used: `my document`
+- `image`:
+  - relative (to the md file) or absolute path, eg: `dog.png`, `./dog.png`, `../../dog.png`, `/dog.png` or `https://animals.com/dog.png`
+  - will be used as metadata image if provided
+- `nav`: order in the navigation (on the same level)
+
+### MARKDOWN
+
+TODO
