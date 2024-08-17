@@ -56,7 +56,7 @@ $ (
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
-  export HOME_REDIRECT=/introduction
+  export HOME_REDIRECT=
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL="vscode://file/$MDX"
   export NEXT_PUBLIC_URL=
