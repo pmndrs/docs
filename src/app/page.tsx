@@ -157,7 +157,7 @@ export default function Page() {
             <Link href="/" aria-label="Poimandres Docs" className="font-bold">
               Documentation
             </Link>
-            .<Link href="https://pmnd.rs">pmndrs</Link>
+            .<Link href="https://pmnd.rs">pmnd.rs</Link>
           </header>
 
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
