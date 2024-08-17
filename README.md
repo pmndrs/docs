@@ -48,18 +48,18 @@ $ (
   export _PORT=60141
 
   # [Config](https://github.com/pmndrs/docs#configuration)
-  export MDX=~/code/pmndrs/react-three-fiber/docs
-  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
-  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
+  export MDX=docs
+  export NEXT_PUBLIC_LIBNAME="Poimandres"
+  export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
-  export HOME_REDIRECT=/getting-started/introduction
+  export HOME_REDIRECT=/introduction
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL="vscode://file/$MDX"
   export NEXT_PUBLIC_URL=
-  export ICON="/icon.ico"
-  export LOGO=/logo.png
+  export ICON=
+  export LOGO=gutenberg.jpg
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -85,18 +85,18 @@ $ (
   export _PORT=60141
 
   # [Config](https://github.com/pmndrs/docs#configuration)
-  export MDX=~/code/pmndrs/react-three-fiber/docs
-  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
-  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
+  export MDX=docs
+  export NEXT_PUBLIC_LIBNAME="Poimandres"
+  export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
-  export HOME_REDIRECT=/getting-started/introduction
+  export HOME_REDIRECT=/introduction
   export MDX_BASEURL=http://localhost:$_PORT
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
-  export ICON=🇨🇭
-  export LOGO=/logo.png
+  export ICON=
+  export LOGO=gutenberg.jpg
 
   npm run build
 
