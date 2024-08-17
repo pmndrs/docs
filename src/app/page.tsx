@@ -31,17 +31,6 @@ export interface Library {
 }
 
 const libs: Record<string, Library> = {
-  docs: {
-    title: 'Docs',
-    url: '/introduction',
-    github: 'https://github.com/pmndrs/docs',
-    description: 'Documentation generator for `pmndrs/*`',
-    image: docsShare.src,
-    icon: docsIcon.src,
-    iconWidth: docsIcon.width,
-    iconHeight: docsIcon.height,
-    docs: 'pmndrs/docs/main/docs',
-  },
   'react-three-fiber': {
     title: 'React Three Fiber',
     url: '/react-three-fiber',
@@ -120,6 +109,17 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/xr',
     description: 'VR/AR for @react-three/fiber',
     docs: 'pmndrs/xr/main/docs',
+  },
+  docs: {
+    title: 'Docs',
+    url: '/introduction',
+    github: 'https://github.com/pmndrs/docs',
+    description: 'Documentation generator for `pmndrs/*`',
+    image: docsShare.src,
+    icon: docsIcon.src,
+    iconWidth: docsIcon.width,
+    iconHeight: docsIcon.height,
+    docs: 'pmndrs/docs/main/docs',
   },
 }
 
