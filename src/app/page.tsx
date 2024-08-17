@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
+import docsShare from '@/assets/docs.jpg'
+import docsIcon from '@/assets/docs-icon.png'
 import reactThreeFiberShare from '@/assets/react-three-fiber.jpg'
 import zustandShare from '@/assets/zustand.jpg'
 import zustandIcon from '@/assets/zustand-icon.png'
@@ -29,6 +31,17 @@ export interface Library {
 }
 
 const libs: Record<string, Library> = {
+  docs: {
+    title: 'Docs',
+    url: '/introduction',
+    github: 'https://github.com/pmndrs/docs',
+    description: 'Documentation generator for `pmndrs/*`',
+    image: docsShare.src,
+    icon: docsIcon.src,
+    iconWidth: docsIcon.width,
+    iconHeight: docsIcon.height,
+    docs: 'pmndrs/docs/main/docs',
+  },
   'react-three-fiber': {
     title: 'React Three Fiber',
     url: '/react-three-fiber',
