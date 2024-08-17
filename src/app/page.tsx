@@ -175,18 +175,21 @@ export default function Page() {
                       </div>
                     </div>
                     {data.icon && (
-                      <div className="relative flex-shrink-0 w-20 h-20">
-                        <a href={data.github} target="_blank" rel="noopener" className="block">
-                          <Image
-                            src={data.icon}
-                            className="object-contain"
-                            alt={data.title}
-                            aria-hidden
-                            width={data.iconWidth}
-                            height={data.iconHeight}
-                          />
-                        </a>
-                      </div>
+                      <a
+                        href={data.github}
+                        target="_blank"
+                        rel="noopener"
+                        className="block relative flex-shrink-0 w-20 h-20"
+                      >
+                        <Image
+                          src={data.icon}
+                          className="absolute inset-0 w-full h-full object-contain"
+                          alt={data.title}
+                          aria-hidden
+                          width={data.iconWidth}
+                          height={data.iconHeight}
+                        />
+                      </a>
                     )}
                   </div>
                   <div className="flex w-full border-t border-gray-200 dark:border-gray-700 divide-x divide-gray-200 dark:divide-gray-700">
