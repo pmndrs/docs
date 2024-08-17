@@ -24,7 +24,7 @@ jobs:
             --build-env BASE_PATH= \
             --build-env DIST_DIR= \
             --build-env OUTPUT=export \
-            --build-env HOME_REDIRECT=/introduction \
+            --build-env HOME_REDIRECT= \
             --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.head_ref }}/docs" \
             --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.head_ref }}/docs" \
             --build-env NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
