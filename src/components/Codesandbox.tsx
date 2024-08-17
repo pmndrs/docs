@@ -38,7 +38,7 @@ export default function Codesandbox({
         <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
           {screenshot_url && (
             <Image
-              className="rounded shadow-lg"
+              className="rounded-lg"
               src={screenshot_url}
               placeholder="empty"
               alt={title}
