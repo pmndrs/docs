@@ -35,7 +35,7 @@ export function Menu({
         <div className="flex w-full items-center justify-between pr-2">
           {header}
           <button
-            className="ml-2 mr-2 block p-2 lg:hidden"
+            className="flex size-9 items-center justify-center lg:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             type="button"
             aria-label="Menu"

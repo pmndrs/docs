@@ -4,8 +4,10 @@ import * as React from 'react'
 import { CiDark, CiLight } from 'react-icons/ci'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
+import cn from '@/lib/cn'
+import { ComponentProps } from 'react'
 
-const ToggleTheme = () => {
+const ToggleTheme = (props: ComponentProps<'button'>) => {
   const { setTheme, resolvedTheme } = useTheme()
 
   const [isDark, setIsDark] = React.useState<boolean | undefined>(undefined)
@@ -25,7 +27,7 @@ const ToggleTheme = () => {
 
   return (
     <button
-      className="flex h-9 w-9 items-center justify-center"
+      className={cn('', props.className)}
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
       {isDark !== undefined ? (

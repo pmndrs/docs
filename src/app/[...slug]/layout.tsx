@@ -10,6 +10,8 @@ import Search from '@/components/Search'
 import ToggleTheme from '@/components/ToggleTheme'
 import Toc from '@/components/Toc'
 import cn from '@/lib/cn'
+import { VscGithubAlt } from 'react-icons/vsc'
+import { PiDiscordLogoLight } from 'react-icons/pi'
 
 export type Props = {
   params: { slug: string[] }
@@ -59,7 +61,28 @@ export default async function Layout({ params, children }: Props) {
                 </div>
 
                 <Search />
-                <ToggleTheme />
+
+                <div className="flex gap-0">
+                  {process.env.GITHUB && (
+                    <Link
+                      href={process.env.GITHUB}
+                      className="hidden size-9 items-center justify-center sm:flex"
+                      target="_blank"
+                    >
+                      <VscGithubAlt />
+                    </Link>
+                  )}
+                  {process.env.DISCORD && (
+                    <Link
+                      href={process.env.DISCORD}
+                      className="hidden size-9 items-center justify-center sm:flex"
+                      target="_blank"
+                    >
+                      <PiDiscordLogoLight />
+                    </Link>
+                  )}
+                  <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" />
+                </div>
               </>
             }
             nav={

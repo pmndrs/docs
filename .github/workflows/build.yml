@@ -23,6 +23,10 @@ on:
         default: '/logo.png'
       base_path:
         type: string
+      github:
+        type: string
+      discord:
+        type: string
 
 jobs:
   build-job:
@@ -52,6 +56,8 @@ jobs:
             -e NEXT_PUBLIC_URL \
             -e ICON \
             -e LOGO \
+            -e GITHUB \
+            -e DISCORD \
             ghcr.io/pmndrs/docs:main npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
@@ -64,6 +70,8 @@ jobs:
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
           ICON: '${{ inputs.icon }}'
           LOGO: '${{ inputs.logo }}'
+          GITHUB: '${{ inputs.github }}'
+          DISCORD: '${{ inputs.discord }}'
 
       - uses: actions/upload-pages-artifact@v3
         with:
