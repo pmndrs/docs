@@ -85,7 +85,7 @@ cmd.on('exit', async (code) => {
   console.log('Build completed successfully.')
 
   await exec(
-    `mkdir -p ${outHostDirAbsolute}; cp -rf ${outLocalDirAbsolute}/* ${outHostDirAbsolute}`
+    `mkdir -p ${outHostDirAbsolute}; cp -rf ${outLocalDirAbsolute}/* ${outHostDirAbsolute}`,
   )
   console.log(`Preview: \`npx -y serve ${outHostDirAbsolute}\``)
 })

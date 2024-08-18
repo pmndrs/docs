@@ -12,11 +12,11 @@ export interface SearchModelProps {
 
 function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
   return (
-    <div className="absolute top-0 left-0 bottom-0 right-0 w-screen h-screen z-[99]">
-      <button type="button" className="opacity-50 bg-gray-900 w-full h-full" onClick={onClose} />
-      <div className="absolute top-20 bottom-20 overflow-y-auto left-2/4 w-[500px] max-w-[90%] z-100 -translate-x-1/2 transform">
-        <div className="mt-1 relative rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <div className="absolute bottom-0 left-0 right-0 top-0 z-[99] h-screen w-screen">
+      <button type="button" className="h-full w-full bg-gray-900 opacity-50" onClick={onClose} />
+      <div className="z-100 absolute bottom-20 left-2/4 top-20 w-[500px] max-w-[90%] -translate-x-1/2 transform overflow-y-auto">
+        <div className="relative mt-1 rounded-md shadow-sm">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <Icon icon="search" className="text-gray-300" />
           </div>
           <input
@@ -24,8 +24,8 @@ function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
             name="search"
             id="search"
             className={clsx(
-              'outline-none focus:ring-gray-200 focus:border-gray-200 block w-full pl-10 sm:text-sm border-gray-300 dark:bg-gray-800 dark:text-gray-400 px-4 py-6 text-gray-700',
-              results.length > 0 ? 'rounded-t-md' : 'rounded-md'
+              'block w-full border-gray-300 px-4 py-6 pl-10 text-gray-700 outline-none focus:border-gray-200 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 sm:text-sm',
+              results.length > 0 ? 'rounded-t-md' : 'rounded-md',
             )}
             autoComplete="off"
             autoFocus
@@ -33,7 +33,7 @@ function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
             onChange={onChange}
           />
           {results.length > 0 && (
-            <ul className="list-none p-0 m-0 absolute left-0 bg-white pb-1 z-2 w-full rounded-b-md dark:bg-gray-800 dark:text-gray-400">
+            <ul className="z-2 absolute left-0 m-0 w-full list-none rounded-b-md bg-white p-0 pb-1 dark:bg-gray-800 dark:text-gray-400">
               {results.map((result, index) => (
                 <SearchItem key={`search-item-${index}`} search={search} result={result} />
               ))}

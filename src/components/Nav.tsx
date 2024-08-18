@@ -15,8 +15,8 @@ function NavItem({ doc, asPath }: NavItemProps) {
     <Link
       href={doc.url ?? '/'}
       className={clsx(
-        'rounded-md block px-6 py-2 text-gray-800 font-normal hover:bg-gray-50 cursor-pointer dark:text-gray-400 dark:hover:bg-gray-700 mb-1',
-        active && 'bg-gray-100 dark:bg-gray-700'
+        'mb-1 block cursor-pointer rounded-md px-6 py-2 font-normal text-gray-800 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700',
+        active && 'bg-gray-100 dark:bg-gray-700',
       )}
     >
       {doc.title}
@@ -41,14 +41,14 @@ function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
 
         return acc
       }, {} as NavList),
-    [docs]
+    [docs],
   )
 
   return (
     <ul>
       {Object.entries(nav).map(([key, doc]) => (
         <li key={key}>
-          <h3 className="px-6 mt-8 mb-2 text-sm lg:text-xs text-gray-900 uppercase tracking-wide font-semibold dark:text-gray-300">
+          <h3 className="mb-2 mt-8 px-6 text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-gray-300 lg:text-xs">
             {key.replace(/\-/g, ' ')}
           </h3>
           {doc.url ? (

@@ -28,7 +28,7 @@ code span {
 
 /* Inline code */
 :not(pre) > code {
-  @apply py-0.5 px-1.5 rounded-md bg-gray-100 dark:bg-gray-800 dark:text-gray-300;
+  @apply rounded-md bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800 dark:text-gray-300;
 }
 
 /* Start purging... */
@@ -37,7 +37,7 @@ code span {
 
 /* Write your own custom component styles here */
 .btn-blue {
-  @apply px-4 py-2 font-bold text-white bg-blue-500 rounded;
+  @apply rounded bg-blue-500 px-4 py-2 font-bold text-white;
 }
 
 /* Start purging... */
@@ -72,7 +72,7 @@ code span {
 
 .content-container ul > li:before {
   content: '—';
-  @apply inline-block mr-3 text-gray-300;
+  @apply mr-3 inline-block text-gray-300;
 }
 
 .content-container :is(pre, code) {
@@ -80,7 +80,7 @@ code span {
 }
 
 .content-container pre {
-  @apply p-4 mb-8 overflow-hidden overflow-x-auto bg-gray-900 rounded;
+  @apply mb-8 overflow-hidden overflow-x-auto rounded bg-gray-900 p-4;
 }
 
 main a {
@@ -88,7 +88,7 @@ main a {
 }
 
 .content-container .heading {
-  @apply block font-bold text-gray-900 dark:text-gray-300 no-underline hover:underline;
+  @apply block font-bold text-gray-900 no-underline hover:underline dark:text-gray-300;
 }
 
 blockquote p {
@@ -100,11 +100,11 @@ details {
 }
 
 summary {
-  @apply select-none cursor-pointer mb-2 -ml-4;
+  @apply -ml-4 mb-2 cursor-pointer select-none;
 }
 
 th {
-  @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide;
+  @apply px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500;
 }
 
 thead {

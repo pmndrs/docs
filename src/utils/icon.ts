@@ -26,8 +26,8 @@ export const svg = (emoji: string, { env, shift }: Options = { env: 'production'
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
       <text x="${w / 2}" y="${
-    h / 2
-  }" font-size="100" dominant-baseline="central" baseline-shift="-${shift}%" text-anchor="middle">${emoji}</text>
+        h / 2
+      }" font-size="100" dominant-baseline="central" baseline-shift="-${shift}%" text-anchor="middle">${emoji}</text>
     </svg>
     
     <style>

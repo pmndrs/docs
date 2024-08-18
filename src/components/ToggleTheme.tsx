@@ -25,7 +25,7 @@ const ToggleTheme = () => {
 
   return (
     <button
-      className="h-9 w-9 flex items-center justify-center"
+      className="flex h-9 w-9 items-center justify-center"
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
       {isDark !== undefined ? (

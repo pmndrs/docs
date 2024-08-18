@@ -19,11 +19,11 @@ function SearchItem({ search, result }: SearchItemProps) {
   return (
     <Link
       href={result.url}
-      className="block no-underline search-item outline-none"
+      className="search-item block no-underline outline-none"
       target={result.url.startsWith('http') ? '_blank' : undefined}
     >
       <li className="px-2 py-1">
-        <div className="p-4 py-5 rounded-md bg-gray-100 hover:bg-gray-800 hover:text-gray-200 flex justify-between items-center transition-all dark:bg-gray-900/50 dark:text-gray-100 dark:hover:bg-gray-900/70">
+        <div className="flex items-center justify-between rounded-md bg-gray-100 p-4 py-5 transition-all hover:bg-gray-800 hover:text-gray-200 dark:bg-gray-900/50 dark:text-gray-100 dark:hover:bg-gray-900/70">
           <span
             className="pr-3"
             dangerouslySetInnerHTML={{
@@ -40,7 +40,7 @@ function SearchItem({ search, result }: SearchItemProps) {
           />
           {result.image ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="rounded max-w-[40%]" src={result.image} alt={result.title} />
+            <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
           ) : (
             <Icon icon="enter" className="text-gray-400" />
           )}
