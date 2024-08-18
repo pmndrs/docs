@@ -30,6 +30,8 @@ jobs:
             --build-env NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
             --build-env ICON="🖨️" \
             --build-env LOGO=gutenberg.jpg \
+            --build-env GITHUB="https://github.com/${{ github.repository }}" \
+            --build-env DISCORD="${{ secrets.DISCORD }}" \
             > deployment-url.txt
 
           echo "deployment_url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
