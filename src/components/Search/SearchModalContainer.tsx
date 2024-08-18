@@ -34,7 +34,7 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
 
       // Search
       let candidateResults = docs.flatMap(
-        ({ tableOfContents }) => tableOfContents
+        ({ tableOfContents }) => tableOfContents,
       ) satisfies SearchResult[]
       // console.log('candidateResults', candidateResults)
       candidateResults = candidateResults.filter((entry) => entry.description.length > 0)

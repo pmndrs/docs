@@ -37,7 +37,7 @@ export default async function Layout({ params, children }: Props) {
           <Menu
             header={
               <>
-                <div className="h-full flex items-center flex-none p-2 pl-4 sm:pl-6 xl:pl-4 lg:w-60 xl:w-72">
+                <div className="flex h-full flex-none items-center p-2 pl-4 sm:pl-6 lg:w-60 xl:w-72 xl:pl-4">
                   <Link href="/" aria-label="Poimandres Docs">
                     <span className="font-bold">
                       {NEXT_PUBLIC_LIBNAME_SHORT && (
@@ -46,7 +46,7 @@ export default async function Layout({ params, children }: Props) {
                       <span
                         className={cn(
                           NEXT_PUBLIC_LIBNAME_SHORT ? 'hidden' : undefined,
-                          'lg:inline'
+                          'lg:inline',
                         )}
                       >
                         {NEXT_PUBLIC_LIBNAME}
@@ -78,7 +78,7 @@ export default async function Layout({ params, children }: Props) {
             footer={
               <>
                 {!!currentPage && (
-                  <div className="flex justify-end w-full max-w-3xl pb-10 mx-auto mt-24">
+                  <div className="mx-auto mt-24 flex w-full max-w-3xl justify-end pb-10">
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
@@ -91,10 +91,10 @@ export default async function Layout({ params, children }: Props) {
                 )}
 
                 {(!!previousPage || !!nextPage) && (
-                  <nav className="flex justify-between w-full max-w-3xl mx-auto mt-12">
+                  <nav className="mx-auto mt-12 flex w-full max-w-3xl justify-between">
                     {!!previousPage && (
                       <div className="">
-                        <label className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
+                        <label className="mb-2 text-xs font-bold uppercase leading-4 text-gray-500">
                           Previous
                         </label>
                         <div className="text-xl">
@@ -109,7 +109,7 @@ export default async function Layout({ params, children }: Props) {
                     )}
                     {!!nextPage && (
                       <div className="ml-auto text-right">
-                        <label className="mb-2 text-xs font-bold leading-4 text-gray-500 uppercase">
+                        <label className="mb-2 text-xs font-bold uppercase leading-4 text-gray-500">
                           Next
                         </label>
                         <div className="text-xl">

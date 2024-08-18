@@ -39,11 +39,11 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto">
-        <div className="pb-6 mb-4 border-b dark:border-gray-700 post-header ">
+      <div className="mx-auto max-w-3xl">
+        <div className="post-header mb-4 border-b pb-6 dark:border-gray-700">
           <h1 className="mb-4 text-5xl font-bold tracking-tighter">{doc?.title}</h1>
           {!!doc?.description?.length && (
-            <p className="text-base text-gray-400 leading-5">{doc.description}</p>
+            <p className="text-base leading-5 text-gray-400">{doc.description}</p>
           )}
         </div>
         <div className="content-container">{doc ? <Post doc={doc} /> : 'empty doc'}</div>

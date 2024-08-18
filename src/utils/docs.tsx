@@ -61,7 +61,7 @@ const MDX_BASEURL = process.env.MDX_BASEURL
 async function _getDocs(
   root: string,
   slugOfInterest: string[] | null,
-  slugOnly = false
+  slugOnly = false,
 ): Promise<Doc[]> {
   const files = await crawl(root, MARKDOWN_REGEX)
   // console.log('files', files)
@@ -146,7 +146,7 @@ async function _getDocs(
         (_input, prefix: string, src: string, suffix: string) => {
           const url = resolveMdxUrl(src, relFilePath, MDX_BASEURL)
           return `${prefix}${url}${suffix}`
-        }
+        },
       )
 
       const boxes: string[] = []
@@ -197,7 +197,7 @@ async function _getDocs(
         boxes,
         tableOfContents,
       }
-    })
+    }),
   )
   // console.log('docs', docs)
 

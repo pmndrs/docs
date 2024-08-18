@@ -4,26 +4,26 @@ export * from './Grid'
 export * from './Hint'
 
 export const h2 = ({ children, id }: { children: React.ReactNode; id: string }) => (
-  <a href={`#${id}`} className="heading text-3xl mb-6 mt-8 tracking-light">
+  <a href={`#${id}`} className="heading tracking-light mb-6 mt-8 text-3xl">
     <h2 id={id}>{children}</h2>
   </a>
 )
 export const h3 = ({ children, id }: { children: React.ReactNode; id: string }) => (
-  <a href={`#${id}`} className="heading text-xl mb-4 mt-6 tracking-light">
+  <a href={`#${id}`} className="heading tracking-light mb-4 mt-6 text-xl">
     <h3 id={id}>{children}</h3>
   </a>
 )
 export const h4 = ({ children, id }: { children: React.ReactNode; id: string }) => (
-  <a href={`#${id}`} className="heading text-base mb-4 mt-4 tracking-light">
+  <a href={`#${id}`} className="heading tracking-light mb-4 mt-4 text-base">
     <h4 id={id}>{children}</h4>
   </a>
 )
 
 export const ul = ({ children }: { children: React.ReactNode }) => (
-  <ul className="px-4 mb-8">{children}</ul>
+  <ul className="mb-8 px-4">{children}</ul>
 )
 export const ol = ({ children }: { children: React.ReactNode }) => (
-  <ol className="px-4 mb-8">{children}</ol>
+  <ol className="mb-8 px-4">{children}</ol>
 )
 export const li = ({ children }: { children: React.ReactNode }) => (
   <li className="mb-4 text-base leading-6 text-gray-700 dark:text-gray-400">{children}</li>
@@ -34,11 +34,11 @@ export const p = ({ children }: { children: React.ReactNode }) => (
 )
 
 export const blockquote = ({ children }: { children: React.ReactNode }) => (
-  <blockquote className="mb-8 text-base pl-4 border-l-4 border-gray-600">{children}</blockquote>
+  <blockquote className="mb-8 border-l-4 border-gray-600 pl-4 text-base">{children}</blockquote>
 )
 
 export const table = ({ children }: { children: React.ReactNode }) => (
-  <div className="my-8 overflow-auto rounded-lg border-gray-200 border dark:border-gray-700">
+  <div className="my-8 overflow-auto rounded-lg border border-gray-200 dark:border-gray-700">
     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">{children}</table>
   </div>
 )

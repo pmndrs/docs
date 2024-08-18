@@ -152,25 +152,25 @@ export default function Page() {
   return (
     <>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
-        <div className="px-4 py-8 pb-12 lg:py-12 lg:pb-20 lg:px-28">
-          <header className="text-3xl text-center lg:text-left">
+        <div className="px-4 py-8 pb-12 lg:px-28 lg:py-12 lg:pb-20">
+          <header className="text-center text-3xl lg:text-left">
             <Link href="/" aria-label="Poimandres Docs" className="font-bold">
               Documentation
             </Link>
             .<Link href="https://pmnd.rs">pmndrs</Link>
           </header>
 
-          <main className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 lg:gap-12 w-full max-w-8xl mt-8 lg:mt-10">
+          <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
             {Object.entries(libs).map(([id, data]) => (
               <div
                 key={id}
-                className="relative shadow-lg border border-gray-200 bg-white rounded-md font-normal overflow-hidden dark:bg-gray-800/30 dark:border-gray-700"
+                className="relative overflow-hidden rounded-md border border-gray-200 bg-white font-normal shadow-lg dark:border-gray-700 dark:bg-gray-800/30"
               >
-                <div className="relative z-10 flex flex-col justify-between h-full">
-                  <div className="flex justify-between items-center px-6">
+                <div className="relative z-10 flex h-full flex-col justify-between">
+                  <div className="flex items-center justify-between px-6">
                     <div className="max-w-md">
-                      <div className="pt-4 font-bold text-lg">{data.title}</div>
-                      <div className="flex-grow pr-4 pt-1 pb-4 text-base text-gray-500 !leading-relaxed">
+                      <div className="pt-4 text-lg font-bold">{data.title}</div>
+                      <div className="flex-grow pb-4 pr-4 pt-1 text-base !leading-relaxed text-gray-500">
                         {data.description}
                       </div>
                     </div>
@@ -179,11 +179,11 @@ export default function Page() {
                         href={data.github}
                         target="_blank"
                         rel="noopener"
-                        className="block relative flex-shrink-0 w-20 h-20"
+                        className="relative block h-20 w-20 flex-shrink-0"
                       >
                         <Image
                           src={data.icon}
-                          className="absolute inset-0 w-full h-full object-contain"
+                          className="absolute inset-0 h-full w-full object-contain"
                           alt={data.title}
                           aria-hidden
                           width={data.iconWidth}
@@ -192,10 +192,10 @@ export default function Page() {
                       </a>
                     )}
                   </div>
-                  <div className="flex w-full border-t border-gray-200 dark:border-gray-700 divide-x divide-gray-200 dark:divide-gray-700">
+                  <div className="flex w-full divide-x divide-gray-200 border-t border-gray-200 dark:divide-gray-700 dark:border-gray-700">
                     <Link
                       href={data.url}
-                      className="inline-flex items-center space-x-2 flex-1 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       <Icon icon="docs" />
                       <span className="sm:hidden">Docs</span>
@@ -205,7 +205,7 @@ export default function Page() {
                       href={data.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 flex-1 px-6 py-4 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800"
+                      className="inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       <Icon icon="github" />
                       <span>GitHub</span>

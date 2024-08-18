@@ -29,7 +29,7 @@ export default function Codesandbox({
       {embed ? (
         <iframe
           src={`https://codesandbox.io/embed/${id}`}
-          className="w-full h-[500px]"
+          className="h-[500px] w-full"
           title={title}
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
@@ -52,15 +52,15 @@ export default function Codesandbox({
 
       {!hideTitle && (
         <>
-          <h6 className="text-gray-700 font-bold mt-4">{title}</h6>
-          <p className="text-gray-700 mt-1">{description}</p>
+          <h6 className="mt-4 font-bold text-gray-700">{title}</h6>
+          <p className="mt-1 text-gray-700">{description}</p>
           <div className="w-full">
             {tags.map((tag, i) => (
               <span
                 key={i}
                 className={clsx(
-                  'inline-block mt-2 text-gray-500 bg-gray-100 rounded px-1 py-1 text-xs',
-                  i !== tags.length - 1 && 'mr-1'
+                  'mt-2 inline-block rounded bg-gray-100 px-1 py-1 text-xs text-gray-500',
+                  i !== tags.length - 1 && 'mr-1',
                 )}
               >
                 {tag}
