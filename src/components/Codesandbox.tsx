@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
-import clsx from 'clsx'
 import { cache } from 'react'
+import cn from '@/lib/cn'
 
 export type CSB = {
   id: string
@@ -35,10 +35,15 @@ export default function Codesandbox({
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
         />
       ) : (
-        <a href={`https://codesandbox.io/s/${id}`} target="_blank" rel="noreferrer">
+        <a
+          href={`https://codesandbox.io/s/${id}`}
+          target="_blank"
+          rel="noreferrer"
+          className="mb-2 block"
+        >
           {screenshot_url && (
             <Image
-              className="rounded-lg"
+              className="bg-surface-container rounded-lg"
               src={screenshot_url}
               placeholder="empty"
               alt={title}
@@ -52,15 +57,30 @@ export default function Codesandbox({
 
       {!hideTitle && (
         <>
-          <h6 className="mt-4 font-bold text-gray-700">{title}</h6>
-          <p className="mt-1 text-gray-700">{description}</p>
+          <h6
+            className={cn(
+              'mt-4 font-bold',
+              // "text-gray-700"
+            )}
+          >
+            {title}
+          </h6>
+          <p
+            className={cn(
+              'mt-1',
+              // "text-gray-700"
+            )}
+          >
+            {description}
+          </p>
           <div className="w-full">
             {tags.map((tag, i) => (
               <span
                 key={i}
-                className={clsx(
-                  'mt-2 inline-block rounded bg-gray-100 px-1 py-1 text-xs text-gray-500',
+                className={cn(
+                  'mt-2 inline-block rounded px-1 py-1 text-xs',
                   i !== tags.length - 1 && 'mr-1',
+                  // 'bg-gray-100 text-gray-500',
                 )}
               >
                 {tag}

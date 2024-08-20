@@ -151,7 +151,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
+      <div className="min-h-screen">
         <div className="px-4 py-8 pb-12 lg:px-28 lg:py-12 lg:pb-20">
           <header className="text-center text-3xl lg:text-left">
             <Link href="/" aria-label="Poimandres Docs" className="font-bold">
@@ -164,13 +164,13 @@ export default function Page() {
             {Object.entries(libs).map(([id, data]) => (
               <div
                 key={id}
-                className="relative overflow-hidden rounded-md border border-gray-200 bg-white font-normal shadow-lg dark:border-gray-700 dark:bg-gray-800/30"
+                className="bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
               >
                 <div className="relative z-10 flex h-full flex-col justify-between">
                   <div className="flex items-center justify-between px-6">
                     <div className="max-w-md">
                       <div className="pt-4 text-lg font-bold">{data.title}</div>
-                      <div className="flex-grow pb-4 pr-4 pt-1 text-base !leading-relaxed text-gray-500">
+                      <div className="flex-grow pb-4 pr-4 pt-1 text-sm !leading-relaxed text-on-surface-variant/50">
                         {data.description}
                       </div>
                     </div>
@@ -192,10 +192,10 @@ export default function Page() {
                       </a>
                     )}
                   </div>
-                  <div className="flex w-full divide-x divide-gray-200 border-t border-gray-200 dark:divide-gray-700 dark:border-gray-700">
+                  <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
                     <Link
                       href={data.url}
-                      className="inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+                      className="interactive-bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="docs" />
                       <span className="sm:hidden">Docs</span>
@@ -205,7 +205,7 @@ export default function Page() {
                       href={data.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+                      className="interactive-bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="github" />
                       <span>GitHub</span>
