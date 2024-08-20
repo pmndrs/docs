@@ -40,10 +40,7 @@ function SearchItem({ search, result }: SearchItemProps) {
             // eslint-disable-next-line @next/next/no-img-element
             <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
           ) : (
-            <Icon
-              icon="enter"
-              // className="text-gray-400"
-            />
+            <Icon icon="enter" />
           )}
         </div>
       </li>

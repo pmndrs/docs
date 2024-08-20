@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Inconsolata } from 'next/font/google'
 import './globals.css'
 import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
@@ -7,6 +7,7 @@ import { ThemeProvider } from 'next-themes'
 import cn from '@/lib/cn'
 
 const inter = Inter({ subsets: ['latin'] })
+const inconsolata = Inconsolata({ subsets: ['latin'] })
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME

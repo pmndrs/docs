@@ -1,91 +1,87 @@
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
-import { ComponentProps } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
 export * from './Grid'
 export * from './Hint'
 
-export const h2 = ({ children, id }: { children: React.ReactNode; id: string }) => (
-  <a href={`#${id}`} className="heading tracking-light mb-6 mt-8 text-3xl">
-    <h2 id={id}>{children}</h2>
-  </a>
+type Hn = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+function Heading({ id, Tag, ...props }: { id: string; Tag: Hn } & ComponentProps<Hn>) {
+  return (
+    <a
+      href={`#${id}`}
+      className="tracking-light mb-6 mt-8 block text-3xl font-bold text-on-surface no-underline hover:underline"
+    >
+      <Tag id={id} {...props} />
+    </a>
+  )
+}
+export const h2 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
+  <Heading id={id} Tag="h2" {...props} />
 )
-export const h3 = ({ children, id }: { children: React.ReactNode; id: string }) => (
-  <a href={`#${id}`} className="heading tracking-light mb-4 mt-6 text-xl">
-    <h3 id={id}>{children}</h3>
-  </a>
+export const h3 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
+  <Heading id={id} Tag="h3" {...props} />
 )
-export const h4 = ({ children, id }: { children: React.ReactNode; id: string }) => (
-  <a href={`#${id}`} className="heading tracking-light mb-4 mt-4 text-base">
-    <h4 id={id}>{children}</h4>
-  </a>
+export const h4 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
+  <Heading id={id} Tag="h4" {...props} />
+)
+export const h5 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
+  <Heading id={id} Tag="h5" {...props} />
+)
+export const h6 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
+  <Heading id={id} Tag="h6" {...props} />
 )
 
-export const ul = ({ children }: { children: React.ReactNode }) => (
-  <ul className="mb-8 px-4">{children}</ul>
-)
-export const ol = ({ children }: { children: React.ReactNode }) => (
-  <ol className="mb-8 px-4">{children}</ol>
-)
-export const li = ({ children }: { children: React.ReactNode }) => (
+export const ul = (props: ComponentProps<'ul'>) => <ul className="mb-8 px-4" {...props} />
+export const ol = (props: ComponentProps<'ol'>) => <ol className="mb-8 px-4" {...props} />
+export const li = (props: ComponentProps<'li'>) => (
   <li
     className={cn(
-      'mb-4 text-base leading-6',
-      // 'text-gray-700 dark:text-gray-400'
+      'my-2 mb-4 text-base leading-6',
+      'before:mr-3 before:inline-block before:content-["—"]',
     )}
-  >
-    {children}
-  </li>
+    {...props}
+  />
 )
 
-export const p = ({ children }: { children: React.ReactNode }) => (
-  <p
-    className={cn(
-      'mb-4 text-base',
-      // 'text-gray-700 dark:text-gray-400'
-    )}
-  >
-    {children}
-  </p>
-)
+export const p = (props: ComponentProps<'p'>) => <p className="mb-4 text-base" {...props} />
 
-export const blockquote = ({ children }: { children: React.ReactNode }) => (
-  <blockquote
-    className={cn(
-      'mb-8 border-l-4 pl-4 text-base',
-      // "border-gray-600"
-    )}
-  >
-    {children}
+export const blockquote = ({ children }: ComponentProps<'blockquote'>) => (
+  <blockquote className="mb-8 border-l-4 pl-4 text-base">
+    <div className="text-on-surface-variant/50">{children}</div>
   </blockquote>
 )
 
-export const table = ({ children }: { children: React.ReactNode }) => (
+export const table = (props: ComponentProps<'table'>) => (
   <div className="my-8 overflow-auto rounded-lg border border-outline-variant">
-    <table className="min-w-full divide-y divide-outline-variant">{children}</table>
+    <table
+      className="bg-surface-container-low min-w-full divide-y divide-outline-variant"
+      {...props}
+    />
   </div>
 )
 
-export const a = ({
-  href,
-  target,
-  rel,
-  children,
-}: {
-  href: string
-  target?: string
-  rel?: string
-  children: React.ReactNode
-}) => {
-  const isAnchor = href.startsWith('https://')
+export const thead = (props: ComponentProps<'thead'>) => (
+  <thead className="text-on-surface-variant/50" {...props} />
+)
+
+export const th = (props: ComponentProps<'th'>) => (
+  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide" {...props} />
+)
+
+export const tr = (props: ComponentProps<'tr'>) => <tr className="even:bg-surface" {...props} />
+
+export const td = (props: ComponentProps<'td'>) => (
+  <td className="px-6 py-4 text-sm first:font-medium" {...props} />
+)
+
+export const a = ({ href, target, rel, ...props }: ComponentProps<'a'>) => {
+  const isAnchor = href?.startsWith('https://')
   target = isAnchor ? '_blank' : target
   rel = isAnchor ? 'noopener noreferrer' : rel
-  href = isAnchor ? href : href.replace(MARKDOWN_REGEX, '')
-  return (
-    <a href={href} target={target} rel={rel}>
-      {children}
-    </a>
-  )
+  href = isAnchor ? href : href?.replace(MARKDOWN_REGEX, '')
+
+  return <a {...props} href={href} target={target} rel={rel} className="text-primary" />
 }
 
 export const img = ({ src, alt, width, height, className, ...rest }: ComponentProps<'img'>) => (
@@ -100,4 +96,16 @@ export const img = ({ src, alt, width, height, className, ...rest }: ComponentPr
     className={cn('bg-surface-container', className)}
     {...rest}
   />
+)
+
+export const code = (props: ComponentProps<'code'>) => (
+  <code
+    className="bg-surface-container-high rounded-md px-1.5 py-0.5 font-mono text-[85%]"
+    {...props}
+  />
+)
+
+export const details = (props: ComponentProps<'details'>) => <details className="ml-4" {...props} />
+export const summary = (props: ComponentProps<'summary'>) => (
+  <summary className="-ml-4 mb-2 cursor-pointer select-none" {...props} />
 )

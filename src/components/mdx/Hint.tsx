@@ -3,13 +3,7 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 
 export const Hint = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div
-      className={cn(
-        'hint my-6 overflow-clip rounded-lg px-6 py-4',
-        // 'bg-yellow-100 dark:text-gray-500',
-        'bg-hint-container',
-      )}
-    >
+    <div className={cn('hint my-6 overflow-clip rounded-lg px-6 py-4', 'bg-hint-container')}>
       <p className="mb-2 flex items-center gap-1 text-lg">
         <IoDocumentTextOutline className="text-[125%]" />
         Note

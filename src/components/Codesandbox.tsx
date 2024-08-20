@@ -57,22 +57,8 @@ export default function Codesandbox({
 
       {!hideTitle && (
         <>
-          <h6
-            className={cn(
-              'mt-4 font-bold',
-              // "text-gray-700"
-            )}
-          >
-            {title}
-          </h6>
-          <p
-            className={cn(
-              'mt-1',
-              // "text-gray-700"
-            )}
-          >
-            {description}
-          </p>
+          <h6 className={cn('mt-4 font-bold')}>{title}</h6>
+          <p className={cn('mt-1')}>{description}</p>
           <div className="w-full">
             {tags.map((tag, i) => (
               <span
@@ -80,7 +66,6 @@ export default function Codesandbox({
                 className={cn(
                   'mt-2 inline-block rounded px-1 py-1 text-xs',
                   i !== tags.length - 1 && 'mr-1',
-                  // 'bg-gray-100 text-gray-500',
                 )}
               >
                 {tag}

@@ -31,12 +31,7 @@ function Toc({ toc }: ToCProps) {
 
   return (
     <div className="max-h-(screen-16) sticky top-16 flex flex-col justify-between overflow-y-auto pb-6">
-      <label
-        className={cn(
-          'mb-2 mt-12 text-sm font-semibold uppercase tracking-wide lg:text-xs',
-          // "text-gray-900 dark:text-gray-300"
-        )}
-      >
+      <label className={cn('mb-2 mt-12 text-sm font-semibold uppercase tracking-wide lg:text-xs')}>
         On This Page
       </label>
       {toc.map((item, index) => (
