@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import { withMaterialColors } from 'tailwind-material-colors'
+import { withMaterialColors, Options } from 'tailwind-material-colors'
 
 const config: Config = {
   darkMode: 'class',
@@ -10,24 +10,30 @@ const config: Config = {
 //
 // https://tailwind-material-colors-docs.vercel.app/
 //
+
+const primary = process.env.THEME_PRIMARY || '#323e48'
+const hint = process.env.THEME_HINT || '#d29922'
+const scheme = (process.env.THEME_SCHEME || 'tonalSpot') as Options['scheme']
+const contrast = Number(process.env.THEME_CONTRAST) || 0
+
 const config2 = withMaterialColors(
   config,
   {
     // Your base colors as HEX values. 'primary' is required.
-    primary: '#323e48',
-    // secondary and/or tertiary are optional, if not set they will be derived from the primary color.
+    primary,
+    // Secondary and/or tertiary are optional, if not set they will be derived from the primary color.
     // secondary: '#ffff00',
     // tertiary: '#0000ff',
 
     // Add any named colors you need:
-    hint: '#d29922',
+    hint,
     // green: '#00ff00',
     // blue: '#0000ff',
   },
   {
     extend: false,
-    scheme: 'tonalSpot', // one of 'content', 'expressive', 'fidelity', 'monochrome', 'neutral', 'tonalSpot' or 'vibrant'
-    contrast: 0, // contrast is optional and ranges from -1 (less contrast) to 1 (more contrast).
+    scheme, // one of 'content', 'expressive', 'fidelity', 'monochrome', 'neutral', 'tonalSpot' or 'vibrant'
+    contrast, // contrast is optional and ranges from -1 (less contrast) to 1 (more contrast).
   },
 )
 

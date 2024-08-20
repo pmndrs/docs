@@ -27,6 +27,18 @@ on:
         type: string
       discord:
         type: string
+      theme_primary:
+        type: string
+        default: '#323e48'
+      theme_hint:
+        type: string
+        default: '#d29922'
+      theme_scheme:
+        type: string
+        default: 'tonalSpot'
+      theme_contrast:
+        type: string
+        default: '0'
 
 jobs:
   build-job:
@@ -58,6 +70,10 @@ jobs:
             -e LOGO \
             -e GITHUB \
             -e DISCORD \
+            -e THEME_PRIMARY \
+            -e THEME_HINT \
+            -e THEME_SCHEME \
+            -e THEME_CONTRAST \
             ghcr.io/pmndrs/docs:main npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
@@ -72,6 +88,10 @@ jobs:
           LOGO: '${{ inputs.logo }}'
           GITHUB: '${{ inputs.github }}'
           DISCORD: '${{ inputs.discord }}'
+          THEME_PRIMARY: '${{ inputs.theme_primary }}'
+          THEME_HINT: '${{ inputs.theme_hint }}'
+          THEME_SCHEME: '${{ inputs.theme_scheme }}'
+          THEME_CONTRAST: '${{ inputs.theme_contrast }}'
 
       - uses: actions/upload-pages-artifact@v3
         with:

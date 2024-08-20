@@ -34,6 +34,10 @@ jobs:
             --build-env LOGO=gutenberg.jpg \
             --build-env GITHUB="https://github.com/${{ github.repository }}" \
             --build-env DISCORD="${{ secrets.DISCORD }}" \
+            --build-env THEME_PRIMARY="#323e48" \
+            --build-env THEME_HINT="#d29922" \
+            --build-env THEME_SCHEME="tonalSpot" \
+            --build-env THEME_CONTRAST="0" \
             > deployment-url.txt
 
           echo "deployment_url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
