@@ -108,19 +108,13 @@ export default async function Layout({ params, children }: Props) {
                         <label
                           className={cn(
                             'mb-2 text-xs font-bold uppercase leading-4',
-                            // "text-gray-500"
                             'text-on-surface-variant/50',
                           )}
                         >
                           Previous
                         </label>
                         <div className="text-xl">
-                          <Link
-                            href={previousPage.url}
-                            // className="text-gray-900 dark:text-gray-300"
-                          >
-                            {previousPage.title}
-                          </Link>
+                          <Link href={previousPage.url}>{previousPage.title}</Link>
                         </div>
                       </div>
                     )}
@@ -129,19 +123,13 @@ export default async function Layout({ params, children }: Props) {
                         <label
                           className={cn(
                             'mb-2 text-xs font-bold uppercase leading-4',
-                            // "text-gray-500"
                             'text-on-surface-variant/50',
                           )}
                         >
                           Next
                         </label>
                         <div className="text-xl">
-                          <Link
-                            href={nextPage.url}
-                            // className="text-gray-900 dark:text-gray-300"
-                          >
-                            {nextPage.title}
-                          </Link>
+                          <Link href={nextPage.url}>{nextPage.title}</Link>
                         </div>
                       </div>
                     )}

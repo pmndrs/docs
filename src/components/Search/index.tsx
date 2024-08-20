@@ -58,10 +58,7 @@ function Search() {
             </span>
             <span
               style={{ opacity: 1 }}
-              className={cn(
-                'hidden rounded-md border px-1.5 py-0.5 text-sm leading-5 sm:block',
-                // 'border-gray-300 text-gray-400 dark:border-gray-700',
-              )}
+              className={cn('hidden rounded-md border px-1.5 py-0.5 text-sm leading-5 sm:block')}
             >
               <span className="sr-only">Press </span>
               <kbd className="font-sans">

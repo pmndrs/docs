@@ -12,7 +12,6 @@ export const Grid = ({ children, cols = 4 }: { children: React.ReactNode; cols?:
             ? 'md:grid-cols-2'
             : 'md:grid-cols-1',
       `grid-list gap-4 text-sm`,
-      // 'text-gray-700',
     )}
     style={{ marginBottom: '1rem' }}
   >

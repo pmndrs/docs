@@ -18,10 +18,7 @@ function SearchModal({ search, results, onClose, onChange }: SearchModelProps) {
       <div className="z-100 absolute bottom-20 left-2/4 top-20 w-[500px] max-w-[90%] -translate-x-1/2 transform overflow-y-auto">
         <div className="relative mt-1 rounded-md shadow-sm">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <Icon
-              icon="search"
-              // className="text-gray-300"
-            />
+            <Icon icon="search" />
           </div>
           <input
             type="search"
