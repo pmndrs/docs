@@ -8,6 +8,7 @@ import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 
 import Icon from '@/components/Icon'
 import { SearchModalContainer } from './SearchModalContainer'
+import cn from '@/lib/cn'
 
 function Search() {
   // const router = useRouter()
@@ -39,24 +40,28 @@ function Search() {
         />
       )}
       <div className="relative grow">
-        <div className="flex h-16 flex-auto items-center justify-between px-4">
+        <div className="flex h-16 flex-auto items-center justify-between px-4 text-on-surface-variant/50 transition-colors duration-200 hover:text-[inherit]">
           <button
             type="button"
             onClick={() => setShowSearchModal(true)}
-            className="group flex w-full items-center space-x-3 py-2 font-medium leading-6 text-gray-400 transition-colors duration-200 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 sm:space-x-4"
+            className={cn(
+              'group flex w-full items-center space-x-3 py-2 font-medium leading-6 sm:space-x-4',
+
+              'interative-bg-surface-container',
+            )}
             onFocus={() => setShowSearchModal(true)}
           >
-            <Icon
-              icon="search"
-              className="h-6 w-6 text-gray-400 transition-colors duration-200 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"
-            />
+            <Icon icon="search" className={cn('h-6 w-6')} />
             <span>
               Quick search
               <span className="hidden sm:inline"> for anything</span>
             </span>
             <span
               style={{ opacity: 1 }}
-              className="hidden rounded-md border border-gray-300 px-1.5 py-0.5 text-sm leading-5 text-gray-400 dark:border-gray-700 sm:block"
+              className={cn(
+                'hidden rounded-md border px-1.5 py-0.5 text-sm leading-5 sm:block',
+                // 'border-gray-300 text-gray-400 dark:border-gray-700',
+              )}
             >
               <span className="sr-only">Press </span>
               <kbd className="font-sans">

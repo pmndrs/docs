@@ -1,11 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import clsx from 'clsx'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 import { useDocs } from './DocsContext'
 import { useMenu } from './MenuContext'
 import Icon from '@/components/Icon'
+import cn from '@/lib/cn'
 
 export function Menu({
   header,
@@ -31,7 +31,7 @@ export function Menu({
 
   return (
     <>
-      <header className="max-w-8xl sticky top-0 z-40 mx-auto flex w-full flex-none border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 lg:z-50">
+      <header className="max-w-8xl bg-surface sticky top-0 z-40 mx-auto flex w-full flex-none border-b border-outline-variant/50 lg:z-50">
         <div className="flex w-full items-center justify-between pr-2">
           {header}
           <button
@@ -45,18 +45,18 @@ export function Menu({
         </div>
       </header>
 
-      <div className="max-w-8xl mx-auto w-full dark:bg-gray-900 dark:text-gray-100">
+      <div className="max-w-8xl mx-auto w-full">
         <div className="lg:flex">
           <div
             id="sidebar"
-            className={clsx(
-              'fixed inset-0 z-40 h-full w-full flex-none bg-white bg-opacity-25 dark:!bg-gray-900 dark:text-gray-100 lg:static lg:block lg:h-auto lg:w-60 lg:overflow-y-visible lg:pt-0 xl:w-72',
+            className={cn(
+              'fixed inset-0 z-40 h-full w-full flex-none lg:static lg:block lg:h-auto lg:w-60 lg:overflow-y-visible lg:pt-0 xl:w-72',
               !menuOpen && 'hidden',
             )}
           >
             <div
               id="nav-wrapper"
-              className="scrolling-touch relative z-10 mr-24 h-full overflow-hidden overflow-y-auto bg-white dark:bg-gray-900 lg:sticky lg:top-16 lg:mr-0 lg:block lg:h-auto lg:bg-transparent"
+              className="scrolling-touch bg-surface relative z-10 mr-24 h-full overflow-hidden overflow-y-auto lg:sticky lg:top-16 lg:mr-0 lg:block lg:h-auto lg:bg-transparent"
             >
               <nav
                 id="nav"
@@ -67,13 +67,14 @@ export function Menu({
             </div>
             <button
               onClick={() => setMenuOpen(false)}
-              className={clsx(
-                'fixed right-0 top-0 z-0 h-screen w-screen bg-gray-900 opacity-0 dark:bg-gray-200',
+              className={cn(
+                'bg-surface/70',
+                'fixed right-0 top-0 z-0 h-screen w-screen',
                 !menuOpen && 'hidden',
               )}
             />
           </div>
-          <div id="content-wrapper" className={clsx('flex-auto', menuOpen && 'overflow-hidden')}>
+          <div id="content-wrapper" className={cn('flex-auto', menuOpen && 'overflow-hidden')}>
             <div className="flex w-full">
               <main className="min-w-0 flex-auto px-4 pb-24 pt-8 sm:px-6 lg:pb-16 xl:px-8">
                 <div>{children}</div>

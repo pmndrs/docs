@@ -23,16 +23,14 @@ function SearchItem({ search, result }: SearchItemProps) {
       target={result.url.startsWith('http') ? '_blank' : undefined}
     >
       <li className="px-2 py-1">
-        <div className="flex items-center justify-between rounded-md bg-gray-100 p-4 py-5 transition-all hover:bg-gray-800 hover:text-gray-200 dark:bg-gray-900/50 dark:text-gray-100 dark:hover:bg-gray-900/70">
+        <div className="interactive-bg-surface-container-high flex items-center justify-between rounded-md p-4 py-5 transition-colors">
           <span
             className="pr-3"
             dangerouslySetInnerHTML={{
               __html: `
-                  <span class="block text-xs text-gray-400 dark:text-gray-500 pb-1">${
-                    result.label
-                  }</span>
+                  <span class="block text-xs text-on-surface-variant/50 pb-1">${result.label}</span>
                   ${highlight(result.title, search)}
-                  <span class="block text-sm text-gray-600 dark:text-gray-400 pt-2">
+                  <span class="block text-sm text-on-surface-variant/50 pt-2">
                     ${highlight(result.description, search)}
                   </span>
                 `,
@@ -42,7 +40,10 @@ function SearchItem({ search, result }: SearchItemProps) {
             // eslint-disable-next-line @next/next/no-img-element
             <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
           ) : (
-            <Icon icon="enter" className="text-gray-400" />
+            <Icon
+              icon="enter"
+              // className="text-gray-400"
+            />
           )}
         </div>
       </li>

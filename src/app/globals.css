@@ -6,18 +6,11 @@
   scroll-behavior: smooth;
   --header-height: 4rem; /* TODO: make this value dynamic */
   scroll-margin-top: var(--header-height);
+  font-size: 17px;
 }
 
 body {
   font-optical-sizing: auto;
-}
-
-* {
-  font-family: 'Inter', sans-serif;
-}
-
-body {
-  font-size: 15px;
 }
 
 pre,
@@ -28,7 +21,7 @@ code span {
 
 /* Inline code */
 :not(pre) > code {
-  @apply rounded-md bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800 dark:text-gray-300;
+  @apply bg-surface-container-high rounded-md px-1.5 py-0.5;
 }
 
 /* Start purging... */
@@ -37,17 +30,12 @@ code span {
 
 /* Write your own custom component styles here */
 .btn-blue {
-  @apply rounded bg-blue-500 px-4 py-2 font-bold text-white;
+  @apply bg-primary-container rounded px-4 py-2 font-bold;
 }
 
 /* Start purging... */
 @tailwind utilities;
 /* Stop purging. */
-
-.text-base {
-  font-size: 0.9375rem;
-  line-height: 1.35rem;
-}
 
 /* Your own custom utilities */
 @supports (position: sticky) {
@@ -72,7 +60,7 @@ code span {
 
 .content-container ul > li:before {
   content: '—';
-  @apply mr-3 inline-block text-gray-300;
+  @apply mr-3 inline-block;
 }
 
 .content-container :is(pre, code) {
@@ -80,19 +68,19 @@ code span {
 }
 
 .content-container pre {
-  @apply mb-8 overflow-hidden overflow-x-auto rounded bg-gray-900 p-4;
+  @apply mb-8 overflow-hidden overflow-x-auto rounded p-4;
 }
 
 main a {
-  @apply text-blue-400;
+  @apply text-primary;
 }
 
 .content-container .heading {
-  @apply block font-bold text-gray-900 no-underline hover:underline dark:text-gray-300;
+  @apply block font-bold text-on-surface no-underline hover:underline;
 }
 
 blockquote p {
-  @apply text-gray-400 !important;
+  @apply text-on-surface-variant/50;
 }
 
 details {
@@ -103,54 +91,41 @@ summary {
   @apply -ml-4 mb-2 cursor-pointer select-none;
 }
 
+table {
+  @apply bg-surface-container-low;
+}
+
 th {
-  @apply px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500;
+  @apply px-6 py-3 text-left text-xs font-medium uppercase tracking-wide;
 }
 
 thead {
-  @apply bg-gray-50 dark:bg-gray-800;
+  /* @apply bg-gray-50 dark:bg-gray-800; */
+  @apply text-on-surface-variant/50;
 }
 
 tbody tr:nth-child(even) {
-  @apply bg-white dark:bg-gray-900;
+  /* @apply bg-white dark:bg-gray-900; */
+  @apply bg-surface;
 }
 
 tbody tr:nth-child(odd) {
-  @apply bg-gray-50 dark:bg-gray-800;
+  /* @apply bg-gray-50 dark:bg-gray-800; */
 }
 
 td {
-  @apply px-6 py-4 text-sm text-gray-900 dark:text-gray-300;
+  @apply px-6 py-4 text-sm;
 }
 
 td:first-child {
   @apply font-medium;
 }
 
-.grid-list li {
-  @apply text-base text-gray-700;
-  font-size: 0.9375rem;
-  line-height: 1.35rem;
-}
-
-.grid-list li a {
-  @apply mb-2 block;
-}
-
 ul.grid-list > li:before {
   display: none;
 }
 
-@layer utilities {
-  .scrolling-touch {
-    -webkit-overflow-scrolling: touch;
-  }
-  .scrolling-auto {
-    -webkit-overflow-scrolling: auto;
-  }
-}
-
-#intro-demos {
+/* #intro-demos {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-around;
@@ -185,29 +160,18 @@ ul.grid-list > li:before {
 
 .demo-grid > div:last-of-type:nth-child(odd) {
   grid-column: 1 / -1;
-}
+} */
 
 .search-item.focus-visible li > div {
-  @apply bg-gray-800 text-gray-200;
+  /* @apply bg-gray-800 text-gray-200; */
 }
 
 .hint p {
-  @apply dark:text-gray-500;
+  /* @apply dark:text-gray-500; */
 }
-
 .hint p.mb-4:last-of-type {
   margin-bottom: 0;
 }
-
-/*::-webkit-scrollbar {
-  width: 14px;
-}
-::-webkit-scrollbar-thumb {
-  @apply border-4 border-black border-opacity-0 bg-gray-300 rounded-full dark:bg-gray-700;
-}
-::-webkit-scrollbar-track {
-  @apply dark:bg-gray-800;
-}*/
 
 /**
  * Pmndrs theme for JavaScript, CSS and HTML
@@ -217,10 +181,10 @@ ul.grid-list > li:before {
 
 code[class*='language-'],
 pre[class*='language-'] {
-  color: #e4f0fb;
   background: none;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-  font-family: Menlo, Monaco, 'Courier New', monospace;
+  /* color: #e4f0fb;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3); */
+  /* font-family: Menlo, Monaco, 'Courier New', monospace; */
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -259,7 +223,7 @@ pre[class*='language-'] {
 
 :not(pre) > code[class*='language-'],
 pre[class*='language-'] {
-  background: #252b37;
+  @apply bg-inverse-surface-light;
 }
 
 /* Inline code */

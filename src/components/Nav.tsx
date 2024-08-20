@@ -1,7 +1,7 @@
 import * as React from 'react'
-import clsx from 'clsx'
 import Link from 'next/link'
 import { Doc } from '@/app/[...slug]/DocsContext'
+import cn from '@/lib/cn'
 
 interface NavItemProps {
   doc: Doc
@@ -14,9 +14,9 @@ function NavItem({ doc, asPath }: NavItemProps) {
   return (
     <Link
       href={doc.url ?? '/'}
-      className={clsx(
-        'mb-1 block cursor-pointer rounded-md px-6 py-2 font-normal text-gray-800 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700',
-        active && 'bg-gray-100 dark:bg-gray-700',
+      className={cn(
+        'mb-1 block cursor-pointer rounded-md px-6 py-2 font-normal',
+        active ? 'interactive-bg-primary-container' : 'interactive-bg-surface',
       )}
     >
       {doc.title}
@@ -48,7 +48,7 @@ function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
     <ul>
       {Object.entries(nav).map(([key, doc]) => (
         <li key={key}>
-          <h3 className="mb-2 mt-8 px-6 text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-gray-300 lg:text-xs">
+          <h3 className="mb-2 mt-8 px-6 text-sm font-bold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs">
             {key.replace(/\-/g, ' ')}
           </h3>
           {doc.url ? (

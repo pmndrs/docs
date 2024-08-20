@@ -3,7 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
-import { ThemeProvider } from './ThemeProvider'
+import { ThemeProvider } from 'next-themes'
+import cn from '@/lib/cn'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -54,12 +55,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={cn(inter.className, 'bg-surface')}>
         <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+        // attribute="class"
+        // defaultTheme="system"
+        // enableSystem
+        // disableTransitionOnChange
         >
           {children}
         </ThemeProvider>

@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import Post from '@/components/Post'
 import { getData, getDocs } from '@/utils/docs'
+import cn from '@/lib/cn'
 
 export type Props = {
   params: { slug: string[] }
@@ -40,10 +41,12 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <div className="mx-auto max-w-3xl">
-        <div className="post-header mb-4 border-b pb-6 dark:border-gray-700">
+        <div className={cn('post-header mb-4 border-b pb-6', 'border-outline-variant/50')}>
           <h1 className="mb-4 text-5xl font-bold tracking-tighter">{doc?.title}</h1>
           {!!doc?.description?.length && (
-            <p className="text-base leading-5 text-gray-400">{doc.description}</p>
+            <p className={cn('text-base leading-5', 'text-on-surface-variant/50')}>
+              {doc.description}
+            </p>
           )}
         </div>
         <div className="content-container">{doc ? <Post doc={doc} /> : 'empty doc'}</div>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import clsx from 'clsx'
+import cn from '@/lib/cn'
 
 type SVGProps = Partial<React.SVGProps<SVGSVGElement>>
 
@@ -61,7 +61,7 @@ export interface IconProps extends SVGProps {
 
 function Icon({ icon, className, ...props }: IconProps) {
   const Component = icons[icon]
-  return <Component aria-hidden className={clsx(className, 'h-5 w-5 flex-none')} {...props} />
+  return <Component aria-hidden className={cn(className, 'h-5 w-5 flex-none')} {...props} />
 }
 
 export default Icon

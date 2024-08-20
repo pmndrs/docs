@@ -7,7 +7,6 @@ import { Menu } from './Menu'
 import Nav from '@/components/Nav'
 import Link from 'next/link'
 import Search from '@/components/Search'
-import ToggleTheme from '@/components/ToggleTheme'
 import Toc from '@/components/Toc'
 import cn from '@/lib/cn'
 import { VscGithubAlt } from 'react-icons/vsc'
@@ -81,22 +80,11 @@ export default async function Layout({ params, children }: Props) {
                       <PiDiscordLogoLight />
                     </Link>
                   )}
-                  <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" />
+                  {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
                 </div>
               </>
             }
-            nav={
-              <>
-                {/* <div className="mt-8 md:mt-0 mb-4">
-                  {NEXT_PUBLIC_LIBNAME?.length && (
-                    <span className="mt-4 block w-full px-6 py-2 focus:outline-none bg-black rounded-md font-bold text-lg text-white dark:bg-white dark:text-gray-900 text-center">
-                      {NEXT_PUBLIC_LIBNAME}
-                    </span>
-                  )}
-                </div> */}
-                <Nav docs={docs} asPath={asPath} />
-              </>
-            }
+            nav={<Nav docs={docs} asPath={asPath} />}
             aside={<Toc toc={doc.tableOfContents} />}
             footer={
               <>
@@ -105,7 +93,7 @@ export default async function Layout({ params, children }: Props) {
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mb-2 text-base text-gray-500 hover:underline"
+                      className={cn('mb-2 text-base hover:underline', 'text-on-surface-variant/50')}
                       href={currentPage.editURL || '#no-edit-url'}
                     >
                       Edit this page
@@ -117,13 +105,19 @@ export default async function Layout({ params, children }: Props) {
                   <nav className="mx-auto mt-12 flex w-full max-w-3xl justify-between">
                     {!!previousPage && (
                       <div className="">
-                        <label className="mb-2 text-xs font-bold uppercase leading-4 text-gray-500">
+                        <label
+                          className={cn(
+                            'mb-2 text-xs font-bold uppercase leading-4',
+                            // "text-gray-500"
+                            'text-on-surface-variant/50',
+                          )}
+                        >
                           Previous
                         </label>
                         <div className="text-xl">
                           <Link
                             href={previousPage.url}
-                            className="text-gray-900 dark:text-gray-300"
+                            // className="text-gray-900 dark:text-gray-300"
                           >
                             {previousPage.title}
                           </Link>
@@ -132,11 +126,20 @@ export default async function Layout({ params, children }: Props) {
                     )}
                     {!!nextPage && (
                       <div className="ml-auto text-right">
-                        <label className="mb-2 text-xs font-bold uppercase leading-4 text-gray-500">
+                        <label
+                          className={cn(
+                            'mb-2 text-xs font-bold uppercase leading-4',
+                            // "text-gray-500"
+                            'text-on-surface-variant/50',
+                          )}
+                        >
                           Next
                         </label>
                         <div className="text-xl">
-                          <Link href={nextPage.url} className="text-gray-900 dark:text-gray-300">
+                          <Link
+                            href={nextPage.url}
+                            // className="text-gray-900 dark:text-gray-300"
+                          >
                             {nextPage.title}
                           </Link>
                         </div>

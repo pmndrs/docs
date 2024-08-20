@@ -1,4 +1,6 @@
+import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
+import { ComponentProps } from 'react'
 
 export * from './Grid'
 export * from './Hint'
@@ -26,20 +28,41 @@ export const ol = ({ children }: { children: React.ReactNode }) => (
   <ol className="mb-8 px-4">{children}</ol>
 )
 export const li = ({ children }: { children: React.ReactNode }) => (
-  <li className="mb-4 text-base leading-6 text-gray-700 dark:text-gray-400">{children}</li>
+  <li
+    className={cn(
+      'mb-4 text-base leading-6',
+      // 'text-gray-700 dark:text-gray-400'
+    )}
+  >
+    {children}
+  </li>
 )
 
 export const p = ({ children }: { children: React.ReactNode }) => (
-  <p className="mb-4 text-base text-gray-700 dark:text-gray-400">{children}</p>
+  <p
+    className={cn(
+      'mb-4 text-base',
+      // 'text-gray-700 dark:text-gray-400'
+    )}
+  >
+    {children}
+  </p>
 )
 
 export const blockquote = ({ children }: { children: React.ReactNode }) => (
-  <blockquote className="mb-8 border-l-4 border-gray-600 pl-4 text-base">{children}</blockquote>
+  <blockquote
+    className={cn(
+      'mb-8 border-l-4 pl-4 text-base',
+      // "border-gray-600"
+    )}
+  >
+    {children}
+  </blockquote>
 )
 
 export const table = ({ children }: { children: React.ReactNode }) => (
-  <div className="my-8 overflow-auto rounded-lg border border-gray-200 dark:border-gray-700">
-    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">{children}</table>
+  <div className="my-8 overflow-auto rounded-lg border border-outline-variant">
+    <table className="min-w-full divide-y divide-outline-variant">{children}</table>
   </div>
 )
 
@@ -65,18 +88,7 @@ export const a = ({
   )
 }
 
-export const img = ({
-  src,
-  alt,
-  width,
-  height,
-  ...rest
-}: {
-  src: string
-  alt: string
-  width: number
-  height: number
-}) => (
+export const img = ({ src, alt, width, height, className, ...rest }: ComponentProps<'img'>) => (
   // eslint-disable-next-line @next/next/no-img-element
   <img
     src={src}
@@ -85,6 +97,7 @@ export const img = ({
     alt={alt}
     width={width}
     height={height}
+    className={cn('bg-surface-container', className)}
     {...rest}
   />
 )
