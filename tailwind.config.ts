@@ -1,3 +1,4 @@
+import defaultTheme from 'tailwindcss/defaultTheme'
 import type { Config } from 'tailwindcss'
 import { withMaterialColors, Options } from 'tailwind-material-colors'
 
@@ -5,6 +6,13 @@ const config: Config = {
   darkMode: 'class',
   content: ['./src/components/**/*.{js,ts,jsx,tsx,mdx}', './src/app/**/*.{js,ts,jsx,tsx,mdx}'],
   plugins: [require('@tailwindcss/typography'), require('@tailwindcss/aspect-ratio')],
+  theme: {
+    extend: {
+      fontFamily: {
+        mono: ['"Inconsolata"', ...defaultTheme.fontFamily.mono],
+      },
+    },
+  },
 }
 
 //

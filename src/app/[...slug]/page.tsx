@@ -41,8 +41,8 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <div className="mx-auto max-w-3xl">
-        <div className={cn('post-header mb-4 border-b pb-6', 'border-outline-variant/50')}>
-          <h1 className="mb-4 text-5xl font-bold tracking-tighter">{doc?.title}</h1>
+        <div className={cn('post-header mb-6 border-b pb-4', 'border-outline-variant/50')}>
+          <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc?.title}</h1>
           {!!doc?.description?.length && (
             <p className={cn('text-base leading-5', 'text-on-surface-variant/50')}>
               {doc.description}
