@@ -14,6 +14,8 @@ import remarkGFM from 'remark-gfm'
 import * as components from '@/components/mdx'
 
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
+import React from 'react'
+import { Gha, rehypeGha } from './gha'
 
 /**
  * Checks for .md(x) file extension
@@ -158,6 +160,7 @@ async function _getDocs(
           mdxOptions: {
             remarkPlugins: [remarkGFM],
             rehypePlugins: [
+              rehypeGha,
               rehypePrismPlus,
               codesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
               toc(tableOfContents, url, title, content), // 2. will populate `doc.tableOfContents`
@@ -165,6 +168,7 @@ async function _getDocs(
           },
         },
         components: {
+          Gha,
           ...(components as React.ComponentProps<typeof MDXRemote>['components']),
           Codesandbox: async (props: React.ComponentProps<typeof Codesandbox>) => {
             const ids = boxes // populated from 1.

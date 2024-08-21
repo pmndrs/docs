@@ -4,7 +4,10 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 
 const config: Config = {
   darkMode: 'class',
-  content: ['./src/components/**/*.{js,ts,jsx,tsx,mdx}', './src/app/**/*.{js,ts,jsx,tsx,mdx}'],
+  content: [
+    './src/{components,utils}/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   plugins: [require('@tailwindcss/typography'), require('@tailwindcss/aspect-ratio')],
   theme: {
     extend: {
@@ -21,6 +24,12 @@ const config: Config = {
 
 const primary = process.env.THEME_PRIMARY || '#323e48'
 const hint = process.env.THEME_HINT || '#d29922'
+const note = process.env.THEME_NOTE || '#1f6feb'
+const tip = process.env.THEME_TIP || '#238636'
+const important = process.env.THEME_IMPORTANT || '#8957e5'
+const warning = process.env.THEME_WARNING || '#d29922'
+const caution = process.env.THEME_CAUTION || '#da3633'
+
 const scheme = (process.env.THEME_SCHEME || 'tonalSpot') as Options['scheme']
 const contrast = Number(process.env.THEME_CONTRAST) || 0
 
@@ -35,8 +44,11 @@ const config2 = withMaterialColors(
 
     // Add any named colors you need:
     hint,
-    // green: '#00ff00',
-    // blue: '#0000ff',
+    note,
+    tip,
+    important,
+    warning,
+    caution,
   },
   {
     extend: false,
