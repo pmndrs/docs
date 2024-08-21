@@ -1,8 +1,6 @@
-import * as React from 'react'
-
 import Post from '@/components/Post'
-import { getData, getDocs } from '@/utils/docs'
 import cn from '@/lib/cn'
+import { getData, getDocs } from '@/utils/docs'
 
 export type Props = {
   params: { slug: string[] }

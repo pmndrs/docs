@@ -2,11 +2,11 @@
 
 // $ node bin/build.mjs ~/code/pmndrs/react-three-fiber/docs
 
-import { spawn, exec as execCb } from 'node:child_process'
-import { promisify } from 'node:util'
 import minimist from 'minimist'
-import { resolve, dirname } from 'node:path'
+import { exec as execCb, spawn } from 'node:child_process'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
 const exec = promisify(execCb)
 
 console.log('argv=', process.argv)

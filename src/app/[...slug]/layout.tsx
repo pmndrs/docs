@@ -1,16 +1,16 @@
 import * as React from 'react'
 
-import { DocsContext } from './DocsContext'
-import { getData } from '@/utils/docs'
-import { MenuContext } from './MenuContext'
-import { Menu } from './Menu'
 import Nav from '@/components/Nav'
-import Link from 'next/link'
 import Search from '@/components/Search'
 import Toc from '@/components/Toc'
 import cn from '@/lib/cn'
-import { VscGithubAlt } from 'react-icons/vsc'
+import { getData } from '@/utils/docs'
+import Link from 'next/link'
 import { PiDiscordLogoLight } from 'react-icons/pi'
+import { VscGithubAlt } from 'react-icons/vsc'
+import { DocsContext } from './DocsContext'
+import { Menu } from './Menu'
+import { MenuContext } from './MenuContext'
 
 export type Props = {
   params: { slug: string[] }

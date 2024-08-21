@@ -1,6 +1,6 @@
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
-import { ComponentProps, ReactNode } from 'react'
+import { ComponentProps } from 'react'
 
 export * from './Grid'
 export * from './Hint'

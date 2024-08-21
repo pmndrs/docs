@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
-import { cache } from 'react'
 import cn from '@/lib/cn'
+import { cache } from 'react'
 
 export type CSB = {
   id: string

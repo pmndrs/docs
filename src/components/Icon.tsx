@@ -1,5 +1,5 @@
-import * as React from 'react'
 import cn from '@/lib/cn'
+import * as React from 'react'
 
 type SVGProps = Partial<React.SVGProps<SVGSVGElement>>
 

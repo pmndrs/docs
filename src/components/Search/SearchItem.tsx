@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import Icon from '@/components/Icon'
 import { highlight } from '@/utils/text'
+import Link from 'next/link'
 
 export interface SearchResult {
   title: string

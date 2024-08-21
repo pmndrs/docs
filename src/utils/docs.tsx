@@ -1,15 +1,15 @@
-import fs from 'node:fs'
 import matter from 'gray-matter'
+import fs from 'node:fs'
 
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import { cache } from 'react'
 
-import { compileMDX } from 'next-mdx-remote/rsc'
-import { MDXRemote } from 'next-mdx-remote'
-import remarkGFM from 'remark-gfm'
-import rehypePrismPlus from 'rehype-prism-plus'
-import { codesandbox, toc } from '@/utils/rehype'
 import Codesandbox, { fetchCSB } from '@/components/Codesandbox'
+import { codesandbox, toc } from '@/utils/rehype'
+import { MDXRemote } from 'next-mdx-remote'
+import { compileMDX } from 'next-mdx-remote/rsc'
+import rehypePrismPlus from 'rehype-prism-plus'
+import remarkGFM from 'remark-gfm'
 
 import * as components from '@/components/mdx'
 

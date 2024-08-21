@@ -1,8 +1,8 @@
 'use client'
 
-import * as React from 'react'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
+import * as React from 'react'
 
 export interface ToCProps {
   toc: DocToC[]

@@ -7,8 +7,8 @@ import { useKeyPress } from '@/hooks/useKeyPress'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 
 import Icon from '@/components/Icon'
-import { SearchModalContainer } from './SearchModalContainer'
 import cn from '@/lib/cn'
+import { SearchModalContainer } from './SearchModalContainer'
 
 function Search() {
   // const router = useRouter()
