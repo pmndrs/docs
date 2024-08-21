@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
-import { Inter, Inconsolata } from 'next/font/google'
-import './globals.css'
+import cn from '@/lib/cn'
 import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
+import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import cn from '@/lib/cn'
+import { Inconsolata, Inter } from 'next/font/google'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 const inconsolata = Inconsolata({ subsets: ['latin'] })

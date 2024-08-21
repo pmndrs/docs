@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from 'react'
+import Icon from '@/components/Icon'
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
+import cn from '@/lib/cn'
+import * as React from 'react'
 import { useDocs } from './DocsContext'
 import { useMenu } from './MenuContext'
-import Icon from '@/components/Icon'
-import cn from '@/lib/cn'
 
 export function Menu({
   header,

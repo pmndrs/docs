@@ -1,7 +1,7 @@
-import * as React from 'react'
 import Icon from '@/components/Icon'
-import SearchItem, { SearchResult } from './SearchItem'
 import cn from '@/lib/cn'
+import * as React from 'react'
+import SearchItem, { SearchResult } from './SearchItem'
 
 export interface SearchModelProps {
   search: string

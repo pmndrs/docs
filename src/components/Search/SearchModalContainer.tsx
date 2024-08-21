@@ -1,12 +1,11 @@
-import * as React from 'react'
-import { useRouter } from 'next/navigation'
 import { matchSorter } from 'match-sorter'
+import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
-import SearchModal from './SearchModal'
-import type { SearchResult } from './SearchItem'
 import { escape } from '@/utils/text'
+import type { SearchResult } from './SearchItem'
+import SearchModal from './SearchModal'
 
 export interface SearchModalContainerProps {
   onClose: React.MouseEventHandler<HTMLButtonElement>

@@ -1,6 +1,6 @@
-import defaultTheme from 'tailwindcss/defaultTheme'
+import { Options, withMaterialColors } from 'tailwind-material-colors'
 import type { Config } from 'tailwindcss'
-import { withMaterialColors, Options } from 'tailwind-material-colors'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
 const config: Config = {
   darkMode: 'class',
