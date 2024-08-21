@@ -4,6 +4,10 @@ const config = {
   singleQuote: true,
   printWidth: 100,
   plugins: [
+    {
+      name: 'prettier-plugin-organize-imports',
+      organizeImportsSkipDestructiveCodeActions: true,
+    },
     'prettier-plugin-tailwindcss', // MUST come last
   ],
 }

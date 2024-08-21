@@ -19,6 +19,7 @@
     "minimist": "^1.2.8",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "semantic-release": "^24.0.0",
     "tailwind-material-colors": "^3.0.2",
