@@ -12,6 +12,7 @@ import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
 
 import * as components from '@/components/mdx'
+import { Hint } from '@/components/mdx'
 
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import React from 'react'
@@ -168,8 +169,9 @@ async function _getDocs(
           },
         },
         components: {
-          Gha,
           ...(components as React.ComponentProps<typeof MDXRemote>['components']),
+          Gha,
+          Hint,
           Codesandbox: async (props: React.ComponentProps<typeof Codesandbox>) => {
             const ids = boxes // populated from 1.
             // console.log('ids', ids)

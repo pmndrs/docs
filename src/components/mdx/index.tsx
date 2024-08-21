@@ -10,7 +10,7 @@ function Heading({ id, Tag, ...props }: { id: string; Tag: Hn } & ComponentProps
   return (
     <a
       href={`#${id}`}
-      className="tracking-light mb-6 mt-8 block text-3xl font-bold text-on-surface no-underline hover:underline"
+      className="tracking-light my-6 mt-8 block text-3xl font-bold text-on-surface no-underline hover:underline"
     >
       <Tag id={id} {...props} />
     </a>
@@ -32,8 +32,8 @@ export const h6 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>
   <Heading id={id} Tag="h6" {...props} />
 )
 
-export const ul = (props: ComponentProps<'ul'>) => <ul className="mb-8 px-4" {...props} />
-export const ol = (props: ComponentProps<'ol'>) => <ol className="mb-8 px-4" {...props} />
+export const ul = (props: ComponentProps<'ul'>) => <ul className="my-4 mb-8 px-4" {...props} />
+export const ol = (props: ComponentProps<'ol'>) => <ol className="my-4 mb-8 px-4" {...props} />
 export const li = (props: ComponentProps<'li'>) => (
   <li
     className={cn(
@@ -44,10 +44,10 @@ export const li = (props: ComponentProps<'li'>) => (
   />
 )
 
-export const p = (props: ComponentProps<'p'>) => <p className="mb-4 text-base" {...props} />
+export const p = (props: ComponentProps<'p'>) => <p className="my-4 text-base" {...props} />
 
 export const blockquote = ({ children, className, ...props }: ComponentProps<'blockquote'>) => (
-  <blockquote className={cn('mb-8 border-l-4 pl-4 text-base', className)} {...props}>
+  <blockquote className={cn('my-8 border-l-4 pl-4 text-base', className)} {...props}>
     <div className="text-on-surface-variant/50">{children}</div>
   </blockquote>
 )
@@ -107,5 +107,5 @@ export const code = (props: ComponentProps<'code'>) => (
 
 export const details = (props: ComponentProps<'details'>) => <details className="ml-4" {...props} />
 export const summary = (props: ComponentProps<'summary'>) => (
-  <summary className="-ml-4 mb-2 cursor-pointer select-none" {...props} />
+  <summary className="my-2 -ml-4 cursor-pointer select-none" {...props} />
 )

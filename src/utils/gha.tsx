@@ -6,6 +6,8 @@ import { HiOutlineLightBulb } from 'react-icons/hi2'
 import { PiSealWarning, PiWarning } from 'react-icons/pi'
 import { rehypeGithubAlerts } from 'rehype-github-alerts'
 
+import { p as P } from '@/components/mdx'
+
 export const rehypeGha = (...args: Parameters<typeof rehypeGithubAlerts>) => {
   const [options] = args
 
@@ -66,12 +68,17 @@ export function Gha({ children, keyword }: { children: ReactNode; keyword?: stri
   const { icon, label, bg } = styles[keyword]
   const Icon = icon
 
+  // test if children is a string
+  if (typeof children === 'string') {
+    children = <P className="my-4">{children}</P>
+  }
+
   return (
-    <div className={cn('my-6 overflow-clip rounded-lg px-6 py-4', bg)}>
-      <p className="mb-2 flex items-center gap-2 text-lg font-semibold">
+    <div className={cn('my-6 overflow-clip rounded-lg px-6 py-2', bg)}>
+      <div className="my-4 flex items-center gap-2 text-lg font-semibold">
         <Icon />
         {label}
-      </p>
+      </div>
       {children}
     </div>
   )
