@@ -30,15 +30,27 @@ on:
       theme_primary:
         type: string
         default: '#323e48'
-      theme_hint:
-        type: string
-        default: '#d29922'
       theme_scheme:
         type: string
         default: 'tonalSpot'
       theme_contrast:
         type: string
         default: '0'
+      theme_note:
+        type: string
+        default: '#1f6feb'
+      theme_tip:
+        type: string
+        default: '#238636'
+      theme_important:
+        type: string
+        default: '#8957e5'
+      theme_warning:
+        type: string
+        default: '#d29922'
+      theme_caution:
+        type: string
+        default: '#da3633'
 
 jobs:
   build-job:
@@ -71,9 +83,13 @@ jobs:
             -e GITHUB \
             -e DISCORD \
             -e THEME_PRIMARY \
-            -e THEME_HINT \
             -e THEME_SCHEME \
             -e THEME_CONTRAST \
+            -e THEME_NOTE \
+            -e THEME_TIP \
+            -e THEME_IMPORTANT \
+            -e THEME_WARNING \
+            -e THEME_CAUTION \
             ghcr.io/pmndrs/docs:main npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
@@ -89,9 +105,13 @@ jobs:
           GITHUB: '${{ inputs.github }}'
           DISCORD: '${{ inputs.discord }}'
           THEME_PRIMARY: '${{ inputs.theme_primary }}'
-          THEME_HINT: '${{ inputs.theme_hint }}'
           THEME_SCHEME: '${{ inputs.theme_scheme }}'
           THEME_CONTRAST: '${{ inputs.theme_contrast }}'
+          THEME_NOTE: '${{ inputs.theme_note }}'
+          THEME_TIP: '${{ inputs.theme_tip }}'
+          THEME_IMPORTANT: '${{ inputs.theme_important }}'
+          THEME_WARNING: '${{ inputs.theme_warning }}'
+          THEME_CAUTION: '${{ inputs.theme_caution }}'
 
       - uses: actions/upload-pages-artifact@v3
         with:
