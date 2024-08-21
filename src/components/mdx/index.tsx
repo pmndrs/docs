@@ -46,8 +46,8 @@ export const li = (props: ComponentProps<'li'>) => (
 
 export const p = (props: ComponentProps<'p'>) => <p className="mb-4 text-base" {...props} />
 
-export const blockquote = ({ children }: ComponentProps<'blockquote'>) => (
-  <blockquote className="mb-8 border-l-4 pl-4 text-base">
+export const blockquote = ({ children, className, ...props }: ComponentProps<'blockquote'>) => (
+  <blockquote className={cn('mb-8 border-l-4 pl-4 text-base', className)} {...props}>
     <div className="text-on-surface-variant/50">{children}</div>
   </blockquote>
 )

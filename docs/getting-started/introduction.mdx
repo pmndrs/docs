@@ -33,9 +33,13 @@ $ npm ci
 | `GITHUB`                    | Github URL                                                                                                                                                               | `https://github.com/pmndrs/react-three-fiber`                                                    |
 | `DISCORD`                   | Discord URL                                                                                                                                                              | `https://discord.com/channels/740090768164651008/740093168770613279`                             |
 | `THEME_PRIMARY`             | Primary accent color (see: https://tailwind-material-colors-docs.vercel.app)                                                                                             | `#323e48`                                                                                        |
-| `THEME_HINT`                | Hint/Note color (see: https://tailwind-material-colors-docs.vercel.app)                                                                                                  | `#d29922`                                                                                        |
 | `THEME_SCHEME`              | Theme scheme (see: https://tailwind-material-colors-docs.vercel.app)                                                                                                     | `content` or `expressive` or `fidelity` or `monochrome` or `neutral` or `tonalSpot` or `vibrant` |
 | `THEME_CONTRAST`            | Theme contrast -- value between -1 and 1                                                                                                                                 | `0` or `-1` or `1` or `-.6`                                                                      |
+| `THEME_NOTE`                | "note" color                                                                                                                                                             | `#1f6feb`                                                                                        |
+| `THEME_TIP`                 | "tip" color                                                                                                                                                              | `#238636`                                                                                        |
+| `THEME_IMPORTANT`           | "important" color                                                                                                                                                        | `#8957e5`                                                                                        |
+| `THEME_WARNING`             | "warning" color                                                                                                                                                          | `#d29922`                                                                                        |
+| `THEME_CAUTION`             | "caution" color                                                                                                                                                          | `#da3633`                                                                                        |
 
 \* Required
 
@@ -84,9 +88,13 @@ $ (
   export GITHUB=https://github.com/pmndrs/docs
   export DISCORD=https://discord.com/channels/740090768164651008/1264328004172255393
   export THEME_PRIMARY="#323e48"
-  export THEME_HINT="#d29922"
   export THEME_SCHEME="tonalSpot"
-  export THEME_CONTRAST=0
+  export THEME_CONTRAST="0"
+  export THEME_NOTE="#1f6feb"
+  export THEME_TIP="#238636"
+  export THEME_IMPORTANT="#8957e5"
+  export THEME_WARNING="#d29922"
+  export THEME_CAUTION="#da3633"
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -126,9 +134,13 @@ $ (
   export GITHUB=https://github.com/pmndrs/docs
   export DISCORD=https://discord.com/channels/740090768164651008/1264328004172255393
   export THEME_PRIMARY="#323e48"
-  export THEME_HINT="#d29922"
   export THEME_SCHEME="tonalSpot"
-  export THEME_CONTRAST=0
+  export THEME_CONTRAST="0"
+  export THEME_NOTE="#1f6feb"
+  export THEME_TIP="#238636"
+  export THEME_IMPORTANT="#8957e5"
+  export THEME_WARNING="#d29922"
+  export THEME_CAUTION="#da3633"
 
   npm run build
 
@@ -169,9 +181,13 @@ $ (
   export GITHUB=https://github.com/pmndrs/react-three-fiber
   export DISCORD=https://discord.com/channels/740090768164651008/740093168770613279
   export THEME_PRIMARY="#323e48"
-  export THEME_HINT="#d29922"
   export THEME_SCHEME="tonalSpot"
-  export THEME_CONTRAST=0
+  export THEME_CONTRAST="0"
+  export THEME_NOTE="#1f6feb"
+  export THEME_TIP="#238636"
+  export THEME_IMPORTANT="#8957e5"
+  export THEME_WARNING="#d29922"
+  export THEME_CAUTION="#da3633"
 
   rm -rf "$MDX/out"
 
@@ -191,9 +207,14 @@ $ (
     -e GITHUB \
     -e DISCORD \
     -e THEME_PRIMARY \
-    -e THEME_HINT \
     -e THEME_SCHEME \
     -e THEME_CONTRAST \
+    -e THEME_NOTE \
+    -e THEME_TIP \
+    -e THEME_IMPORTANT \
+    -e THEME_WARNING \
+    -e THEME_CAUTION \
+
     pmndrs-docs npm run build
 
   kill $(lsof -ti:"$_PORT")
