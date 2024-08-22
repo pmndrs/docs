@@ -99,6 +99,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{major}},value=v${{ needs.semantic-release-job.outputs.new_release_version }}
+            type=semver,pattern={{version}},value=v${{ needs.semantic-release-job.outputs.new_release_version }}
 
       - name: Build and push Docker image
         id: push
