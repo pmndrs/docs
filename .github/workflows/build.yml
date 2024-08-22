@@ -90,7 +90,7 @@ jobs:
             -e THEME_IMPORTANT \
             -e THEME_WARNING \
             -e THEME_CAUTION \
-            ghcr.io/pmndrs/docs:main npm run build
+            ghcr.io/pmndrs/docs:1 npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}
