@@ -29,19 +29,74 @@ Any key is optional.
 
 ### MARKDOWN
 
-#### GitHub Alerts
+All exported [`components/mdx/index.tsx`](components/mdx/index.tsx) React components will have MDX treatment.
+
+#### `Grid`
+
+Responsive grid.
+
+```md
+<Grid cols={2}>
+  <li>A</li>
+  <li>B</li>
+  <li>C</li>
+  ...
+</Grid>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Grid cols={2}>
+  <li>A</li>
+  <li>B</li>
+  <li>C</li>
+  <li>D</li>
+  <li>E</li>
+  <li>F</li>
+  <li>G</li>
+</Grid>
+
+</details>
+
+#### `Codesandbox`
+
+```md
+<Codesandbox id="3rjsl" />
+```
+
+<details>
+  <summary>Result</summary>
+
+<Codesandbox id="3rjsl" />
+
+</details>
+
+#### `Gha`
+
+Aka. ["GitHub alerts"](https://github.com/orgs/community/discussions/16925)
+
+```md
+<Gha keyword="NOTE">Highlights information that users should take into account, even when skimming.</Gha>
+```
+
+or better:
+
+```md
+> [!NOTE]
+> Highlights information that users should take into account, even when skimming.
+```
+
+<details>
+  <summary>Result</summary>
 
 > [!NOTE]
 > Highlights information that users should take into account, even when skimming.
->
-> ```md
-> > [!NOTE]
-> > Highlights information that users should take into account, even when skimming.
-> ```
->
-> like this
 
-We support: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION` (see: https://github.com/orgs/community/discussions/16925)
+</details>
+
+<details>
+  <summary>We also support: `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`</summary>
 
 > [!TIP]
 > Optional information to help a user be more successful.
@@ -54,3 +109,23 @@ We support: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION` (see: https://githu
 
 > [!CAUTION]
 > Negative potential consequences of an action.
+
+</details>
+
+#### `Hint`
+
+> [!CAUTION]
+> Deprecated, use [`Gha[keyword="NOTE"]`](#Gha) instead.
+
+```md
+<Hint>
+  I'm a deprecated hint. Use `Gha` instead.
+</Hint>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Hint>I'm a deprecated hint. Use `Gha` instead.</Hint>
+
+</details>

@@ -1,22 +1,17 @@
-import matter from 'gray-matter'
-import fs from 'node:fs'
-
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
-import { cache } from 'react'
-
-import Codesandbox, { fetchCSB } from '@/components/Codesandbox'
-import { codesandbox, toc } from '@/utils/rehype'
-import { MDXRemote } from 'next-mdx-remote'
+import * as components from '@/components/mdx'
+import { Codesandbox } from '@/components/mdx/Codesandbox'
+import { fetchCSB } from '@/components/mdx/Codesandbox/fetchCSB'
+import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
+import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
+import resolveMdxUrl from '@/utils/resolveMdxUrl'
+import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
+import fs from 'node:fs'
+import React, { cache } from 'react'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
-
-import * as components from '@/components/mdx'
-import { Hint } from '@/components/mdx'
-
-import resolveMdxUrl from '@/utils/resolveMdxUrl'
-import React from 'react'
-import { Gha, rehypeGha } from './gha'
 
 /**
  * Checks for .md(x) file extension
@@ -163,15 +158,13 @@ async function _getDocs(
             rehypePlugins: [
               rehypeGha,
               rehypePrismPlus,
-              codesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
-              toc(tableOfContents, url, title, content), // 2. will populate `doc.tableOfContents`
+              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
+              rehypeToc(tableOfContents, url, title, content), // 2. will populate `doc.tableOfContents`
             ],
           },
         },
         components: {
-          ...(components as React.ComponentProps<typeof MDXRemote>['components']),
-          Gha,
-          Hint,
+          ...components,
           Codesandbox: async (props: React.ComponentProps<typeof Codesandbox>) => {
             const ids = boxes // populated from 1.
             // console.log('ids', ids)

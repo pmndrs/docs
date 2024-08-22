@@ -1,12 +1,15 @@
+export * from './Codesandbox'
+export * from './Gha'
+export * from './Grid'
+export * from './Hint'
+export * from './Toc'
+
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
 import { ComponentProps } from 'react'
 
-export * from './Grid'
-export * from './Hint'
-
-type Hn = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-function Heading({ id, Tag, ...props }: { id: string; Tag: Hn } & ComponentProps<Hn>) {
+type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
   return (
     <a
       href={`#${id}`}

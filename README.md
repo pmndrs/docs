@@ -1,3 +1,3 @@
-[![](docs/getting-started/gutenberg.jpg)](https://docs.pmnd.rs/getting-started/introduction)
+[![](docs/getting-started/gutenberg.jpg)](docs/getting-started/introduction.mdx)
 
-Documentation: https://docs.pmnd.rs/getting-started/introduction
+[docs/getting-started/introduction.mdx](docs/getting-started/introduction.mdx)

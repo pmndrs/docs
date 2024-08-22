@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import Nav from '@/components/Nav'
 import Search from '@/components/Search'
-import Toc from '@/components/Toc'
+import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
 import { getData } from '@/utils/docs'
 import Link from 'next/link'

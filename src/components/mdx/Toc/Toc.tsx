@@ -4,11 +4,7 @@ import type { DocToC } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
 import * as React from 'react'
 
-export interface ToCProps {
-  toc: DocToC[]
-}
-
-function Toc({ toc }: ToCProps) {
+export function Toc({ toc }: { toc: DocToC[] }) {
   // console.log('toc', toc)
   const [activeIndex, setActiveIndex] = React.useState(0)
 
@@ -54,5 +50,3 @@ function Toc({ toc }: ToCProps) {
     </div>
   )
 }
-
-export default Toc

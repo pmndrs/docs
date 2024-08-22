@@ -4,29 +4,8 @@ import { BiCommentError } from 'react-icons/bi'
 import { CgInfo } from 'react-icons/cg'
 import { HiOutlineLightBulb } from 'react-icons/hi2'
 import { PiSealWarning, PiWarning } from 'react-icons/pi'
-import { rehypeGithubAlerts } from 'rehype-github-alerts'
 
 import { p as P } from '@/components/mdx'
-
-export const rehypeGha = (...args: Parameters<typeof rehypeGithubAlerts>) => {
-  const [options] = args
-
-  return rehypeGithubAlerts({
-    ...options,
-    build(alertOptions, originalChildren) {
-      return {
-        type: 'element',
-        tagName: 'Gha',
-        properties: {
-          keyword: alertOptions.keyword,
-          icon: alertOptions.icon as any,
-          title: alertOptions.title,
-        },
-        children: [...originalChildren],
-      }
-    },
-  })
-}
 
 type Style = {
   icon: React.ComponentType
