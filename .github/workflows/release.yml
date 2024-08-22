@@ -89,8 +89,8 @@ jobs:
       - name: Update `vX.Y.Z` + `vX` git tag
         run: |
           VERSION=${{ needs.vercel-job.outputs.new_release_version }}
-          MAJOR_VERSION=${{ needs.vercel-job.outputs.new_release_major_version }}
           git tag $VERSION
+          MAJOR_VERSION=${{ needs.vercel-job.outputs.new_release_major_version }}
           git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
           git push origin v$MAJOR_VERSION --force
 
@@ -99,9 +99,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}
 
       - name: Build and push Docker image
         id: push
