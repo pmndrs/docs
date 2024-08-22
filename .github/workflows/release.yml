@@ -57,6 +57,9 @@ jobs:
       new_release_major_version: ${{ steps.semantic_release.outputs.new_release_major_version }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - id: semantic_release
         uses: cycjimmy/semantic-release-action@v4
         with:
