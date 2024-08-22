@@ -74,7 +74,7 @@ jobs:
     if: needs.semantic-release-job.outputs.new_release_version != ''
 
     permissions:
-      contents: read
+      contents: write
       packages: write
       attestations: write
       id-token: write
