@@ -70,19 +70,27 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # will generate a git tag => then, used by docker/metadata-action
-      - name: Semantic Release
-        id: semantic_release
+      - id: semantic_release
         uses: cycjimmy/semantic-release-action@v4
         with:
           semantic_version: 24
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
+      - name: Update `vX` git tag
+        run: |
+          MAJOR_VERSION=${{ steps.semantic_release.outputs.new_release_major_version }}
+          git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
+          git push origin v$MAJOR_VERSION --force
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}
 
       - name: Build and push Docker image
         id: push
