@@ -8,8 +8,29 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  semantic-release-job:
+    runs-on: ubuntu-latest
+
+    outputs:
+      new_release_version: ${{ steps.semantic_release.outputs.new_release_version }}
+      new_release_major_version: ${{ steps.semantic_release.outputs.new_release_major_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - id: semantic_release
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 24
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   vercel-job:
     runs-on: ubuntu-latest
+    needs: semantic-release-job
+    if: needs.semantic-release-job.outputs.new_release_version != ''
+
     # Update the "Production" environment with the Vercel deployed URL
     environment:
       name: Production
@@ -49,23 +70,6 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-  semantic-release-job:
-    runs-on: ubuntu-latest
-    outputs:
-      new_release_version: ${{ steps.semantic_release.outputs.new_release_version }}
-      new_release_major_version: ${{ steps.semantic_release.outputs.new_release_major_version }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - id: semantic_release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          semantic_version: 24
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
   docker-job:
