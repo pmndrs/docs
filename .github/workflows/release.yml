@@ -90,15 +90,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update `vX` git tag
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
-
-          MAJOR_VERSION=${{ needs.semantic-release-job.outputs.new_release_major_version }}
-          git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
-          git push origin v$MAJOR_VERSION --force
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -120,3 +111,12 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+      - name: Update `vX` git tag
+        run: |
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
+
+          MAJOR_VERSION=${{ needs.semantic-release-job.outputs.new_release_major_version }}
+          git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
+          git push origin v$MAJOR_VERSION --force
