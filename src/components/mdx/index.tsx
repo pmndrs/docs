@@ -38,7 +38,9 @@ export const h6 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>
 export const ul = (props: ComponentProps<'ul'>) => (
   <ul className="my-4 mb-8 ms-6 list-disc" {...props} />
 )
-export const ol = (props: ComponentProps<'ol'>) => <ol className="my-4 mb-8 px-4" {...props} />
+export const ol = (props: ComponentProps<'ol'>) => (
+  <ol className="my-4 mb-8 ms-6 list-decimal" {...props} />
+)
 export const li = (props: ComponentProps<'li'>) => <li className="my-1" {...props} />
 
 export const p = (props: ComponentProps<'p'>) => <p className="my-4 text-base" {...props} />
