@@ -36,7 +36,7 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
         ({ tableOfContents }) => tableOfContents,
       ) satisfies SearchResult[]
       // console.log('candidateResults', candidateResults)
-      candidateResults = candidateResults.filter((entry) => entry.description.length > 0)
+      // candidateResults = candidateResults.filter((entry) => entry.description.length > 0)
       // .concat(
       //   Object.entries(boxes).flatMap(([id, data]) => ({
       //     ...data,

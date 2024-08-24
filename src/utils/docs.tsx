@@ -159,7 +159,7 @@ async function _getDocs(
               rehypeGha,
               rehypePrismPlus,
               rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
-              rehypeToc(tableOfContents, url, title, content), // 2. will populate `doc.tableOfContents`
+              rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
             ],
           },
         },

@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export interface SearchResult {
   title: string
-  description: string
+  content: string
   url: string
   label: string
   image?: string
@@ -25,13 +25,13 @@ function SearchItem({ search, result }: SearchItemProps) {
       <li className="px-2 py-1">
         <div className="interactive-bg-surface-container-high flex items-center justify-between rounded-md p-4 py-5 transition-colors">
           <span
-            className="pr-3"
+            className="break-all pr-3"
             dangerouslySetInnerHTML={{
               __html: `
                   <span class="block text-xs text-on-surface-variant/50 pb-1">${result.label}</span>
                   ${highlight(result.title, search)}
                   <span class="block text-sm text-on-surface-variant/50 pt-2">
-                    ${highlight(result.description, search)}
+                    ${highlight(result.content, search)}
                   </span>
                 `,
             }}

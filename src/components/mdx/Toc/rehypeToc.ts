@@ -25,7 +25,7 @@ const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
 /**
  * Generates a table of contents from page headings.
  */
-export const rehypeToc = (target: DocToC[] = [], url: string, page: string, content: string) => {
+export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
   return () => (root: Node) => {
     const previous: Record<number, DocToC> = {}
 
@@ -39,10 +39,20 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string, cont
         const id = slugify(title)
         node.properties.id = id
 
-        let siblingIndex = i + 1
-        let sibling: Node | undefined = root.children[siblingIndex]
-        while (sibling?.type === 'text') sibling = root.children[siblingIndex++]
-        const description = sibling?.tagName === 'p' ? toString(sibling) : ''
+        // let siblingIndex = i + 1
+        // let sibling: Node | undefined = root.children[siblingIndex]
+        // while (sibling?.type === 'text') sibling = root.children[siblingIndex++]
+        // const description = sibling?.tagName === 'p' ? toString(sibling) : ''
+
+        let siblingIndex2 = i + 1
+        const content: string[] = []
+        let sibling2: Node | undefined = root.children[siblingIndex2]
+        while (sibling2) {
+          if (RegExp(`^h${level}$`).test(sibling2.tagName)) break
+
+          content.push(toString(sibling2))
+          sibling2 = root.children[siblingIndex2++]
+        }
 
         const item: DocToC = {
           id,
@@ -50,8 +60,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string, cont
           label: page,
           url: `${url}#${id}`,
           title,
-          description,
-          // content, // potentially too big to be in the ToC (perfs issue)
+          content: content.join(''),
           parent: previous[level - 2] ?? null,
         }
         previous[level - 1] = item
