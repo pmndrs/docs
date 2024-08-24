@@ -6,6 +6,7 @@ export * from './Toc'
 
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
+import { Sandpack } from '@codesandbox/sandpack-react'
 import { ComponentProps } from 'react'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -108,3 +109,5 @@ export const details = (props: ComponentProps<'details'>) => <details className=
 export const summary = (props: ComponentProps<'summary'>) => (
   <summary className="my-2 -ml-4 cursor-pointer select-none" {...props} />
 )
+
+export { Sandpack }
