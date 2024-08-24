@@ -18,7 +18,7 @@ export function Codesandbox({
   tags = [],
   //
   hideTitle = false,
-  embed = false,
+  embed = true,
 }: CSB & {
   hideTitle: boolean
   embed: boolean
