@@ -18,6 +18,8 @@ export interface SearchItemProps {
 function sanitizeAllHtmlButMark(str: string) {
   return sanitizeHtml(str, {
     allowedTags: ['mark'],
+    allowedAttributes: false,
+    disallowedTagsMode: 'escape',
   })
 }
 
@@ -38,16 +40,16 @@ function SearchItem({ search, result }: SearchItemProps) {
             //     `,
             // }}
           >
-            <div className="block pb-1 text-xs text-on-surface-variant/50">${result.label}</div>
+            <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
             <span
               dangerouslySetInnerHTML={{
-                __html: sanitizeAllHtmlButMark(highlight(result.title, search)),
+                __html: highlight(sanitizeAllHtmlButMark(result.title), search),
               }}
             />
             <div className="block pt-2 text-sm text-on-surface-variant/50">
               <span
                 dangerouslySetInnerHTML={{
-                  __html: sanitizeAllHtmlButMark(highlight(result.content, search)),
+                  __html: highlight(sanitizeAllHtmlButMark(result.content), search),
                 }}
               />
             </div>

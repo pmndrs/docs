@@ -48,7 +48,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
         const content: string[] = []
         let sibling2: Node | undefined = root.children[siblingIndex2]
         while (sibling2) {
-          if (RegExp(`^h${level}$`).test(sibling2.tagName)) break
+          if (RegExp(`^h${level}$`).test(sibling2.tagName)) break // stop at the next (same-level) heading
 
           content.push(toString(sibling2))
           sibling2 = root.children[siblingIndex2++]
