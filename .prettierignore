@@ -1,1 +1,4 @@
 .next
+
+# waiting for mdx3 support some day (https://github.com/prettier/prettier/issues/12209)
+*.mdx
