@@ -32,14 +32,7 @@ function SearchItem({ search, result }: SearchItemProps) {
     >
       <li className="px-2 py-1">
         <div className="interactive-bg-surface-container-high flex items-center justify-between rounded-md p-4 py-5 transition-colors">
-          <div
-            className="break-all pr-3"
-            // dangerouslySetInnerHTML={{
-            //   __html: `
-
-            //     `,
-            // }}
-          >
+          <div className="break-all pr-3">
             <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
             <span
               dangerouslySetInnerHTML={{

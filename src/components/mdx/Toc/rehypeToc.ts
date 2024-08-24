@@ -39,19 +39,18 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
         const id = slugify(title)
         node.properties.id = id
 
-        // let siblingIndex = i + 1
-        // let sibling: Node | undefined = root.children[siblingIndex]
-        // while (sibling?.type === 'text') sibling = root.children[siblingIndex++]
-        // const description = sibling?.tagName === 'p' ? toString(sibling) : ''
+        //
+        // Extract content for each heading
+        //
 
-        let siblingIndex2 = i + 1
+        let siblingIndex = i + 1
         const content: string[] = []
-        let sibling2: Node | undefined = root.children[siblingIndex2]
-        while (sibling2) {
-          if (RegExp(`^h${level}$`).test(sibling2.tagName)) break // stop at the next (same-level) heading
+        let sibling: Node | undefined = root.children[siblingIndex]
+        while (sibling) {
+          if (RegExp(`^h${level}$`).test(sibling.tagName)) break // stop at the next (same-level) heading
 
-          content.push(toString(sibling2))
-          sibling2 = root.children[siblingIndex2++]
+          content.push(toString(sibling))
+          sibling = root.children[siblingIndex++]
         }
 
         const item: DocToC = {
