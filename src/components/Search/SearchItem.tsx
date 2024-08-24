@@ -1,10 +1,11 @@
 import Icon from '@/components/Icon'
 import { highlight } from '@/utils/text'
 import Link from 'next/link'
+import sanitizeHtml from 'sanitize-html'
 
 export interface SearchResult {
   title: string
-  description: string
+  content: string
   url: string
   label: string
   image?: string
@@ -13,6 +14,13 @@ export interface SearchResult {
 export interface SearchItemProps {
   search: string
   result: SearchResult
+}
+function sanitizeAllHtmlButMark(str: string) {
+  return sanitizeHtml(str, {
+    allowedTags: ['mark'],
+    allowedAttributes: false,
+    disallowedTagsMode: 'escape',
+  })
 }
 
 function SearchItem({ search, result }: SearchItemProps) {
@@ -24,18 +32,21 @@ function SearchItem({ search, result }: SearchItemProps) {
     >
       <li className="px-2 py-1">
         <div className="interactive-bg-surface-container-high flex items-center justify-between rounded-md p-4 py-5 transition-colors">
-          <span
-            className="pr-3"
-            dangerouslySetInnerHTML={{
-              __html: `
-                  <span class="block text-xs text-on-surface-variant/50 pb-1">${result.label}</span>
-                  ${highlight(result.title, search)}
-                  <span class="block text-sm text-on-surface-variant/50 pt-2">
-                    ${highlight(result.description, search)}
-                  </span>
-                `,
-            }}
-          />
+          <div className="break-all pr-3">
+            <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: highlight(sanitizeAllHtmlButMark(result.title), search),
+              }}
+            />
+            <div className="block pt-2 text-sm text-on-surface-variant/50">
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: highlight(sanitizeAllHtmlButMark(result.content), search),
+                }}
+              />
+            </div>
+          </div>
           {result.image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />

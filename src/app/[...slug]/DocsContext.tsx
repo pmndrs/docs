@@ -7,8 +7,7 @@ export type DocToC = {
   id: string
   level: number
   title: string
-  description: string
-  // content: string
+  content: string
   url: string
   parent: DocToC | null
   label: string
