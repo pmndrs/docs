@@ -25,6 +25,9 @@ const slugify = (title: string) => title.toLowerCase().replace(/\s+|-+/g, '-')
 /**
  * Generates a table of contents from page headings.
  */
+
+const isHeading = (node: Node) => /^h[1-6]$/.test(node.tagName)
+
 export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
   return () => (root: Node) => {
     const previous: Record<number, DocToC> = {}
@@ -32,7 +35,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
     for (let i = 0; i < root.children.length; i++) {
       const node = root.children[i]
 
-      if (node.type === 'element' && /^h[1-4]$/.test(node.tagName)) {
+      if (isHeading(node)) {
         const level = parseInt(node.tagName[1])
 
         const title = toString(node)
@@ -45,9 +48,9 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
 
         let siblingIndex = i + 1
         const content: string[] = []
-        let sibling: Node | undefined = root.children[siblingIndex]
+        let sibling: Node = root.children[siblingIndex]
         while (sibling) {
-          if (RegExp(`^h${level}$`).test(sibling.tagName)) break // stop at the next (same-level) heading
+          if (isHeading(sibling)) break // stop at the next heading
 
           content.push(toString(sibling))
           sibling = root.children[siblingIndex++]
