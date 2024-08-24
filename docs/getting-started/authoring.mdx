@@ -73,6 +73,14 @@ See https://sandpack.codesandbox.io/docs/getting-started/usage.
     },
   }}
   files={{
+    '/styles.css': `html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}`,
     '/Box.js': `import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 
@@ -125,6 +133,14 @@ export default function App() {
     },
   }}
   files={{
+    '/styles.css': `html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}`,
     '/Box.js': `import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 
@@ -135,20 +151,20 @@ export function Box(props) {
   useFrame((state, delta) => (meshRef.current.rotation.x += delta))
 
 return (
+
 <mesh
-{...props}
-ref={meshRef}
-scale={active ? 1.5 : 1}
-onClick={(event) => setActive(!active)}
-onPointerOver={(event) => setHover(true)}
-onPointerOut={(event) => setHover(false)} >
-<boxGeometry args={[1, 1, 1]} />
-<meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+  {...props}
+  ref={meshRef}
+  scale={active ? 1.5 : 1}
+  onClick={(event) => setActive(!active)}
+  onPointerOver={(event) => setHover(true)}
+  onPointerOut={(event) => setHover(false)}
+>
+  <boxGeometry args={[1, 1, 1]} />
+  <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
 </mesh>
-)
-}`,
-    '/App.js': `import {Canvas} from '@react-three/fiber'
-import {Box} from './Box'
+) }`, '/App.js': `import {Canvas} from '@react-three/fiber' import {Box} from './Box' import
+'./styles.css'
 
 export default function App() {
   return (
