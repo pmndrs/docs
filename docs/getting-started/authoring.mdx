@@ -125,7 +125,8 @@ export default function App() {
 <details>
   <summary>Result</summary>
 
-<Sandpack template="react"
+<Sandpack
+  template="react"
   customSetup={{
     dependencies: {
       '@react-three/fiber': 'latest',
@@ -151,20 +152,20 @@ export function Box(props) {
   useFrame((state, delta) => (meshRef.current.rotation.x += delta))
 
 return (
-
 <mesh
-  {...props}
-  ref={meshRef}
-  scale={active ? 1.5 : 1}
-  onClick={(event) => setActive(!active)}
-  onPointerOver={(event) => setHover(true)}
-  onPointerOut={(event) => setHover(false)}
->
-  <boxGeometry args={[1, 1, 1]} />
-  <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+{...props}
+ref={meshRef}
+scale={active ? 1.5 : 1}
+onClick={(event) => setActive(!active)}
+onPointerOver={(event) => setHover(true)}
+onPointerOut={(event) => setHover(false)} >
+<boxGeometry args={[1, 1, 1]} />
+<meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
 </mesh>
-) }`, '/App.js': `import {Canvas} from '@react-three/fiber' import {Box} from './Box' import
-'./styles.css'
+)
+}`,
+    '/App.js': `import {Canvas} from '@react-three/fiber'
+import {Box} from './Box'
 
 export default function App() {
   return (
