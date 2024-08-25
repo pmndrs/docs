@@ -61,60 +61,29 @@ Responsive grid.
 
 #### `Sandpack`
 
-See https://sandpack.codesandbox.io/docs/getting-started/usage.
+See [Sandpack docs](https://sandpack.codesandbox.io/docs/getting-started/usage).
 
 ```tsx
 <Sandpack
-  template="react"
+  template="react-ts"
   customSetup={{
     dependencies: {
+      'three': 'latest',
       '@react-three/fiber': 'latest',
-      three: 'latest',
+      '@react-three/drei': 'latest'
     },
   }}
   files={{
-    '/styles.css': `html,
-body,
-#root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}`,
-    '/Box.js': `import { useRef, useState } from 'react'
-import { useFrame } from '@react-three/fiber'
-
-export function Box(props) {
-  const meshRef = useRef()
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
-
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}`,
-    '/App.js': `import {Canvas} from '@react-three/fiber'
-import {Box} from './Box'
+    '/styles.css': `html,body,#root {height:100%;margin:unset;}`,
+    '/App.tsx': `import { Canvas } from '@react-three/fiber'
+import { Cloud, CameraControls } from '@react-three/drei'
 
 export default function App() {
   return (
-    <Canvas>
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
+    <Canvas camera={{position: [0,-13,0]}}>
+      <Cloud speed={.4} growth={6} />
+      <ambientLight intensity={Math.PI} />
+      <CameraControls />
     </Canvas>
   )
 }`,
@@ -126,56 +95,25 @@ export default function App() {
   <summary>Result</summary>
 
 <Sandpack
-  template="react"
+  template="react-ts"
   customSetup={{
     dependencies: {
+      'three': 'latest',
       '@react-three/fiber': 'latest',
-      three: 'latest',
+      '@react-three/drei': 'latest'
     },
   }}
   files={{
-    '/styles.css': `html,
-body,
-#root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}`,
-    '/Box.js': `import { useRef, useState } from 'react'
-import { useFrame } from '@react-three/fiber'
-
-export function Box(props) {
-  const meshRef = useRef()
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
-
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}`,
-    '/App.js': `import {Canvas} from '@react-three/fiber'
-import {Box} from './Box'
+    '/styles.css': `html,body,#root {height:100%;margin:unset;}`,
+    '/App.tsx': `import { Canvas } from '@react-three/fiber'
+import { Cloud, CameraControls } from '@react-three/drei'
 
 export default function App() {
   return (
-    <Canvas>
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
+    <Canvas camera={{position: [0,-13,0]}}>
+      <Cloud speed={.4} growth={6} />
+      <ambientLight intensity={Math.PI} />
+      <CameraControls />
     </Canvas>
   )
 }`,
