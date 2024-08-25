@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { Inconsolata, Inter } from 'next/font/google'
 import './globals.css'
+import './sandpack.css'
 
 const inter = Inter({ subsets: ['latin'] })
 const inconsolata = Inconsolata({ subsets: ['latin'] })
