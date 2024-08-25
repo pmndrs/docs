@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { Inconsolata, Inter } from 'next/font/google'
 import './globals.css'
+import { SandpackCSS } from './sandpack-styles'
 
 const inter = Inter({ subsets: ['latin'] })
 const inconsolata = Inconsolata({ subsets: ['latin'] })
@@ -56,6 +57,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <SandpackCSS />
+      </head>
       <body className={cn(inter.className, 'bg-surface')}>
         <ThemeProvider
         // attribute="class"
