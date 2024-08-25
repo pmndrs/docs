@@ -84,16 +84,14 @@ export const a = ({ href, target, rel, ...props }: ComponentProps<'a'>) => {
   return <a {...props} href={href} target={target} rel={rel} className="text-primary" />
 }
 
-export const img = ({ src, alt, width, height, className, ...rest }: ComponentProps<'img'>) => (
+export const img = ({ src, alt, className, ...rest }: ComponentProps<'img'>) => (
   // eslint-disable-next-line @next/next/no-img-element
   <img
     src={src}
     decoding="async"
     loading="lazy"
     alt={alt}
-    width={width}
-    height={height}
-    className={cn('bg-surface-container', className)}
+    className={cn('bg-surface-container inline-block', className)}
     {...rest}
   />
 )
