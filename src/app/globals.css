@@ -162,8 +162,8 @@ pre[class*='language-'] {
 }
 
 .code-highlight {
-  float: left; /* 1 */
-  min-width: 100%; /* 2 */
+  float: left;
+  min-width: 100%;
 }
 
 .code-line {
