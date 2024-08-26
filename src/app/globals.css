@@ -68,8 +68,14 @@ pre[class*='language-'] {
   --keyword: #add7ff;
   --literal: #fffac2;
   --falsy: #f087bd;
+  --ins: rgba(16, 185, 129, 0.2);
+  --del: rgba(239, 68, 68, 0.2);
+  --highlight: rgba(55, 65, 81, 0.5);
+  --highlight-linenumber: rgb(59, 130, 246);
+  --linenumber-border-width: theme('space.1');
+  --pad: theme('space.6');
 
-  @apply my-5 overflow-auto rounded-lg p-6 font-mono text-sm;
+  @apply my-5 overflow-auto rounded-lg p-[--pad] font-mono text-sm;
 }
 
 :not(pre) > code[class*='language-'],
@@ -161,31 +167,46 @@ pre[class*='language-'] {
   cursor: help;
 }
 
+/*
+ * For line highlighting and line numbers
+ *
+ * - from https://github.com/timlrx/rehype-prism-plus?tab=readme-ov-file#styling)
+ * - adapted with `--pad` prop (value from pre's padding)
+ */
+
 .code-highlight {
-  float: left;
-  min-width: 100%;
+  float: left; /* 1 */
+  min-width: 100%; /* 2 */
 }
 
 .code-line {
   display: block;
-  padding-left: 16px;
-  padding-right: 16px;
-  margin-left: -16px;
-  margin-right: -16px;
+  border-left: var(--linenumber-border-width) solid transparent; /* Set placeholder for highlight accent border color to transparent */
+
+  @apply -mx-[--pad] px-[--pad];
+}
+
+.code-line.inserted {
+  background-color: var(--ins); /* Set inserted line (+) color */
+}
+.code-line.deleted {
+  background-color: var(--del); /* Set deleted line (-) color */
 }
 
 .highlight-line {
-  margin-left: -16px;
-  margin-right: -16px;
-  background-color: rgba(113, 124, 180, 0.145);
+  background-color: var(--highlight); /* Set highlight bg color */
+  border-left: var(--linenumber-border-width) solid var(--highlight-linenumber); /* Set highlight accent border color */
+  @apply -mx-[--pad];
 }
 
 .line-number::before {
-  display: inline-block;
-  width: 1rem;
-  text-align: right;
-  margin-right: 16px;
-  margin-left: -8px;
-  color: rgba(118, 124, 157, 0.314);
+  --w: 3ch;
   content: attr(line);
+  display: inline-block;
+  width: var(--w);
+  text-align: right;
+  color: var(--comment); /* Line number color */
+
+  @apply mr-[calc(var(--pad)/2)];
+  /* @apply -ml-[calc(var(--w)/2)]; */
 }
