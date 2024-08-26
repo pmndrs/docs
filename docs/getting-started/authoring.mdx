@@ -31,6 +31,38 @@ Any key is optional.
 
 All exported [`components/mdx/index.tsx`](components/mdx/index.tsx) React components will have MDX treatment.
 
+#### `img`
+
+Relative images are supported. Eg, inside your [`MDX`](introduction#configuration:~:text=MDX) folder:
+```text {2}
+|-- getting-started
+|   |-- authoring.mdx  <= relative to this article
+|   `-- gutenberg.jpg
+```
+
+```md
+---
+title: Authoring
+---
+
+<img src='gutenberg.jpg' />
+```
+
+<details>
+  <summary>Result</summary>
+
+<img src="./gutenberg.jpg" />
+
+</details>
+
+> [!IMPORTANT]
+> To avoid layout-shifts, always provides `[width]`/`[height]` img's attributes:
+> ```md
+> <img src='gutenberg.jpg' width="1100" height="685" />
+> ```
+
+> [!NOTE]
+> See [`MDX_BASEURL`](introduction#configuration:~:text=MDX_BASEURL) to understand how it is converted to a full `http://localhost:60141/getting-started/gutenberg.jpg` URL.
 
 #### Code
 
