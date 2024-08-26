@@ -71,22 +71,84 @@ title: Authoring
 
 #### Code
 
-Some hidden features:
+Line numbers/highlights are supported:
 
-```tsx {1,3-4} showLineNumbers
-It is possible to display lines of code: use the `showLineNumbers`
+````md
+```tsx {1,4-6} showLineNumbers
+type Props = {who: string}
 
-You can also highlight some lines:
-here {1,3-4}
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
 ```
-```tsx {3} showLineNumbers=150
-You can start at `showLineNumbers=150`
+````
 
-still highlighting lines
-here {3}
+<details>
+  <summary>Result</summary>
+
+```tsx {1,4-6} showLineNumbers
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
 ```
 
-ins/del `diff` supported too:
+</details>
+
+You can start at a specific `X` line number `showLineNumbers=X`:
+
+````md
+```tsx {1,4-6} showLineNumbers=150
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
+```
+````
+
+<details>
+  <summary>Result</summary>
+
+```tsx {1,4-6} showLineNumbers=150
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
+```
+
+</details>
+
+`diff` format is supported:
+
+````md
+```diff
+diff --git a/example.txt b/example.txt
+index 8c3317a..47ea956 100644
+--- a/example.txt
++++ b/example.txt
+@@ -1,4 +1,4 @@
+-Hello, World!
++Hello, GitHub World!
+ Here are some changes:
+-This line will be modified.
++This line has been modified.
+ This line will stay the same.
+```
+````
+
+<details>
+  <summary>Result</summary>
 
 ```diff
 diff --git a/example.txt b/example.txt
@@ -101,6 +163,8 @@ index 8c3317a..47ea956 100644
 +This line has been modified.
  This line will stay the same.
 ```
+
+</details>
 
 #### `Grid`
 
