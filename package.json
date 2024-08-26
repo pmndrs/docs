@@ -14,7 +14,7 @@
     "@types/sanitize-html": "^2.13.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.5",
+    "eslint-config-next": "^14.2.6",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.9",
     "minimist": "^1.2.8",
