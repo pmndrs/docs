@@ -42,7 +42,6 @@ export function Codesandbox({
         >
           {screenshot_url && (
             <Image
-              className="bg-surface-container rounded-lg"
               src={screenshot_url}
               placeholder="empty"
               alt={title}

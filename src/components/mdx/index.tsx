@@ -84,16 +84,9 @@ export const a = ({ href, target, rel, ...props }: ComponentProps<'a'>) => {
   return <a {...props} href={href} target={target} rel={rel} className="text-primary" />
 }
 
-export const img = ({ src, alt, className, ...rest }: ComponentProps<'img'>) => (
+export const img = ({ src, alt = '', ...props }: ComponentProps<'img'>) => (
   // eslint-disable-next-line @next/next/no-img-element
-  <img
-    src={src}
-    decoding="async"
-    loading="lazy"
-    alt={alt}
-    className={cn('bg-surface-container inline-block', className)}
-    {...rest}
-  />
+  <img src={src} decoding="async" loading="lazy" alt={alt} {...props} />
 )
 
 export const code = (props: ComponentProps<'code'>) => (
