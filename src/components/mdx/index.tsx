@@ -2,12 +2,14 @@ export * from './Codesandbox'
 export * from './Gha'
 export * from './Grid'
 export * from './Hint'
+export * from './Img'
 export * from './Toc'
 
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
 import { Sandpack as SP } from '@codesandbox/sandpack-react'
 import { ComponentProps } from 'react'
+import { Img } from './Img'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
@@ -84,10 +86,7 @@ export const a = ({ href, target, rel, ...props }: ComponentProps<'a'>) => {
   return <a {...props} href={href} target={target} rel={rel} className="text-primary" />
 }
 
-export const img = ({ src, alt = '', ...props }: ComponentProps<'img'>) => (
-  // eslint-disable-next-line @next/next/no-img-element
-  <img src={src} decoding="async" loading="lazy" alt={alt} {...props} />
-)
+export const img = Img
 
 export const code = (props: ComponentProps<'code'>) => (
   <code

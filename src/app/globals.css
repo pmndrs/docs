@@ -21,13 +21,6 @@ body {
 @tailwind utilities;
 /* Stop purging. */
 
-@layer utilities {
-  img,
-  .img {
-    @apply bg-surface-container inline-block rounded-lg;
-  }
-}
-
 /* Your own custom utilities */
 @supports (position: sticky) {
   @media (min-width: theme('screens.lg')) {
