@@ -37,10 +37,6 @@ body {
   scroll-margin-top: theme('spacing.20'); /* <Search />'s h-16 + more spacing */
 }
 
-details {
-  @apply my-4;
-}
-
 /**
  * Pmndrs theme for JavaScript, CSS and HTML
  * Loosely based on https://marketplace.visualstudio.com/items?itemName=pmndrs.pmndrs

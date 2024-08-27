@@ -3,8 +3,10 @@ import * as components from '@/components/mdx'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { fetchCSB } from '@/components/mdx/Codesandbox/fetchCSB'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
+import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
@@ -158,6 +160,8 @@ async function _getDocs(
             remarkPlugins: [remarkGFM],
             rehypePlugins: [
               rehypeImg,
+              rehypeDetails,
+              rehypeSummary,
               rehypeGha,
               rehypePrismPlus,
               rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`

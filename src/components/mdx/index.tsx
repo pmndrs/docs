@@ -1,8 +1,10 @@
 export * from './Codesandbox'
+export * from './Details'
 export * from './Gha'
 export * from './Grid'
 export * from './Hint'
 export * from './Img'
+export * from './Summary'
 export * from './Toc'
 
 import cn from '@/lib/cn'
