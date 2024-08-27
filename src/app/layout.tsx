@@ -60,7 +60,7 @@ export default function RootLayout({
       <head>
         <SandpackCSS />
       </head>
-      <body className={cn(inter.className, 'bg-surface')}>
+      <body className={cn(inter.className, 'bg-surface break-words')}>
         <ThemeProvider
         // attribute="class"
         // defaultTheme="system"
