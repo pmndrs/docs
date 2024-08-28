@@ -142,14 +142,6 @@ async function _getDocs(
       // inline images
       //
 
-      content = content.replace(
-        /(src="|\()(.+?\.(?:png|jpe?g|gif|webp|avif))("|\))/g, // https://regexper.com/#%2F%28src%3D%22%7C%5C%28%29%28.%2B%3F%5C.%28%3F%3Apng%7Cjpe%3Fg%7Cgif%7Cwebp%7Cavif%29%29%28%22%7C%5C%29%29%2Fg
-        (_input, prefix: string, src: string, suffix: string) => {
-          const url = resolveMdxUrl(src, relFilePath, MDX_BASEURL)
-          return `${prefix}${url}${suffix}`
-        },
-      )
-
       const boxes: string[] = []
       const tableOfContents: DocToC[] = []
 
@@ -159,7 +151,7 @@ async function _getDocs(
           mdxOptions: {
             remarkPlugins: [remarkGFM],
             rehypePlugins: [
-              rehypeImg,
+              rehypeImg(relFilePath, MDX_BASEURL),
               rehypeDetails,
               rehypeSummary,
               rehypeGha,
