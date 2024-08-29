@@ -6,6 +6,7 @@ on:
       mdx:
         required: true
         type: string
+        description: 'path to the MDX docs folder. Should be relative to the root of the repository, not starting with `./`, eg: `docs`'
       libname:
         required: true
         type: string
@@ -67,7 +68,7 @@ jobs:
           set -ex
 
           docker run --rm --init \
-            -v "$MDX":/app/docs \
+            -v "./$MDX":/app/docs \
             -e BASE_PATH \
             -e DIST_DIR="$MDX/out$BASE_PATH" \
             -e MDX \
@@ -90,7 +91,7 @@ jobs:
             -e THEME_IMPORTANT \
             -e THEME_WARNING \
             -e THEME_CAUTION \
-            ghcr.io/pmndrs/docs:1 npm run build
+            ghcr.io/pmndrs/docs:2 npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}
