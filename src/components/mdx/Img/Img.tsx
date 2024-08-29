@@ -4,16 +4,31 @@ import { ComponentProps } from 'react'
 import sizeOf from 'image-size'
 import { resolve } from 'path'
 
-export async function Img({ src, alt = '', className, ...props }: ComponentProps<'img'>) {
-  const dims: Partial<Pick<ComponentProps<'img'>, 'width' | 'height'>> = {
-    width: undefined,
-    height: undefined,
+export async function Img({
+  src,
+  width,
+  height,
+  alt = '',
+  className,
+  ...props
+}: ComponentProps<'img'>) {
+  const dims = {
+    width,
+    height,
   }
+
+  //
+  // If image is from MDX folder, we can determine its dimensions
+  //
+
   if (process.env.MDX_BASEURL && src?.startsWith(process.env.MDX_BASEURL)) {
     const path = resolve(src.replace(process.env.MDX_BASEURL, process.env.MDX!))
-    const { width, height } = sizeOf(path)
-    dims.width = width
-    dims.height = height
+    const { width: w, height: h } = sizeOf(path)
+    const ratio = w && h ? w / h : undefined
+
+    // If only one dimension is provided, calculate the other based on the image's aspect ratio
+    dims.width ??= height && ratio ? Number(height) * ratio : w
+    dims.height ??= width && ratio ? Number(width) / ratio : h
   }
 
   return (
