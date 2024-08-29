@@ -1,6 +1,8 @@
-name: Deploy Production environment on Vercel and Publish Docker image
+name: Deploy on Vercel and Publish Docker image
 on:
   push:
+    branches: ['main']
+  pull_request:
     branches: ['main']
 
 env:
@@ -31,9 +33,9 @@ jobs:
     needs: semantic-release-job
     if: needs.semantic-release-job.outputs.new_release_version != ''
 
-    # Update the "Production" environment with the Vercel deployed URL
+    # Update the "Production"/"Preview" environment with the Vercel deployed URL
     environment:
-      name: Production
+      name: ${{ github.event_name == 'push' && 'Production' || 'Preview' }}
       url: ${{ steps.vercel-deploy.outputs.deployment_url }}
 
     steps:
@@ -41,18 +43,19 @@ jobs:
       - uses: actions/checkout@v4
       - id: vercel-deploy
         run: |
-          npx -y vercel deploy --target=production --token=${{ secrets.VERCEL_TOKEN }} \
+          npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
+            --target=${{ github.event_name == 'push' && 'production' || 'preview' }} \
             --build-env MDX=docs \
             --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \
             --build-env NEXT_PUBLIC_LIBNAME_SHORT="pmndrs" \
             --build-env BASE_PATH= \
             --build-env DIST_DIR= \
-            --build-env OUTPUT= \
+            --build-env OUTPUT=${{ github.event_name == 'push' && '' || 'export' }} \
             --build-env HOME_REDIRECT= \
-            --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs" \
-            --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs" \
+            --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.event_name == 'push' && github.ref_name || github.head_ref }}/docs" \
+            --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.event_name == 'push' && github.ref_name || github.head_ref }}/docs" \
             --build-env NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
-            --build-env ICON= \
+            --build-env ICON=${{ github.event_name == 'push' && '' || '🖨️' }} \
             --build-env LOGO=gutenberg.jpg \
             --build-env GITHUB="https://github.com/${{ github.repository }}" \
             --build-env DISCORD="${{ secrets.DISCORD }}" \
