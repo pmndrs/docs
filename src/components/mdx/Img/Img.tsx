@@ -27,8 +27,8 @@ export async function Img({
     const ratio = w && h ? w / h : undefined
 
     // If only one dimension is provided, calculate the other based on the image's aspect ratio
-    dims.width ??= height && ratio ? Number(height) * ratio : w
-    dims.height ??= width && ratio ? Number(width) / ratio : h
+    dims.width ??= height && ratio ? Math.round(Number(height) * ratio) : w
+    dims.height ??= width && ratio ? Math.round(Number(width) / ratio) : h
   }
 
   return (
