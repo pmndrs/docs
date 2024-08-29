@@ -1,7 +1,11 @@
 name: Deploy on Vercel and Publish Docker image
 on:
   push:
-    branches: ['main']
+    branches:
+      - 'main'
+      - 'beta'
+      - 'alpha'
+      - 'canary-*'
   pull_request:
     branches: ['main']
 
