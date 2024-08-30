@@ -51,6 +51,10 @@ export const li = (props: ComponentProps<'li'>) => <li className="my-1" {...prop
 
 export const p = (props: ComponentProps<'p'>) => <p className="my-4 text-base" {...props} />
 
+export const hr = (props: ComponentProps<'hr'>) => (
+  <hr className="my-4 mb-8 border-outline-variant/50" {...props} />
+)
+
 export const blockquote = ({ children, className, ...props }: ComponentProps<'blockquote'>) => (
   <blockquote className={cn('my-8 border-l-4 pl-4 text-base', className)} {...props}>
     <div className="text-on-surface-variant/50">{children}</div>
