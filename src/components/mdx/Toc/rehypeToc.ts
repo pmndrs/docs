@@ -36,7 +36,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
       const node = root.children[i]
 
       if (isHeading(node)) {
-        const level = parseInt(node.tagName[1])
+        const level = parseInt(node.tagName[1]) - 1
 
         const title = toString(node)
         const id = slugify(title)

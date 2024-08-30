@@ -2,48 +2,67 @@
 
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 
 export function Toc({ toc }: { toc: DocToC[] }) {
   // console.log('toc', toc)
-  const [activeIndex, setActiveIndex] = React.useState(0)
 
-  React.useEffect(() => {
-    const headings = toc.map((heading) => document.getElementById(heading.id))
+  const [activeIndex, setActiveIndex] = useState<number | undefined>()
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.intersectionRatio > 0) {
-        const headingIndex = headings.indexOf(entry.target as HTMLElement)
-        setActiveIndex(headingIndex)
-      }
-    })
+  const updateActiveIndex = (hash: string) => {
+    const index = toc.findIndex((item) => item.id === hash.slice(1))
+    if (index !== -1) {
+      setActiveIndex(index)
+    }
+  }
 
-    for (const heading of headings) {
-      if (heading) observer.observe(heading)
+  useEffect(() => {
+    updateActiveIndex(window.location.hash)
+
+    const onHashChanged = (e: HashChangeEvent) => {
+      updateActiveIndex(new URL(e.newURL).hash)
     }
 
-    return () => observer.disconnect()
-  }, [toc])
+    window.addEventListener('hashchange', onHashChanged)
+    return () => {
+      window.removeEventListener('hashchange', onHashChanged)
+    }
+  }, [])
+
+  // React.useEffect(() => {
+  //   const headings = toc.map((heading) => document.getElementById(heading.id))
+
+  //   const observer = new IntersectionObserver(([entry]) => {
+  //     if (entry.intersectionRatio > 0) {
+  //       const headingIndex = headings.indexOf(entry.target as HTMLElement)
+  //       setActiveIndex(headingIndex)
+  //     }
+  //   })
+
+  //   for (const heading of headings) {
+  //     if (heading) observer.observe(heading)
+  //   }
+
+  //   return () => observer.disconnect()
+  // }, [toc])
 
   return (
     <div className="max-h-(screen-16) sticky top-16 flex flex-col justify-between overflow-y-auto pb-6">
-      <label className={cn('mb-2 mt-12 text-sm font-semibold uppercase tracking-wide lg:text-xs')}>
+      <label className="mb-2 mt-12 text-sm font-semibold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs">
         On This Page
       </label>
-      {toc.map((item, index) => (
-        <h4 key={`${item.title}-${index}`}>
+      {toc.map(({ title, id, level }, index) => (
+        <h4 key={`${title}-${index}`}>
           <a
-            aria-label={item.title}
-            aria-current={index === activeIndex}
+            aria-label={title}
             className={cn(
               'block py-1 text-sm font-normal leading-6 text-on-surface-variant/50 hover:underline',
-
-              item.parent && 'ml-4',
               index === activeIndex && 'text-on-surface',
             )}
-            href={`#${item.id}`}
+            style={{ marginLeft: `${(level - 1) * 1}rem` }}
+            href={`#${id}`}
           >
-            {item.title}
+            {title}
           </a>
         </h4>
       ))}

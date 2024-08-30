@@ -146,7 +146,7 @@ async function _getDocs(
       const tableOfContents: DocToC[] = []
 
       const { content: jsx } = await compileMDX({
-        source: content,
+        source: `# ${title}\n ${content}`,
         options: {
           mdxOptions: {
             remarkPlugins: [remarkGFM],

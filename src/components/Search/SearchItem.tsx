@@ -20,6 +20,7 @@ function sanitizeAllHtmlButMark(str: string) {
     allowedTags: ['mark'],
     allowedAttributes: false,
     disallowedTagsMode: 'escape',
+    parseStyleAttributes: false,
   })
 }
 

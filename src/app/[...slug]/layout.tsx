@@ -85,7 +85,7 @@ export default async function Layout({ params, children }: Props) {
               </>
             }
             nav={<Nav docs={docs} asPath={asPath} />}
-            aside={<Toc toc={doc.tableOfContents} />}
+            aside={<Toc toc={doc.tableOfContents.filter(({ level }) => level > 0)} />}
             footer={
               <>
                 {!!currentPage && (

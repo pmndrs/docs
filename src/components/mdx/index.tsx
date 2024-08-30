@@ -24,6 +24,7 @@ function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProp
     </a>
   )
 }
+export const h1 = (props: ComponentProps<'h1'>) => <h1 className="hidden" {...props} />
 export const h2 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
   <Heading id={id} Tag="h2" {...props} />
 )
