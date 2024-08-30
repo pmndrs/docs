@@ -1,3 +1,4 @@
+export * from './Code'
 export * from './Codesandbox'
 export * from './Details'
 export * from './Gha'
