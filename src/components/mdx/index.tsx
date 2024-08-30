@@ -1,6 +1,6 @@
 export * from './Codesandbox'
-export * from './Details'
 export * from './CopyButton'
+export * from './Details'
 export * from './Gha'
 export * from './Grid'
 export * from './Hint'
