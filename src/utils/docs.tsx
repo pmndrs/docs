@@ -1,9 +1,9 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import * as components from '@/components/mdx'
+import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { fetchCSB } from '@/components/mdx/Codesandbox/fetchCSB'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
-import { rehypeCopyButton } from '@/components/mdx/CopyButton/rehypeCopyButton'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
@@ -157,7 +157,7 @@ async function _getDocs(
               rehypeSummary,
               rehypeGha,
               rehypePrismPlus,
-              rehypeCopyButton(),
+              rehypeCode(),
               rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
               rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
             ],

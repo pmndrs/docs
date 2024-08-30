@@ -1,5 +1,5 @@
+export * from './Code'
 export * from './Codesandbox'
-export * from './CopyButton'
 export * from './Details'
 export * from './Gha'
 export * from './Grid'

@@ -45,7 +45,6 @@ body {
 
 code[class*='language-'],
 pre[class*='language-'] {
-  background: none;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -70,13 +69,6 @@ pre[class*='language-'] {
   --falsy: #f087bd;
   --linenumber-border-width: theme('space.1');
   --pad: theme('space.6');
-
-  @apply my-5 overflow-auto rounded-lg p-[--pad] font-mono text-sm;
-}
-
-:not(pre) > code[class*='language-'],
-pre[class*='language-'] {
-  @apply bg-inverse-surface-light;
 }
 
 /* Inline code */
