@@ -47,7 +47,7 @@ const libs: Record<string, Library> = {
   },
   drei: {
     title: 'Drei',
-    url: 'https://github.com/pmndrs/drei#readme',
+    url: '/drei',
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',

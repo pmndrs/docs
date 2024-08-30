@@ -52,7 +52,7 @@ const nextConfig = {
       },
       {
         source: '/drei',
-        destination: 'https://github.com/pmndrs/drei#readme',
+        destination: 'https://pmndrs.github.io/drei',
         permanent: true,
       },
       {
