@@ -1,14 +1,8 @@
 import { Doc } from '@/app/[...slug]/DocsContext'
 import * as React from 'react'
-import { Foo } from './Foo'
+import { NavCategory } from './NavCategory'
 
 type NavList = Record<string, Record<string, Doc>>
-
-// {
-//   'categoryA': {
-
-//   }
-// }
 
 export function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
   const nav = React.useMemo(
@@ -24,14 +18,13 @@ export function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
       }, {} as NavList),
     [docs],
   )
-  console.log('nav', nav)
 
   return (
     <ul>
       {Object.entries(nav).map(([category, docs]) => {
         return (
           <li key={category}>
-            <Foo {...{ category, docs, asPath }} />
+            <NavCategory {...{ category, docs, asPath }} />
           </li>
         )
       })}

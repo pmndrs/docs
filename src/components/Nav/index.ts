@@ -1,2 +1,2 @@
-export * from './Foo'
 export * from './Nav'
+export * from './NavCategory'

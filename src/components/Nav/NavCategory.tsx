@@ -9,7 +9,7 @@ import { IoIosArrowDown } from 'react-icons/io'
 
 const INDEX_PAGE = 'index'
 
-export function Foo({
+export function NavCategory({
   category,
   docs,
   asPath,
@@ -19,10 +19,11 @@ export function Foo({
   asPath: string
 }) {
   const docsEntries = Object.entries(docs)
-  const indexEntry = docsEntries.find(([page]) => page === INDEX_PAGE)
-  const foo = indexEntry ? indexEntry[1].url : '#'
 
-  const [open, setOpen] = useState(true)
+  const docIndexEntry = docsEntries.find(([page]) => page === INDEX_PAGE)
+  const categoryHref = docIndexEntry ? docIndexEntry[1].url : docsEntries[0][1].url
+
+  const [open, setOpen] = useState(() => docsEntries.some(([, doc]) => doc.url === `/${asPath}`))
 
   return (
     <Collapsible.Root
@@ -32,13 +33,13 @@ export function Foo({
     >
       <div className="relative">
         <NavItem
-          href={foo}
+          href={categoryHref}
           // className="mb-2 mt-8 px-6 text-sm font-bold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs"
           className={cn(
             'mt-8 text-sm font-bold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs',
             'flex items-center gap-3',
           )}
-          active={foo === `/${asPath}`}
+          active={docIndexEntry && categoryHref === `/${asPath}`}
         >
           {category}
         </NavItem>
@@ -52,7 +53,9 @@ export function Foo({
         </Collapsible.Trigger>
       </div>
 
-      <Collapsible.Content className="data-[state=close]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+      <Collapsible.Content
+      // className="data-[state=close]:animate-collapsible-up data-[state=open]:animate-collapsible-down"
+      >
         <ul>
           {docsEntries
             .filter(([page]) => page !== INDEX_PAGE)
