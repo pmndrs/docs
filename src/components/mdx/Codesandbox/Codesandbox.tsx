@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { Img } from '@/components/mdx'
 
 import cn from '@/lib/cn'
 
@@ -40,36 +40,29 @@ export function Codesandbox({
           rel="noreferrer"
           className="mb-2 block"
         >
-          {screenshot_url && (
-            <Image
-              src={screenshot_url}
-              placeholder="empty"
-              alt={title}
-              width={1763}
-              height={926}
-              loading="lazy"
-            />
-          )}
+          {screenshot_url && <Img src={screenshot_url} alt={title} width={1763} height={926} />}
         </a>
       )}
 
       {!hideTitle && (
         <>
-          <h6 className={cn('mt-4 font-bold')}>{title}</h6>
-          <p className={cn('mt-1')}>{description}</p>
-          <div className="w-full">
-            {tags.map((tag, i) => (
-              <span
-                key={i}
-                className={cn(
-                  'mt-2 inline-block rounded px-1 py-1 text-xs',
-                  i !== tags.length - 1 && 'mr-1',
-                )}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          <h6 className={cn('mt-2 text-xs text-on-surface-variant')}>{title}</h6>
+          {description && <p className={cn('mt-1')}>{description}</p>}
+          {tags.length > 0 && (
+            <div>
+              {tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    'mt-2 inline-block rounded px-1 py-1 text-xs',
+                    i !== tags.length - 1 && 'mr-1',
+                  )}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </>
       )}
     </>
