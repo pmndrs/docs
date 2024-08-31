@@ -2,19 +2,22 @@
 
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export function Toc({ toc }: { toc: DocToC[] }) {
   // console.log('toc', toc)
 
   const [activeIndex, setActiveIndex] = useState<number | undefined>()
 
-  const updateActiveIndex = (hash: string) => {
-    const index = toc.findIndex((item) => item.id === hash.slice(1))
-    if (index !== -1) {
-      setActiveIndex(index)
-    }
-  }
+  const updateActiveIndex = useCallback(
+    (hash: string) => {
+      const index = toc.findIndex((item) => item.id === hash.slice(1))
+      if (index !== -1) {
+        setActiveIndex(index)
+      }
+    },
+    [toc],
+  )
 
   useEffect(() => {
     updateActiveIndex(window.location.hash)
@@ -27,7 +30,7 @@ export function Toc({ toc }: { toc: DocToC[] }) {
     return () => {
       window.removeEventListener('hashchange', onHashChanged)
     }
-  }, [])
+  }, [updateActiveIndex])
 
   // React.useEffect(() => {
   //   const headings = toc.map((heading) => document.getElementById(heading.id))
@@ -56,7 +59,7 @@ export function Toc({ toc }: { toc: DocToC[] }) {
           <a
             aria-label={title}
             className={cn(
-              'block py-1 text-sm font-normal leading-6 text-on-surface-variant/50 hover:underline',
+              'block py-1 text-xs font-normal leading-6 text-on-surface-variant/50 hover:underline',
               index === activeIndex && 'text-on-surface',
             )}
             style={{ marginLeft: `${(level - 1) * 1}rem` }}

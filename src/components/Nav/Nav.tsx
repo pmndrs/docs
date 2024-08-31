@@ -20,7 +20,7 @@ export function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
   )
 
   return (
-    <ul>
+    <ul className="mt-8">
       {Object.entries(nav).map(([category, docs]) => {
         return (
           <li key={category}>

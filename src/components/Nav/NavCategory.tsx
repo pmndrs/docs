@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { ComponentProps, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 
-const INDEX_PAGE = 'index'
+const INDEX_PAGE = 'introduction'
 
 export function NavCategory({
   category,
@@ -23,25 +23,24 @@ export function NavCategory({
   const docIndexEntry = docsEntries.find(([page]) => page === INDEX_PAGE)
   const categoryHref = docIndexEntry ? docIndexEntry[1].url : docsEntries[0][1].url
 
-  const [open, setOpen] = useState(() => docsEntries.some(([, doc]) => doc.url === `/${asPath}`))
+  const [open, setOpen] = useState(docsEntries.some(([, doc]) => doc.url === `/${asPath}`))
 
   return (
     <Collapsible.Root
-      className="CollapsibleRoot [--NavItem-pad:.75rem]"
+      className={cn(
+        '[--NavItem-pad:.75rem]',
+        !docsEntries.some(([, doc]) => doc.url === `/${asPath}`) && 'opacity-50',
+      )}
       open={open}
       onOpenChange={setOpen}
     >
       <div className="relative">
         <NavItem
           href={categoryHref}
-          // className="mb-2 mt-8 px-6 text-sm font-bold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs"
-          className={cn(
-            'mt-8 text-sm font-bold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs',
-            'flex items-center gap-3',
-          )}
+          className={cn('capitalize tracking-wide', 'flex items-center gap-3')}
           active={docIndexEntry && categoryHref === `/${asPath}`}
         >
-          {category}
+          {category.replace(/\-/g, ' ')}
         </NavItem>
         <Collapsible.Trigger
           asChild
@@ -53,15 +52,13 @@ export function NavCategory({
         </Collapsible.Trigger>
       </div>
 
-      <Collapsible.Content
-      // className="data-[state=close]:animate-collapsible-up data-[state=open]:animate-collapsible-down"
-      >
+      <Collapsible.Content className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden">
         <ul>
           {docsEntries
             .filter(([page]) => page !== INDEX_PAGE)
             .map(([page, doc]) => (
               <li key={page}>
-                <NavItem href={doc.url} active={doc.url === `/${asPath}`}>
+                <NavItem href={doc.url} active={doc.url === `/${asPath}`} className="text-xs">
                   {doc.title}
                 </NavItem>
               </li>
