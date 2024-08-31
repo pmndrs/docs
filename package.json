@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.19.0",
+    "@radix-ui/react-collapsible": "^1.1.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.14",
     "clsx": "^2.1.1",

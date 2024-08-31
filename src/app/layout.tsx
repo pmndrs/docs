@@ -62,10 +62,10 @@ export default function RootLayout({
       </head>
       <body className={cn(inter.className, 'bg-surface break-words')}>
         <ThemeProvider
-        // attribute="class"
-        // defaultTheme="system"
-        // enableSystem
-        // disableTransitionOnChange
+          // attribute="class"
+          // defaultTheme="system"
+          // enableSystem
+          disableTransitionOnChange
         >
           {children}
         </ThemeProvider>
