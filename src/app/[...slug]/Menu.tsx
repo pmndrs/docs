@@ -60,7 +60,7 @@ export function Menu({
             >
               <nav
                 id="nav"
-                className="sticky?lg:h-(screen-16) relative z-10 overflow-y-auto px-4 pb-10 text-base font-medium lg:pb-14 lg:text-sm"
+                className="sticky?lg:h-(screen-16) relative z-10 overflow-y-auto px-4 pb-10 lg:pb-14 lg:text-sm"
               >
                 {nav}
               </nav>
