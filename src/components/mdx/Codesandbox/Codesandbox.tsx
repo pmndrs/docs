@@ -40,7 +40,15 @@ export function Codesandbox({
           rel="noreferrer"
           className="mb-2 block"
         >
-          {screenshot_url && <Img src={screenshot_url} alt={title} width={1763} height={926} />}
+          {screenshot_url && (
+            <Img
+              src={screenshot_url}
+              alt={title}
+              width={1763}
+              height={926}
+              className="aspect-[16/9] object-cover"
+            />
+          )}
         </a>
       )}
 
