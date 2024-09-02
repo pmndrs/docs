@@ -88,16 +88,39 @@ export default async function Layout({ params, children }: Props) {
             aside={<Toc toc={doc.tableOfContents.filter(({ level }) => level > 0)} />}
             footer={
               <>
-                {!!currentPage && (
-                  <div className="mx-auto mt-24 flex w-full max-w-3xl justify-end pb-10">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn('mb-2 text-base hover:underline', 'text-on-surface-variant/50')}
-                      href={currentPage.editURL || '#no-edit-url'}
-                    >
-                      Edit this page
-                    </a>
+                {(!!currentPage || doc.source) && (
+                  <div className="mx-auto mt-24 flex max-w-3xl flex-col gap-4 pb-10 text-right">
+                    {doc.source && (
+                      <p>
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            'mb-2 text-base hover:underline',
+                            'text-on-surface-variant/50',
+                          )}
+                          href={currentPage.editURL || '#no-edit-url'}
+                        >
+                          <code>{doc.source}</code>
+                        </a>
+                      </p>
+                    )}
+
+                    {!!currentPage && (
+                      <p>
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            'mb-2 text-base hover:underline',
+                            'text-on-surface-variant/50',
+                          )}
+                          href={currentPage.editURL || '#no-edit-url'}
+                        >
+                          Edit this page
+                        </a>
+                      </p>
+                    )}
                   </div>
                 )}
 
