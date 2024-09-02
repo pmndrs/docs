@@ -4,7 +4,7 @@ import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import Link from 'next/link'
-import { ComponentProps, useState } from 'react'
+import { ComponentProps, useEffect, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 
 const INDEX_PAGE = 'introduction'
@@ -24,6 +24,12 @@ export function NavCategory({
   const categoryHref = docIndexEntry ? docIndexEntry[1].url : docsEntries[0][1].url
 
   const [open, setOpen] = useState(docsEntries.some(([, doc]) => doc.url === `/${asPath}`))
+
+  useEffect(() => {
+    const dur = '.2s'
+    document.documentElement.style.setProperty('--collapsible-down-duration', dur)
+    document.documentElement.style.setProperty('--collapsible-up-duration', dur)
+  }, [])
 
   return (
     <Collapsible.Root
@@ -52,7 +58,7 @@ export function NavCategory({
         </Collapsible.Trigger>
       </div>
 
-      <Collapsible.Content className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden">
+      <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         <ul>
           {docsEntries
             .filter(([page]) => page !== INDEX_PAGE)
