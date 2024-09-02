@@ -100,19 +100,20 @@ async function _getDocs(
       // frontmatter
       //
 
-      const source = await fs.promises.readFile(file, { encoding: 'utf-8' })
-      const compiled = matter(source)
+      const str = await fs.promises.readFile(file, { encoding: 'utf-8' })
+      const compiled = matter(str)
       const frontmatter = compiled.data
 
       const _lastSegment = slug[slug.length - 1]
       const title: string = frontmatter.title ?? _lastSegment.replace(/\-/g, ' ')
 
       const description: string = frontmatter.description ?? ''
+      const sourceCode: string = frontmatter.source ?? ''
       const nav: number = frontmatter.nav ?? Infinity
 
       const frontmatterImage: string | undefined = frontmatter.image
-      const src = frontmatterImage || process.env.LOGO
-      const image: string = src ? resolveMdxUrl(src, relFilePath, MDX_BASEURL) : ''
+      const srcImage = frontmatterImage || process.env.LOGO
+      const image: string = srcImage ? resolveMdxUrl(srcImage, relFilePath, MDX_BASEURL) : ''
 
       //
       // MDX content
@@ -191,6 +192,7 @@ async function _getDocs(
         title,
         image,
         description,
+        source: sourceCode,
         nav,
         content: jsx,
         boxes,

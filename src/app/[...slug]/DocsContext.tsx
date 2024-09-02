@@ -20,6 +20,7 @@ export type Doc = {
   nav: number
   title: string
   description: string
+  source?: string
   image: string
   content: ReactNode
   boxes: string[]
