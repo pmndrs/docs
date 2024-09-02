@@ -32,6 +32,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
   return () => (root: Node) => {
     const previous: Record<number, DocToC> = {}
 
+    const divs: Node[] = []
     for (let i = 0; i < root.children.length; i++) {
       const node = root.children[i]
 
@@ -46,15 +47,31 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
         // Extract content for each heading
         //
 
+        const div: Node = {
+          type: 'element',
+          tagName: 'section',
+          properties: {
+            id: `section-${id}`,
+          },
+          children: [node],
+        }
+
         let siblingIndex = i + 1
         const content: string[] = []
         let sibling: Node = root.children[siblingIndex]
+
         while (sibling) {
-          if (isHeading(sibling)) break // stop at the next heading
+          if (isHeading(sibling)) {
+            break // stop at the next heading
+          }
+          div.children.push(sibling)
 
           content.push(toString(sibling))
           sibling = root.children[siblingIndex++]
         }
+        console.log('div', div)
+
+        divs.push(div)
 
         const item: DocToC = {
           id,
@@ -70,5 +87,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
         target.push(item)
       }
     }
+
+    root.children = divs
   }
 }
