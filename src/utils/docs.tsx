@@ -93,10 +93,6 @@ async function _getDocs(
       // editURL
       const EDIT_BASEURL = process.env.EDIT_BASEURL
       const editURL = EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined
-      const SOURCECODE_BASEURL = process.env.SOURCECODE_BASEURL
-      const sourcecodeURL = SOURCECODE_BASEURL?.length
-        ? file.replace(root, SOURCECODE_BASEURL)
-        : undefined
 
       // Read & parse doc
 
@@ -112,7 +108,13 @@ async function _getDocs(
       const title: string = frontmatter.title ?? _lastSegment.replace(/\-/g, ' ')
 
       const description: string = frontmatter.description ?? ''
+
       const sourcecode: string = frontmatter.sourcecode ?? ''
+      const SOURCECODE_BASEURL = process.env.SOURCECODE_BASEURL
+      const sourcecodeURL = SOURCECODE_BASEURL?.length
+        ? `${SOURCECODE_BASEURL}/${sourcecode}`
+        : undefined
+
       const nav: number = frontmatter.nav ?? Infinity
 
       const frontmatterImage: string | undefined = frontmatter.image
