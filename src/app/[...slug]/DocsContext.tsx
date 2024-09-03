@@ -17,10 +17,11 @@ export type Doc = {
   slug: string[]
   url: string
   editURL?: string
+  sourcecode?: string
+  sourcecodeURL?: string
   nav: number
   title: string
   description: string
-  source?: string
   image: string
   content: ReactNode
   boxes: string[]

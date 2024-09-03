@@ -40,7 +40,15 @@ export default async function Page({ params }: Props) {
     <>
       <div className="mx-auto max-w-3xl">
         <div className={cn('post-header mb-6 border-b pb-4', 'border-outline-variant/50')}>
-          <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc?.title}</h1>
+          <h1 className="mb-2 text-5xl font-bold tracking-tighter">
+            {doc.sourcecode ? (
+              <a href={doc.sourcecodeURL} className="no-underline hover:underline">
+                <code>{doc.title}</code>
+              </a>
+            ) : (
+              doc.title
+            )}
+          </h1>
           {!!doc?.description?.length && (
             <p className={cn('text-base leading-5', 'text-on-surface-variant/50')}>
               {doc.description}

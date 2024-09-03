@@ -77,6 +77,7 @@ jobs:
             -e OUTPUT=export \
             -e HOME_REDIRECT \
             -e MDX_BASEURL \
+            -e SOURCECODE_BASEURL \
             -e EDIT_BASEURL \
             -e NEXT_PUBLIC_URL \
             -e ICON \
@@ -99,6 +100,7 @@ jobs:
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
+          SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}'
           EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
           ICON: '${{ inputs.icon }}'

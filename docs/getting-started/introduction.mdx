@@ -28,6 +28,7 @@ $ npm ci
 | `OUTPUT`                    | Set to `export` for static output                                                                                                                                        | `export`                                                                                         |
 | `HOME_REDIRECT`             | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                                  |
 | `MDX_BASEURL`               | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs`         |
+| `SOURCECODE_BASEURL`        | Base URL for `sourcecode:` code path                                                                                                                                     | `https://github.com/pmndrs/react-three-fiber/tree/main`                                          |
 | `EDIT_BASEURL`              | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                                   |
 | `NEXT_PUBLIC_URL`           | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                                     |
 | `ICON`                      | Emoji or image to use as (fav)icon (path local to `MDX`)                                                                                                                 | `🇨🇭` or `/icon.png` or `/favicon.ico`                                                            |
@@ -96,7 +97,8 @@ $ (
   export OUTPUT=export
   export HOME_REDIRECT=
   export MDX_BASEURL=http://localhost:$_PORT
-  export EDIT_BASEURL="vscode://file/$MDX"
+  export SOURCECODE_BASEURL="vscode://file$(pwd)/docs"
+  export EDIT_BASEURL="vscode://file$(pwd)/docs"
   export NEXT_PUBLIC_URL=
   export ICON=
   export LOGO=gutenberg.jpg
@@ -142,6 +144,7 @@ $ (
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
   export MDX_BASEURL=http://localhost:$_PORT
+  export SOURCECODE_BASEURL=
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
   export ICON=
@@ -189,6 +192,7 @@ $ (
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
   export MDX_BASEURL=http://localhost:$_PORT
+  export SOURCECODE_BASEURL=
   export EDIT_BASEURL=
   export NEXT_PUBLIC_URL=
   export ICON=🇨🇭
@@ -215,6 +219,7 @@ $ (
     -e OUTPUT \
     -e HOME_REDIRECT \
     -e MDX_BASEURL \
+    -e SOURCECODE_BASEURL \
     -e EDIT_BASEURL \
     -e NEXT_PUBLIC_URL \
     -e ICON \

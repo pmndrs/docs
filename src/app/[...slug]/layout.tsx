@@ -88,20 +88,20 @@ export default async function Layout({ params, children }: Props) {
             aside={<Toc toc={doc.tableOfContents.filter(({ level }) => level > 0)} />}
             footer={
               <>
-                {(!!currentPage || doc.source) && (
+                {(!!currentPage || doc.sourcecode) && (
                   <div className="mx-auto mt-24 flex max-w-3xl flex-col gap-4 pb-10 text-right">
-                    {doc.source && (
+                    {doc.sourcecode && (
                       <p>
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
                           className={cn(
                             'mb-2 text-base hover:underline',
-                            'text-on-surface-variant/50',
+                            'font-mono text-on-surface-variant/50',
                           )}
-                          href={currentPage.editURL || '#no-edit-url'}
+                          href={doc.sourcecodeURL || '#no-sourcecode-url'}
                         >
-                          <code>{doc.source}</code>
+                          {doc.sourcecode}
                         </a>
                       </p>
                     )}
