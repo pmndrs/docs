@@ -72,8 +72,8 @@ pre[class*='language-'] {
 }
 
 /* Inline code */
-:not(pre) > code {
-  @apply bg-surface-container-high rounded-lg px-1.5 py-0.5 font-mono text-[85%];
+:not(pre) > code[class*='language-'] {
+  @apply rounded-lg;
   white-space: normal;
 }
 

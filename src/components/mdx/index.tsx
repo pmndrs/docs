@@ -96,6 +96,13 @@ export const a = ({ href, target, rel, ...props }: ComponentProps<'a'>) => {
 
 export const img = Img
 
+export const code = (props: ComponentProps<'code'>) => (
+  <code
+    className="bg-surface-container-high rounded-md px-1.5 py-0.5 font-mono text-[85%]"
+    {...props}
+  />
+)
+
 export const details = (props: ComponentProps<'details'>) => <details className="ml-4" {...props} />
 export const summary = (props: ComponentProps<'summary'>) => (
   <summary className="my-2 -ml-4 cursor-pointer select-none" {...props} />
