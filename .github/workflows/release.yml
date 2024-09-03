@@ -56,7 +56,7 @@ jobs:
             --build-env HOME_REDIRECT= \
             --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs" \
             --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs" \
-            --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}" \
+            --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}/docs" \
             --build-env NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
             --build-env ICON= \
             --build-env LOGO=gutenberg.jpg \
