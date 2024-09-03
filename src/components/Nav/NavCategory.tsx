@@ -31,6 +31,8 @@ export function NavCategory({
     document.documentElement.style.setProperty('--collapsible-up-duration', dur)
   }, [])
 
+  const nonIndexItems = docsEntries.filter(([page]) => page !== INDEX_PAGE)
+
   return (
     <Collapsible.Root
       className={cn(
@@ -48,27 +50,27 @@ export function NavCategory({
         >
           {category.replace(/\-/g, ' ')}
         </NavItem>
-        <Collapsible.Trigger
-          asChild
-          className={cn('absolute right-0 top-1/2 transition-transform', open && 'rotate-90')}
-        >
-          <div className="-translate-y-1/2 p-[--NavItem-pad]">
-            <IoIosArrowDown className="size-4 -rotate-90" />
-          </div>
-        </Collapsible.Trigger>
+        {nonIndexItems.length > 0 && (
+          <Collapsible.Trigger
+            asChild
+            className={cn('absolute right-0 top-1/2 transition-transform', open && 'rotate-90')}
+          >
+            <div className="-translate-y-1/2 p-[--NavItem-pad]">
+              <IoIosArrowDown className="size-4 -rotate-90" />
+            </div>
+          </Collapsible.Trigger>
+        )}
       </div>
 
       <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         <ul>
-          {docsEntries
-            .filter(([page]) => page !== INDEX_PAGE)
-            .map(([page, doc]) => (
-              <li key={page}>
-                <NavItem href={doc.url} active={doc.url === `/${asPath}`} className="text-xs">
-                  {doc.title}
-                </NavItem>
-              </li>
-            ))}
+          {nonIndexItems.map(([page, doc]) => (
+            <li key={page}>
+              <NavItem href={doc.url} active={doc.url === `/${asPath}`} className="text-xs">
+                {doc.title}
+              </NavItem>
+            </li>
+          ))}
         </ul>
       </Collapsible.Content>
     </Collapsible.Root>
