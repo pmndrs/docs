@@ -45,7 +45,7 @@ function Search() {
             type="button"
             onClick={() => setShowSearchModal(true)}
             className={cn(
-              'group flex w-full items-center gap-2 rounded-l-full rounded-r-full p-2 px-4',
+              'group flex w-full items-center gap-2 rounded-l-full rounded-r-full p-2 px-4 text-sm',
               'interactive-bg-surface-container',
               'text-on-surface-variant/50 hover:text-[inherit]',
             )}
