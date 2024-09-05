@@ -3,13 +3,13 @@
 /* Write your own custom base styles here */
 
 :root {
-  scroll-behavior: smooth;
-  --header-height: 4rem; /* TODO: make this value dynamic */
-  scroll-margin-top: var(--header-height);
-  font-size: 17px;
-
   @apply [--rgrid-m:theme(spacing.4)] lg:[--rgrid-m:theme(spacing.6)];
   @apply [--rgrid-g:theme(spacing.4)] lg:[--rgrid-g:theme(spacing.12)];
+  @apply [--header-height:theme(spacing.16)];
+
+  scroll-behavior: smooth;
+  scroll-margin-top: var(--header-height);
+  font-size: 17px;
 }
 
 body {
@@ -25,10 +25,10 @@ body {
 /* Stop purging. */
 
 main :target {
-  scroll-margin-top: theme('spacing.20'); /* <Search />'s h-16 + more spacing */
+  @apply scroll-m-[calc(var(--header-height)+theme(spacing.4))];
 }
 
-.fooo > * {
+.post-container > * {
   @apply me-auto ms-auto block max-w-[calc(100%-2*var(--rgrid-m))] lg:max-w-4xl;
 
   &.sandpack {

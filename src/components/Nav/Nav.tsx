@@ -1,10 +1,21 @@
 import { Doc } from '@/app/[...slug]/DocsContext'
+import cn from '@/lib/cn'
 import * as React from 'react'
 import { NavCategory } from './NavCategory'
+import { NavCategoryCollapsible } from './NavCategoryCollapsible'
 
 type NavList = Record<string, Record<string, Doc>>
 
-export function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
+export function Nav({
+  className,
+  docs,
+  asPath,
+  collapsible = true,
+}: React.ComponentProps<'ul'> & {
+  docs: Doc[]
+  asPath: string
+  collapsible: boolean
+}) {
   const nav = React.useMemo(
     () =>
       docs.reduce((acc, doc) => {
@@ -20,11 +31,15 @@ export function Nav({ docs, asPath }: { docs: Doc[]; asPath: string }) {
   )
 
   return (
-    <ul className="mt-8">
+    <ul className={cn(className, '')}>
       {Object.entries(nav).map(([category, docs]) => {
         return (
           <li key={category}>
-            <NavCategory {...{ category, docs, asPath }} />
+            {collapsible ? (
+              <NavCategoryCollapsible {...{ category, docs, asPath }} />
+            ) : (
+              <NavCategory {...{ category, docs, asPath }} />
+            )}
           </li>
         )
       })}

@@ -2,9 +2,9 @@
 
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import { useCallback, useEffect, useState } from 'react'
+import { ComponentProps, useCallback, useEffect, useState } from 'react'
 
-export function Toc({ toc }: { toc: DocToC[] }) {
+export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] }) {
   // console.log('toc', toc)
 
   const [activeIndex, setActiveIndex] = useState<number | undefined>()
@@ -50,7 +50,7 @@ export function Toc({ toc }: { toc: DocToC[] }) {
   // }, [toc])
 
   return (
-    <div className="mt-8 text-xs">
+    <div className={cn(className, 'text-xs')}>
       <p className="mb-3 font-semibold uppercase tracking-wide text-on-surface-variant/50">
         On This Page
       </p>

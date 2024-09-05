@@ -8,7 +8,10 @@ import { getData } from '@/utils/docs'
 import Link from 'next/link'
 import { PiDiscordLogoLight } from 'react-icons/pi'
 import { VscGithubAlt } from 'react-icons/vsc'
+import { Burger } from './Burger'
 import { DocsContext } from './DocsContext'
+import { Menu } from './Menu'
+import { MenuContext } from './MenuContext'
 
 export type Props = {
   params: { slug: string[] }
@@ -29,8 +32,16 @@ export default async function Layout({ params, children }: Props) {
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
   const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
 
+  const nav = (
+    <Nav
+      docs={docs}
+      asPath={asPath}
+      collapsible
+      className="sticky top-[calc(var(--header-height)+theme(spacing.8))]"
+    />
+  )
   const header = (
-    <div className="flex h-16 items-center gap-[--rgrid-m] px-[--rgrid-m]">
+    <div className="flex h-[--header-height] items-center gap-[--rgrid-m] px-[--rgrid-m]">
       <div className="flex items-center">
         <Link href="/" aria-label="Poimandres Docs">
           <span className="font-bold">
@@ -49,26 +60,26 @@ export default async function Layout({ params, children }: Props) {
 
       <Search />
 
-      <div className="flex gap-0">
-        {process.env.GITHUB && (
-          <Link
-            href={process.env.GITHUB}
-            className="flex size-9 items-center justify-center"
-            target="_blank"
-          >
-            <VscGithubAlt />
-          </Link>
-        )}
-        {process.env.DISCORD && (
-          <Link
-            href={process.env.DISCORD}
-            className="flex size-9 items-center justify-center"
-            target="_blank"
-          >
-            <PiDiscordLogoLight />
-          </Link>
-        )}
+      <div className="flex">
+        {[
+          { href: process.env.GITHUB, icon: <VscGithubAlt /> },
+          { href: process.env.DISCORD, icon: <PiDiscordLogoLight /> },
+        ].map(({ href, icon }) => (
+          <>
+            {href && (
+              <Link
+                href={href}
+                className={cn('hidden size-9 items-center justify-center lg:flex')}
+                target="_blank"
+              >
+                {icon}
+              </Link>
+            )}
+          </>
+        ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
+
+        <Burger className="lg:hidden" />
       </div>
     </div>
   )
@@ -108,7 +119,7 @@ export default async function Layout({ params, children }: Props) {
       )}
 
       {(!!previousPage || !!nextPage) && (
-        <nav className="my-32">
+        <nav className="my-16 lg:my-32">
           <div className="flex flex-col gap-6 sm:flex-row sm:justify-between">
             {!!previousPage && (
               <div className="">
@@ -145,31 +156,41 @@ export default async function Layout({ params, children }: Props) {
       )}
     </>
   )
-  const nav = <Nav docs={docs} asPath={asPath} />
-  const toc = <Toc toc={doc.tableOfContents.filter(({ level }) => level > 0)} />
+
+  const toc = (
+    <Toc
+      toc={doc.tableOfContents.filter(({ level }) => level > 0)}
+      className="sticky top-[calc(var(--header-height)+theme(spacing.12))]"
+    />
+  )
 
   return (
     <>
       <DocsContext value={{ docs, doc }}>
-        {/* <MenuContext> */}
-        <div className="[--side-w:theme(spacing.72)]">
-          <header className="border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
-            {header}
-          </header>
-          <div className="lg:flex lg:gap-[--rgrid-g]">
-            <nav className="hidden lg:block lg:w-[--side-w] lg:flex-none">{nav}</nav>
-            <main
-              className={cn('lg:min-w-0 lg:flex-1 lg:pr-[--rgrid-m] xl:flex xl:gap-[--rgrid-g]')}
-            >
-              <article className="fooo lg:min-w-0 lg:flex-1">
-                {children}
-                {footer}
-              </article>
-              <aside className="hidden lg:flex-none xl:block xl:w-[--side-w]">{toc}</aside>
-            </main>
+        <MenuContext>
+          <div className="[--side-w:theme(spacing.72)]">
+            <header className="sticky top-0 z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
+              {header}
+              <Menu
+                asPath={asPath}
+                className="z-100 left-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden"
+              />
+            </header>
+
+            <div className="lg:flex lg:gap-[--rgrid-g]">
+              <nav className="hidden lg:block lg:w-[--side-w] lg:flex-none">{nav}</nav>
+              <main
+                className={cn('lg:min-w-0 lg:flex-1 lg:pr-[--rgrid-m] xl:flex xl:gap-[--rgrid-g]')}
+              >
+                <article className="post-container lg:min-w-0 lg:flex-1">
+                  {children}
+                  {footer}
+                </article>
+                <aside className="hidden lg:flex-none xl:block xl:w-[--side-w]">{toc}</aside>
+              </main>
+            </div>
           </div>
-        </div>
-        {/* </MenuContext> */}
+        </MenuContext>
       </DocsContext>
     </>
   )
