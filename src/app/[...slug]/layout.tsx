@@ -86,35 +86,37 @@ export default async function Layout({ params, children }: Props) {
   const footer = (
     <>
       {(!!currentPage || doc.sourcecode) && (
-        <div className="my-24 flex flex-col gap-4 text-right">
-          {doc.sourcecode && (
-            <p>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  'mb-2 text-base hover:underline',
-                  'font-mono text-on-surface-variant/50',
-                )}
-                href={doc.sourcecodeURL || '#no-sourcecode-url'}
-              >
-                {doc.sourcecode}
-              </a>
-            </p>
-          )}
+        <div className="my-24">
+          <div className="flex flex-col gap-4 text-right">
+            {doc.sourcecode && (
+              <p>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    'mb-2 text-base hover:underline',
+                    'font-mono text-on-surface-variant/50',
+                  )}
+                  href={doc.sourcecodeURL || '#no-sourcecode-url'}
+                >
+                  {doc.sourcecode}
+                </a>
+              </p>
+            )}
 
-          {!!currentPage && (
-            <p>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn('mb-2 text-base hover:underline', 'text-on-surface-variant/50')}
-                href={currentPage.editURL || '#no-edit-url'}
-              >
-                Edit this page
-              </a>
-            </p>
-          )}
+            {!!currentPage && (
+              <p>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn('mb-2 text-base hover:underline', 'text-on-surface-variant/50')}
+                  href={currentPage.editURL || '#no-edit-url'}
+                >
+                  Edit this page
+                </a>
+              </p>
+            )}
+          </div>
         </div>
       )}
 
