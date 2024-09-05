@@ -139,7 +139,7 @@ export default async function Layout({ params, children }: Props) {
               </div>
             )}
             {!!nextPage && (
-              <div className="text-right">
+              <div className="ml-auto text-right">
                 <label
                   className={cn(
                     'mb-2 text-xs font-bold uppercase leading-4',
