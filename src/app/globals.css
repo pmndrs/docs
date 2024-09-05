@@ -3,8 +3,11 @@
 /* Write your own custom base styles here */
 
 :root {
+  @apply [--rgrid-m:theme(spacing.4)] lg:[--rgrid-m:theme(spacing.6)];
+  @apply [--rgrid-g:theme(spacing.4)] lg:[--rgrid-g:theme(spacing.12)];
+  @apply [--header-height:theme(spacing.16)];
+
   scroll-behavior: smooth;
-  --header-height: 4rem; /* TODO: make this value dynamic */
   scroll-margin-top: var(--header-height);
   font-size: 17px;
 }
@@ -21,20 +24,16 @@ body {
 @tailwind utilities;
 /* Stop purging. */
 
-/* Your own custom utilities */
-@supports (position: sticky) {
-  @media (min-width: theme('screens.lg')) {
-    .sticky\?lg\:h-screen {
-      height: 100vh !important;
-    }
-    .sticky\?lg\:h-\(screen-16\) {
-      height: calc(100vh - theme('spacing.16'));
-    }
-  }
+main :target {
+  @apply scroll-m-[calc(var(--header-height)+theme(spacing.4))];
 }
 
-.content-container :target {
-  scroll-margin-top: theme('spacing.20'); /* <Search />'s h-16 + more spacing */
+.post-container > * {
+  @apply me-auto ms-auto block max-w-[calc(100%-2*var(--rgrid-m))] lg:max-w-4xl;
+
+  &.sandpack {
+    @apply xl:max-w-none;
+  }
 }
 
 /**
@@ -48,8 +47,8 @@ pre[class*='language-'] {
   text-align: left;
   white-space: pre;
   word-spacing: normal;
-  word-break: normal;
-  word-wrap: normal;
+  /* word-break: normal; */
+  /* word-wrap: normal; */
   line-height: 1.5;
   tab-size: 4;
   hyphens: none;

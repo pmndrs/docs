@@ -1,2 +1,2 @@
 export * from './Nav'
-export * from './NavCategory'
+export * from './NavCategoryCollapsible'

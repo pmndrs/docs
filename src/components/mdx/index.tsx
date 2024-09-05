@@ -19,13 +19,13 @@ function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProp
   return (
     <a
       href={`#${id}`}
-      className="tracking-light my-6 mt-8 block text-3xl font-bold text-on-surface no-underline hover:underline"
+      className="tracking-light my-6 mt-8 block text-balance text-3xl font-bold text-on-surface no-underline hover:underline"
     >
       <Tag id={id} {...props} />
     </a>
   )
 }
-export const h1 = (props: ComponentProps<'h1'>) => <h1 className="hidden" {...props} />
+export const h1 = (props: ComponentProps<'h1'>) => <></>
 export const h2 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>) => (
   <Heading id={id} Tag="h2" {...props} />
 )
@@ -42,11 +42,15 @@ export const h6 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>
   <Heading id={id} Tag="h6" {...props} />
 )
 
-export const ul = (props: ComponentProps<'ul'>) => (
-  <ul className="my-4 mb-8 ms-6 list-disc" {...props} />
+export const ul = ({ className, ...props }: ComponentProps<'ul'>) => (
+  <div className={cn(className, 'my-4 mb-8')}>
+    <ul className="ms-6 list-disc" {...props} />
+  </div>
 )
-export const ol = (props: ComponentProps<'ol'>) => (
-  <ol className="my-4 mb-8 ms-6 list-decimal" {...props} />
+export const ol = ({ className, ...props }: ComponentProps<'ol'>) => (
+  <div className={cn(className, 'my-4 mb-8')}>
+    <ol className="ms-6 list-decimal" {...props} />
+  </div>
 )
 export const li = (props: ComponentProps<'li'>) => <li className="my-1" {...props} />
 
@@ -85,13 +89,15 @@ export const td = (props: ComponentProps<'td'>) => (
   <td className="px-6 py-4 text-sm first:font-medium" {...props} />
 )
 
-export const a = ({ href, target, rel, ...props }: ComponentProps<'a'>) => {
+export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => {
   const isAnchor = href?.startsWith('https://')
   target = isAnchor ? '_blank' : target
   rel = isAnchor ? 'noopener noreferrer' : rel
   href = isAnchor ? href : href?.replace(MARKDOWN_REGEX, '')
 
-  return <a {...props} href={href} target={target} rel={rel} className="text-primary" />
+  return (
+    <a {...props} href={href} target={target} rel={rel} className={cn(className, 'text-primary')} />
+  )
 }
 
 export const img = Img
@@ -103,13 +109,18 @@ export const code = (props: ComponentProps<'code'>) => (
   />
 )
 
-export const details = (props: ComponentProps<'details'>) => <details className="ml-4" {...props} />
-export const summary = (props: ComponentProps<'summary'>) => (
-  <summary className="my-2 -ml-4 cursor-pointer select-none" {...props} />
-)
-
-export const Sandpack = (props: ComponentProps<typeof SP>) => (
-  <div className="sandpack">
-    <SP {...props} />
+// https://sandpack.codesandbox.io/docs/getting-started/usage
+export const Sandpack = ({
+  className,
+  ...props
+}: { className: string } & ComponentProps<typeof SP>) => (
+  <div className={cn(className, 'sandpack')}>
+    <SP
+      {...props}
+      options={{
+        ...props.options,
+        // editorHeight: 350
+      }}
+    />
   </div>
 )
