@@ -1,4 +1,3 @@
-import Post from '@/components/Post'
 import cn from '@/lib/cn'
 import { getData, getDocs } from '@/utils/docs'
 
@@ -38,17 +37,15 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
-      <div className="mx-auto max-w-3xl">
-        <div className={cn('post-header mb-6 border-b pb-4', 'border-outline-variant/50')}>
-          <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc.title}</h1>
-          {!!doc?.description?.length && (
-            <p className={cn('text-base leading-5', 'text-on-surface-variant/50')}>
-              {doc.description}
-            </p>
-          )}
-        </div>
-        <div className="content-container">{doc ? <Post doc={doc} /> : 'empty doc'}</div>
+      <div className={cn('my-6 border-b', 'border-outline-variant/50')}>
+        <h1 className="text-5xl font-bold tracking-tighter">{doc.title}</h1>
+        {!!doc?.description?.length && (
+          <p className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
+            {doc.description}
+          </p>
+        )}
       </div>
+      {doc ? <>{doc.content}</> : 'empty doc'}
     </>
   )
 }

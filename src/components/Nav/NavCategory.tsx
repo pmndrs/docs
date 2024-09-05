@@ -36,7 +36,7 @@ export function NavCategory({
   return (
     <Collapsible.Root
       className={cn(
-        '[--NavItem-pad:.75rem]',
+        'text-sm [--NavItem-pad:.75rem] [--arrow-size:theme(spacing.4)]',
         !docsEntries.some(([, doc]) => doc.url === `/${asPath}`) && 'opacity-50',
       )}
       open={open}
@@ -56,7 +56,7 @@ export function NavCategory({
             className={cn('absolute right-0 top-1/2 transition-transform', open && 'rotate-90')}
           >
             <div className="-translate-y-1/2 p-[--NavItem-pad]">
-              <IoIosArrowDown className="size-4 -rotate-90" />
+              <IoIosArrowDown className="size-[--arrow-size] -rotate-90" />
             </div>
           </Collapsible.Trigger>
         )}
@@ -89,7 +89,7 @@ function NavItem({
     <Link
       {...props}
       className={cn(
-        'block cursor-pointer rounded-r-xl p-[--NavItem-pad] pl-6',
+        'block cursor-pointer rounded-r-xl p-[--NavItem-pad] pl-[--rgrid-m] pr-[calc(2*var(--NavItem-pad)+var(--arrow-size))]',
         active ? 'interactive-bg-primary-container' : 'interactive-bg-surface',
         className,
       )}
