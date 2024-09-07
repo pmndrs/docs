@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import { Layout, LayoutAside, LayoutContent, LayoutHeader, LayoutNav } from '@/components/Layout'
 import { Nav } from '@/components/Nav'
 import Search from '@/components/Search'
 import { Toc } from '@/components/mdx/Toc'
@@ -18,7 +19,7 @@ export type Props = {
   children: React.ReactNode
 }
 
-export default async function Layout({ params, children }: Props) {
+export default async function Layoutt({ params, children }: Props) {
   const slug = params.slug
   const { docs, doc } = await getData(...slug)
 
@@ -32,14 +33,7 @@ export default async function Layout({ params, children }: Props) {
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
   const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
 
-  const nav = (
-    <Nav
-      docs={docs}
-      asPath={asPath}
-      collapsible
-      className="sticky top-[calc(var(--header-height)+theme(spacing.8))]"
-    />
-  )
+  const nav = <Nav docs={docs} asPath={asPath} collapsible />
   const header = (
     <div className="flex h-[--header-height] items-center gap-[--rgrid-m] px-[--rgrid-m]">
       <div className="flex items-center">
@@ -159,39 +153,29 @@ export default async function Layout({ params, children }: Props) {
     </>
   )
 
-  const toc = (
-    <Toc
-      toc={doc.tableOfContents.filter(({ level }) => level > 0)}
-      className="sticky top-[calc(var(--header-height)+theme(spacing.12))]"
-    />
-  )
+  const toc = <Toc toc={doc.tableOfContents.filter(({ level }) => level > 0)} />
 
   return (
     <>
       <DocsContext value={{ docs, doc }}>
         <MenuContext>
-          <div className="[--side-w:theme(spacing.72)]">
-            <header className="sticky top-0 z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
+          <Layout className="[--side-w:theme(spacing.72)]">
+            <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
               {header}
               <Menu
                 asPath={asPath}
                 className="z-100 left-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden"
               />
-            </header>
-
-            <div className="lg:flex lg:gap-[--rgrid-g]">
-              <nav className="hidden lg:block lg:w-[--side-w] lg:flex-none">{nav}</nav>
-              <main
-                className={cn('lg:min-w-0 lg:flex-1 lg:pr-[--rgrid-m] xl:flex xl:gap-[--rgrid-g]')}
-              >
-                <article className="post-container lg:min-w-0 lg:flex-1">
-                  {children}
-                  {footer}
-                </article>
-                <aside className="hidden lg:flex-none xl:block xl:w-[--side-w]">{toc}</aside>
-              </main>
-            </div>
-          </div>
+            </LayoutHeader>
+            <LayoutContent className="lg:mr-[--rgrid-m] xl:mr-0">
+              <article className="post-container">
+                {children}
+                {footer}
+              </article>
+            </LayoutContent>
+            <LayoutNav className="pt-8">{nav}</LayoutNav>
+            <LayoutAside className="pt-8">{toc}</LayoutAside>
+          </Layout>
         </MenuContext>
       </DocsContext>
     </>

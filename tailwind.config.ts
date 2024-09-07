@@ -5,7 +5,11 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 const config: Config = {
   darkMode: 'class',
   content: ['./src/components/**/*.{js,ts,jsx,tsx,mdx}', './src/app/**/*.{js,ts,jsx,tsx,mdx}'],
-  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/aspect-ratio')],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
+    require('@savvywombat/tailwindcss-grid-areas'),
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -25,7 +29,27 @@ const config: Config = {
         'collapsible-down': 'collapsible-down var(--collapsible-down-duration, 0s) ease-out',
         'collapsible-up': 'collapsible-up var(--collapsible-up-duration, 0s) ease-out',
       },
+      gridTemplateAreas: {
+        'layout-1col': [
+          //
+          'h h',
+          'm m',
+        ],
+        'layout-2cols': [
+          //
+          'h h',
+          'n m',
+        ],
+        'layout-3cols': [
+          //
+          'h h h',
+          'n m t',
+        ],
+      },
     },
+  },
+  variants: {
+    gridTemplateAreas: ['responsive'],
   },
 }
 
