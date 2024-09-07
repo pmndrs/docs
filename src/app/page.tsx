@@ -155,7 +155,8 @@ export default function Page() {
         <div className="px-4 py-8 pb-12 lg:px-28 lg:py-12 lg:pb-20">
           <header className="text-center text-3xl lg:text-left">
             <Link href="/" aria-label="Poimandres Docs" className="font-bold">
-              Documentation
+              <span className="sm:hidden">docs</span>
+              <span className="hidden sm:inline">documentation</span>
             </Link>
             .<Link href="https://pmnd.rs">pmnd.rs</Link>
           </header>
