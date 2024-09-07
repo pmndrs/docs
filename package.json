@@ -7,6 +7,7 @@
     "build": "bin/build.mjs"
   },
   "devDependencies": {
+    "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
     "@types/hast": "^3.0.4",
     "@types/minimist": "^1.2.5",
     "@types/node": "^18.19.44",
