@@ -9,7 +9,7 @@ import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
 import SearchItem from './SearchItem'
 
-export const SearchModalContainer = ({ className }: ComponentProps<'div'>) => {
+export const SearchModalContainer = ({ className }: ComponentProps<'search'>) => {
   const { docs } = useDocs()
   const [query, setQuery] = React.useState('')
   const deferredQuery = React.useDeferredValue(query)
@@ -56,7 +56,7 @@ export const SearchModalContainer = ({ className }: ComponentProps<'div'>) => {
   }, [docs, deferredQuery])
 
   return (
-    <div className={className}>
+    <search className={className}>
       <input
         type="search"
         name="search"
@@ -85,6 +85,6 @@ export const SearchModalContainer = ({ className }: ComponentProps<'div'>) => {
           ))}
         </ul>
       )}
-    </div>
+    </search>
   )
 }
