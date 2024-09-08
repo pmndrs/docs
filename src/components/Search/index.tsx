@@ -1,74 +1,68 @@
 'use client'
 
-import * as React from 'react'
-// import { useRouter } from 'next/navigation'
-
-import { useKeyPress } from '@/hooks/useKeyPress'
-import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
-
 import Icon from '@/components/Icon'
 import cn from '@/lib/cn'
+import * as Dialog from '@radix-ui/react-dialog'
+import { ComponentProps, useEffect, useState } from 'react'
+
+import { useKeyPress } from '@/hooks/useKeyPress'
 import { SearchModalContainer } from './SearchModalContainer'
 
-function Search() {
-  // const router = useRouter()
-  const [showSearchModal, setShowSearchModal] = React.useState(false)
-  const escPressed = useKeyPress('Escape')
+function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
+  const [showSearchModal, setShowSearchModal] = useState(false)
   const slashPressed = useKeyPress('Slash')
-  useLockBodyScroll(showSearchModal)
 
-  React.useEffect(() => {
-    if (escPressed && showSearchModal) {
-      setShowSearchModal(false)
-    }
-  }, [escPressed, slashPressed, showSearchModal])
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (slashPressed && !showSearchModal) {
       setShowSearchModal(true)
     }
   }, [slashPressed, showSearchModal])
 
-  React.useEffect(() => setShowSearchModal(false), [])
-
   return (
-    <>
-      {showSearchModal && (
-        <SearchModalContainer
-          key={showSearchModal ? 'show' : 'hide'}
-          onClose={() => setShowSearchModal(false)}
-        />
+    <Dialog.Root open={showSearchModal} onOpenChange={setShowSearchModal}>
+      <Dialog.Trigger className={className}>
+        <SearchButton />
+      </Dialog.Trigger>
+
+      <Dialog.Portal>
+        <Dialog.Content className="fixed inset-0 z-50">
+          <Dialog.Overlay className="absolute inset-0 bg-surface-dim/95">
+            <Dialog.Close className="size-full" />
+          </Dialog.Overlay>
+
+          <SearchModalContainer className="relative rounded-md shadow-sm" />
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}
+
+export function SearchButton({ className, ...props }: ComponentProps<'span'>) {
+  return (
+    <span
+      className={cn(
+        className,
+        'group flex w-full items-center gap-2 rounded-l-full rounded-r-full p-2 px-4 text-sm',
+        'interactive-bg-surface-container',
+        'text-on-surface-variant/50 hover:text-[inherit]',
       )}
-      <div className="relative grow">
-        <div className="flex flex-auto items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setShowSearchModal(true)}
-            className={cn(
-              'group flex w-full items-center gap-2 rounded-l-full rounded-r-full p-2 px-4 text-sm',
-              'interactive-bg-surface-container',
-              'text-on-surface-variant/50 hover:text-[inherit]',
-            )}
-            onFocus={() => setShowSearchModal(true)}
-          >
-            <Icon icon="search" className={cn('size-6')} />
-            <span>
-              Search
-              <span className="hidden sm:inline"> for anything</span>
-            </span>
-            <span className="ml-auto hidden rounded-md border px-1.5 py-0.5 text-sm leading-5 sm:block">
-              <span className="sr-only">Press </span>
-              <kbd>
-                <kbd title="Forward slash" className="no-underline">
-                  /
-                </kbd>
-              </kbd>
-              <span className="sr-only"> to search</span>
-            </span>
-          </button>
-        </div>
-      </div>
-    </>
+      {...props}
+    >
+      <Icon icon="search" className="size-6" />
+      <span>
+        Search
+        <span className="hidden sm:inline"> for anything</span>
+      </span>
+      <span className="ml-auto hidden rounded-md border px-1.5 py-0.5 text-sm leading-5 sm:block">
+        <span className="sr-only">Press </span>
+        <kbd>
+          <kbd title="Forward slash" className="no-underline">
+            /
+          </kbd>
+        </kbd>
+        <span className="sr-only"> to search</span>
+      </span>
+    </span>
   )
 }
 

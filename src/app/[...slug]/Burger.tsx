@@ -9,13 +9,12 @@ export function Burger({ className }: ComponentProps<'button'>) {
   const [menuOpen, setMenuOpen] = useMenu()
 
   return (
-    <button
+    <span
       className={cn(className, 'flex size-9 items-center justify-center')}
-      type="button"
       aria-label="Menu"
       onClick={() => setMenuOpen(!menuOpen)}
     >
       {menuOpen ? <Icon icon="close" /> : <Icon icon="menu" />}
-    </button>
+    </span>
   )
 }

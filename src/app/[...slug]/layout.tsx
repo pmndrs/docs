@@ -9,7 +9,6 @@ import { getData } from '@/utils/docs'
 import Link from 'next/link'
 import { PiDiscordLogoLight } from 'react-icons/pi'
 import { VscGithubAlt } from 'react-icons/vsc'
-import { Burger } from './Burger'
 import { DocsContext } from './DocsContext'
 import { Menu } from './Menu'
 import { MenuContext } from './MenuContext'
@@ -52,7 +51,7 @@ export default async function Layoutt({ params, children }: Props) {
         </span>
       </div>
 
-      <Search />
+      <Search className="grow" />
 
       <div className="flex">
         {[
@@ -73,7 +72,9 @@ export default async function Layoutt({ params, children }: Props) {
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
-        <Burger className="lg:hidden" />
+        <Menu className="z-100 absolute inset-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
+          <Nav docs={docs} asPath={asPath} collapsible={false} />
+        </Menu>
       </div>
     </div>
   )
@@ -162,10 +163,6 @@ export default async function Layoutt({ params, children }: Props) {
           <Layout className="[--side-w:theme(spacing.72)]">
             <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
               {header}
-              <Menu
-                asPath={asPath}
-                className="z-100 left-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden"
-              />
             </LayoutHeader>
             <LayoutContent className="lg:mr-[--rgrid-m] xl:mr-0">
               <article className="post-container">

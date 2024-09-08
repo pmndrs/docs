@@ -3,20 +3,14 @@ import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
+import cn from '@/lib/cn'
 import { escape } from '@/utils/text'
+import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
-import SearchModal from './SearchModal'
+import SearchItem from './SearchItem'
 
-export interface SearchModalContainerProps {
-  onClose: React.MouseEventHandler<HTMLButtonElement>
-}
-
-export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => {
-  // const router = useRouter()
-  // const boxes = useCSB()
+export const SearchModalContainer = ({ className }: ComponentProps<'div'>) => {
   const { docs } = useDocs()
-  // console.log('docs', docs)
-  // const [lib] = router.query.slug as string[]
   const [query, setQuery] = React.useState('')
   const deferredQuery = React.useDeferredValue(query)
   const [results, setResults] = React.useState<SearchResult[]>([])
@@ -62,11 +56,35 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
   }, [docs, deferredQuery])
 
   return (
-    <SearchModal
-      search={query}
-      results={results}
-      onClose={onClose}
-      onChange={(e) => setQuery(escape(e.target.value))}
-    />
+    <div className={className}>
+      <input
+        type="search"
+        name="search"
+        id="search"
+        className={cn(
+          'bg-surface-container block w-full px-4 py-6 pl-10 outline-none sm:text-sm',
+          results.length > 0 ? 'rounded-t-md' : 'rounded-md',
+        )}
+        autoComplete="off"
+        autoFocus
+        placeholder="Search the docs"
+        onChange={(e) => setQuery(escape(e.target.value))}
+      />
+
+      {results.length > 0 && (
+        <ul
+          className={cn(
+            'list-none',
+            'bg-surface-container absolute left-0 flex flex-col gap-1 rounded-b-md p-1',
+          )}
+        >
+          {results.map((result, index) => (
+            <li key={`search-item-${index}`}>
+              <SearchItem search={query} result={result} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   )
 }
