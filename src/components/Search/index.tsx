@@ -30,7 +30,7 @@ function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
             <Dialog.Close className="size-full" />
           </Dialog.Overlay>
 
-          <SearchModalContainer className="relative rounded-md shadow-sm" />
+          <SearchModalContainer className="relative mx-auto mt-8 max-w-3xl rounded-md px-4 shadow-sm lg:mt-24" />
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

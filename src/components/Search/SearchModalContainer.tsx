@@ -3,8 +3,7 @@ import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
-import cn from '@/lib/cn'
-import { escape } from '@/utils/text'
+import { Command } from 'cmdk'
 import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
 import SearchItem from './SearchItem'
@@ -57,34 +56,31 @@ export const SearchModalContainer = ({ className }: ComponentProps<'search'>) =>
 
   return (
     <search className={className}>
-      <input
-        type="search"
-        name="search"
-        id="search"
-        className={cn(
-          'bg-surface-container block w-full px-4 py-6 pl-10 outline-none sm:text-sm',
-          results.length > 0 ? 'rounded-t-md' : 'rounded-md',
-        )}
-        autoComplete="off"
-        autoFocus
-        placeholder="Search the docs"
-        onChange={(e) => setQuery(escape(e.target.value))}
-      />
+      <Command shouldFilter={false}>
+        <Command.Input
+          name="search"
+          id="search"
+          className="bg-surface-container block w-full rounded-md px-4 py-6 pl-10 sm:text-sm"
+          placeholder="Search the docs"
+          value={query}
+          autoFocus
+          onValueChange={(value) => setQuery(value)}
+        />
 
-      {results.length > 0 && (
-        <ul
-          className={cn(
-            'list-none',
-            'bg-surface-container absolute left-0 flex flex-col gap-1 rounded-b-md p-1',
+        <Command.List>
+          {results.length > 0 && (
+            <div className="bg-surface-container mt-1 flex flex-col gap-1 rounded-md p-1">
+              {results.map((result, index) => {
+                return (
+                  <Command.Item key={`search-item-${index}`}>
+                    <SearchItem search={query} result={result} />
+                  </Command.Item>
+                )
+              })}
+            </div>
           )}
-        >
-          {results.map((result, index) => (
-            <li key={`search-item-${index}`}>
-              <SearchItem search={query} result={result} />
-            </li>
-          ))}
-        </ul>
-      )}
+        </Command.List>
+      </Command>
     </search>
   )
 }
