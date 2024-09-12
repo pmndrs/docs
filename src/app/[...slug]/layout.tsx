@@ -11,7 +11,6 @@ import { PiDiscordLogoLight } from 'react-icons/pi'
 import { VscGithubAlt } from 'react-icons/vsc'
 import { DocsContext } from './DocsContext'
 import { Menu } from './Menu'
-import { MenuContext } from './MenuContext'
 
 export type Props = {
   params: { slug: string[] }
@@ -72,7 +71,7 @@ export default async function Layoutt({ params, children }: Props) {
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
-        <Menu className="z-100 absolute inset-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
+        <Menu className="z-100 bg-surface absolute inset-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
           <Nav docs={docs} asPath={asPath} collapsible={false} />
         </Menu>
       </div>
@@ -159,21 +158,19 @@ export default async function Layoutt({ params, children }: Props) {
   return (
     <>
       <DocsContext value={{ docs, doc }}>
-        <MenuContext>
-          <Layout className="[--side-w:theme(spacing.72)]">
-            <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
-              {header}
-            </LayoutHeader>
-            <LayoutContent className="lg:mr-[--rgrid-m] xl:mr-0">
-              <article className="post-container">
-                {children}
-                {footer}
-              </article>
-            </LayoutContent>
-            <LayoutNav className="pt-8">{nav}</LayoutNav>
-            <LayoutAside className="pt-8">{toc}</LayoutAside>
-          </Layout>
-        </MenuContext>
+        <Layout className="[--side-w:theme(spacing.72)]">
+          <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
+            {header}
+          </LayoutHeader>
+          <LayoutContent className="lg:mr-[--rgrid-m] xl:mr-0">
+            <article className="post-container">
+              {children}
+              {footer}
+            </article>
+          </LayoutContent>
+          <LayoutNav className="pt-8">{nav}</LayoutNav>
+          <LayoutAside className="pt-8">{toc}</LayoutAside>
+        </Layout>
       </DocsContext>
     </>
   )
