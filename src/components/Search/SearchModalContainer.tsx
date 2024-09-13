@@ -5,11 +5,13 @@ import { useDocs } from '@/app/[...slug]/DocsContext'
 
 import cn from '@/lib/cn'
 import { Command } from 'cmdk'
+import { useRouter } from 'next/navigation'
 import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
 import SearchItem from './SearchItem'
 
 export const SearchModalContainer = ({ className }: ComponentProps<'search'>) => {
+  const router = useRouter()
   const { docs } = useDocs()
   const [query, setQuery] = React.useState('')
   const deferredQuery = React.useDeferredValue(query)
@@ -79,7 +81,12 @@ export const SearchModalContainer = ({ className }: ComponentProps<'search'>) =>
             <div className="bg-surface-container mt-1 flex max-h-[calc((100dvh-var(--Search-Input-top)-1.5rem)-var(--Search-Input-height))] flex-col gap-1 overflow-auto rounded-md p-1">
               {results.map((result, index) => {
                 return (
-                  <Command.Item key={`search-item-${index}`}>
+                  <Command.Item
+                    key={`search-item-${index}`}
+                    value={result.url}
+                    onSelect={router.push}
+                    className="rounded-md transition-colors data-[selected=true]:bg-surface-container-high"
+                  >
                     <SearchItem search={query} result={result} />
                   </Command.Item>
                 )

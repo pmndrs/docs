@@ -3,9 +3,11 @@
 import Icon from '@/components/Icon'
 import cn from '@/lib/cn'
 import * as Dialog from '@radix-ui/react-dialog'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { ComponentProps, useEffect, useState } from 'react'
 
 import { useKeyPress } from '@/hooks/useKeyPress'
+
 import { SearchModalContainer } from './SearchModalContainer'
 
 function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
@@ -26,6 +28,10 @@ function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
 
       <Dialog.Portal>
         <Dialog.Content className="fixed inset-0 z-50">
+          <VisuallyHidden.Root>
+            <Dialog.Title>Search anything</Dialog.Title>
+          </VisuallyHidden.Root>
+
           <Dialog.Overlay className="absolute inset-0 bg-surface-dim/95">
             <Dialog.Close className="size-full" />
           </Dialog.Overlay>

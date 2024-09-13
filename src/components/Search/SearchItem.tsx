@@ -37,7 +37,7 @@ function SearchItem({
       className={cn(className, 'block no-underline')}
       target={result.url.startsWith('http') ? '_blank' : undefined}
     >
-      <div className="interactive-bg-surface-container-high flex items-center justify-between rounded-md p-4 py-5 transition-colors">
+      <div className="flex items-center justify-between rounded-md p-4 py-5">
         <div className="break-all pr-3">
           <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
           <span
