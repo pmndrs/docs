@@ -1,28 +1,25 @@
 'use client'
 
-import { Nav } from '@/components/Nav'
-import cn from '@/lib/cn'
-import { ComponentProps, ElementRef, useEffect, useRef } from 'react'
-import { useDocs } from './DocsContext'
-import { useMenu } from './MenuContext'
+import * as Dialog from '@radix-ui/react-dialog'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { ComponentProps, useState } from 'react'
 
-export function Menu({ className, asPath }: ComponentProps<'dialog'> & { asPath: string }) {
-  const { doc, docs } = useDocs()
+import { Burger } from './Burger'
 
-  const [opened, setOpened] = useMenu()
-  const dialogRef = useRef<ElementRef<'dialog'>>(null)
-
-  useEffect(() => {
-    if (opened) {
-      dialogRef.current?.show()
-    } else {
-      dialogRef.current?.close()
-    }
-  }, [opened])
+export function Menu({ children, ...props }: ComponentProps<typeof Dialog.Content>) {
+  const [opened, setOpened] = useState(false)
 
   return (
-    <dialog ref={dialogRef} className={cn(className, 'bg-surface-dim/95 backdrop-blur-xl')}>
-      <Nav docs={docs} asPath={asPath} collapsible={false} />
-    </dialog>
+    <Dialog.Root open={opened} onOpenChange={setOpened}>
+      <Dialog.Trigger>
+        <Burger opened={opened} className="lg:hidden" />
+      </Dialog.Trigger>
+      <Dialog.Content {...props}>
+        <VisuallyHidden.Root>
+          <Dialog.Title>Menu</Dialog.Title>
+        </VisuallyHidden.Root>
+        {children}
+      </Dialog.Content>
+    </Dialog.Root>
   )
 }

@@ -63,8 +63,8 @@ function NavItem({
     <Link
       {...props}
       className={cn(
-        'block cursor-pointer p-3 pl-8 focus:outline-none',
-        active ? 'interactive-bg-primary-container' : 'interactive-bg-surface',
+        'block cursor-pointer p-3 pl-8',
+        active ? 'bg-primary-container' : 'interactive-bg-surface',
         className,
       )}
     >
