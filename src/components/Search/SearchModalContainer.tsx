@@ -3,6 +3,7 @@ import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
+import cn from '@/lib/cn'
 import { Command } from 'cmdk'
 import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
@@ -55,12 +56,18 @@ export const SearchModalContainer = ({ className }: ComponentProps<'search'>) =>
   }, [docs, deferredQuery])
 
   return (
-    <search className={className}>
-      <Command shouldFilter={false}>
+    <search
+      className={cn(
+        '[--Search-Input-height:theme(spacing.16)]',
+        'mt-[--Search-Input-top]',
+        className,
+      )}
+    >
+      <Command shouldFilter={false} className="">
         <Command.Input
           name="search"
           id="search"
-          className="bg-surface-container block w-full rounded-md px-4 py-6 pl-10 sm:text-sm"
+          className="bg-surface-container block h-[--Search-Input-height] w-full rounded-md px-4 pl-10 sm:text-sm"
           placeholder="Search the docs"
           value={query}
           autoFocus
@@ -69,7 +76,7 @@ export const SearchModalContainer = ({ className }: ComponentProps<'search'>) =>
 
         <Command.List>
           {results.length > 0 && (
-            <div className="bg-surface-container mt-1 flex flex-col gap-1 rounded-md p-1">
+            <div className="bg-surface-container mt-1 flex max-h-[calc((100dvh-var(--Search-Input-top)-1.5rem)-var(--Search-Input-height))] flex-col gap-1 overflow-auto rounded-md p-1">
               {results.map((result, index) => {
                 return (
                   <Command.Item key={`search-item-${index}`}>
