@@ -48,6 +48,8 @@ Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX co
 
 ### `Intro`
 
+Use at the top of the document, just after the frontmatter.
+
 ```md
 <Intro>
   This is an intro. Here you can write a long description of the article, longer than the frontmatter `description`, eventually with [links](#), lists, etc.
@@ -68,8 +70,10 @@ Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX co
 
 ### `Keypoints`
 
+Can be used after `Intro`, to list main points the article covers: one bullet per `KeypointsItem`.
+
 ```md
-<Keypoints>
+<Keypoints title="What you'll learn">
   <KeypointsItem>First item</KeypointsItem>
   <KeypointsItem>Second **item**</KeypointsItem>
 </Keypoints>
@@ -78,7 +82,7 @@ Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX co
 <details>
   <summary>Result</summary>
 
-<Keypoints>
+<Keypoints title="What you'll learn">
   <KeypointsItem>First item</KeypointsItem>
   <KeypointsItem>Second **item**</KeypointsItem>
 </Keypoints>
