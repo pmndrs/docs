@@ -6,6 +6,7 @@ export * from './Grid'
 export * from './Hint'
 export * from './Img'
 export * from './Intro'
+export * from './Keypoints'
 export * from './Summary'
 export * from './Toc'
 
@@ -44,12 +45,12 @@ export const h6 = ({ id, ...props }: Omit<ComponentProps<typeof Heading>, 'Tag'>
 )
 
 export const ul = ({ className, ...props }: ComponentProps<'ul'>) => (
-  <div className={cn(className, 'my-4 mb-8')}>
+  <div className={cn('my-4 mb-8', className)}>
     <ul className="ms-6 list-disc" {...props} />
   </div>
 )
 export const ol = ({ className, ...props }: ComponentProps<'ol'>) => (
-  <div className={cn(className, 'my-4 mb-8')}>
+  <div className={cn('my-4 mb-8', className)}>
     <ol className="ms-6 list-decimal" {...props} />
   </div>
 )

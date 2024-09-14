@@ -6,8 +6,13 @@ nav: 1
 ---
 
 <Intro>
-  This is a guide on how to write documentation. We support all [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax, plus some custom components that are described here.
+  This is a guide on how to write documentation. We support all [GFM](https://github.github.com/gfm/) syntax, plus some custom components that are described here.
 </Intro>
+
+<Keypoints>
+  <KeypointsItem>[Front matter](#frontmatter)</KeypointsItem>
+  <KeypointsItem>Custom [markdown](#markdown) components</KeypointsItem>
+</Keypoints>
 
 In your `MDX` folder, create any `path/to/my-document.mdx`:
 
@@ -59,6 +64,24 @@ Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX co
   
   Multiple paragraphs are also possible, or anything.
 </Intro>
+</details>
+
+### `Keypoints`
+
+```md
+<Keypoints>
+  <KeypointsItem>First item</KeypointsItem>
+  <KeypointsItem>Second **item**</KeypointsItem>
+</Keypoints>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Keypoints>
+  <KeypointsItem>First item</KeypointsItem>
+  <KeypointsItem>Second **item**</KeypointsItem>
+</Keypoints>
 </details>
 
 ### `Img`
