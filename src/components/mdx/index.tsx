@@ -5,6 +5,7 @@ export * from './Gha'
 export * from './Grid'
 export * from './Hint'
 export * from './Img'
+export * from './Intro'
 export * from './Summary'
 export * from './Toc'
 
@@ -54,7 +55,7 @@ export const ol = ({ className, ...props }: ComponentProps<'ol'>) => (
 )
 export const li = (props: ComponentProps<'li'>) => <li className="my-1" {...props} />
 
-export const p = (props: ComponentProps<'p'>) => <p className="my-4 text-base" {...props} />
+export const p = (props: ComponentProps<'p'>) => <p className="my-4" {...props} />
 
 export const hr = (props: ComponentProps<'hr'>) => (
   <hr className="my-4 mb-8 border-outline-variant/50" {...props} />

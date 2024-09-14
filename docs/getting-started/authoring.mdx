@@ -5,6 +5,10 @@ sourcecode: docs/getting-started/authoring.mdx
 nav: 1
 ---
 
+<Intro>
+  This is a guide on how to write documentation. We support all [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax, plus some custom components that are described here.
+</Intro>
+
 In your `MDX` folder, create any `path/to/my-document.mdx`:
 
 ```md
@@ -36,6 +40,26 @@ Any key is optional.
 You can use any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
 
 Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX components.
+
+### Intro
+
+```md
+<Intro>
+  This is an intro. Here you can write a short description of the article, longer than the `description`, eventually with [links](#void), lists, etc.
+  
+  Multiple paragraphs are also possible, or anything.
+</Intro>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Intro>
+  This is an intro. Here you can write a short description of the article, longer than the `description`, eventually with [links](#void), lists, etc.
+  
+  Multiple paragraphs are also possible, or anything.
+</Intro>
+</details>
 
 ### `Img`
 
