@@ -56,19 +56,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <SandpackCSS />
       </head>
       <body className={cn(inter.className, 'bg-surface break-words')}>
-        <ThemeProvider
-          // attribute="class"
-          // defaultTheme="system"
-          // enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   )
