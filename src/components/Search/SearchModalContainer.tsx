@@ -87,7 +87,7 @@ export const SearchModalContainer = ({ className }: ComponentProps<'search'>) =>
                     onSelect={router.push}
                     className="rounded-md transition-colors data-[selected=true]:bg-surface-container-high"
                   >
-                    <SearchItem search={query} result={result} />
+                    <SearchItem search={query} result={result} tabIndex={-1} />
                   </Command.Item>
                 )
               })}

@@ -36,6 +36,10 @@ main :target {
   }
 }
 
+mark {
+  @apply -m-[--pad] rounded-sm p-[--pad] [--pad:0.05rem];
+}
+
 /**
  * Pmndrs theme for JavaScript, CSS and HTML
  * Loosely based on https://marketplace.visualstudio.com/items?itemName=pmndrs.pmndrs

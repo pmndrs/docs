@@ -30,9 +30,11 @@ function SearchItem({
   className,
   search,
   result,
+  ...props
 }: Omit<ComponentProps<typeof Link>, 'href'> & SearchItemProps) {
   return (
     <Link
+      {...props}
       href={result.url}
       className={cn(className, 'block no-underline')}
       target={result.url.startsWith('http') ? '_blank' : undefined}
