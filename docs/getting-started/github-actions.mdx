@@ -4,7 +4,11 @@ description: Call from your CI
 nav: 3
 ---
 
-`pmndrs/docs` provides a [`build.yml`](.github/workflows/build.yml) reusable workflow, any project can use:
+<Intro>
+  This project provides a [`build.yml` reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows#calling-a-reusable-workflow) you can easily call from your own project workflow.
+</Intro>
+
+In your `.github/workflows` folder, create a eg. `docs.yml` file:
 
 ```yml
 uses: pmndrs/docs/.github/workflows/build.yml@v2
