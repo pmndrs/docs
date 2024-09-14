@@ -10,7 +10,10 @@ import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
 import SearchItem from './SearchItem'
 
-export const SearchModalContainer = ({ className }: ComponentProps<'search'>) => {
+export const SearchModalContainer = ({
+  className,
+  close,
+}: ComponentProps<'search'> & { close: () => void }) => {
   const router = useRouter()
   const { docs } = useDocs()
   const [query, setQuery] = React.useState('')
@@ -84,7 +87,10 @@ export const SearchModalContainer = ({ className }: ComponentProps<'search'>) =>
                   <Command.Item
                     key={`search-item-${index}`}
                     value={result.url}
-                    onSelect={router.push}
+                    onSelect={(value) => {
+                      router.push(value)
+                      close()
+                    }}
                     className="rounded-md transition-colors data-[selected=true]:bg-surface-container-high"
                   >
                     <SearchItem search={query} result={result} tabIndex={-1} />
