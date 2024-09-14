@@ -11,7 +11,7 @@ export function Menu({ children, ...props }: ComponentProps<typeof Dialog.Conten
 
   return (
     <Dialog.Root open={opened} onOpenChange={setOpened}>
-      <Dialog.Trigger>
+      <Dialog.Trigger aria-label="Menu">
         <Burger opened={opened} className="lg:hidden" />
       </Dialog.Trigger>
       <Dialog.Content {...props}>
