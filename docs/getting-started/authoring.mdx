@@ -19,7 +19,7 @@ sourcecode: to/my-document.mdx
 MARKDOWN
 ```
 
-### Frontmatter
+## Frontmatter
 
 Any key is optional.
 
@@ -31,13 +31,13 @@ Any key is optional.
   - will be used as metadata image if provided
 - `nav`: order in the navigation (on the same level)
 
-### MARKDOWN
+## MARKDOWN
 
 You can use any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
 
 Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX components.
 
-#### `Img`
+### `Img`
 
 Relative images are supported. Eg, inside your [`MDX`](introduction#configuration:~:text=MDX) folder:
 ```text {2}
@@ -95,7 +95,7 @@ Although it is probably better to use CSS for this:
 > [!NOTE]
 > See [`MDX_BASEURL`](introduction#configuration:~:text=MDX_BASEURL) to understand how it is converted to a full URL.
 
-#### Code
+### Code
 
 Line numbers/highlights are supported:
 
@@ -192,7 +192,7 @@ index 8c3317a..47ea956 100644
 
 </details>
 
-#### `Grid`
+### `Grid`
 
 Responsive grid.
 
@@ -220,7 +220,7 @@ Responsive grid.
 
 </details>
 
-#### `Sandpack`
+### `Sandpack`
 
 Inline sandboxes.
 
@@ -293,7 +293,7 @@ export default function App() {
 
 
 
-#### `Codesandbox`
+### `Codesandbox`
 
 ```md
 <Codesandbox id="3rjsl" />
@@ -306,7 +306,7 @@ export default function App() {
 
 </details>
 
-#### `Gha`
+### `Gha`
 
 Aka. ["GitHub alerts"](https://github.com/orgs/community/discussions/16925)
 
@@ -346,7 +346,7 @@ or better:
 
 </details>
 
-#### `Hint`
+### `Hint`
 
 > [!CAUTION]
 > Deprecated, use [`Gha[keyword="NOTE"]`](#Gha) instead.
