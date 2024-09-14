@@ -34,6 +34,7 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
       <button
         className="absolute right-0 top-0 m-4 flex size-8 items-center justify-center rounded-md text-outline-variant transition-colors hover:text-outline"
         onClick={handleClick}
+        aria-label="Copy to clipboard"
       >
         {copied ? <TbClipboardCheck className="size-6" /> : <TbClipboard className="size-6" />}
       </button>
