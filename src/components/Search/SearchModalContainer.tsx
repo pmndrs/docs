@@ -4,6 +4,7 @@ import * as React from 'react'
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
 import cn from '@/lib/cn'
+import { escape } from '@/utils/text'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import { ComponentProps } from 'react'
@@ -27,7 +28,7 @@ export const SearchModalContainer = ({
 
       // Get length of matched text in result
       const relevanceOf = (result: SearchResult) =>
-        (result.title.toLowerCase().match(deferredQuery.toLowerCase())?.length ?? 0) /
+        (result.title.toLowerCase().match(escape(deferredQuery.toLowerCase()))?.length ?? 0) /
         result.title.length
 
       // Search
