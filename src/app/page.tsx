@@ -1,6 +1,7 @@
 import docsIcon from '@/assets/docs-icon.png'
 import dreiIcon from '@/assets/drei-icon.svg'
 import jotaiIcon from '@/assets/jotai-icon.png'
+import ppIcon from '@/assets/pp-icon.svg'
 import r3fIcon from '@/assets/r3f-icon.svg'
 import reactSpringIcon from '@/assets/react-spring-icon.svg'
 import uiKitIcon from '@/assets/uikit-icon.svg'
@@ -98,6 +99,9 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     docs: 'pmndrs/react-postprocessing/master/docs',
+    icon: ppIcon.src,
+    iconWidth: ppIcon.width,
+    iconHeight: ppIcon.height,
   },
   uikit: {
     title: 'uikit',
