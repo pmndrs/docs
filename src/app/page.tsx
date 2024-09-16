@@ -1,5 +1,7 @@
 import docsIcon from '@/assets/docs-icon.png'
+import dreiIcon from '@/assets/drei-icon.svg'
 import jotaiIcon from '@/assets/jotai-icon.png'
+import r3fIcon from '@/assets/r3f-icon.svg'
 import reactSpringIcon from '@/assets/react-spring-icon.svg'
 import uiKitIcon from '@/assets/uikit-icon.svg'
 import zustandIcon from '@/assets/zustand-icon.svg'
@@ -33,6 +35,9 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
     docs: 'pmndrs/react-three-fiber/master/docs',
+    icon: r3fIcon.src,
+    iconWidth: r3fIcon.width,
+    iconHeight: r3fIcon.height,
   },
   'react-spring': {
     title: 'React Spring',
@@ -49,6 +54,9 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
+    icon: dreiIcon.src,
+    iconWidth: dreiIcon.width,
+    iconHeight: dreiIcon.height,
   },
   zustand: {
     title: 'Zustand',
@@ -162,7 +170,7 @@ export default function Page() {
             {Object.entries(libs).map(([id, data]) => (
               <div
                 key={id}
-                className="bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
+                className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
               >
                 <div className="relative z-10 flex h-full flex-col justify-between">
                   <div className="flex items-center justify-between gap-2 px-6 py-6">
@@ -181,7 +189,7 @@ export default function Page() {
                       >
                         <Image
                           src={data.icon}
-                          className="absolute inset-0 h-full w-full object-contain"
+                          className="absolute inset-0 h-full w-full object-contain grayscale transition group-hover/card:grayscale-0"
                           alt={data.title}
                           aria-hidden
                           width={data.iconWidth}
