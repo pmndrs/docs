@@ -3,10 +3,14 @@ import Link from 'next/link'
 
 import docsIcon from '@/assets/docs-icon.png'
 import docsShare from '@/assets/docs.jpg'
+import dreiShare from '@/assets/drei.jpg'
 import jotaiIcon from '@/assets/jotai-icon.png'
 import reactPostprocessingShare from '@/assets/react-postprocessing.jpg'
+import reactSpringIcon from '@/assets/react-spring-icon.png'
+import reactSpringShare from '@/assets/react-spring.jpg'
 import reactThreeA11yShare from '@/assets/react-three-a11y.jpg'
 import reactThreeFiberShare from '@/assets/react-three-fiber.jpg'
+import uiKitIcon from '@/assets/uikit-icon.svg'
 import zustandIcon from '@/assets/zustand-icon.png'
 import zustandShare from '@/assets/zustand.jpg'
 import Icon from '@/components/Icon'
@@ -44,11 +48,16 @@ const libs: Record<string, Library> = {
     url: 'https://react-spring.io',
     github: 'https://github.com/pmndrs/react-spring',
     description: 'Bring your components to life with simple spring animation primitives for React',
+    icon: reactSpringIcon.src,
+    iconWidth: reactSpringIcon.width,
+    iconHeight: reactSpringIcon.height,
+    image: reactSpringShare.src,
   },
   drei: {
     title: 'Drei',
     url: '/drei',
     github: 'https://github.com/pmndrs/drei',
+    image: dreiShare.src,
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
   },
@@ -101,6 +110,9 @@ const libs: Record<string, Library> = {
     url: '/uikit',
     github: 'https://github.com/pmndrs/uikit',
     description: 'uikit brings user interfaces to @react-three/fiber',
+    icon: uiKitIcon.src,
+    iconWidth: uiKitIcon.width,
+    iconHeight: uiKitIcon.height,
     docs: 'pmndrs/uikit/main/docs',
   },
   xr: {
