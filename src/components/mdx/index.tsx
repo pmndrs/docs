@@ -1,5 +1,7 @@
+export * from './Backers'
 export * from './Code'
 export * from './Codesandbox'
+export * from './Contributors'
 export * from './Details'
 export * from './Gha'
 export * from './Grid'
