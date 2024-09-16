@@ -11,7 +11,9 @@ export async function Contributors({
 }) {
   const contributors = await fetchContributors(repo)
 
-  if (!contributors) return null
+  if (contributors.length === 0) {
+    return null
+  }
 
   return (
     <div className={cn('!flex flex-wrap gap-[4px] p-[3px]', className)} {...props}>

@@ -14,13 +14,15 @@ export async function Backers({
 }: ComponentProps<'div'> & {
   repo: string
   member: 'all' | 'users' | 'organizations'
-  query?: { limit?: number; offset?: number }
+  query?: { limit: number; offset: number }
 }) {
   const backers = await fetchBackers(
     `https://opencollective.com/${repo}/members/${member}.json?limit=${query.limit}&offset=${query.offset}`,
   )
 
-  if (!backers) return null
+  if (backers.length === 0) {
+    return null
+  }
 
   return (
     <div className={cn('!flex flex-wrap gap-[4px] p-[3px]', className)} {...props}>
