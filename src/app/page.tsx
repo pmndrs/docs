@@ -1,21 +1,13 @@
-import Image from 'next/image'
-import Link from 'next/link'
-
 import docsIcon from '@/assets/docs-icon.png'
-import docsShare from '@/assets/docs.jpg'
-import dreiShare from '@/assets/drei.jpg'
 import jotaiIcon from '@/assets/jotai-icon.png'
-import reactPostprocessingShare from '@/assets/react-postprocessing.jpg'
 import reactSpringIcon from '@/assets/react-spring-icon.png'
-import reactSpringShare from '@/assets/react-spring.jpg'
-import reactThreeA11yShare from '@/assets/react-three-a11y.jpg'
-import reactThreeFiberShare from '@/assets/react-three-fiber.jpg'
 import uiKitIcon from '@/assets/uikit-icon.svg'
 import zustandIcon from '@/assets/zustand-icon.png'
-import zustandShare from '@/assets/zustand.jpg'
 import Icon from '@/components/Icon'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export interface Library {
@@ -40,7 +32,6 @@ const libs: Record<string, Library> = {
     url: '/react-three-fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
-    image: reactThreeFiberShare.src,
     docs: 'pmndrs/react-three-fiber/master/docs',
   },
   'react-spring': {
@@ -51,13 +42,11 @@ const libs: Record<string, Library> = {
     icon: reactSpringIcon.src,
     iconWidth: reactSpringIcon.width,
     iconHeight: reactSpringIcon.height,
-    image: reactSpringShare.src,
   },
   drei: {
     title: 'Drei',
     url: '/drei',
     github: 'https://github.com/pmndrs/drei',
-    image: dreiShare.src,
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
   },
@@ -70,7 +59,6 @@ const libs: Record<string, Library> = {
     icon: zustandIcon.src,
     iconWidth: zustandIcon.width,
     iconHeight: zustandIcon.height,
-    image: zustandShare.src,
     docs: 'pmndrs/zustand/main/docs',
   },
   jotai: {
@@ -94,7 +82,6 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-three-a11y',
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
-    image: reactThreeA11yShare.src,
     docs: 'pmndrs/react-three-a11y/main/docs',
   },
   'react-postprocessing': {
@@ -102,7 +89,6 @@ const libs: Record<string, Library> = {
     url: '/react-postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
-    image: reactPostprocessingShare.src,
     docs: 'pmndrs/react-postprocessing/master/docs',
   },
   uikit: {
@@ -127,7 +113,6 @@ const libs: Record<string, Library> = {
     url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
-    image: docsShare.src,
     icon: docsIcon.src,
     iconWidth: docsIcon.width,
     iconHeight: docsIcon.height,
