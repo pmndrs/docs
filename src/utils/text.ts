@@ -8,5 +8,5 @@ export const escape = (text: string) => text.replace(/[|\\{}()[\]^$+*?.]/g, '\\$
  */
 export const highlight = (text: string, target: string) =>
   target.length > 0
-    ? text.replace(new RegExp(target, 'gi'), (match: string) => `<mark>${match}</mark>`)
+    ? text.replace(new RegExp(escape(target), 'gi'), (match: string) => `<mark>${match}</mark>`)
     : text
