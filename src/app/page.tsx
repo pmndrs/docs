@@ -1,17 +1,15 @@
-import Image from 'next/image'
-import Link from 'next/link'
-
 import docsIcon from '@/assets/docs-icon.png'
-import docsShare from '@/assets/docs.jpg'
+import dreiIcon from '@/assets/drei-icon.svg'
 import jotaiIcon from '@/assets/jotai-icon.png'
-import reactPostprocessingShare from '@/assets/react-postprocessing.jpg'
-import reactThreeA11yShare from '@/assets/react-three-a11y.jpg'
-import reactThreeFiberShare from '@/assets/react-three-fiber.jpg'
-import zustandIcon from '@/assets/zustand-icon.png'
-import zustandShare from '@/assets/zustand.jpg'
+import r3fIcon from '@/assets/r3f-icon.svg'
+import reactSpringIcon from '@/assets/react-spring-icon.svg'
+import uiKitIcon from '@/assets/uikit-icon.svg'
+import zustandIcon from '@/assets/zustand-icon.svg'
 import Icon from '@/components/Icon'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export interface Library {
@@ -36,14 +34,19 @@ const libs: Record<string, Library> = {
     url: '/react-three-fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
-    image: reactThreeFiberShare.src,
     docs: 'pmndrs/react-three-fiber/master/docs',
+    icon: r3fIcon.src,
+    iconWidth: r3fIcon.width,
+    iconHeight: r3fIcon.height,
   },
   'react-spring': {
     title: 'React Spring',
     url: 'https://react-spring.io',
     github: 'https://github.com/pmndrs/react-spring',
     description: 'Bring your components to life with simple spring animation primitives for React',
+    icon: reactSpringIcon.src,
+    iconWidth: reactSpringIcon.width,
+    iconHeight: reactSpringIcon.height,
   },
   drei: {
     title: 'Drei',
@@ -51,6 +54,9 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
+    icon: dreiIcon.src,
+    iconWidth: dreiIcon.width,
+    iconHeight: dreiIcon.height,
   },
   zustand: {
     title: 'Zustand',
@@ -61,7 +67,6 @@ const libs: Record<string, Library> = {
     icon: zustandIcon.src,
     iconWidth: zustandIcon.width,
     iconHeight: zustandIcon.height,
-    image: zustandShare.src,
     docs: 'pmndrs/zustand/main/docs',
   },
   jotai: {
@@ -85,7 +90,6 @@ const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/react-three-a11y',
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
-    image: reactThreeA11yShare.src,
     docs: 'pmndrs/react-three-a11y/main/docs',
   },
   'react-postprocessing': {
@@ -93,7 +97,6 @@ const libs: Record<string, Library> = {
     url: '/react-postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
-    image: reactPostprocessingShare.src,
     docs: 'pmndrs/react-postprocessing/master/docs',
   },
   uikit: {
@@ -101,6 +104,9 @@ const libs: Record<string, Library> = {
     url: '/uikit',
     github: 'https://github.com/pmndrs/uikit',
     description: 'uikit brings user interfaces to @react-three/fiber',
+    icon: uiKitIcon.src,
+    iconWidth: uiKitIcon.width,
+    iconHeight: uiKitIcon.height,
     docs: 'pmndrs/uikit/main/docs',
   },
   xr: {
@@ -115,7 +121,6 @@ const libs: Record<string, Library> = {
     url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
-    image: docsShare.src,
     icon: docsIcon.src,
     iconWidth: docsIcon.width,
     iconHeight: docsIcon.height,
@@ -165,13 +170,13 @@ export default function Page() {
             {Object.entries(libs).map(([id, data]) => (
               <div
                 key={id}
-                className="bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
+                className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
               >
                 <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="flex items-center justify-between px-6">
+                  <div className="flex items-center justify-between gap-2 px-6 py-6">
                     <div className="max-w-md">
-                      <div className="pt-4 text-lg font-bold">{data.title}</div>
-                      <div className="flex-grow pb-4 pr-4 pt-1 text-sm !leading-relaxed text-on-surface-variant/50">
+                      <div className="text-lg font-bold">{data.title}</div>
+                      <div className="flex-grow text-sm !leading-relaxed text-on-surface-variant/50">
                         {data.description}
                       </div>
                     </div>
@@ -184,7 +189,7 @@ export default function Page() {
                       >
                         <Image
                           src={data.icon}
-                          className="absolute inset-0 h-full w-full object-contain"
+                          className="absolute inset-0 h-full w-full object-contain grayscale transition group-hover/card:grayscale-0"
                           alt={data.title}
                           aria-hidden
                           width={data.iconWidth}
