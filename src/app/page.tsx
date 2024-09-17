@@ -177,7 +177,7 @@ export default function Page() {
                 className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
               >
                 <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="flex items-center justify-between gap-2 px-6 py-6">
+                  <div className="flex items-center justify-between gap-6 px-6 py-6">
                     <div className="max-w-md">
                       <div className="text-lg font-bold">{data.title}</div>
                       <div className="flex-grow text-sm !leading-relaxed text-on-surface-variant/50">
