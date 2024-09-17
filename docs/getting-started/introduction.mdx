@@ -47,6 +47,7 @@ $ npm ci
 | `THEME_IMPORTANT`           | "important" color                                                                                                                                                        | `#8957e5`                                                                                        |
 | `THEME_WARNING`             | "warning" color                                                                                                                                                          | `#d29922`                                                                                        |
 | `THEME_CAUTION`             | "caution" color                                                                                                                                                          | `#da3633`                                                                                        |
+| `CONTRIBUTORS_PAT`          | GitHub token for contributors API (see: https://docs.github.com/en/rest/collaborators/collaborators?apiVersion=2022-11-28#list-repository-collaborators)                 | `ghp_1234567890`                                                                                 |
 
 \* Required
 
@@ -116,6 +117,7 @@ $ (
   export THEME_IMPORTANT="#8957e5"
   export THEME_WARNING="#d29922"
   export THEME_CAUTION="#da3633"
+  export CONTRIBUTORS_PAT=
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -163,6 +165,7 @@ $ (
   export THEME_IMPORTANT="#8957e5"
   export THEME_WARNING="#d29922"
   export THEME_CAUTION="#da3633"
+  export CONTRIBUTORS_PAT=
 
   npm run build
 
@@ -211,6 +214,7 @@ $ (
   export THEME_IMPORTANT="#8957e5"
   export THEME_WARNING="#d29922"
   export THEME_CAUTION="#da3633"
+  export CONTRIBUTORS_PAT=
 
   rm -rf "$MDX/out"
 
@@ -238,6 +242,7 @@ $ (
     -e THEME_IMPORTANT \
     -e THEME_WARNING \
     -e THEME_CAUTION \
+    -e CONTRIBUTORS_PAT \
     pmndrs-docs npm run build
 
   kill $(lsof -ti:"$_PORT")
