@@ -70,6 +70,7 @@ jobs:
             --build-env THEME_IMPORTANT="#8957e5" \
             --build-env THEME_WARNING="#d29922" \
             --build-env THEME_CAUTION="#da3633" \
+            --build-env CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
             > deployment-url.txt
 
           echo "deployment_url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT

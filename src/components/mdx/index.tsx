@@ -7,6 +7,7 @@ export * from './Hint'
 export * from './Img'
 export * from './Intro'
 export * from './Keypoints'
+export * from './People'
 export * from './Summary'
 export * from './Toc'
 
