@@ -10,7 +10,7 @@
     "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
     "@types/hast": "^3.0.4",
     "@types/minimist": "^1.2.5",
-    "@types/node": "^18.19.50",
+    "@types/node": "^22.7.7",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@types/sanitize-html": "^2.13.0",
