@@ -7,7 +7,8 @@ import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
 import { getData } from '@/utils/docs'
 import Link from 'next/link'
-import { FaDiscord, FaGithub } from 'react-icons/fa'
+import { FaDiscord } from 'react-icons/fa'
+import { IoLogoGithub } from 'react-icons/io'
 import { DocsContext } from './DocsContext'
 import { Menu } from './Menu'
 
@@ -53,7 +54,7 @@ export default async function Layoutt({ params, children }: Props) {
 
       <div className="flex">
         {[
-          { href: process.env.GITHUB, icon: <FaGithub /> },
+          { href: process.env.GITHUB, icon: <IoLogoGithub /> },
           { href: process.env.DISCORD, icon: <FaDiscord /> },
         ].map(({ href, icon }) => (
           <>
