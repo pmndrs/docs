@@ -7,8 +7,7 @@ import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
 import { getData } from '@/utils/docs'
 import Link from 'next/link'
-import { PiDiscordLogoLight } from 'react-icons/pi'
-import { VscGithubAlt } from 'react-icons/vsc'
+import { FaDiscord, FaGithub } from 'react-icons/fa'
 import { DocsContext } from './DocsContext'
 import { Menu } from './Menu'
 
@@ -54,8 +53,8 @@ export default async function Layoutt({ params, children }: Props) {
 
       <div className="flex">
         {[
-          { href: process.env.GITHUB, icon: <VscGithubAlt /> },
-          { href: process.env.DISCORD, icon: <PiDiscordLogoLight /> },
+          { href: process.env.GITHUB, icon: <FaGithub /> },
+          { href: process.env.DISCORD, icon: <FaDiscord /> },
         ].map(({ href, icon }) => (
           <>
             {href && (
