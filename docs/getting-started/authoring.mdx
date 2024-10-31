@@ -376,6 +376,43 @@ Instead of `files`, a `folder` prop allow you to pass a folder containing all th
 
 </details>
 
+It is also possible to pass some individual [file format](https://sandpack.codesandbox.io/docs/getting-started/usage#file-format) configuration:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  files={{
+    '/App.tsx': {
+      readOnly: true,
+      active: true,
+    },
+    '/styles.css': {
+      hidden: true
+    }
+  }}
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  files={{
+    '/App.tsx': {
+      readOnly: true,
+      active: true,
+    },
+    '/styles.css': {
+      hidden: true
+    }
+  }}
+/>
+
+</details>
+
 ### `Codesandbox`
 
 ```md
