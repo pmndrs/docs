@@ -342,7 +342,34 @@ export default function App() {
 
 </details>
 
+#### `Sandpack[folder]`
 
+Instead of `files`, a `folder` prop allow you to pass a folder containing all the files:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+/>
+```
+
+NB: `folder` path is relative to the mdx file.
+
+> [!TIP]
+> It will simply:
+> - build the `files` prop for you (including all `.{js|ts|jsx|tsx|css}` it finds)
+> - build `customSetup.dependencies` from `package.json` if it exists
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+/>
+
+
+</details>
 
 ### `Codesandbox`
 

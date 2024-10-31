@@ -7,12 +7,14 @@ import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbo
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
+import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
+import { dirname } from 'node:path'
 import React, { cache } from 'react'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
@@ -40,11 +42,11 @@ const INLINE_LINK_REGEX = /<(http[^>]+)>/g
 /**
  * Recursively crawls a directory, returning an array of file paths.
  */
-async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
+export async function crawl(dir: string, filter?: (dir: string) => boolean, files: string[] = []) {
   if (fs.lstatSync(dir).isDirectory()) {
     const filenames = fs.readdirSync(dir) as string[]
     await Promise.all(filenames.map(async (filename) => crawl(`${dir}/${filename}`, filter, files)))
-  } else if (!filter || filter.test(dir)) {
+  } else if (!filter || filter(dir)) {
     files.push(dir)
   }
 
@@ -65,7 +67,7 @@ async function _getDocs(
   slugOfInterest: string[] | null,
   slugOnly = false,
 ): Promise<Doc[]> {
-  const files = await crawl(root, MARKDOWN_REGEX)
+  const files = await crawl(root, (dir) => MARKDOWN_REGEX.test(dir))
   // console.log('files', files)
 
   const docs = await Promise.all(
@@ -167,6 +169,7 @@ async function _getDocs(
               rehypeCode(),
               rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
               rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
+              rehypeSandpack(dirname(file)),
             ],
           },
         },

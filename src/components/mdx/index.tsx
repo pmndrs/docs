@@ -8,12 +8,12 @@ export * from './Img'
 export * from './Intro'
 export * from './Keypoints'
 export * from './People'
+export * from './Sandpack'
 export * from './Summary'
 export * from './Toc'
 
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
-import { Sandpack as SP } from '@codesandbox/sandpack-react'
 import { ComponentProps } from 'react'
 import { Img } from './Img'
 
@@ -110,20 +110,4 @@ export const code = (props: ComponentProps<'code'>) => (
     className="bg-surface-container-high rounded-md px-1.5 py-0.5 font-mono text-[85%]"
     {...props}
   />
-)
-
-// https://sandpack.codesandbox.io/docs/getting-started/usage
-export const Sandpack = ({
-  className,
-  ...props
-}: { className: string } & ComponentProps<typeof SP>) => (
-  <div className={cn(className, 'sandpack')}>
-    <SP
-      {...props}
-      options={{
-        ...props.options,
-        // editorHeight: 350
-      }}
-    />
-  </div>
 )
