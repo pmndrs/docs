@@ -67,7 +67,10 @@ async function _getDocs(
   slugOfInterest: string[] | null,
   slugOnly = false,
 ): Promise<Doc[]> {
-  const files = await crawl(root, (dir) => MARKDOWN_REGEX.test(dir))
+  const files = await crawl(
+    root,
+    (dir) => !dir.includes('node_modules') && MARKDOWN_REGEX.test(dir),
+  )
   // console.log('files', files)
 
   const docs = await Promise.all(
