@@ -61,7 +61,7 @@ export default function RootLayout({
         <SandpackCSS />
       </head>
       <body className={cn(inter.className, 'bg-surface break-words')}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider attribute="class">{children}</ThemeProvider>
       </body>
     </html>
   )

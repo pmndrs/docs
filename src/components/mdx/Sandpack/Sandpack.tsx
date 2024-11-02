@@ -1,15 +1,23 @@
 import cn from '@/lib/cn'
 import { crawl } from '@/utils/docs'
 import {
-  Sandpack as SP,
-  type SandpackFile,
+  SandpackCodeEditor,
+  SandpackLayout,
+  SandpackPreview,
+  SandpackProvider,
   type SandpackFiles,
-  type SandpackProps,
+  type SandpackProviderProps,
 } from '@codesandbox/sandpack-react'
 import fs from 'node:fs'
 import path from 'node:path'
 
-type Files = Record<string, Omit<SandpackFile, 'code'>>
+// https://tailwindcss.com/docs/configuration#referencing-in-java-script
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../../../../tailwind.config'
+const fullConfig = resolveConfig(tailwindConfig)
+// console.log('fullConfig', fullConfig.theme.colors)
+// console.log(fullConfig.theme.fontSize.sm)
+// console.log(fullConfig.theme.fontFamily.mono)
 
 function getSandpackDependencies(folder: string) {
   const pkgPath = `${folder}/package.json`
@@ -21,7 +29,7 @@ function getSandpackDependencies(folder: string) {
 
 async function getSandpackFiles(
   folder: string,
-  files: Files = {},
+  files: SandpackFiles = {},
   extensions = ['js', 'ts', 'jsx', 'tsx', 'css'],
 ) {
   const filepaths = await crawl(
@@ -39,7 +47,7 @@ async function getSandpackFiles(
     return {
       ...acc,
       [key]: {
-        ...file,
+        ...((typeof file !== 'string' && file) || undefined),
         code: fs.readFileSync(filepath, 'utf-8'),
       },
     }
@@ -50,17 +58,14 @@ async function getSandpackFiles(
 export const Sandpack = async ({
   className,
   folder,
-  files,
   ...props
-}: {
+}: SandpackProviderProps & {
   className: string
   folder?: string
-  files?: Files
-} & Omit<SandpackProps, 'files'>) => {
+}) => {
   // console.log('folder', folder)
 
-  const _files = folder ? await getSandpackFiles(folder, files) : files
-  // console.log('_files', _files)
+  const _files = folder ? await getSandpackFiles(folder, props.files) : props.files
 
   const pkgDeps = folder ? getSandpackDependencies(folder) : null
   const dependencies = pkgDeps ?? props.customSetup?.dependencies
@@ -77,7 +82,27 @@ export const Sandpack = async ({
 
   return (
     <div className={cn(className, 'sandpack')}>
-      <SP {...props} files={_files} customSetup={customSetup} options={options} />
+      <SandpackProvider
+        {...props}
+        theme={{
+          colors: {
+            // @ts-ignore
+            surface1: fullConfig.theme.colors['inverse-surface-light'],
+          },
+          font: {
+            mono: fullConfig.theme.fontFamily.mono.join(', '),
+            size: fullConfig.theme.fontSize.xs[0],
+          },
+        }}
+        files={_files}
+        customSetup={customSetup}
+        options={options}
+      >
+        <SandpackLayout>
+          <SandpackCodeEditor />
+          <SandpackPreview />
+        </SandpackLayout>
+      </SandpackProvider>
     </div>
   )
 }
