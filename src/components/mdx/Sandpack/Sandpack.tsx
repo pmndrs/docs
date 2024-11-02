@@ -18,6 +18,7 @@ const fullConfig = resolveConfig(tailwindConfig)
 // console.log('fullConfig', fullConfig.theme.colors)
 // console.log(fullConfig.theme.fontSize.sm)
 // console.log(fullConfig.theme.fontFamily.mono)
+// console.log(fullConfig.theme.borderRadius.lg)
 
 function getSandpackDependencies(folder: string) {
   const pkgPath = `${folder}/package.json`
@@ -97,6 +98,8 @@ export const Sandpack = async ({
         files={_files}
         customSetup={customSetup}
         options={options}
+        // @ts-ignore
+        style={{ '--sp-border-radius': fullConfig.theme.borderRadius.lg }}
       >
         <SandpackLayout>
           <SandpackCodeEditor />
