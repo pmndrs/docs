@@ -2,6 +2,7 @@ import cn from '@/lib/cn'
 import { crawl } from '@/utils/docs'
 import {
   SandpackCodeEditor,
+  SandpackFileExplorer,
   SandpackLayout,
   SandpackPreview,
   SandpackProvider,
@@ -12,6 +13,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 // https://tailwindcss.com/docs/configuration#referencing-in-java-script
+import { ComponentProps } from 'react'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../../../../tailwind.config'
 const fullConfig = resolveConfig(tailwindConfig)
@@ -59,10 +61,16 @@ async function getSandpackFiles(
 export const Sandpack = async ({
   className,
   folder,
+  fileExplorer,
+  codeEditor,
+  preview,
   ...props
 }: SandpackProviderProps & {
-  className: string
+  className?: string
   folder?: string
+  codeEditor?: ComponentProps<typeof SandpackCodeEditor>
+  preview?: ComponentProps<typeof SandpackPreview>
+  fileExplorer?: boolean | ComponentProps<typeof SandpackFileExplorer>
 }) => {
   // console.log('folder', folder)
 
@@ -92,7 +100,7 @@ export const Sandpack = async ({
           },
           font: {
             mono: fullConfig.theme.fontFamily.mono.join(', '),
-            size: fullConfig.theme.fontSize.xs[0],
+            // size: fullConfig.theme.fontSize.xs[0],
           },
         }}
         files={_files}
@@ -102,8 +110,13 @@ export const Sandpack = async ({
         style={{ '--sp-border-radius': fullConfig.theme.borderRadius.lg }}
       >
         <SandpackLayout>
-          <SandpackCodeEditor />
-          <SandpackPreview />
+          {fileExplorer && (
+            <SandpackFileExplorer
+              {...(typeof fileExplorer !== 'boolean' ? fileExplorer : undefined)}
+            />
+          )}
+          <SandpackCodeEditor showTabs={fileExplorer ? false : undefined} {...codeEditor} />
+          <SandpackPreview {...preview} />
         </SandpackLayout>
       </SandpackProvider>
     </div>

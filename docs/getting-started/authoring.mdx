@@ -413,6 +413,41 @@ It is also possible to pass some individual [file format](https://sandpack.codes
 
 </details>
 
+#### `Sandpack[fileExplorer]`
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  fileExplorer
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  fileExplorer
+/>
+
+</details>
+
+> [!TIP]
+> Conveniently, enabling `fileExplorer` will by default `[codeEditor={showTabs: false}]`.
+> You can override it with [`[codeEditor]` options](#sandpack[codeeditor])
+
+You can also pass [any `fileExplorer={options: ComponentProps<SandpackFileExplorer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#file-explorer:~:text=Preview-,Options,-If%20you%27re%20looking).
+
+#### `Sandpack[codeEditor]`
+
+You can pass [any `codeEditor={options: ComponentProps<SandpackCodeEditor>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor:~:text=Preview-,Options,-Extensions).
+
+#### `Sandpack[preview]`
+
+You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#preview:~:text=Preview-,Options,-Additional%20buttons).
+
 ### `Codesandbox`
 
 ```md
