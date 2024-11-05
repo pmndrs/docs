@@ -2,6 +2,7 @@ import cn from '@/lib/cn'
 import { crawl } from '@/utils/docs'
 import {
   SandpackCodeEditor,
+  SandpackCodeViewer,
   SandpackFileExplorer,
   SandpackLayout,
   SandpackPreview,
@@ -63,12 +64,14 @@ export const Sandpack = async ({
   folder,
   fileExplorer,
   codeEditor,
+  codeViewer,
   preview,
   ...props
 }: SandpackProviderProps & {
   className?: string
   folder?: string
   codeEditor?: ComponentProps<typeof SandpackCodeEditor>
+  codeViewer?: boolean | ComponentProps<typeof SandpackCodeViewer>
   preview?: ComponentProps<typeof SandpackPreview>
   fileExplorer?: boolean | ComponentProps<typeof SandpackFileExplorer>
 }) => {
@@ -115,7 +118,12 @@ export const Sandpack = async ({
               {...(typeof fileExplorer !== 'boolean' ? fileExplorer : undefined)}
             />
           )}
-          <SandpackCodeEditor showTabs={fileExplorer ? false : undefined} {...codeEditor} />
+          {codeViewer ? (
+            <SandpackCodeViewer {...(typeof codeViewer !== 'boolean' ? codeViewer : undefined)} />
+          ) : (
+            <SandpackCodeEditor showTabs={fileExplorer ? false : undefined} {...codeEditor} />
+          )}
+
           <SandpackPreview {...preview} />
         </SandpackLayout>
       </SandpackProvider>
