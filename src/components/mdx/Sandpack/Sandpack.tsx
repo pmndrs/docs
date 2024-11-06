@@ -2,7 +2,6 @@ import cn from '@/lib/cn'
 import { crawl } from '@/utils/docs'
 import {
   SandpackCodeEditor,
-  SandpackCodeViewer,
   SandpackFileExplorer,
   SandpackLayout,
   SandpackPreview,
@@ -12,6 +11,8 @@ import {
 } from '@codesandbox/sandpack-react'
 import fs from 'node:fs'
 import path from 'node:path'
+
+import { SandpackCodeViewer } from './SandpackCodeViewer'
 
 // https://tailwindcss.com/docs/configuration#referencing-in-java-script
 import { ComponentProps } from 'react'
