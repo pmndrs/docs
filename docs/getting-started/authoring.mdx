@@ -469,6 +469,79 @@ It will render the [`SandpackCodeViewer`](https://sandpack.codesandbox.io/docs/a
 
 You can also pass [any `codeViewer={options: ComponentProps<SandpackCodeViewer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer:~:text=Preview-,Options,-CodeMirror%20decorations).
 
+##### `Sandpack[codeViewer][filesDecorators]`
+
+You can define per-file [decorators](https://sandpack.codesandbox.io/docs/advanced-usage/components#codemirror-decorations) through `filesDecorators` prop:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer={{
+    filesDecorators: {
+      '/App.tsx': [
+        { className: "highlight", line: 1 },
+        { className: "highlight", line: 7 },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "1" },
+          line: 7,
+          startColumn: 13,
+          endColumn: 24,
+        },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "2" },
+          line: 7,
+          startColumn: 25,
+          endColumn: 35,
+        },
+        
+      ],
+      '/styles.css': [
+        { className: "highlight", line: 4 },
+      ]
+    }
+  }}
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer={{
+    filesDecorators: {
+      '/App.tsx': [
+        { className: "highlight", line: 1 },
+        { className: "highlight", line: 7 },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "1" },
+          line: 7,
+          startColumn: 13,
+          endColumn: 24,
+        },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "2" },
+          line: 7,
+          startColumn: 25,
+          endColumn: 35,
+        },
+        
+      ],
+      '/styles.css': [
+        { className: "highlight", line: 4 },
+      ]
+    }
+  }}
+/>
+
+</details>
+
 #### `Sandpack[preview]`
 
 You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#preview:~:text=Preview-,Options,-Additional%20buttons).
