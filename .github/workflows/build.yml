@@ -14,8 +14,10 @@ on:
         type: string
       libname_dotsuffix_label:
         type: string
+        default: 'docs'
       libname_dotsuffix_href:
         type: string
+        default: 'https://pmnd.rs'
       home_redirect:
         required: true
         type: string
