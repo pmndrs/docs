@@ -30,12 +30,14 @@ export default async function Layoutt({ params, children }: Props) {
 
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
   const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
+  const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL
+  const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF
 
   const nav = <Nav docs={docs} asPath={asPath} collapsible />
   const header = (
     <div className="flex h-[--header-height] items-center gap-[--rgrid-m] px-[--rgrid-m]">
       <div className="flex items-center">
-        <Link href="/" aria-label="Poimandres Docs">
+        <Link href="/" aria-label={`${NEXT_PUBLIC_LIBNAME} Docs`}>
           <span className="font-bold">
             {NEXT_PUBLIC_LIBNAME_SHORT && (
               <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
@@ -45,9 +47,16 @@ export default async function Layoutt({ params, children }: Props) {
             </span>
           </span>
         </Link>
-        <span className="font-normal">
-          .<a href="https://docs.pmnd.rs">docs</a>
-        </span>
+        {NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL ? (
+          <span className="font-normal">
+            .
+            {NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF ? (
+              <a href={NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF}>{NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL}</a>
+            ) : (
+              NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL
+            )}
+          </span>
+        ) : null}
       </div>
 
       <Search className="grow" />

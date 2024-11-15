@@ -50,6 +50,8 @@ jobs:
             --build-env MDX=docs \
             --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \
             --build-env NEXT_PUBLIC_LIBNAME_SHORT="pmndrs" \
+            --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs" \
+            --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://pmnd.rs" \
             --build-env BASE_PATH= \
             --build-env DIST_DIR= \
             --build-env OUTPUT= \
