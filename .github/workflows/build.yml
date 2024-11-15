@@ -12,6 +12,10 @@ on:
         type: string
       libname_short:
         type: string
+      libname_dotsuffix_label:
+        type: string
+      libname_dotsuffix_href:
+        type: string
       home_redirect:
         required: true
         type: string
@@ -74,6 +78,8 @@ jobs:
             -e MDX \
             -e NEXT_PUBLIC_LIBNAME \
             -e NEXT_PUBLIC_LIBNAME_SHORT \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
             -e OUTPUT=export \
             -e HOME_REDIRECT \
             -e MDX_BASEURL \
@@ -99,6 +105,8 @@ jobs:
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
+          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
+          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
           SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}'
