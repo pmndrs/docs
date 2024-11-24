@@ -9,6 +9,7 @@
   "devDependencies": {
     "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
     "@types/hast": "^3.0.4",
+    "@types/lodash-es": "^4.17.12",
     "@types/minimist": "^1.2.5",
     "@types/node": "^18.19.50",
     "@types/react": "^18.3.5",
@@ -41,6 +42,7 @@
     "cmdk": "^1.0.0",
     "gray-matter": "^4.0.3",
     "image-size": "^1.1.1",
+    "lodash-es": "^4.17.21",
     "match-sorter": "^6.3.4",
     "next": "^14.2.11",
     "next-mdx-remote": "^5.0.0",

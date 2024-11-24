@@ -1,16 +1,25 @@
 import { Img } from '@/components/mdx'
 
 import cn from '@/lib/cn'
+import { ComponentProps } from 'react'
+import { fetchCSB } from './fetchCSB'
 
 export type CSB = {
   id: string
-  title: string
-  screenshot_url: string
-  description: string
-  tags: string[]
+  title?: string
+  screenshot_url?: string
+  description?: string
+  tags?: string[]
 }
 
-export function Codesandbox({
+type Codesandbox0Props = CSB & {
+  hideTitle?: boolean
+  embed?: boolean
+} & ComponentProps<'a'> & {
+    imgProps?: ComponentProps<'img'>
+  }
+
+export function Codesandbox0({
   id,
   title = '',
   description = '',
@@ -19,10 +28,9 @@ export function Codesandbox({
   //
   hideTitle = false,
   embed = false,
-}: CSB & {
-  hideTitle: boolean
-  embed: boolean
-}) {
+  className,
+  imgProps: { className: imgClassName } = {},
+}: Codesandbox0Props) {
   return (
     <>
       {embed ? (
@@ -38,7 +46,7 @@ export function Codesandbox({
           href={`https://codesandbox.io/s/${id}`}
           target="_blank"
           rel="noreferrer"
-          className="mb-2 block"
+          className={cn('mb-2 block', className)}
         >
           {screenshot_url && (
             <Img
@@ -46,7 +54,7 @@ export function Codesandbox({
               alt={title}
               width={1763}
               height={926}
-              className="aspect-[16/9] object-cover"
+              className={cn('aspect-[16/9] object-cover', imgClassName)}
             />
           )}
         </a>
@@ -75,4 +83,21 @@ export function Codesandbox({
       )}
     </>
   )
+}
+
+export async function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
+  const ids = boxes // populated from 1.
+  // console.log('ids', ids)
+
+  //
+  // Batch fetch all CSBs of the page
+  //
+  const csbs = await fetchCSB(...ids)
+  // console.log('boxes', boxes)
+  const data = csbs[props.id]
+  // console.log('data', data)
+
+  // Merge initial props with data
+  const merged = { ...props, ...data }
+  return <Codesandbox0 {...merged} />
 }
