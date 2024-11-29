@@ -98,8 +98,17 @@ async function _getDocs(
 
       const boxes: string[] = []
 
+      // Sanitize markdown
+      let content = compiled.content
+        // Remove <!-- --> comments from frontMatter
+        .replace(FRONTMATTER_REGEX, '')
+        // Remove extraneous comments from post
+        .replace(COMMENT_REGEX, '')
+        // Remove inline link syntax
+        .replace(INLINE_LINK_REGEX, '$1')
+
       await compileMDX({
-        source: compiled.content,
+        source: content,
         options: {
           mdxOptions: {
             rehypePlugins: [
@@ -116,7 +125,8 @@ async function _getDocs(
         boxes,
         //
         file,
-        compiled,
+        content,
+        frontmatter,
       }
     }),
   )
@@ -135,7 +145,8 @@ async function _getDocs(
         boxes,
         // Passed from the 1st pass
         file,
-        compiled,
+        content,
+        frontmatter,
       }) => {
         const relFilePath = file.substring(root.length) // "/getting-started/tutorials/store.mdx"
 
@@ -158,8 +169,6 @@ async function _getDocs(
         //
         // frontmatter
         //
-
-        const frontmatter = compiled.data
 
         const description: string = frontmatter.description ?? ''
 
@@ -190,15 +199,6 @@ async function _getDocs(
         //     nav,
         //   } as Doc
         // }
-
-        // Sanitize markdown
-        let content = compiled.content
-          // Remove <!-- --> comments from frontMatter
-          .replace(FRONTMATTER_REGEX, '')
-          // Remove extraneous comments from post
-          .replace(COMMENT_REGEX, '')
-          // Remove inline link syntax
-          .replace(INLINE_LINK_REGEX, '$1')
 
         //
         // inline images
