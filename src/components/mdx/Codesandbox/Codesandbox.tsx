@@ -98,6 +98,6 @@ export async function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Co
   // console.log('data', data)
 
   // Merge initial props with data
-  const merged = { ...props, ...data }
+  const merged = { ...data, ...props }
   return <Codesandbox0 {...merged} />
 }
