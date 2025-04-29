@@ -137,7 +137,9 @@ export default async function Layoutt({ params, children }: Props) {
                   Previous
                 </label>
                 <div className="text-xl">
-                  <Link href={previousPage.url}>{previousPage.title}</Link>
+                  <Link href={previousPage.url} rel="prev">
+                    {previousPage.title}
+                  </Link>
                 </div>
               </div>
             )}
@@ -152,7 +154,9 @@ export default async function Layoutt({ params, children }: Props) {
                   Next
                 </label>
                 <div className="text-xl">
-                  <Link href={nextPage.url}>{nextPage.title}</Link>
+                  <Link href={nextPage.url} rel="next">
+                    {nextPage.title}
+                  </Link>
                 </div>
               </div>
             )}
