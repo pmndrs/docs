@@ -132,7 +132,7 @@ const libs: Record<string, Library> = {
   },
   prai: {
     title: 'prai',
-    url: '/getting-started/introduction',
+    url: '/prai',
     github: 'https://github.com/pmndrs/prai',
     description: 'JS Framework for building step-by-step LLM instructions`',
     docs: 'pmndrs/prai/main/docs',
