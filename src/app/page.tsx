@@ -130,6 +130,13 @@ const libs: Record<string, Library> = {
     iconHeight: docsIcon.height,
     docs: 'pmndrs/docs/main/docs',
   },
+  prai: {
+    title: 'prai',
+    url: '/getting-started/introduction',
+    github: 'https://github.com/pmndrs/prai',
+    description: 'JS Framework for building step-by-step LLM instructions`',
+    docs: 'pmndrs/prai/main/docs',
+  },
 }
 
 const title = 'Poimandres documentation'
