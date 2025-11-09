@@ -144,6 +144,13 @@ const libs: Record<string, Library> = {
     description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE and beyond.`',
     docs: 'pmndrs/viverse/main/docs',
   },
+  leva: {
+    title: 'leva',
+    url: 'https://pmndrs.github.io/leva',
+    github: 'https://github.com/pmndrs/leva',
+    description: 'React-first components GUI',
+    docs: 'pmndrs/leva/main/docs',
+  },
 }
 
 const title = 'Poimandres documentation'
