@@ -62,7 +62,8 @@
     "build": "next build",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lgtm": "npm run lint && npm run format && npm run build && echo 'lgtm!' || echo 'not good to me'"
   },
   "engines": {
     "node": ">=20"

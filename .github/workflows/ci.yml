@@ -1,0 +1,17 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lgtm:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+      - run: npm ci
+      - run: npm run lgtm
