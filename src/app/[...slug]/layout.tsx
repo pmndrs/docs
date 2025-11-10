@@ -13,12 +13,12 @@ import { DocsContext } from './DocsContext'
 import { Menu } from './Menu'
 
 export type Props = {
-  params: { slug: string[] }
+  params: Promise<{ slug: string[] }>
   children: React.ReactNode
 }
 
 export default async function Layoutt({ params, children }: Props) {
-  const slug = params.slug
+  const { slug } = await params
   const { docs, doc } = await getData(...slug)
 
   const asPath = slug.join('/')
@@ -66,17 +66,14 @@ export default async function Layoutt({ params, children }: Props) {
           { href: process.env.GITHUB, icon: <VscGithubAlt /> },
           { href: process.env.DISCORD, icon: <PiDiscordLogoLight /> },
         ].map(({ href, icon }) => (
-          <>
-            {href && (
-              <Link
-                href={href}
-                className={cn('hidden size-9 items-center justify-center lg:flex')}
-                target="_blank"
-              >
-                {icon}
-              </Link>
-            )}
-          </>
+          <Link
+            key={href}
+            href={href!}
+            className={cn('hidden size-9 items-center justify-center lg:flex')}
+            target="_blank"
+          >
+            {icon}
+          </Link>
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
