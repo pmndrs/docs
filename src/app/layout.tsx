@@ -3,12 +3,12 @@ import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { Inconsolata, Inter } from 'next/font/google'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
 
-const inter = Inter({ subsets: ['latin'] })
-const inconsolata = Inconsolata({ subsets: ['latin'] })
+// Fallback font class when Google Fonts are unavailable
+const inter = { className: 'font-sans' }
+const inconsolata = { className: 'font-mono' }
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
