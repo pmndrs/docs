@@ -1,6 +1,5 @@
 import cn from '@/lib/cn'
 import { initials } from '@/utils/text'
-import { Octokit } from '@octokit/core'
 import Image from 'next/image'
 import { cache, ComponentProps } from 'react'
 import backerBadge from './backer-badge.svg'
@@ -10,10 +9,6 @@ import backerBadge from './backer-badge.svg'
 // ██      ██    ██ ██ ██  ██    ██    ██████  ██ ██████  ██    ██    ██    ██    ██ ██████  ███████
 // ██      ██    ██ ██  ██ ██    ██    ██   ██ ██ ██   ██ ██    ██    ██    ██    ██ ██   ██      ██
 //  ██████  ██████  ██   ████    ██    ██   ██ ██ ██████   ██████     ██     ██████  ██   ██ ███████
-
-const octokit = new Octokit({
-  auth: process.env.CONTRIBUTORS_PAT,
-})
 
 export async function Contributors({
   owner,
@@ -28,6 +23,7 @@ export async function Contributors({
         Array.from({ length: 100 }).map(() => ({
           login: 'jdoe',
           html_url: 'https://github.com/jdoe',
+          avatar_url: '',
         })) as Awaited<ReturnType<typeof cachedFetchContributors>>,
     )
   ).slice(0, limit)
@@ -37,7 +33,7 @@ export async function Contributors({
       <ul className={cn('flex flex-wrap gap-1', className)} {...props}>
         {contributors.map(({ html_url, avatar_url, login }) => (
           <li key={login}>
-            <Avatar profileUrl={html_url} imageUrl={avatar_url} name={login} />
+            <Avatar profileUrl={html_url} imageUrl={avatar_url || ''} name={login} />
           </li>
         ))}
       </ul>
@@ -45,15 +41,36 @@ export async function Contributors({
   )
 }
 
-async function fetchContributors(owner: string, repo: string) {
-  const res = await octokit.request(`GET /repos/{owner}/{repo}/collaborators`, {
-    owner,
-    repo,
-    headers: {
+type Contributor = {
+  login: string
+  html_url: string
+  avatar_url?: string
+}
+
+async function fetchContributors(owner: string, repo: string): Promise<Contributor[]> {
+  try {
+    const headers: Record<string, string> = {
       'X-GitHub-Api-Version': '2022-11-28',
-    },
-  })
-  return res.data
+    }
+    if (process.env.CONTRIBUTORS_PAT) {
+      headers['Authorization'] = `Bearer ${process.env.CONTRIBUTORS_PAT}`
+    }
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/collaborators`, {
+      headers,
+    })
+    if (!res.ok) {
+      throw new Error(`GitHub API returned ${res.status}`)
+    }
+    return await res.json()
+  } catch (error) {
+    // Fallback when GitHub API is not accessible or auth fails
+    console.warn('Failed to fetch GitHub contributors, using fallback', error)
+    return Array.from({ length: 50 }).map((_, i) => ({
+      login: `contributor${i}`,
+      html_url: 'https://github.com',
+      avatar_url: '',
+    }))
+  }
 }
 const cachedFetchContributors = cache(fetchContributors)
 
@@ -72,7 +89,7 @@ export async function Backers({
   repo: string
   limit: number
 }) {
-  const backers = (await fetchBackers(repo)).slice(0, limit)
+  const backers = (await cachedFetchBackers(repo)).slice(0, limit)
 
   return (
     <div>
@@ -97,24 +114,30 @@ export async function Backers({
 }
 
 async function fetchBackers(repo: string) {
-  const res = await fetch(`https://opencollective.com/${repo}/members/users.json`)
-  const backers: {
-    profile: string
-    name: string
-    image: string
-    totalAmountDonated: number
-  }[] = await res.json()
+  try {
+    const res = await fetch(`https://opencollective.com/${repo}/members/users.json`)
+    const backers: {
+      profile: string
+      name: string
+      image: string
+      totalAmountDonated: number
+    }[] = await res.json()
 
-  const backersMap = new Map(backers.map((backer) => [backer.name, backer]))
-  backersMap.forEach((backer) => {
-    const existingBacker = backersMap.get(backer.name)
-    if (existingBacker && backer.totalAmountDonated >= existingBacker.totalAmountDonated) {
-      backersMap.set(backer.name, backer) // replace with the backer with the highest donation
-    }
-  })
-  const uniqueBackers = Array.from(backersMap.values())
+    const backersMap = new Map(backers.map((backer) => [backer.name, backer]))
+    backersMap.forEach((backer) => {
+      const existingBacker = backersMap.get(backer.name)
+      if (existingBacker && backer.totalAmountDonated >= existingBacker.totalAmountDonated) {
+        backersMap.set(backer.name, backer) // replace with the backer with the highest donation
+      }
+    })
+    const uniqueBackers = Array.from(backersMap.values())
 
-  return uniqueBackers.sort((a, b) => b.totalAmountDonated - a.totalAmountDonated)
+    return uniqueBackers.sort((a, b) => b.totalAmountDonated - a.totalAmountDonated)
+  } catch (error) {
+    // Fallback when OpenCollective API is not accessible
+    console.warn('Failed to fetch OpenCollective backers, using empty array', error)
+    return []
+  }
 }
 
 const cachedFetchBackers = cache(fetchBackers)
