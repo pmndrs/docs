@@ -54,7 +54,8 @@
     "rehype-prism-plus": "^2.0.0",
     "remark-gfm": "^4.0.0",
     "sanitize-html": "^2.13.0",
-    "tailwind-merge": "^2.5.2"
+    "tailwind-merge": "^2.5.2",
+    "unist-util-visit": "^5.0.0"
   },
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next",
@@ -63,10 +64,10 @@
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky",
-    "lgtm": "npm run lint && npm run format && npm run build && echo 'lgtm!' || echo 'not good to me'"
+    "lgtm": "pnpm run lint && pnpm run format && pnpm run build && echo 'lgtm!' || echo 'not good to me'"
   },
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "npm@10.8.2"
+  "packageManager": "pnpm@9.15.1"
 }

@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: vercel-deploy
         run: |
-          npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
+          pnpm dlx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
             --target=${{ github.event_name == 'push' && 'production' || 'preview' }} \
             --build-env MDX=docs \
             --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \
