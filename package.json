@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.19.8",
-    "@octokit/core": "^6.1.2",
+    "@octokit/core": "^7.0.6",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-visually-hidden": "^1.1.0",
