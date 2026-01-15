@@ -135,6 +135,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
+            type=raw,value=latest
             type=raw,value=${{ steps.get-version.outputs.major_version }}
             type=raw,value=${{ steps.get-version.outputs.version }}
 
