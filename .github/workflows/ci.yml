@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      MDX: docs
+      NEXT_PUBLIC_LIBNAME: "Poimandres"
+      OUTPUT: export
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - run: docker build -t pmndrs-docs .
+
+      - run: |
+          docker run --rm --init \
+            -v "./docs":/app/docs \
+            -e MDX \
+            -e NEXT_PUBLIC_LIBNAME \
+            -e OUTPUT \
+            pmndrs-docs npm run build
