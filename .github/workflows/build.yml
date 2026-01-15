@@ -60,7 +60,7 @@ on:
         default: '#da3633'
       docker_tag:
         type: string
-        default: '2.20.4'
+        default: '2.20.1'
         description: 'Docker image tag for ghcr.io/pmndrs/docs'
 
 jobs:
