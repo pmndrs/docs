@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.9
+
+### Patch Changes
+
+- d6d2a74: KeypointsItem
+
 ## 2.20.8
 
 ### Patch Changes
