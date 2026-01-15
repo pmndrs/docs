@@ -135,8 +135,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
-            type=raw,value=v${{ steps.get-version.outputs.major_version }}
-            type=raw,value=v${{ steps.get-version.outputs.version }}
+            type=raw,value=${{ steps.get-version.outputs.major_version }}
+            type=raw,value=${{ steps.get-version.outputs.version }}
 
       - name: Build and push Docker image
         id: push
