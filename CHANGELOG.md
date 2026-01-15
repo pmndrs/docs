@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.13
+
+### Patch Changes
+
+- 1e10bd0: Add optional docker_tag input to build.yml workflow
+
 ## 2.20.12
 
 ### Patch Changes
