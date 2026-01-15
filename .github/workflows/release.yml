@@ -149,8 +149,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{major}},value=v${{ steps.get-version.outputs.major_version }}
-            type=semver,pattern={{version}},value=v${{ steps.get-version.outputs.version }}
+            type=raw,value=v${{ steps.get-version.outputs.major_version }}
+            type=raw,value=v${{ steps.get-version.outputs.version }}
 
       - name: Build and push Docker image
         id: push
