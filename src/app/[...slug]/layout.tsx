@@ -13,12 +13,12 @@ import { DocsContext } from './DocsContext'
 import { Menu } from './Menu'
 
 export type Props = {
-  params: { slug: string[] }
+  params: Promise<{ slug: string[] }>
   children: React.ReactNode
 }
 
 export default async function Layoutt({ params, children }: Props) {
-  const slug = params.slug
+  const { slug } = await params
   const { docs, doc } = await getData(...slug)
 
   const asPath = slug.join('/')

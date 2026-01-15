@@ -224,7 +224,7 @@ async function _getDocs(
             },
           },
           components: {
-            ...components,
+            ...(components as any),
             Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
             Entries: () => <Entries items={entries} />,
           },

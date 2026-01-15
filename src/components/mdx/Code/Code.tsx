@@ -54,7 +54,7 @@ const extractTextFromChildren = (children: ReactNode): string => {
   }
 
   if (typeof children === 'object' && children !== null && 'props' in children) {
-    return extractTextFromChildren(children.props.children)
+    return extractTextFromChildren((children as any).props.children)
   }
 
   return ''
