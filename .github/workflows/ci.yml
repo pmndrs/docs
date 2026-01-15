@@ -36,7 +36,7 @@ jobs:
       - run: |
           docker run --rm --init \
             -v "./docs":/app/docs \
-            -e MDX="${{ env.MDX }}" \
-            -e NEXT_PUBLIC_LIBNAME="${{ env.NEXT_PUBLIC_LIBNAME }}" \
-            -e OUTPUT="${{ env.OUTPUT }}" \
+            -e MDX \
+            -e NEXT_PUBLIC_LIBNAME \
+            -e OUTPUT \
             pmndrs-docs npm run build
