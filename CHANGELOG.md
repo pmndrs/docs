@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.7
+
+### Patch Changes
+
+- 2cd4acb: bump
+
 ## 2.20.6
 
 ### Patch Changes
