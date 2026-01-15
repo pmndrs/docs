@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,35 +16,28 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      - name: Local build with MDX=docs
-        run: npm run build
+      - run: npm run build
         env:
           MDX: docs
           NEXT_PUBLIC_LIBNAME: "Poimandres"
 
-      - name: Deploy to Vercel Preview
-        run: npx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} ./out --yes
+      - run: npx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} ./out --yes
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Docker build
-        run: docker build -t pmndrs-docs .
+      - run: docker build -t pmndrs-docs .
 
-      - name: Docker run build test
-        run: |
+      - run: |
           docker run --rm --init \
             -v "./docs":/app/docs \
             -e MDX=docs \
