@@ -17,6 +17,7 @@ jobs:
     env:
       MDX: docs
       NEXT_PUBLIC_LIBNAME: "Poimandres"
+      OUTPUT: export
 
     steps:
       - uses: actions/checkout@v4
@@ -42,4 +43,5 @@ jobs:
             -v "./docs":/app/docs \
             -e MDX="${{ env.MDX }}" \
             -e NEXT_PUBLIC_LIBNAME="${{ env.NEXT_PUBLIC_LIBNAME }}" \
+            -e OUTPUT="${{ env.OUTPUT }}" \
             pmndrs-docs npm run build
