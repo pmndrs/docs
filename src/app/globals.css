@@ -115,6 +115,41 @@ body {
   font-optical-sizing: auto;
 }
 
+/* Custom grid utilities for layout */
+@utility grid-areas-layout-1col {
+  grid-template-areas:
+    'h h'
+    'm m';
+}
+
+@utility grid-areas-layout-2cols {
+  grid-template-areas:
+    'h h'
+    'n m';
+}
+
+@utility grid-areas-layout-3cols {
+  grid-template-areas:
+    'h h h'
+    'n m t';
+}
+
+@utility grid-in-h {
+  grid-area: h;
+}
+
+@utility grid-in-m {
+  grid-area: m;
+}
+
+@utility grid-in-n {
+  grid-area: n;
+}
+
+@utility grid-in-t {
+  grid-area: t;
+}
+
 main :target {
   @apply scroll-m-[calc(var(--header-height)+theme(spacing.4))];
 }

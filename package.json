@@ -7,7 +7,6 @@
     "build": "bin/build.mjs"
   },
   "devDependencies": {
-    "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/hast": "^3.0.4",
     "@types/lodash-es": "^4.17.12",
