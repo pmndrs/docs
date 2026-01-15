@@ -37,7 +37,7 @@ function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
           </Dialog.Overlay>
 
           <SearchModalContainer
-            className="relative mx-auto max-w-3xl rounded-md px-4 shadow-sm [--Search-Input-top:theme(spacing.8)] lg:[--Search-Input-top:theme(spacing.24)]"
+            className="relative mx-auto max-w-3xl rounded-md px-4 shadow-sm [--Search-Input-top:--spacing(8)] lg:[--Search-Input-top:--spacing(24)]"
             close={() => setShowSearchModal(false)}
           />
         </Dialog.Content>
@@ -53,7 +53,7 @@ export function SearchButton({ className, ...props }: ComponentProps<'span'>) {
         className,
         'group flex w-full items-center gap-2 rounded-l-full rounded-r-full p-2 px-4 text-sm',
         'interactive-bg-surface-container',
-        'text-on-surface-variant/50 hover:text-[inherit]',
+        'text-on-surface-variant/50 hover:text-inherit',
       )}
       {...props}
     >

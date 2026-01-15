@@ -102,9 +102,9 @@
 /* Custom base styles */
 
 :root {
-  @apply [--rgrid-m:theme(spacing.4)] lg:[--rgrid-m:theme(spacing.6)];
-  @apply [--rgrid-g:theme(spacing.4)] lg:[--rgrid-g:theme(spacing.12)];
-  @apply [--header-height:theme(spacing.16)];
+  @apply [--rgrid-m:--spacing(4)] lg:[--rgrid-m:--spacing(6)];
+  @apply [--rgrid-g:--spacing(4)] lg:[--rgrid-g:--spacing(12)];
+  @apply [--header-height:--spacing(16)];
 
   scroll-behavior: smooth;
   scroll-margin-top: var(--header-height);
@@ -151,7 +151,7 @@ body {
 }
 
 main :target {
-  @apply scroll-m-[calc(var(--header-height)+theme(spacing.4))];
+  @apply scroll-m-[calc(var(--header-height)+(--spacing(4)))];
 }
 
 .post-container > * {
@@ -163,7 +163,7 @@ main :target {
 }
 
 mark {
-  @apply -m-[--pad] rounded-sm p-[--pad] [--pad:0.05rem];
+  @apply -m-(--pad) rounded-sm p-(--pad) [--pad:0.05rem];
 }
 
 /**
@@ -196,8 +196,8 @@ pre[class*='language-'] {
   --keyword: #add7ff;
   --literal: #fffac2;
   --falsy: #f087bd;
-  --linenumber-border-width: theme('space.1');
-  --pad: theme('space.6');
+  --linenumber-border-width: --spacing(1);
+  --pad: --spacing(6);
 }
 
 /* Inline code */
@@ -300,20 +300,19 @@ pre[class*='language-'] {
   display: block;
   border-left: var(--linenumber-border-width) solid transparent; /* Set placeholder for highlight accent border color to transparent */
 
-  @apply -mx-[--pad] px-[--pad];
+  @apply -mx-(--pad) px-(--pad);
 }
 
 .code-line.inserted {
-  /* @apply bg-tip-container-dark/30; */
+  @apply bg-tip-container/30;
 }
 .code-line.deleted {
-  /* @apply bg-error-container-dark/30; */
+  @apply bg-error-container/30;
 }
 
 .highlight-line {
   border-left: var(--linenumber-border-width) solid; /* Set highlight accent border color */
-  @apply -mx-[--pad];
-  /* @apply border-l-inverse-surface-dark/50 bg-inverse-surface-dark/10; */
+  @apply -mx-(--pad) border-l-inverse-surface/50 bg-inverse-surface/10;
 }
 
 .line-number::before {

@@ -63,17 +63,13 @@ export const SearchModalContainer = ({
 
   return (
     <search
-      className={cn(
-        '[--Search-Input-height:theme(spacing.16)]',
-        'mt-[--Search-Input-top]',
-        className,
-      )}
+      className={cn('[--Search-Input-height:--spacing(16)]', 'mt-(--Search-Input-top)', className)}
     >
       <Command shouldFilter={false} className="">
         <Command.Input
           name="search"
           id="search"
-          className="bg-surface-container block h-[--Search-Input-height] w-full rounded-md px-4 pl-10 sm:text-sm"
+          className="bg-surface-container block h-(--Search-Input-height) w-full rounded-md px-4 pl-10 sm:text-sm"
           placeholder="Search the docs"
           value={query}
           autoFocus

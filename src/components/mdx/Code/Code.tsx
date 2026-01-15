@@ -26,7 +26,7 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
         {...props}
         className={cn(
           className,
-          'bg-inverse-surface-light my-5 overflow-auto rounded-lg p-[--pad] font-mono text-sm',
+          'bg-inverse-surface/10 my-5 overflow-auto rounded-lg p-(--pad) font-mono text-sm',
         )}
       >
         {children}
