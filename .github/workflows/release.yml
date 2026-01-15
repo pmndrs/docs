@@ -34,7 +34,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
@@ -57,8 +57,10 @@ jobs:
       url: ${{ steps.vercel-deploy.outputs.deployment_url }}
 
     steps:
-      - uses: actions/setup-node@v4
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
       - id: vercel-deploy
         run: |
           npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
