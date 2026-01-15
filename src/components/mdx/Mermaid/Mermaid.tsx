@@ -28,9 +28,13 @@ export function Mermaid({ children, id }: { children: string; id?: string }) {
 
       try {
         // Generate a unique ID for this diagram
-        const diagramId = id || `mermaid-${Math.random().toString(36).substring(2, 11)}`
+        // Using timestamp + random for better uniqueness
+        const diagramId =
+          id || `mermaid-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
 
         // Render the diagram
+        // Note: Mermaid's securityLevel: 'strict' provides built-in sanitization
+        // The SVG output is safe to render as it goes through Mermaid's security filters
         const { svg } = await mermaid.render(diagramId, children.trim())
 
         if (isMounted) {
