@@ -1,7 +1,7 @@
 'use client'
 
 import cn from '@/lib/cn'
-import { ComponentProps, ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
 import { TbClipboard, TbClipboardCheck } from 'react-icons/tb'
 
 export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) => {
@@ -53,8 +53,11 @@ const extractTextFromChildren = (children: ReactNode): string => {
     return children.map(extractTextFromChildren).join('')
   }
 
-  if (typeof children === 'object' && children !== null && 'props' in children) {
-    return extractTextFromChildren((children as any).props.children)
+  if (isValidElement(children)) {
+    const props = children.props as Record<string, unknown>
+    if ('children' in props) {
+      return extractTextFromChildren(props.children as ReactNode)
+    }
   }
 
   return ''
