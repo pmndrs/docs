@@ -49,12 +49,17 @@ jobs:
       - name: Check if version changed
         id: version-check
         run: |
-          CURRENT=$(jq -r '.version' package.json)
+          # Read and validate current version
+          if ! CURRENT=$(jq -r '.version' package.json 2>&1); then
+            echo "Error: Failed to parse package.json: $CURRENT"
+            exit 1
+          fi
+          
           echo "Current version: $CURRENT"
           
           # Validate current version is not null or empty
           if [ -z "$CURRENT" ] || [ "$CURRENT" = "null" ]; then
-            echo "Error: Could not read current version from package.json"
+            echo "Error: Version field is missing or null in package.json"
             exit 1
           fi
           
@@ -151,10 +156,22 @@ jobs:
       - name: Get version from package.json
         id: get-version
         run: |
-          VERSION=$(jq -r '.version' package.json)
+          # Read and validate version
+          if ! VERSION=$(jq -r '.version' package.json 2>&1); then
+            echo "Error: Failed to parse package.json: $VERSION"
+            exit 1
+          fi
+          
+          # Validate version is not null or empty
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "Error: Version field is missing or null in package.json"
+            exit 1
+          fi
+          
           MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
+          echo "Using version: $VERSION (major: $MAJOR_VERSION)"
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
