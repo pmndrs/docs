@@ -6,7 +6,6 @@ import { ThemeProvider } from 'next-themes'
 import { Inconsolata, Inter } from 'next/font/google'
 import { Mcu } from 'react-mcu'
 import './globals.css'
-import { SandpackCSS } from './sandpack-styles'
 
 const inter = Inter({ subsets: ['latin'] })
 const inconsolata = Inconsolata({ subsets: ['latin'] })
@@ -74,9 +73,6 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <SandpackCSS />
-      </head>
       <body className={cn(inter.className, 'wrap-break-word bg-surface text-on-surface')}>
         <Mcu
           source={primary}

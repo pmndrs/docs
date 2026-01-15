@@ -9,7 +9,7 @@ export * from './Img'
 export * from './Intro'
 export * from './Keypoints'
 export * from './People'
-export * from './Sandpack'
+// export * from './Sandpack'
 export * from './Summary'
 export * from './Toc'
 

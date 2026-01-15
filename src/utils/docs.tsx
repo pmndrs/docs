@@ -10,9 +10,6 @@ import {
   Intro,
   Keypoints,
   KeypointsItem,
-  Contributors,
-  Backers,
-  Sandpack,
   Summary,
   Toc,
   h1,
@@ -48,9 +45,6 @@ const mdxComponents = {
   Intro,
   Keypoints,
   KeypointsItem,
-  Contributors,
-  Backers,
-  Sandpack,
   Summary,
   Toc,
   h1,
@@ -75,19 +69,15 @@ const mdxComponents = {
   code,
 }
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
-import { Codesandbox1 } from '@/components/mdx/Codesandbox'
-import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
-import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
-import { dirname } from 'node:path'
 import { cache } from 'react'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
@@ -169,8 +159,6 @@ async function _getDocs(
       const _lastSegment = slug[slug.length - 1]
       const title: string = frontmatter.title.trim() ?? _lastSegment.replace(/\-/g, ' ')
 
-      const boxes: string[] = []
-
       // Sanitize markdown
       let content = compiled.content
         // Remove <!-- --> comments from frontMatter
@@ -180,22 +168,10 @@ async function _getDocs(
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
-      await compileMDX({
-        source: content,
-        options: {
-          mdxOptions: {
-            rehypePlugins: [
-              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
-            ],
-          },
-        },
-      })
-
       return {
         slug,
         url,
         title,
-        boxes,
         //
         file,
         content,
@@ -215,7 +191,6 @@ async function _getDocs(
         slug,
         url,
         title,
-        boxes,
         // Passed from the 1st pass
         file,
         content,
@@ -292,13 +267,11 @@ async function _getDocs(
                 rehypePrismPlus,
                 rehypeCode(),
                 rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
-                rehypeSandpack(dirname(file)),
               ],
             },
           },
           components: {
             ...mdxComponents,
-            Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
             Entries: () => <Entries items={entries} />,
           },
         })
@@ -314,7 +287,6 @@ async function _getDocs(
           description,
           nav,
           content: jsx,
-          boxes,
           tableOfContents,
         }
       },

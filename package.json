@@ -33,8 +33,6 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.20.0",
-    "@octokit/core": "^6.1.2",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-visually-hidden": "^1.1.0",
