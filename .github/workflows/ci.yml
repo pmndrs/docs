@@ -41,11 +41,8 @@ jobs:
 
       - name: Docker run build test
         run: |
-          cd docs
           docker run --rm --init \
-            -v "./$MDX":/app/docs \
+            -v "./docs":/app/docs \
             -e MDX=docs \
             -e NEXT_PUBLIC_LIBNAME="Poimandres" \
             pmndrs-docs npm run build
-        env:
-          MDX: docs
