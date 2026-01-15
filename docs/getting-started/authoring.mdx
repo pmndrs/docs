@@ -559,6 +559,61 @@ You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://
 
 </details>
 
+### `Mermaid`
+
+Render Mermaid diagrams for flowcharts, sequence diagrams, and more.
+
+```md
+<Mermaid>
+{`graph TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> A`}
+</Mermaid>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Mermaid>
+{`graph TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> A`}
+</Mermaid>
+
+</details>
+
+You can create various types of diagrams:
+
+````md
+<Mermaid>
+{`sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>Bob: Hello Bob, how are you?
+    Bob-->>Alice: I'm good thanks!`}
+</Mermaid>
+````
+
+<details>
+  <summary>Result</summary>
+
+<Mermaid>
+{`sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>Bob: Hello Bob, how are you?
+    Bob-->>Alice: I'm good thanks!`}
+</Mermaid>
+
+</details>
+
+> [!TIP]
+> See [Mermaid documentation](https://mermaid.js.org/intro/) for all available diagram types and syntax.
+
 ### `Gha`
 
 Aka. ["GitHub alerts"](https://github.com/orgs/community/discussions/16925)
