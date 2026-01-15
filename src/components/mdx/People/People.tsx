@@ -137,7 +137,7 @@ function Avatar({
       rel="noopener noreferrer"
       className={cn(
         className,
-        'inline-flex size-12 items-center justify-center overflow-clip rounded-full bg-surface-container-high',
+        'bg-surface-container-high inline-flex size-12 items-center justify-center overflow-clip rounded-full',
       )}
       {...props}
     >

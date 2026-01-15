@@ -80,7 +80,7 @@ export default async function Layoutt({ params, children }: Props) {
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
-        <Menu className="z-100 absolute inset-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto bg-surface lg:hidden">
+        <Menu className="z-100 bg-surface absolute inset-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
           <Nav docs={docs} asPath={asPath} collapsible={false} />
         </Menu>
       </div>
@@ -98,7 +98,7 @@ export default async function Layoutt({ params, children }: Props) {
                   rel="noopener noreferrer"
                   className={cn(
                     'mb-2 text-base hover:underline',
-                    'text-on-surface-variant/50 font-mono',
+                    'font-mono text-on-surface-variant/50',
                   )}
                   href={doc.sourcecodeURL || '#no-sourcecode-url'}
                 >
@@ -172,7 +172,7 @@ export default async function Layoutt({ params, children }: Props) {
     <>
       <DocsContext value={{ docs, doc }}>
         <Layout className="[--side-w:theme(spacing.72)]">
-          <LayoutHeader className="border-outline-variant/50 bg-surface/95 z-10 border-b backdrop-blur-xl">
+          <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
             {header}
           </LayoutHeader>
           <LayoutContent className="lg:mr-[--rgrid-m] xl:mr-0">

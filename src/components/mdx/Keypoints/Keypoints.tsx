@@ -11,7 +11,7 @@ export function Keypoints({
   return (
     <section
       {...props}
-      className={cn(className, 'my-8 rounded-xl border border-outline-variant bg-surface-dim p-6')}
+      className={cn(className, 'bg-surface-dim my-8 rounded-xl border border-outline-variant p-6')}
     >
       <h2 className="mb-6 text-2xl font-bold">{title}</h2>
 

@@ -41,13 +41,13 @@ function SearchItem({
     >
       <div className="flex items-center justify-between rounded-md p-4 py-5">
         <div className="break-all pr-3">
-          <div className="text-on-surface-variant/50 block pb-1 text-xs">{result.label}</div>
+          <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
           <span
             dangerouslySetInnerHTML={{
               __html: highlight(sanitizeAllHtmlButMark(result.title), search),
             }}
           />
-          <div className="text-on-surface-variant/50 block pt-2 text-sm">
+          <div className="block pt-2 text-sm text-on-surface-variant/50">
             <span
               dangerouslySetInnerHTML={{
                 __html: highlight(sanitizeAllHtmlButMark(result.content), search),

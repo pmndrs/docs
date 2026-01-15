@@ -195,13 +195,13 @@ export default function Page() {
             {Object.entries(libs).map(([id, data]) => (
               <div
                 key={id}
-                className="group/card relative overflow-hidden rounded-md border border-outline-variant bg-surface-container font-normal"
+                className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
               >
                 <div className="relative z-10 flex h-full flex-col justify-between">
                   <div className="flex items-center justify-between gap-6 px-6 py-6">
                     <div className="max-w-md">
                       <div className="text-lg font-bold">{data.title}</div>
-                      <div className="text-on-surface-variant/50 flex-grow text-sm !leading-relaxed">
+                      <div className="flex-grow text-sm !leading-relaxed text-on-surface-variant/50">
                         {data.description}
                       </div>
                     </div>

@@ -186,7 +186,7 @@ pre[class*='language-'] {
 
 .highlight-line {
   border-left: var(--linenumber-border-width) solid; /* Set highlight accent border color */
-  @apply border-l-inverse-surface-dark/50 bg-inverse-surface-dark/10 -mx-[--pad];
+  @apply -mx-[--pad] border-l-inverse-surface-dark/50 bg-inverse-surface-dark/10;
 }
 
 .line-number::before {

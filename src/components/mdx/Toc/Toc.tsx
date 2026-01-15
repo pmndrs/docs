@@ -51,7 +51,7 @@ export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] 
 
   return (
     <div className={cn(className, 'text-xs')}>
-      <p className="text-on-surface-variant/50 mb-3 font-semibold uppercase tracking-wide">
+      <p className="mb-3 font-semibold uppercase tracking-wide text-on-surface-variant/50">
         On This Page
       </p>
       {toc.map(({ title, id, level }, index) => (
@@ -59,7 +59,7 @@ export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] 
           <a
             aria-label={title}
             className={cn(
-              'text-on-surface-variant/50 block text-balance py-2 hover:underline',
+              'block text-balance py-2 text-on-surface-variant/50 hover:underline',
               index === activeIndex && 'text-on-surface',
             )}
             style={{ marginLeft: `${(level - 1) * 1}rem` }}

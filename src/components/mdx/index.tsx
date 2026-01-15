@@ -61,7 +61,7 @@ export const li = (props: ComponentProps<'li'>) => <li className="my-1" {...prop
 export const p = (props: ComponentProps<'p'>) => <p className="my-4" {...props} />
 
 export const hr = (props: ComponentProps<'hr'>) => (
-  <hr className="border-outline-variant/50 my-4 mb-8" {...props} />
+  <hr className="my-4 mb-8 border-outline-variant/50" {...props} />
 )
 
 export const blockquote = ({ children, className, ...props }: ComponentProps<'blockquote'>) => (
@@ -73,7 +73,7 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
 export const table = (props: ComponentProps<'table'>) => (
   <div className="my-8 overflow-auto rounded-lg border border-outline-variant">
     <table
-      className="min-w-full divide-y divide-outline-variant bg-surface-container-low"
+      className="bg-surface-container-low min-w-full divide-y divide-outline-variant"
       {...props}
     />
   </div>
@@ -108,7 +108,7 @@ export const img = Img
 
 export const code = (props: ComponentProps<'code'>) => (
   <code
-    className="rounded-md bg-surface-container-high px-1.5 py-0.5 font-mono text-[85%]"
+    className="bg-surface-container-high rounded-md px-1.5 py-0.5 font-mono text-[85%]"
     {...props}
   />
 )

@@ -8,7 +8,7 @@ const config = {
       name: 'prettier-plugin-organize-imports',
       organizeImportsSkipDestructiveCodeActions: true,
     },
-    'prettier-plugin-tailwindcss', // MUST come last
+    // 'prettier-plugin-tailwindcss', // Temporarily disabled to avoid className reordering
   ],
 }
 
