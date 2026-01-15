@@ -2,11 +2,11 @@ import cn from '@/lib/cn'
 import { getData, getDocs } from '@/utils/docs'
 
 export type Props = {
-  params: { slug: string[] }
+  params: Promise<{ slug: string[] }>
 }
 
 export async function generateMetadata({ params }: Props) {
-  const slug = params.slug
+  const { slug } = await params
 
   const { doc } = await getData(...slug)
 
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props) {
 export default async function Page({ params }: Props) {
   // console.log('page', params)
 
-  const slug = params.slug
+  const { slug } = await params
 
   const { doc } = await getData(...slug) // [ 'getting-started', 'introduction' ]
 

@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react'
+import { ComponentProps, Fragment } from 'react'
 
 import { groupBy } from 'lodash-es'
 import { Codesandbox1 } from '../Codesandbox'
@@ -23,7 +23,7 @@ export async function Entries({
         .filter(([group]) => !excludedGroups.includes(group))
         .map(([group, entries]) => {
           return (
-            <>
+            <Fragment key={group}>
               <h2 className="my-8 text-xl capitalize first-of-type:mt-0">{group}</h2>
               <ul className="text-sm">
                 {entries?.map(({ title, url, boxes }) => (
@@ -31,24 +31,22 @@ export async function Entries({
                     <a href={url} className="text-primary">
                       {title}
                     </a>
-                    <ul className="inline-flex gap-1">
+                    <span className="inline-flex gap-1">
                       {boxes.map((id) => (
-                        <li key={id}>
-                          <Codesandbox1
-                            key={id}
-                            id={id}
-                            boxes={[id]}
-                            hideTitle
-                            className="inline-block"
-                            imgProps={{ className: 'h-[1em] w-auto rounded-[1px]' }}
-                          />
-                        </li>
+                        <Codesandbox1
+                          key={id}
+                          id={id}
+                          boxes={[id]}
+                          hideTitle
+                          className="inline-block"
+                          imgProps={{ className: 'h-[1em] w-auto rounded-[1px]' }}
+                        />
                       ))}
-                    </ul>
+                    </span>
                   </li>
                 ))}
               </ul>
-            </>
+            </Fragment>
           )
         })}
     </div>
