@@ -1,6 +1,6 @@
 {
   "name": "@pmndrs/docs",
-  "version": "2.20.10",
+  "version": "2.20.11",
   "private": true,
   "type": "module",
   "bin": {
