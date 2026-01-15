@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.14
+
+### Patch Changes
+
+- [#415](https://github.com/pmndrs/docs/pull/415) [`646df64`](https://github.com/pmndrs/docs/commit/646df649a03ca966d00e0e0d7da5ca6bc8515a04) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Configure changesets to automatically create GitHub releases and git tags
+
 ## 2.20.13
 
 ### Patch Changes
