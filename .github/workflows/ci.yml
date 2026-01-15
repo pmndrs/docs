@@ -55,9 +55,7 @@ jobs:
           CONTRIBUTORS_PAT: ""
 
       - name: Deploy to Vercel Preview
-        run: |
-          npm install -g vercel
-          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} ./out --yes
+        run: npx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} ./out --yes
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
