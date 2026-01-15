@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.11
+
+### Patch Changes
+
+- 88e07a7: Update Docker image to version 2.20.4
+
 ## 2.20.10
 
 ### Patch Changes
