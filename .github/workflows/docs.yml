@@ -22,7 +22,6 @@ jobs:
       icon: '🖨️'
       logo: 'gutenberg.jpg'
       github: 'https://github.com/pmndrs/docs'
-      discord: ''
       theme_primary: '#323e48'
       theme_scheme: 'tonalSpot'
       theme_contrast: '0'
