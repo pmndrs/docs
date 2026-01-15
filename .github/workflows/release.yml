@@ -117,14 +117,6 @@ jobs:
         id: get-version
         run: |
           PUBLISHED_PACKAGES='${{ needs.release-job.outputs.publishedPackages }}'
-          if [ -z "$PUBLISHED_PACKAGES" ] || [ "$PUBLISHED_PACKAGES" = "null" ]; then
-            echo "No packages were published"
-            exit 1
-          fi
-          if [ "$(echo "$PUBLISHED_PACKAGES" | jq 'length')" -eq 0 ]; then
-            echo "No packages in publishedPackages array"
-            exit 1
-          fi
           VERSION=$(echo "$PUBLISHED_PACKAGES" | jq -r '.[0].version')
           MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
