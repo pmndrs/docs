@@ -15,7 +15,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: pmndrs/docs/.github/workflows/build.yml@v2
+    uses: pmndrs/docs/.github/workflows/build.yml@main
     with:
       mdx: 'docs'
       libname: 'Poimandres'
@@ -34,6 +34,7 @@ jobs:
       theme_important: '#8957e5'
       theme_warning: '#d29922'
       theme_caution: '#da3633'
+      docker_tag: '3'
 
   deploy:
     needs: build
