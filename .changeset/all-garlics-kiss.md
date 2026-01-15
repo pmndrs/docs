@@ -1,5 +1,0 @@
----
-'@pmndrs/docs': patch
----
-
--v
