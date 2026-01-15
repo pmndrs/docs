@@ -1,0 +1,55 @@
+name: Build documentation and deploy to GitHub Pages
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+# Cancel previous run (see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: pmndrs/docs/.github/workflows/build.yml@main
+    with:
+      mdx: 'docs'
+      libname: 'Poimandres'
+      libname_short: 'pmndrs'
+      libname_dotsuffix_label: 'docs'
+      libname_dotsuffix_href: 'https://pmnd.rs'
+      home_redirect: '/getting-started/introduction'
+      icon: '🖨️'
+      logo: 'gutenberg.jpg'
+      github: 'https://github.com/pmndrs/docs'
+      theme_primary: '#323e48'
+      theme_scheme: 'tonalSpot'
+      theme_contrast: '0'
+      theme_note: '#1f6feb'
+      theme_tip: '#238636'
+      theme_important: '#8957e5'
+      theme_warning: '#d29922'
+      theme_caution: '#da3633'
+      docker_tag: '3'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
