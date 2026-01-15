@@ -32,7 +32,7 @@ function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
             <Dialog.Title>Search anything</Dialog.Title>
           </VisuallyHidden.Root>
 
-          <Dialog.Overlay className="absolute inset-0 bg-surface-dim/95">
+          <Dialog.Overlay className="bg-surface-dim/95 absolute inset-0">
             <Dialog.Close className="size-full" />
           </Dialog.Overlay>
 

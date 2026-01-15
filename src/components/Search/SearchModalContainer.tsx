@@ -73,7 +73,7 @@ export const SearchModalContainer = ({
         <Command.Input
           name="search"
           id="search"
-          className="bg-surface-container block h-[--Search-Input-height] w-full rounded-md px-4 pl-10 sm:text-sm"
+          className="block h-[--Search-Input-height] w-full rounded-md bg-surface-container px-4 pl-10 sm:text-sm"
           placeholder="Search the docs"
           value={query}
           autoFocus
@@ -82,7 +82,7 @@ export const SearchModalContainer = ({
 
         <Command.List>
           {results.length > 0 && (
-            <div className="bg-surface-container mt-1 flex max-h-[calc((100dvh-var(--Search-Input-top)-1.5rem)-var(--Search-Input-height))] flex-col gap-1 overflow-auto rounded-md p-1">
+            <div className="mt-1 flex max-h-[calc((100dvh-var(--Search-Input-top)-1.5rem)-var(--Search-Input-height))] flex-col gap-1 overflow-auto rounded-md bg-surface-container p-1">
               {results.map((result, index) => {
                 return (
                   <Command.Item

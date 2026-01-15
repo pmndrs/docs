@@ -44,7 +44,7 @@ export function LayoutContent({ className, ...props }: ComponentProps<'main'>) {
 }
 
 export function LayoutHeader({ className, ...props }: ComponentProps<'header'>) {
-  return <header className={cn('bg-red-200/50 sticky top-0 grid-in-h', className)} {...props} />
+  return <header className={cn('sticky top-0 bg-red-200/50 grid-in-h', className)} {...props} />
 }
 
 export function LayoutNav({ className, ...props }: ComponentProps<'nav'>) {
