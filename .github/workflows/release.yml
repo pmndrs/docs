@@ -52,19 +52,31 @@ jobs:
           CURRENT=$(jq -r '.version' package.json)
           echo "Current version: $CURRENT"
           
+          # Validate current version is not null or empty
+          if [ -z "$CURRENT" ] || [ "$CURRENT" = "null" ]; then
+            echo "Error: Could not read current version from package.json"
+            exit 1
+          fi
+          
           # Try to get previous version, handle errors gracefully
           if PREVIOUS=$(git show HEAD~1:package.json 2>/dev/null | jq -r '.version' 2>/dev/null); then
-            echo "Previous version: $PREVIOUS"
-            if [ "$CURRENT" != "$PREVIOUS" ]; then
+            # Validate previous version
+            if [ -z "$PREVIOUS" ] || [ "$PREVIOUS" = "null" ]; then
+              echo "Previous version: (invalid)"
               echo "version_changed=true" >> $GITHUB_OUTPUT
-              echo "Version changed from $PREVIOUS to $CURRENT"
+              echo "Previous version invalid, treating as version change"
             else
-              echo "version_changed=false" >> $GITHUB_OUTPUT
-              echo "Version unchanged"
+              echo "Previous version: $PREVIOUS"
+              if [ "$CURRENT" != "$PREVIOUS" ]; then
+                echo "version_changed=true" >> $GITHUB_OUTPUT
+                echo "Version changed from $PREVIOUS to $CURRENT"
+              else
+                echo "version_changed=false" >> $GITHUB_OUTPUT
+                echo "Version unchanged"
+              fi
             fi
           else
             # No previous commit or can't read previous package.json
-            # This could be initial commit or first time using this workflow
             echo "Previous version: (not found)"
             echo "version_changed=true" >> $GITHUB_OUTPUT
             echo "No previous version found, treating as version change"
