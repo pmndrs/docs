@@ -115,18 +115,7 @@ jobs:
       - name: Get version from package.json
         id: get-version
         run: |
-          # Read and validate version
-          if ! VERSION=$(jq -r '.version' package.json 2>&1); then
-            echo "Error: Failed to parse package.json: $VERSION"
-            exit 1
-          fi
-          
-          # Validate version is not null or empty
-          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-            echo "Error: Version field is missing or null in package.json"
-            exit 1
-          fi
-          
+          VERSION=$(jq -r '.version' package.json)
           MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
