@@ -118,12 +118,20 @@ jobs:
         id: get-version
         run: |
           PUBLISHED_PACKAGES='${{ needs.release-job.outputs.publishedPackages }}'
-          if [ "$(echo $PUBLISHED_PACKAGES | jq 'length')" -eq 0 ]; then
+          if [ -z "$PUBLISHED_PACKAGES" ] || [ "$PUBLISHED_PACKAGES" = "null" ]; then
             echo "No packages were published"
             exit 1
           fi
-          VERSION=$(echo $PUBLISHED_PACKAGES | jq -r '.[0].version')
-          MAJOR_VERSION=$(echo $VERSION | cut -d. -f1)
+          if ! echo "$PUBLISHED_PACKAGES" | jq -e . >/dev/null 2>&1; then
+            echo "Invalid JSON in publishedPackages"
+            exit 1
+          fi
+          if [ "$(echo "$PUBLISHED_PACKAGES" | jq 'length')" -eq 0 ]; then
+            echo "No packages in publishedPackages array"
+            exit 1
+          fi
+          VERSION=$(echo "$PUBLISHED_PACKAGES" | jq -r '.[0].version')
+          MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
 
@@ -141,7 +149,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{major}},value=v${{ steps.get-version.outputs.version }}
+            type=semver,pattern={{major}},value=v${{ steps.get-version.outputs.major_version }}
             type=semver,pattern={{version}},value=v${{ steps.get-version.outputs.version }}
 
       - name: Build and push Docker image
