@@ -50,15 +50,24 @@ jobs:
         id: version-check
         run: |
           CURRENT=$(jq -r '.version' package.json)
-          PREVIOUS=$(git show HEAD~1:package.json | jq -r '.version' || echo "0.0.0")
           echo "Current version: $CURRENT"
-          echo "Previous version: $PREVIOUS"
-          if [ "$CURRENT" != "$PREVIOUS" ]; then
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-            echo "Version changed from $PREVIOUS to $CURRENT"
+          
+          # Try to get previous version, handle errors gracefully
+          if PREVIOUS=$(git show HEAD~1:package.json 2>/dev/null | jq -r '.version' 2>/dev/null); then
+            echo "Previous version: $PREVIOUS"
+            if [ "$CURRENT" != "$PREVIOUS" ]; then
+              echo "version_changed=true" >> $GITHUB_OUTPUT
+              echo "Version changed from $PREVIOUS to $CURRENT"
+            else
+              echo "version_changed=false" >> $GITHUB_OUTPUT
+              echo "Version unchanged"
+            fi
           else
-            echo "version_changed=false" >> $GITHUB_OUTPUT
-            echo "Version unchanged"
+            # No previous commit or can't read previous package.json
+            # This could be initial commit or first time using this workflow
+            echo "Previous version: (not found)"
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "No previous version found, treating as version change"
           fi
 
   vercel-job:
