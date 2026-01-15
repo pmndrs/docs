@@ -68,7 +68,7 @@
     "changeset": "changeset"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=20.9.0"
   },
   "packageManager": "npm@10.8.2"
 }
