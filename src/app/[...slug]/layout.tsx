@@ -35,7 +35,7 @@ export default async function Layoutt({ params, children }: Props) {
 
   const nav = <Nav docs={docs} asPath={asPath} collapsible />
   const header = (
-    <div className="flex h-[--header-height] items-center gap-[--rgrid-m] px-[--rgrid-m]">
+    <div className="flex h-(--header-height) items-center gap-(--rgrid-m) px-(--rgrid-m)">
       <div className="flex items-center">
         <Link href="/" aria-label={`${NEXT_PUBLIC_LIBNAME} Docs`}>
           <span className="font-bold">
@@ -80,7 +80,7 @@ export default async function Layoutt({ params, children }: Props) {
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
-        <Menu className="z-100 bg-surface absolute inset-0 top-[--header-height] h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
+        <Menu className="z-100 bg-surface absolute inset-0 top-(--header-height) h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
           <Nav docs={docs} asPath={asPath} collapsible={false} />
         </Menu>
       </div>
@@ -171,11 +171,11 @@ export default async function Layoutt({ params, children }: Props) {
   return (
     <>
       <DocsContext value={{ docs, doc }}>
-        <Layout className="[--side-w:theme(spacing.72)]">
+        <Layout className="[--side-w:--spacing(72)]">
           <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
             {header}
           </LayoutHeader>
-          <LayoutContent className="lg:mr-[--rgrid-m] xl:mr-0">
+          <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
             <article className="post-container">
               {children}
               {footer}

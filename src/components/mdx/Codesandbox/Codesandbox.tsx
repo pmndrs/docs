@@ -36,7 +36,7 @@ export function Codesandbox0({
       {embed ? (
         <iframe
           src={`https://codesandbox.io/embed/${id}`}
-          className="h-[500px] w-full"
+          className="h-125 w-full"
           title={title}
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
@@ -54,7 +54,7 @@ export function Codesandbox0({
               alt={title}
               width={1763}
               height={926}
-              className={cn('aspect-[16/9] object-cover', imgClassName)}
+              className={cn('aspect-video object-cover', imgClassName)}
             />
           )}
         </a>

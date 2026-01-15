@@ -141,7 +141,7 @@ const libs: Record<string, Library> = {
     title: 'viverse',
     url: 'https://pmndrs.github.io/viverse',
     github: 'https://github.com/pmndrs/viverse',
-    description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE and beyond.`',
+    description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE and beyond.',
     docs: 'pmndrs/viverse/main/docs',
   },
   leva: {
@@ -201,7 +201,7 @@ export default function Page() {
                   <div className="flex items-center justify-between gap-6 px-6 py-6">
                     <div className="max-w-md">
                       <div className="text-lg font-bold">{data.title}</div>
-                      <div className="flex-grow text-sm !leading-relaxed text-on-surface-variant/50">
+                      <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
                         {data.description}
                       </div>
                     </div>
@@ -210,7 +210,7 @@ export default function Page() {
                         href={data.github}
                         target="_blank"
                         rel="noopener"
-                        className="relative block h-20 w-20 flex-shrink-0"
+                        className="relative block h-20 w-20 shrink-0"
                       >
                         <Image
                           src={data.icon}
@@ -226,7 +226,7 @@ export default function Page() {
                   <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
                     <Link
                       href={data.url}
-                      className="interactive-bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
+                      className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="docs" />
                       <span className="sm:hidden">Docs</span>
@@ -236,7 +236,7 @@ export default function Page() {
                       href={data.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="interactive-bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
+                      className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="github" />
                       <span>GitHub</span>

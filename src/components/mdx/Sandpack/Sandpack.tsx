@@ -14,15 +14,7 @@ import path from 'node:path'
 
 import { SandpackCodeViewer } from './SandpackCodeViewer'
 
-// https://tailwindcss.com/docs/configuration#referencing-in-java-script
 import { ComponentProps } from 'react'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '../../../../tailwind.config'
-const fullConfig = resolveConfig(tailwindConfig)
-// console.log('fullConfig', fullConfig.theme.colors)
-// console.log(fullConfig.theme.fontSize.sm)
-// console.log(fullConfig.theme.fontFamily.mono)
-// console.log(fullConfig.theme.borderRadius.lg)
 
 function getSandpackDependencies(folder: string) {
   const pkgPath = `${folder}/package.json`
@@ -99,19 +91,19 @@ export const Sandpack = async ({
         {...props}
         theme={{
           colors: {
-            // @ts-ignore
-            surface1: fullConfig.theme.colors['inverse-surface-light'],
+            surface1: 'var(--mcu-surface-container-low)',
+            surface2: 'var(--mcu-surface-container)',
+            surface3: 'var(--mcu-surface-container-high)',
           },
           font: {
-            mono: fullConfig.theme.fontFamily.mono.join(', '),
-            // size: fullConfig.theme.fontSize.xs[0],
+            mono: 'var(--font-mono)',
           },
         }}
         files={_files}
         customSetup={customSetup}
         options={options}
         // @ts-ignore
-        style={{ '--sp-border-radius': fullConfig.theme.borderRadius.lg }}
+        style={{ '--sp-border-radius': '0.5rem' }}
       >
         <SandpackLayout>
           {fileExplorer && (
