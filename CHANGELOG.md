@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.12
+
+### Patch Changes
+
+- 699c2d1: 2.20.1
+
 ## 2.20.11
 
 ### Patch Changes
