@@ -178,15 +178,16 @@ pre[class*='language-'] {
 }
 
 .code-line.inserted {
-  @apply bg-tip-container-dark/30;
+  /* @apply bg-tip-container-dark/30; */
 }
 .code-line.deleted {
-  @apply bg-error-container-dark/30;
+  /* @apply bg-error-container-dark/30; */
 }
 
 .highlight-line {
   border-left: var(--linenumber-border-width) solid; /* Set highlight accent border color */
-  @apply -mx-[--pad] border-l-inverse-surface-dark/50 bg-inverse-surface-dark/10;
+  @apply -mx-[--pad];
+  /* @apply border-l-inverse-surface-dark/50 bg-inverse-surface-dark/10; */
 }
 
 .line-number::before {
