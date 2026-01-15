@@ -29,30 +29,6 @@ jobs:
         env:
           MDX: docs
           NEXT_PUBLIC_LIBNAME: "Poimandres"
-          NEXT_PUBLIC_LIBNAME_SHORT: "pmndrs"
-          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: "docs"
-          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: "https://docs.pmnd.rs"
-          BASE_PATH: ""
-          DIST_DIR: ""
-          OUTPUT: export
-          HOME_REDIRECT: /getting-started/introduction
-          MDX_BASEURL: ""
-          SOURCECODE_BASEURL: ""
-          EDIT_BASEURL: ""
-          NEXT_PUBLIC_URL: ""
-          ICON: ""
-          LOGO: gutenberg.jpg
-          GITHUB: https://github.com/pmndrs/docs
-          DISCORD: https://discord.com/channels/740090768164651008/1264328004172255393
-          THEME_PRIMARY: "#323e48"
-          THEME_SCHEME: "tonalSpot"
-          THEME_CONTRAST: "0"
-          THEME_NOTE: "#1f6feb"
-          THEME_TIP: "#238636"
-          THEME_IMPORTANT: "#8957e5"
-          THEME_WARNING: "#d29922"
-          THEME_CAUTION: "#da3633"
-          CONTRIBUTORS_PAT: ""
 
       - name: Deploy to Vercel Preview
         run: npx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} ./out --yes
@@ -62,3 +38,14 @@ jobs:
 
       - name: Docker build
         run: docker build -t pmndrs-docs .
+
+      - name: Docker run build test
+        run: |
+          cd docs
+          docker run --rm --init \
+            -v "./$MDX":/app/docs \
+            -e MDX=docs \
+            -e NEXT_PUBLIC_LIBNAME="Poimandres" \
+            pmndrs-docs npm run build
+        env:
+          MDX: docs
