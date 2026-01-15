@@ -11,6 +11,10 @@ concurrency:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     uses: pmndrs/docs/.github/workflows/build.yml@v2
     with:
       mdx: 'docs'
