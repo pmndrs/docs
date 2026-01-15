@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.6
+
+### Patch Changes
+
+- 1a24129: Fix release workflow to use hasChangesets output for private packages
+
 ## 2.20.5
 
 ### Patch Changes
