@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.0.0
+
+### Major Changes
+
+- [#418](https://github.com/pmndrs/docs/pull/418) [`7d84d48`](https://github.com/pmndrs/docs/commit/7d84d48ebfe3fc57fb13b040f80a309100735e62) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add docs.yml workflow for GitHub Pages deployment
+
 ## 2.20.14
 
 ### Patch Changes
