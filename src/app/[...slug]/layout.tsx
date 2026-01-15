@@ -65,8 +65,8 @@ export default async function Layoutt({ params, children }: Props) {
         {[
           { href: process.env.GITHUB, icon: <VscGithubAlt /> },
           { href: process.env.DISCORD, icon: <PiDiscordLogoLight /> },
-        ].map(({ href, icon }) => (
-          <>
+        ].map(({ href, icon }, index) => (
+          <React.Fragment key={index}>
             {href && (
               <Link
                 href={href}
@@ -76,7 +76,7 @@ export default async function Layoutt({ params, children }: Props) {
                 {icon}
               </Link>
             )}
-          </>
+          </React.Fragment>
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
