@@ -1,6 +1,105 @@
-@tailwind base;
+@import 'tailwindcss';
 
-/* Write your own custom base styles here */
+@theme {
+  /* Font family */
+  --font-family-mono: 'Inconsolata', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+
+  /* Keyframes */
+  --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
+  --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;
+
+  /* Material Design colors from react-mcu */
+  --color-background: var(--mcu-background);
+  --color-on-background: var(--mcu-on-background);
+  --color-surface: var(--mcu-surface);
+  --color-surface-dim: var(--mcu-surface-dim);
+  --color-surface-bright: var(--mcu-surface-bright);
+  --color-surface-container-lowest: var(--mcu-surface-container-lowest);
+  --color-surface-container-low: var(--mcu-surface-container-low);
+  --color-surface-container: var(--mcu-surface-container);
+  --color-surface-container-high: var(--mcu-surface-container-high);
+  --color-surface-container-highest: var(--mcu-surface-container-highest);
+  --color-on-surface: var(--mcu-on-surface);
+  --color-on-surface-variant: var(--mcu-on-surface-variant);
+  --color-outline: var(--mcu-outline);
+  --color-outline-variant: var(--mcu-outline-variant);
+  --color-inverse-surface: var(--mcu-inverse-surface);
+  --color-inverse-on-surface: var(--mcu-inverse-on-surface);
+  --color-primary: var(--mcu-primary);
+  --color-on-primary: var(--mcu-on-primary);
+  --color-primary-container: var(--mcu-primary-container);
+  --color-on-primary-container: var(--mcu-on-primary-container);
+  --color-primary-fixed: var(--mcu-primary-fixed);
+  --color-primary-fixed-dim: var(--mcu-primary-fixed-dim);
+  --color-on-primary-fixed: var(--mcu-on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--mcu-on-primary-fixed-variant);
+  --color-inverse-primary: var(--mcu-inverse-primary);
+  --color-secondary: var(--mcu-secondary);
+  --color-on-secondary: var(--mcu-on-secondary);
+  --color-secondary-container: var(--mcu-secondary-container);
+  --color-on-secondary-container: var(--mcu-on-secondary-container);
+  --color-secondary-fixed: var(--mcu-secondary-fixed);
+  --color-secondary-fixed-dim: var(--mcu-secondary-fixed-dim);
+  --color-on-secondary-fixed: var(--mcu-on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--mcu-on-secondary-fixed-variant);
+  --color-tertiary: var(--mcu-tertiary);
+  --color-on-tertiary: var(--mcu-on-tertiary);
+  --color-tertiary-container: var(--mcu-tertiary-container);
+  --color-on-tertiary-container: var(--mcu-on-tertiary-container);
+  --color-tertiary-fixed: var(--mcu-tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--mcu-tertiary-fixed-dim);
+  --color-on-tertiary-fixed: var(--mcu-on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--mcu-on-tertiary-fixed-variant);
+  --color-error: var(--mcu-error);
+  --color-on-error: var(--mcu-on-error);
+  --color-error-container: var(--mcu-error-container);
+  --color-on-error-container: var(--mcu-on-error-container);
+  --color-scrim: var(--mcu-scrim);
+  --color-shadow: var(--mcu-shadow);
+
+  /* Custom alert colors */
+  --color-note: var(--mcu-note);
+  --color-on-note: var(--mcu-on-note);
+  --color-note-container: var(--mcu-note-container);
+  --color-on-note-container: var(--mcu-on-note-container);
+  --color-tip: var(--mcu-tip);
+  --color-on-tip: var(--mcu-on-tip);
+  --color-tip-container: var(--mcu-tip-container);
+  --color-on-tip-container: var(--mcu-on-tip-container);
+  --color-important: var(--mcu-important);
+  --color-on-important: var(--mcu-on-important);
+  --color-important-container: var(--mcu-important-container);
+  --color-on-important-container: var(--mcu-on-important-container);
+  --color-warning: var(--mcu-warning);
+  --color-on-warning: var(--mcu-on-warning);
+  --color-warning-container: var(--mcu-warning-container);
+  --color-on-warning-container: var(--mcu-on-warning-container);
+  --color-caution: var(--mcu-caution);
+  --color-on-caution: var(--mcu-on-caution);
+  --color-caution-container: var(--mcu-caution-container);
+  --color-on-caution-container: var(--mcu-on-caution-container);
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Custom base styles */
 
 :root {
   @apply [--rgrid-m:theme(spacing.4)] lg:[--rgrid-m:theme(spacing.6)];
@@ -15,14 +114,6 @@
 body {
   font-optical-sizing: auto;
 }
-
-/* Start purging... */
-@tailwind components;
-/* Stop purging. */
-
-/* Start purging... */
-@tailwind utilities;
-/* Stop purging. */
 
 main :target {
   @apply scroll-m-[calc(var(--header-height)+theme(spacing.4))];

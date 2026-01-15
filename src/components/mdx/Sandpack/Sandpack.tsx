@@ -14,15 +14,12 @@ import path from 'node:path'
 
 import { SandpackCodeViewer } from './SandpackCodeViewer'
 
-// https://tailwindcss.com/docs/configuration#referencing-in-java-script
+// Import the config directly for theme access
 import { ComponentProps } from 'react'
-import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../../../../tailwind.config'
-const fullConfig = resolveConfig(tailwindConfig)
-// console.log('fullConfig', fullConfig.theme.colors)
-// console.log(fullConfig.theme.fontSize.sm)
-// console.log(fullConfig.theme.fontFamily.mono)
-// console.log(fullConfig.theme.borderRadius.lg)
+
+// In Tailwind v4, we access theme values directly from the config
+// or use CSS variables where possible
 
 function getSandpackDependencies(folder: string) {
   const pkgPath = `${folder}/package.json`
@@ -99,19 +96,21 @@ export const Sandpack = async ({
         {...props}
         theme={{
           colors: {
+            // Using CSS variable via getComputedStyle or hardcoded fallback
             // @ts-ignore
-            surface1: fullConfig.theme.colors['inverse-surface-light'],
+            surface1: 'var(--mcu-inverse-surface)',
           },
           font: {
-            mono: fullConfig.theme.fontFamily.mono.join(', '),
-            // size: fullConfig.theme.fontSize.xs[0],
+            // Inconsolata is defined in globals.css @theme
+            mono: '"Inconsolata", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
           },
         }}
         files={_files}
         customSetup={customSetup}
         options={options}
+        // Using CSS variable for border radius
         // @ts-ignore
-        style={{ '--sp-border-radius': fullConfig.theme.borderRadius.lg }}
+        style={{ '--sp-border-radius': '0.5rem' }}
       >
         <SandpackLayout>
           {fileExplorer && (
