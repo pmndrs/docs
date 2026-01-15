@@ -3,40 +3,53 @@
 import mermaid from 'mermaid'
 import { useEffect, useRef, useState } from 'react'
 
+// Initialize mermaid once at module level
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'strict',
+})
+
 export function Mermaid({ children, id }: { children: string; id?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [svg, setSvg] = useState<string>('')
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
+    let isMounted = true
+
     const renderDiagram = async () => {
       if (!children || typeof children !== 'string') {
-        setError('Invalid mermaid diagram content')
+        if (isMounted) {
+          setError('Invalid mermaid diagram content')
+        }
         return
       }
 
       try {
-        // Initialize mermaid with default configuration
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: 'default',
-          securityLevel: 'strict',
-        })
-
         // Generate a unique ID for this diagram
-        const diagramId = id || `mermaid-${Math.random().toString(36).substr(2, 9)}`
+        const diagramId = id || `mermaid-${Math.random().toString(36).substring(2, 11)}`
 
         // Render the diagram
         const { svg } = await mermaid.render(diagramId, children.trim())
-        setSvg(svg)
-        setError('')
+
+        if (isMounted) {
+          setSvg(svg)
+          setError('')
+        }
       } catch (err) {
         console.error('Mermaid rendering error:', err)
-        setError(err instanceof Error ? err.message : 'Failed to render diagram')
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to render diagram')
+        }
       }
     }
 
     renderDiagram()
+
+    return () => {
+      isMounted = false
+    }
   }, [children, id])
 
   if (error) {
