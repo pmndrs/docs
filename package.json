@@ -18,6 +18,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/sanitize-html": "^2.13.0",
+    "@types/unist": "^3.0.3",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
@@ -29,7 +30,8 @@
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "unist-util-visit": "^5.0.0"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
@@ -70,5 +72,5 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "npm@10.8.2"
+  "packageManager": "pnpm@10.28.0"
 }
