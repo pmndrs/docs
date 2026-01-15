@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 2.20.10
+
+### Patch Changes
+
+- b913620: Upgrade to Node 24
+
 ## 2.20.9
 
 ### Patch Changes
