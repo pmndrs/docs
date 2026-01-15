@@ -34,34 +34,4 @@ uses: pmndrs/docs/.github/workflows/build.yml@v2
     docker_tag: '2.20.1'
 ```
 
-## Inputs
-
-The reusable workflow accepts the following inputs:
-
-### Required inputs
-
-- `mdx`: Path to the MDX docs folder (relative to repository root, e.g., `docs`)
-- `libname`: Full name of the library (e.g., `React Three Fiber`)
-- `home_redirect`: Default redirect path (e.g., `/getting-started/introduction`)
-
-### Optional inputs
-
-- `libname_short`: Short name of the library
-- `libname_dotsuffix_label`: Label for docs suffix (default: `docs`)
-- `libname_dotsuffix_href`: Link for docs suffix (default: `https://docs.pmnd.rs`)
-- `icon`: Icon emoji for the site (default: `🖨️`)
-- `logo`: Path to logo image (default: `/logo.png`)
-- `base_path`: Base path for the site
-- `github`: GitHub repository URL
-- `discord`: Discord server URL
-- `theme_primary`: Primary theme color (default: `#323e48`)
-- `theme_scheme`: Theme scheme (default: `tonalSpot`)
-- `theme_contrast`: Theme contrast level (default: `0`)
-- `theme_note`: Color for note callouts (default: `#1f6feb`)
-- `theme_tip`: Color for tip callouts (default: `#238636`)
-- `theme_important`: Color for important callouts (default: `#8957e5`)
-- `theme_warning`: Color for warning callouts (default: `#d29922`)
-- `theme_caution`: Color for caution callouts (default: `#da3633`)
-- `docker_tag`: Docker image tag for `ghcr.io/pmndrs/docs` (default: `2.20.1`)
-
 See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
