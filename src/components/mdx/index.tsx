@@ -1,5 +1,4 @@
 export * from './Code'
-// export * from './Codesandbox'
 export * from './Details'
 export * from './Entries'
 export * from './Gha'
@@ -9,7 +8,6 @@ export * from './Img'
 export * from './Intro'
 export * from './Keypoints'
 export * from './People'
-// export * from './Sandpack'
 export * from './Summary'
 export * from './Toc'
 
