@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      version_changed: ${{ steps.version-check.outputs.version_changed }}
+      hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
 
     steps:
       - name: Checkout repository
@@ -46,51 +46,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check if version changed
-        id: version-check
-        run: |
-          # Read and validate current version
-          if ! CURRENT=$(jq -r '.version' package.json 2>&1); then
-            echo "Error: Failed to parse package.json: $CURRENT"
-            exit 1
-          fi
-          
-          echo "Current version: $CURRENT"
-          
-          # Validate current version is not null or empty
-          if [ -z "$CURRENT" ] || [ "$CURRENT" = "null" ]; then
-            echo "Error: Version field is missing or null in package.json"
-            exit 1
-          fi
-          
-          # Try to get previous version, handle errors gracefully
-          if PREVIOUS=$(git show HEAD~1:package.json 2>/dev/null | jq -r '.version' 2>/dev/null); then
-            # Validate previous version
-            if [ -z "$PREVIOUS" ] || [ "$PREVIOUS" = "null" ]; then
-              echo "Previous version: (invalid)"
-              echo "version_changed=true" >> $GITHUB_OUTPUT
-              echo "Previous version invalid, treating as version change"
-            else
-              echo "Previous version: $PREVIOUS"
-              if [ "$CURRENT" != "$PREVIOUS" ]; then
-                echo "version_changed=true" >> $GITHUB_OUTPUT
-                echo "Version changed from $PREVIOUS to $CURRENT"
-              else
-                echo "version_changed=false" >> $GITHUB_OUTPUT
-                echo "Version unchanged"
-              fi
-            fi
-          else
-            # No previous commit or can't read previous package.json
-            echo "Previous version: (not found)"
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-            echo "No previous version found, treating as version change"
-          fi
-
   vercel-job:
     runs-on: ubuntu-latest
     needs: release-job
-    if: needs.release-job.outputs.version_changed == 'true'
+    if: needs.release-job.outputs.hasChangesets == 'false'
 
     # Update the Production/Preview environment with the Vercel deployed URL
     environment:
@@ -141,7 +100,7 @@ jobs:
   docker-job:
     runs-on: ubuntu-latest
     needs: release-job
-    if: needs.release-job.outputs.version_changed == 'true'
+    if: needs.release-job.outputs.hasChangesets == 'false'
 
     permissions:
       contents: write
