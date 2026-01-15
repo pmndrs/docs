@@ -103,7 +103,7 @@ jobs:
             -e THEME_WARNING \
             -e THEME_CAUTION \
             -e CONTRIBUTORS_PAT \
-            ghcr.io/pmndrs/docs:2.20.4 npm run build
+            ghcr.io/pmndrs/docs:2.20.1 npm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}
