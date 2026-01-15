@@ -77,7 +77,7 @@ export default function RootLayout({
       <head>
         <SandpackCSS />
       </head>
-      <body className={cn(inter.className, 'wrap-break-word bg-surface')}>
+      <body className={cn(inter.className, 'wrap-break-word bg-surface text-on-surface')}>
         <Mcu
           source={primary}
           scheme={scheme}

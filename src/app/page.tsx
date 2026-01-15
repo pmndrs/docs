@@ -226,7 +226,7 @@ export default function Page() {
                   <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
                     <Link
                       href={data.url}
-                      className="interactive-bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
+                      className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="docs" />
                       <span className="sm:hidden">Docs</span>
@@ -236,7 +236,7 @@ export default function Page() {
                       href={data.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="interactive-bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
+                      className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="github" />
                       <span>GitHub</span>

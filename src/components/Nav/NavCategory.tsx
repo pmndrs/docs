@@ -64,7 +64,7 @@ function NavItem({
       {...props}
       className={cn(
         'block cursor-pointer p-3 pl-8',
-        active ? 'bg-primary-container' : 'interactive-bg-surface',
+        active ? 'bg-primary-container' : 'bg-surface',
         className,
       )}
     >
