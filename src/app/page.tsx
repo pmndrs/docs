@@ -201,7 +201,7 @@ export default function Page() {
                   <div className="flex items-center justify-between gap-6 px-6 py-6">
                     <div className="max-w-md">
                       <div className="text-lg font-bold">{data.title}</div>
-                      <div className="flex-grow text-sm !leading-relaxed text-on-surface-variant/50">
+                      <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
                         {data.description}
                       </div>
                     </div>
@@ -210,7 +210,7 @@ export default function Page() {
                         href={data.github}
                         target="_blank"
                         rel="noopener"
-                        className="relative block h-20 w-20 flex-shrink-0"
+                        className="relative block h-20 w-20 shrink-0"
                       >
                         <Image
                           src={data.icon}

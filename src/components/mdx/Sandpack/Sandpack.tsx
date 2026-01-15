@@ -14,12 +14,7 @@ import path from 'node:path'
 
 import { SandpackCodeViewer } from './SandpackCodeViewer'
 
-// Import the config directly for theme access
 import { ComponentProps } from 'react'
-import tailwindConfig from '../../../../tailwind.config'
-
-// In Tailwind v4, we access theme values directly from the config
-// or use CSS variables where possible
 
 function getSandpackDependencies(folder: string) {
   const pkgPath = `${folder}/package.json`
@@ -96,19 +91,15 @@ export const Sandpack = async ({
         {...props}
         theme={{
           colors: {
-            // Using CSS variable via getComputedStyle or hardcoded fallback
-            // @ts-ignore
             surface1: 'var(--mcu-inverse-surface)',
           },
           font: {
-            // Inconsolata is defined in globals.css @theme
-            mono: '"Inconsolata", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            mono: 'var(--font-mono)',
           },
         }}
         files={_files}
         customSetup={customSetup}
         options={options}
-        // Using CSS variable for border radius
         // @ts-ignore
         style={{ '--sp-border-radius': '0.5rem' }}
       >
