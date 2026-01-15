@@ -23,8 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      published: ${{ steps.changesets.outputs.published }}
-      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+      hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
 
     steps:
       - name: Checkout repository
@@ -41,18 +40,16 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Create Release Pull Request
         id: changesets
         uses: changesets/action@v1
-        with:
-          publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   vercel-job:
     runs-on: ubuntu-latest
     needs: release-job
-    if: needs.release-job.outputs.published == 'true'
+    if: needs.release-job.outputs.hasChangesets == 'false'
 
     # Update the Production/Preview environment with the Vercel deployed URL
     environment:
@@ -103,7 +100,7 @@ jobs:
   docker-job:
     runs-on: ubuntu-latest
     needs: release-job
-    if: needs.release-job.outputs.published == 'true'
+    if: needs.release-job.outputs.hasChangesets == 'false'
 
     permissions:
       contents: write
@@ -115,14 +112,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get version from published packages
+      - name: Get version from package.json
         id: get-version
         run: |
-          PUBLISHED_PACKAGES='${{ needs.release-job.outputs.publishedPackages }}'
-          VERSION=$(echo "$PUBLISHED_PACKAGES" | jq -r '.[0].version')
+          VERSION=$(jq -r '.version' package.json)
           MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
+          echo "Using version: $VERSION (major: $MAJOR_VERSION)"
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
