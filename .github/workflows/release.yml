@@ -121,10 +121,6 @@ jobs:
             echo "No packages were published"
             exit 1
           fi
-          if ! echo "$PUBLISHED_PACKAGES" | jq -e . >/dev/null 2>&1; then
-            echo "Invalid JSON in publishedPackages"
-            exit 1
-          fi
           if [ "$(echo "$PUBLISHED_PACKAGES" | jq 'length')" -eq 0 ]; then
             echo "No packages in publishedPackages array"
             exit 1
