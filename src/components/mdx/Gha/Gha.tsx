@@ -1,4 +1,4 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
 import { BiCommentError } from 'react-icons/bi'
 import { CgInfo } from 'react-icons/cg'

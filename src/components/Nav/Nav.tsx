@@ -4,7 +4,7 @@
 // https://ui.shadcn.com/docs/components/sidebar
 
 import { Doc } from '@/app/[...slug]/DocsContext'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import * as React from 'react'
 import Link from 'next/link'
 import {

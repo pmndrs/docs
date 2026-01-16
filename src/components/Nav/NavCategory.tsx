@@ -1,5 +1,5 @@
 import { Doc } from '@/app/[...slug]/DocsContext'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
 

@@ -1,5 +1,5 @@
 import Icon from '@/components/Icon'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { highlight } from '@/utils/text'
 import Link from 'next/link'
 import { ComponentProps } from 'react'

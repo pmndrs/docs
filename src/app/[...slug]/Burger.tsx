@@ -1,7 +1,7 @@
 'use client'
 
 import Icon from '@/components/Icon'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
 export function Burger({ opened, className }: { opened: boolean } & ComponentProps<'span'>) {

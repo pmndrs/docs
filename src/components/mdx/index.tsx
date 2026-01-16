@@ -13,7 +13,7 @@ export * from './Sandpack'
 export * from './Summary'
 export * from './Toc'
 
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { MARKDOWN_REGEX } from '@/utils/docs'
 import { ComponentProps } from 'react'
 import { Img } from './Img'
