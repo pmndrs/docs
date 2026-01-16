@@ -111,36 +111,16 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 ## dev
 
-Start a development server from any project's `docs` folder:
+Clone this repo and run it locally:
 
 ```sh
-# From your project directory
-$ npx @pmndrs/docs dev ./docs --libname="Koota"
+$ git clone https://github.com/pmndrs/docs.git
+$ cd docs
+$ npm ci
+$ npm run dev:full
 ```
 
 Then go to: http://localhost:3000
-
-Or with custom port:
-
-```sh
-$ npx @pmndrs/docs dev ./docs --libname="My Library" --port=3001
-```
-
-For all available options:
-
-```sh
-$ npx @pmndrs/docs dev --help
-```
-
-> [!TIP]
-> You can also install `@pmndrs/docs` locally as a devDependency and add a script to your `package.json`:
-> ```json
-> {
->   "scripts": {
->     "docs:dev": "dev ./docs --libname=\"My Library\""
->   }
-> }
-> ```
 
 <details>
   <summary>Advanced: Manual setup with environment variables</summary>

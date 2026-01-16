@@ -4,43 +4,17 @@
 
 A static MDX documentation generator with a GitHub reusable workflow, primarily used for `pmndrs/*` projects.
 
-> [!NOTE]
-> **This tool is open for everyone!** While this repo is intended for building pmndrs documentation, anyone can use it to generate their own static docs site.
+> [!NOTE] > **This tool is open for everyone!** While this repo is intended for building pmndrs documentation, anyone can use it to generate their own static docs site.
 
 ## Quick Start
 
-### For Your Project
-
-Preview your docs without cloning this repo:
+Clone this repo and run it locally:
 
 ```sh
-# From your project directory
-npx @pmndrs/docs dev ./docs --libname="Your Library"
-```
-
-Then open http://localhost:3000
-
-Build static docs:
-
-```sh
-npx @pmndrs/docs build ./docs --libname="Your Library" --basePath="/your-library"
-```
-
-### Install as Dependency
-
-```sh
-npm install -D @pmndrs/docs
-```
-
-Add to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "docs:dev": "dev ./docs --libname=\"Your Library\"",
-    "docs:build": "build ./docs --libname=\"Your Library\""
-  }
-}
+git clone https://github.com/pmndrs/docs.git
+cd docs
+npm ci
+npm run dev:full
 ```
 
 ## Full Documentation
