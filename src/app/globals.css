@@ -79,6 +79,16 @@
   --color-on-caution: var(--mcu-on-caution);
   --color-caution-container: var(--mcu-caution-container);
   --color-on-caution-container: var(--mcu-on-caution-container);
+
+  /* Sidebar colors - mapped to Material Design tokens */
+  --color-sidebar: var(--color-surface);
+  --color-sidebar-foreground: var(--color-on-surface);
+  --color-sidebar-primary: var(--color-primary);
+  --color-sidebar-primary-foreground: var(--color-on-primary);
+  --color-sidebar-accent: var(--color-surface-container-highest);
+  --color-sidebar-accent-foreground: var(--color-on-surface);
+  --color-sidebar-border: var(--color-outline-variant);
+  --color-sidebar-ring: var(--color-primary);
 }
 
 @keyframes collapsible-down {
