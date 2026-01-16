@@ -25,8 +25,8 @@ export async function Contributors({
   const contributors = (
     await cachedFetchContributors(owner, repo).catch(
       (err) =>
-        Array.from({ length: 100 }).map(() => ({
-          login: 'jdoe',
+        Array.from({ length: 100 }).map((_, index) => ({
+          login: `jdoe-${index}`,
           html_url: 'https://github.com/jdoe',
         })) as Awaited<ReturnType<typeof cachedFetchContributors>>,
     )

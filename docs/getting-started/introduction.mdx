@@ -31,6 +31,16 @@ $ cd docs
 $ npm ci
 ```
 
+## Local Development for the Docs repo
+
+If you've cloned this repo and want to work on it locally:
+
+```sh
+$ npm run dev:full
+```
+
+This will start the development server with hot reloading at http://localhost:3000
+
 ## Configuration
 
 | var                                   | description                                                                                                                                                              | example                                                                                          |
@@ -101,6 +111,42 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 ## dev
 
+Start a development server from any project's `docs` folder:
+
+```sh
+# From your project directory
+$ npx @pmndrs/docs dev ./docs --libname="Koota"
+```
+
+Then go to: http://localhost:3000
+
+Or with custom port:
+
+```sh
+$ npx @pmndrs/docs dev ./docs --libname="My Library" --port=3001
+```
+
+For all available options:
+
+```sh
+$ npx @pmndrs/docs dev --help
+```
+
+> [!TIP]
+> You can also install `@pmndrs/docs` locally as a devDependency and add a script to your `package.json`:
+> ```json
+> {
+>   "scripts": {
+>     "docs:dev": "dev ./docs --libname=\"My Library\""
+>   }
+> }
+> ```
+
+<details>
+  <summary>Advanced: Manual setup with environment variables</summary>
+
+If you've cloned this repo and want to use environment variables directly:
+
 ```sh
 $ (
   trap 'kill -9 0' SIGINT
@@ -142,10 +188,10 @@ $ (
 )
 ```
 
-Then go to: http://localhost:3000
-
 > [!TIP]
 > If `HOME_REDIRECT=` empty, `/` will not redirect, and instead displays an index of libraries.
+
+</details>
 
 ## build
 
