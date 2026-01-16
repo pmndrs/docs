@@ -4,7 +4,8 @@
 
 A static MDX documentation generator with a GitHub reusable workflow, primarily used for `pmndrs/*` projects.
 
-> [!NOTE] > **This tool is open for everyone!** While this repo is intended for building pmndrs documentation, anyone can use it to generate their own static docs site.
+> [!NOTE]
+> **This tool is open for everyone!** While this repo is intended for building pmndrs documentation, anyone can use it to generate their own static docs site.
 
 ## Quick Start
 
