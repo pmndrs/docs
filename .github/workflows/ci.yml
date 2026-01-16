@@ -31,13 +31,11 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  # Condition to check if we're on a main branch push (used for prod deployments)
-  IS_MAIN_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
 jobs:
   release-job:
     runs-on: ubuntu-latest
-    if: ${{ env.IS_MAIN_PUSH }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: write
@@ -84,7 +82,7 @@ jobs:
 
     # Update the Production/Preview environment with the Vercel deployed URL
     environment:
-      name: ${{ env.IS_MAIN_PUSH && 'Production' || 'Preview' }}
+      name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'Production' || 'Preview' }}
       url: ${{ steps.vercel-deploy.outputs.deployment_url }}
 
     steps:
@@ -161,7 +159,7 @@ jobs:
 
       - name: Log in to the Container registry
         # Only login on main pushes since PRs don't push to registry
-        if: ${{ env.IS_MAIN_PUSH }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -185,12 +183,12 @@ jobs:
         with:
           context: .
           # Only push to registry on main, PRs just build to validate
-          push: ${{ env.IS_MAIN_PUSH }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
-        if: ${{ env.IS_MAIN_PUSH }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -198,7 +196,7 @@ jobs:
           push-to-registry: true
 
       - name: Update `vX` git tag
-        if: ${{ env.IS_MAIN_PUSH }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
