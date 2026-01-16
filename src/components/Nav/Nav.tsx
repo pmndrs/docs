@@ -79,13 +79,31 @@ function NavMenuButton({
   isActive,
   asChild,
   ...props
-}: (React.ComponentProps<'button'> | React.ComponentProps<'div'>) & {
+}: {
+  children: React.ReactNode
+  className?: string
   isActive?: boolean
   asChild?: boolean
-}) {
-  const Comp = asChild ? 'div' : 'button'
+} & Omit<React.ComponentProps<'button'>, 'children' | 'className'>) {
+  if (asChild) {
+    return (
+      <div
+        data-sidebar="menu-button"
+        data-active={isActive}
+        className={cn(
+          'flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none',
+          'hover:bg-surface-container-highest transition-colors',
+          isActive && 'bg-primary-container text-on-primary-container font-medium',
+          className,
+        )}
+      >
+        {children}
+      </div>
+    )
+  }
+
   return (
-    <Comp
+    <button
       data-sidebar="menu-button"
       data-active={isActive}
       className={cn(
@@ -94,10 +112,10 @@ function NavMenuButton({
         isActive && 'bg-primary-container text-on-primary-container font-medium',
         className,
       )}
-      {...(props as any)}
+      {...props}
     >
       {children}
-    </Comp>
+    </button>
   )
 }
 
