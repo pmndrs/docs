@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.3.0
+
+### Minor Changes
+
+- [`3697c2e`](https://github.com/pmndrs/docs/commit/3697c2e762b8716a736ef43c51b403e5cd3c0aa2) Thanks [@krispya](https://github.com/krispya)! - Add CLI support for dev command. Users can now run `npx @pmndrs/docs dev ./docs --libname="Library"` from any project to preview docs with hot-reloading without cloning this repo. Also updated documentation and fixed dev:full script for local development.
+
 ## 3.2.0
 
 ### Minor Changes
