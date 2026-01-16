@@ -6,15 +6,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Map shadcn sidebar colors to Material Design tokens
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
+          DEFAULT: 'hsl(var(--color-surface))',
+          foreground: 'hsl(var(--color-on-surface))',
+          primary: 'hsl(var(--color-primary))',
+          'primary-foreground': 'hsl(var(--color-on-primary))',
+          accent: 'hsl(var(--color-surface-container-highest))',
+          'accent-foreground': 'hsl(var(--color-on-surface))',
+          border: 'hsl(var(--color-outline-variant))',
+          ring: 'hsl(var(--color-primary))',
         },
       },
     },
