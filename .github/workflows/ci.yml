@@ -6,12 +6,12 @@
 # 3. Docker: Builds and optionally publishes Docker images
 #
 # Behavior by event type:
-# - On PR: Validates changes by building Docker image and deploying Vercel preview
+# - On PR: Builds Docker image, uses it to create static export, and deploys preview to Vercel
 # - On main push: Full release pipeline including Docker registry push and git tags
 #
 # Job execution logic:
 # - release-job: Only runs on main push to handle releases
-# - vercel-job: Runs on PRs (preview) and main (production) when no changesets pending
+# - vercel-job: Runs on PRs (preview with Docker build) and main (production, Vercel builds)
 # - docker-job: Runs on PRs (build only) and main (build + push) when no changesets pending
 
 name: CI
@@ -108,7 +108,7 @@ jobs:
             -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://pmnd.rs" \
             -e OUTPUT="export" \
             -e BASE_PATH= \
-            -e DIST_DIR= \
+            -e DIST_DIR=docs/out \
             -e HOME_REDIRECT= \
             -e MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs" \
             -e EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs" \
@@ -135,7 +135,7 @@ jobs:
           # For main: Let Vercel build (existing behavior)
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             # Deploy the static export directory
-            npx -y vercel deploy ./out --token=${{ secrets.VERCEL_TOKEN }} \
+            npx -y vercel deploy ./docs/out --token=${{ secrets.VERCEL_TOKEN }} \
               --target=preview \
               > deployment-url.txt
           else
