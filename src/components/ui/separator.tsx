@@ -1,5 +1,5 @@
 import * as React from 'react'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 
 const Separator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
