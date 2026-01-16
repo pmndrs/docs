@@ -1,5 +1,8 @@
 'use client'
 
+// This component uses shadcn/ui Sidebar components
+// https://ui.shadcn.com/docs/components/sidebar
+
 import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
 import * as React from 'react'
