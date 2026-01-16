@@ -90,37 +90,85 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+      
+      # For PRs: Build Docker image locally and use it to build static site (same as build.yml workflow)
+      - name: Build Docker image (PR only)
+        if: github.event_name == 'pull_request'
+        run: docker build -t pmndrs-docs .
+      
+      - name: Build static site with Docker (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          docker run --rm --init \
+            -v "./docs":/app/docs \
+            -e MDX=docs \
+            -e NEXT_PUBLIC_LIBNAME="Poimandres" \
+            -e NEXT_PUBLIC_LIBNAME_SHORT="pmndrs" \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs" \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://pmnd.rs" \
+            -e OUTPUT="export" \
+            -e BASE_PATH= \
+            -e DIST_DIR= \
+            -e HOME_REDIRECT= \
+            -e MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs" \
+            -e EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs" \
+            -e SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}" \
+            -e NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
+            -e ICON= \
+            -e LOGO=gutenberg.jpg \
+            -e GITHUB="https://github.com/${{ github.repository }}" \
+            -e DISCORD="${{ secrets.DISCORD }}" \
+            -e THEME_PRIMARY="#323e48" \
+            -e THEME_SCHEME="tonalSpot" \
+            -e THEME_CONTRAST="0" \
+            -e THEME_NOTE="#1f6feb" \
+            -e THEME_TIP="#238636" \
+            -e THEME_IMPORTANT="#8957e5" \
+            -e THEME_WARNING="#d29922" \
+            -e THEME_CAUTION="#da3633" \
+            -e CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
+            pmndrs-docs npm run build
+      
       - id: vercel-deploy
         run: |
-          npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
-            --target=${{ github.event_name == 'push' && 'production' || 'preview' }} \
-            --build-env MDX=docs \
-            --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \
-            --build-env NEXT_PUBLIC_LIBNAME_SHORT="pmndrs" \
-            --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs" \
-            --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://pmnd.rs" \
-            --build-env BASE_PATH= \
-            --build-env DIST_DIR= \
-            --build-env OUTPUT= \
-            --build-env HOME_REDIRECT= \
-            --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs" \
-            --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs" \
-            --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}" \
-            --build-env NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
-            --build-env ICON= \
-            --build-env LOGO=gutenberg.jpg \
-            --build-env GITHUB="https://github.com/${{ github.repository }}" \
-            --build-env DISCORD="${{ secrets.DISCORD }}" \
-            --build-env THEME_PRIMARY="#323e48" \
-            --build-env THEME_SCHEME="tonalSpot" \
-            --build-env THEME_CONTRAST="0" \
-            --build-env THEME_NOTE="#1f6feb" \
-            --build-env THEME_TIP="#238636" \
-            --build-env THEME_IMPORTANT="#8957e5" \
-            --build-env THEME_WARNING="#d29922" \
-            --build-env THEME_CAUTION="#da3633" \
-            --build-env CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
-            > deployment-url.txt
+          # For PRs: Deploy pre-built static site
+          # For main: Let Vercel build (existing behavior)
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Deploy the static export directory
+            npx -y vercel deploy ./out --token=${{ secrets.VERCEL_TOKEN }} \
+              --target=preview \
+              > deployment-url.txt
+          else
+            npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
+              --target=${{ github.event_name == 'push' && 'production' || 'preview' }} \
+              --build-env MDX=docs \
+              --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \
+              --build-env NEXT_PUBLIC_LIBNAME_SHORT="pmndrs" \
+              --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs" \
+              --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://pmnd.rs" \
+              --build-env BASE_PATH= \
+              --build-env DIST_DIR= \
+              --build-env OUTPUT= \
+              --build-env HOME_REDIRECT= \
+              --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs" \
+              --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs" \
+              --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}" \
+              --build-env NEXT_PUBLIC_URL="$VERCEL_PROJECT_PRODUCTION_URL" \
+              --build-env ICON= \
+              --build-env LOGO=gutenberg.jpg \
+              --build-env GITHUB="https://github.com/${{ github.repository }}" \
+              --build-env DISCORD="${{ secrets.DISCORD }}" \
+              --build-env THEME_PRIMARY="#323e48" \
+              --build-env THEME_SCHEME="tonalSpot" \
+              --build-env THEME_CONTRAST="0" \
+              --build-env THEME_NOTE="#1f6feb" \
+              --build-env THEME_TIP="#238636" \
+              --build-env THEME_IMPORTANT="#8957e5" \
+              --build-env THEME_WARNING="#d29922" \
+              --build-env THEME_CAUTION="#da3633" \
+              --build-env CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
+              > deployment-url.txt
+          fi
 
           echo "deployment_url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
         env:
