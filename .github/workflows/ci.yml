@@ -70,7 +70,7 @@ jobs:
 
   vercel-job:
     runs-on: ubuntu-latest
-    needs: release-job
+    needs: [release-job, docker-job]
     # Run if release-job was skipped (PRs) or if it completed with no changesets
     # This ensures we deploy previews for PRs and production for main (when no release is in progress)
     if: |
@@ -91,10 +91,16 @@ jobs:
         with:
           node-version-file: '.nvmrc'
       
-      # For PRs: Build Docker image locally and use it to build static site (same as build.yml workflow)
-      - name: Build Docker image (PR only)
+      # For PRs: Download and load Docker image built in docker-job
+      - name: Download Docker image artifact (PR only)
         if: github.event_name == 'pull_request'
-        run: docker build -t pmndrs-docs .
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+      
+      - name: Load Docker image (PR only)
+        if: github.event_name == 'pull_request'
+        run: docker load < pmndrs-docs.tar.gz
       
       - name: Build static site with Docker (PR only)
         if: github.event_name == 'pull_request'
@@ -127,7 +133,7 @@ jobs:
             -e THEME_WARNING="#d29922" \
             -e THEME_CAUTION="#da3633" \
             -e CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
-            pmndrs-docs npm run build
+            pmndrs-docs:pr npm run build
       
       - id: vercel-deploy
         run: |
@@ -232,8 +238,23 @@ jobs:
           context: .
           # Only push to registry on main, PRs just build to validate
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          # For PRs, load image locally so we can export it
+          load: ${{ github.event_name == 'pull_request' }}
+          tags: ${{ github.event_name == 'pull_request' && 'pmndrs-docs:pr' || steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Export Docker image for vercel-job (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          docker save pmndrs-docs:pr | gzip > pmndrs-docs.tar.gz
+      
+      - name: Upload Docker image artifact (PR only)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: pmndrs-docs.tar.gz
+          retention-days: 1
 
       - name: Generate artifact attestation
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
