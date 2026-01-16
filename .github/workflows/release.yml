@@ -11,16 +11,13 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
-  packages: write
-  attestations: write
-
 jobs:
   release-job:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
 
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
