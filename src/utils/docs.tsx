@@ -12,6 +12,7 @@ import {
   KeypointsItem,
   Contributors,
   Backers,
+  Mermaid,
   Sandpack,
   Summary,
   Toc,
@@ -50,6 +51,7 @@ const mdxComponents = {
   KeypointsItem,
   Contributors,
   Backers,
+  Mermaid,
   Sandpack,
   Summary,
   Toc,
@@ -80,6 +82,7 @@ import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbo
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
+import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
@@ -289,6 +292,7 @@ async function _getDocs(
                 rehypeDetails,
                 rehypeSummary,
                 rehypeGha,
+                rehypeMermaid(),
                 rehypePrismPlus,
                 rehypeCode(),
                 rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
