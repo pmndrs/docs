@@ -3,16 +3,16 @@
 # This workflow handles three main responsibilities:
 # 1. Release management (main only): Creates releases and changesets PRs
 # 2. Deployment: Deploys to Vercel (production for main, preview for PRs)
-# 3. Docker: Builds and optionally publishes Docker images
+# 3. Container: Builds and optionally publishes container images using Podman
 #
 # Behavior by event type:
-# - On PR: Validates changes by building Docker image and deploying Vercel preview
-# - On main push: Full release pipeline including Docker registry push and git tags
+# - On PR: Validates changes by building container image and deploying Vercel preview
+# - On main push: Full release pipeline including container registry push and git tags
 #
 # Job execution logic:
 # - release-job: Only runs on main push to handle releases
 # - vercel-job: Runs on PRs (preview) and main (production) when no changesets pending
-# - docker-job: Runs on PRs (build only) and main (build + push) when no changesets pending
+# - podman-job: Runs on PRs (build only) and main (build + push) when no changesets pending
 
 name: CI
 on:
@@ -128,11 +128,11 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
   # https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
-  docker-job:
+  podman-job:
     runs-on: ubuntu-latest
     needs: release-job
     # Run if release-job was skipped (PRs) or if it completed with no changesets
-    # On PRs: Build only to validate Docker configuration
+    # On PRs: Build only to validate container configuration
     # On main: Build and push to registry
     if: |
       always() &&
@@ -157,42 +157,54 @@ jobs:
           echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
           echo "Using version: $VERSION (major: $MAJOR_VERSION)"
 
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install podman
+
       - name: Log in to the Container registry
         # Only login on main pushes since PRs don't push to registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | podman login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=raw,value=latest
-            type=raw,value=${{ steps.get-version.outputs.major_version }}
-            type=raw,value=${{ steps.get-version.outputs.version }}
+      - name: Build container image
+        id: build
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
+          
+          # Build the image
+          podman build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$MAJOR_VERSION \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            --label "org.opencontainers.image.version=$VERSION" \
+            .
+          
+          # Get the image digest
+          DIGEST=$(podman inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --format '{{.Digest}}')
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          # Only push to registry on main, PRs just build to validate
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      - name: Push container image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
+          
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$MAJOR_VERSION
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
       - name: Generate artifact attestation
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.push.outputs.digest }}
+          subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
       - name: Update `vX` git tag

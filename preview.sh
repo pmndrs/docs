@@ -12,7 +12,7 @@ main() {
   
   rm -rf "$MDX/out"
 
-  docker run --rm --init -t \
+  podman run --rm --init -t \
     -v "./$MDX":/app/docs \
     -e MDX \
     -e NEXT_PUBLIC_LIBNAME \

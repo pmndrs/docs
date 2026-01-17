@@ -61,7 +61,7 @@ on:
       docker_tag:
         type: string
         default: '2.20.1'
-        description: 'Docker image tag for ghcr.io/pmndrs/docs'
+        description: 'Container image tag for ghcr.io/pmndrs/docs'
 
 jobs:
   build-job:
@@ -79,7 +79,7 @@ jobs:
       - run: |
           set -ex
 
-          docker run --rm --init \
+          podman run --rm --init \
             -v "./$MDX":/app/docs \
             -e BASE_PATH \
             -e DIST_DIR="$MDX/out$BASE_PATH" \
