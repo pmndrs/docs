@@ -173,7 +173,7 @@ jobs:
         run: |
           VERSION=${{ steps.get-version.outputs.version }}
           MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
-          
+
           # Build the image
           podman build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION \
@@ -183,7 +183,7 @@ jobs:
             --label "org.opencontainers.image.revision=${{ github.sha }}" \
             --label "org.opencontainers.image.version=$VERSION" \
             .
-          
+
           # Get the image digest
           DIGEST=$(podman inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --format '{{.Digest}}')
           echo "digest=$DIGEST" >> $GITHUB_OUTPUT
@@ -193,7 +193,7 @@ jobs:
         run: |
           VERSION=${{ steps.get-version.outputs.version }}
           MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
-          
+
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$MAJOR_VERSION
