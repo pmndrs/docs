@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 3.1.0
+
+### Minor Changes
+
+- [#424](https://github.com/pmndrs/docs/pull/424) [`730c1c8`](https://github.com/pmndrs/docs/commit/730c1c8aa2274ac43410b21a26c81db7393ea464) Thanks [@krispya](https://github.com/krispya)! - Add Mermaid diagram support
+
+### Patch Changes
+
+- [#427](https://github.com/pmndrs/docs/pull/427) [`dc1bbc2`](https://github.com/pmndrs/docs/commit/dc1bbc263fc7d1c5e6fb04c10366aa6f94263810) Thanks [@krispya](https://github.com/krispya)! - Fixed duplicate React key error in Contributors component fallback
+
+- [#427](https://github.com/pmndrs/docs/pull/427) [`e0f5446`](https://github.com/pmndrs/docs/commit/e0f54468c2020d92da879a37001114b02f4e4d54) Thanks [@krispya](https://github.com/krispya)! - Fixed deprecation warning by replacing url.parse() with WHATWG URL API
+
 ## 3.0.0
 
 ### Major Changes
