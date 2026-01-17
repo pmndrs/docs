@@ -190,7 +190,7 @@ jobs:
           VERSION=${{ steps.get-version.outputs.version }}
           MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
 
-          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          podman push --digestfile /tmp/digest.txt ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$MAJOR_VERSION
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
@@ -200,7 +200,7 @@ jobs:
         id: get-digest
         run: |
           # Get the digest from the pushed image
-          DIGEST=$(podman inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --format '{{.Id}}')
+          DIGEST=$(cat /tmp/digest.txt)
           echo "digest=$DIGEST" >> $GITHUB_OUTPUT
 
       - name: Generate artifact attestation
