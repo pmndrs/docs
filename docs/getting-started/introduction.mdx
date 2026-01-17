@@ -31,16 +31,6 @@ $ cd docs
 $ npm ci
 ```
 
-## Local Development for the Docs repo
-
-If you've cloned this repo and want to work on it locally:
-
-```sh
-$ npm run dev:full
-```
-
-This will start the development server with hot reloading at http://localhost:3000
-
 ## Configuration
 
 | var                                   | description                                                                                                                                                              | example                                                                                          |
@@ -111,22 +101,6 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 ## dev
 
-Clone this repo and run it locally:
-
-```sh
-$ git clone https://github.com/pmndrs/docs.git
-$ cd docs
-$ npm ci
-$ npm run dev:full
-```
-
-Then go to: http://localhost:3000
-
-<details>
-  <summary>Advanced: Manual setup with environment variables</summary>
-
-If you've cloned this repo and want to use environment variables directly:
-
 ```sh
 $ (
   trap 'kill -9 0' SIGINT
@@ -168,10 +142,10 @@ $ (
 )
 ```
 
+Then go to: http://localhost:3000
+
 > [!TIP]
 > If `HOME_REDIRECT=` empty, `/` will not redirect, and instead displays an index of libraries.
-
-</details>
 
 ## build
 

@@ -1,10 +1,10 @@
 {
   "name": "@pmndrs/docs",
   "version": "3.0.0",
+  "private": true,
   "type": "module",
   "bin": {
-    "build": "bin/build.mjs",
-    "dev": "bin/dev.mjs"
+    "build": "bin/build.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",
@@ -64,8 +64,7 @@
     "tailwind-merge": "^2.6.0"
   },
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
-    "dev:full": "node bin/dev.mjs docs --libname=Poimandres --logo=gutenberg.jpg --github=https://github.com/pmndrs/docs --discord=https://discord.com/channels/740090768164651008/1264328004172255393",
+    "dev": "NODE_OPTIONS='--inspect' next",
     "start": "next start",
     "build": "next build",
     "format": "prettier -w src/",

@@ -18,5 +18,3 @@ tmp/
 temp/
 
 tsconfig.tsbuildinfo
-.env
-.env.local
