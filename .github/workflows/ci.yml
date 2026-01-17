@@ -184,10 +184,6 @@ jobs:
             --label "org.opencontainers.image.version=$VERSION" \
             .
 
-          # Get the image digest
-          DIGEST=$(podman inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --format '{{.Digest}}')
-          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
-
       - name: Push container image
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
@@ -199,12 +195,20 @@ jobs:
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$MAJOR_VERSION
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
+      - name: Get image digest
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        id: get-digest
+        run: |
+          # Get the digest from the pushed image
+          DIGEST=$(podman inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --format '{{.Id}}')
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+
       - name: Generate artifact attestation
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build.outputs.digest }}
+          subject-digest: ${{ steps.get-digest.outputs.digest }}
           push-to-registry: true
 
       - name: Update `vX` git tag
