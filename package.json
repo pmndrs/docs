@@ -39,7 +39,7 @@
     "@octokit/core": "^6.1.2",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-visually-hidden": "^1.1.0",
+    "@radix-ui/react-visually-hidden": "^1.2.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
