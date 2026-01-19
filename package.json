@@ -22,7 +22,7 @@
     "autoprefixer": "^10.4.23",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
-    "husky": "^9.1.6",
+    "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "minimist": "^1.2.8",
     "postcss": "^8.4.45",
