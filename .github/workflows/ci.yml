@@ -95,7 +95,7 @@ jobs:
           node-version-file: '.nvmrc'
       - id: vercel-deploy
         run: |
-          pnpm dlx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
+          npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
             --target=${{ github.event_name == 'push' && 'production' || 'preview' }} \
             --build-env MDX=docs \
             --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \

@@ -43,8 +43,8 @@ main() {
     $DOCKER_IMAGE:$DOCKER_TAG pnpm run build
 
   kill $(lsof -ti:"$_PORT")
-  pnpm dlx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-  pnpm dlx serve "$MDX/out" &
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+  npx -y serve "$MDX/out" &
 
   wait
 }

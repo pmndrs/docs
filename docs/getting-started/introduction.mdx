@@ -135,7 +135,7 @@ $ (
   export CONTRIBUTORS_PAT=
 
   kill $(lsof -ti:"$_PORT")
-  pnpm dlx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
   pnpm run dev &
 
   wait
@@ -187,8 +187,8 @@ $ (
   pnpm run build
 
   kill $(lsof -ti:"$_PORT")
-  pnpm dlx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-  pnpm dlx serve out &
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+  npx serve out &
 
   wait
 )
@@ -268,8 +268,8 @@ $ (
     pmndrs-docs pnpm run build
 
   kill $(lsof -ti:"$_PORT")
-  pnpm dlx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-  pnpm dlx serve "$MDX/out" &
+  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+  npx -y serve "$MDX/out" &
 
   wait
 )
