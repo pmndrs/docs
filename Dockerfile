@@ -1,9 +1,13 @@
 FROM node:24-alpine
 
 RUN apk add --no-cache libc6-compat git && apk update
+
+# Install pnpm globally
+RUN npm install -g pnpm@9.15.4
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .

@@ -40,11 +40,11 @@ main() {
     -e THEME_WARNING \
     -e THEME_CAUTION \
     -e CONTRIBUTORS_PAT \
-    $DOCKER_IMAGE:$DOCKER_TAG npm run build
+    $DOCKER_IMAGE:$DOCKER_TAG pnpm run build
 
   kill $(lsof -ti:"$_PORT")
-  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-  npx -y serve "$MDX/out" &
+  pnpm dlx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+  pnpm dlx serve "$MDX/out" &
 
   wait
 }
