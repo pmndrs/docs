@@ -28,7 +28,7 @@ Pre-requisites:
 ```sh
 $ git clone https://github.com/pmndrs/docs.git
 $ cd docs
-$ npm ci
+$ pnpm install
 ```
 
 ## Configuration
@@ -136,7 +136,7 @@ $ (
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-  npm run dev &
+  pnpm run dev &
 
   wait
 )
@@ -184,7 +184,7 @@ $ (
   export THEME_CAUTION="#da3633"
   export CONTRIBUTORS_PAT=
 
-  npm run build
+  pnpm run build
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
@@ -265,7 +265,7 @@ $ (
     -e THEME_WARNING \
     -e THEME_CAUTION \
     -e CONTRIBUTORS_PAT \
-    pmndrs-docs npm run build
+    pmndrs-docs pnpm run build
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &

@@ -8,7 +8,7 @@ main() {
   export MDX="${MDX:-docs}"
   export NEXT_PUBLIC_LIBNAME="${NEXT_PUBLIC_LIBNAME:-Poimandres}"
   export DOCKER_IMAGE="${DOCKER_IMAGE:-ghcr.io/pmndrs/docs}"
-  export DOCKER_TAG="${DOCKER_TAG:-2.20.1}"
+  export DOCKER_TAG="${DOCKER_TAG:-latest}"
   
   rm -rf "$MDX/out"
 
@@ -40,7 +40,7 @@ main() {
     -e THEME_WARNING \
     -e THEME_CAUTION \
     -e CONTRIBUTORS_PAT \
-    $DOCKER_IMAGE:$DOCKER_TAG npm run build
+    $DOCKER_IMAGE:$DOCKER_TAG pnpm run build
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
