@@ -10,9 +10,6 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 const exec = promisify(execCb)
 
-// Define Next.js native flags to keep separate
-const NEXT_FLAGS = ['debug', 'profile', 'no-lint', 'no-mangling']
-
 console.log('argv=', process.argv)
 const argv = minimist(process.argv.slice(2))
 console.log('argv2=', argv)
@@ -62,8 +59,7 @@ const DIST_DIR = `out${BASE_PATH}`
 const outHostDirAbsolute = resolve(process.cwd(), outdir)
 const outLocalDirAbsolute = resolve(__dirname, '..', 'out')
 
-// Separate args: 'nextArgs' go to CLI, 'envArgs' go to process.env
-const nextArgs = ['next', 'build']
+// Build environment variables from args
 const envArgs: Record<string, string> = {
   MDX,
   NEXT_PUBLIC_LIBNAME: NEXT_PUBLIC_LIBNAME || '',
@@ -71,30 +67,21 @@ const envArgs: Record<string, string> = {
   DIST_DIR,
 }
 
-// Iterate over the parsed keys
+// Add any additional custom flags as environment variables
 Object.keys(argv).forEach((key) => {
   if (key === '_') return // skip the unnamed args array
   // Skip already processed args
   if (key === 'libname' || key === 'basePath' || key === 'help' || key === 'h') return
 
-  if (NEXT_FLAGS.includes(key)) {
-    // It's a Next.js flag -> add to CLI args (e.g. --debug)
-    if (argv[key] === true) nextArgs.push(`--${key}`)
-  } else if (argv[key] === false && NEXT_FLAGS.includes(`no-${key}`)) {
-    // Handle --no-* flags (minimist converts --no-lint to lint: false)
-    nextArgs.push(`--no-${key}`)
-  } else {
-    // It's a custom flag -> add to Env Vars
-    envArgs[key] = String(argv[key])
-  }
+  // Add custom flag to Env Vars
+  envArgs[key] = String(argv[key])
 })
 
-console.log('🔹 Next Command:', nextArgs.join(' '))
 console.log('🔹 Env Injected:', envArgs)
 
 await rm(outLocalDirAbsolute, { recursive: true, force: true })
 
-const cmd = await spawn('npx', nextArgs, {
+const cmd = await spawn('npx', ['next', 'build'], {
   stdio: 'inherit',
   cwd: resolve(__dirname, '..'),
   env: {
