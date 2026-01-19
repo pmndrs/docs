@@ -32,22 +32,32 @@ export function Toc({ toc }: { toc: DocToC[] }) {
     }
   }, [updateActiveIndex])
 
-  // React.useEffect(() => {
-  //   const headings = toc.map((heading) => document.getElementById(heading.id))
+  useEffect(() => {
+    const headings = toc.map((heading) => document.getElementById(heading.id))
 
-  //   const observer = new IntersectionObserver(([entry]) => {
-  //     if (entry.intersectionRatio > 0) {
-  //       const headingIndex = headings.indexOf(entry.target as HTMLElement)
-  //       setActiveIndex(headingIndex)
-  //     }
-  //   })
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const headingIndex = headings.indexOf(entry.target as HTMLElement)
+            if (headingIndex !== -1) {
+              setActiveIndex(headingIndex)
+            }
+          }
+        })
+      },
+      {
+        rootMargin: '-80px 0px -80% 0px',
+        threshold: 0,
+      },
+    )
 
-  //   for (const heading of headings) {
-  //     if (heading) observer.observe(heading)
-  //   }
+    for (const heading of headings) {
+      if (heading) observer.observe(heading)
+    }
 
-  //   return () => observer.disconnect()
-  // }, [toc])
+    return () => observer.disconnect()
+  }, [toc])
 
   return (
     <div className="max-h-(screen-16) sticky top-16 flex flex-col justify-between overflow-y-auto pb-6">

@@ -50,6 +50,8 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
         const div: Node = {
           type: 'element',
           tagName: 'section',
+          value: '',
+          attributes: [],
           properties: {
             id: `section-${id}`,
           },

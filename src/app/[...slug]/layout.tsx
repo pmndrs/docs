@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { Nav } from '@/components/Nav'
+import { ProgressNav } from '@/components/ProgressNav'
 import Search from '@/components/Search'
 import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
@@ -33,6 +34,7 @@ export default async function Layout({ params, children }: Props) {
 
   return (
     <>
+      <ProgressNav />
       <DocsContext value={{ docs, doc }}>
         <MenuContext>
           <Menu
