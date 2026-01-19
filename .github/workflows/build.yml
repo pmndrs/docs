@@ -134,6 +134,6 @@ jobs:
           THEME_CAUTION: '${{ inputs.theme_caution }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}
