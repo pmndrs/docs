@@ -9,7 +9,7 @@ export function ProgressNav() {
     const updateProgress = () => {
       const scrollTop = window.scrollY
       const docHeight = document.documentElement.scrollHeight - window.innerHeight
-      const scrollPercent = (scrollTop / docHeight) * 100
+      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
       setProgress(scrollPercent)
     }
 

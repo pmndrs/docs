@@ -71,7 +71,6 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
           content.push(toString(sibling))
           sibling = root.children[siblingIndex++]
         }
-        console.log('div', div)
 
         divs.push(div)
 
