@@ -18,7 +18,7 @@
     "@types/node": "^18.19.50",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/sanitize-html": "^2.13.0",
+    "@types/sanitize-html": "^2.16.0",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
@@ -60,7 +60,7 @@
     "rehype-github-alerts": "^3.0.0",
     "rehype-prism-plus": "^2.0.0",
     "remark-gfm": "^4.0.0",
-    "sanitize-html": "^2.13.0",
+    "sanitize-html": "^2.17.0",
     "tailwind-merge": "^2.6.0"
   },
   "scripts": {
