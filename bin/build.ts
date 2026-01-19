@@ -4,6 +4,7 @@
 
 import minimist from 'minimist'
 import { exec as execCb, spawn } from 'node:child_process'
+import { rm } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
@@ -13,7 +14,7 @@ const exec = promisify(execCb)
 const NEXT_FLAGS = ['debug', 'profile', 'no-lint', 'no-mangling']
 
 console.log('argv=', process.argv)
-var argv = minimist(process.argv.slice(2))
+const argv = minimist(process.argv.slice(2))
 console.log('argv2=', argv)
 
 const help = argv.help || argv.h
@@ -23,7 +24,7 @@ Usage: npm exec -y --package=@pmndrs/docs build -- MDX [ OUTDIR ] [ --libname=LI
 Generate static, pmndrs-standardized documentation website from *.mdx folder.
 
 Example: npx @pmndrs/docs build ./docs
-         npx @pmndrs/docs build ~code/pmndrs/react-three-fiber/docs --libname="React Three Fiber" --basePath="/react-three-fiber" static-out
+         npx @pmndrs/docs build ~/code/pmndrs/react-three-fiber/docs --libname="React Three Fiber" --basePath="/react-three-fiber" static-out
 
 Arguments:
 
@@ -91,7 +92,7 @@ Object.keys(argv).forEach((key) => {
 console.log('🔹 Next Command:', nextArgs.join(' '))
 console.log('🔹 Env Injected:', envArgs)
 
-await exec(`rm -rf ${outLocalDirAbsolute}`)
+await rm(outLocalDirAbsolute, { recursive: true, force: true })
 
 const cmd = await spawn('npx', nextArgs, {
   stdio: 'inherit',
