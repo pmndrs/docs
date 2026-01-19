@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S npx tsx
 
-// $ node bin/build.mjs ~/code/pmndrs/react-three-fiber/docs
+// $ npx tsx bin/build.ts ~/code/pmndrs/react-three-fiber/docs
 
 import minimist from 'minimist'
 import { exec as execCb, spawn } from 'node:child_process'
@@ -8,6 +8,9 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 const exec = promisify(execCb)
+
+// Define Next.js native flags to keep separate
+const NEXT_FLAGS = ['debug', 'profile', 'no-lint', 'no-mangling']
 
 console.log('argv=', process.argv)
 var argv = minimist(process.argv.slice(2))
@@ -58,22 +61,45 @@ const DIST_DIR = `out${BASE_PATH}`
 const outHostDirAbsolute = resolve(process.cwd(), outdir)
 const outLocalDirAbsolute = resolve(__dirname, '..', 'out')
 
-const env = {
+// Separate args: 'nextArgs' go to CLI, 'envArgs' go to process.env
+const nextArgs = ['next', 'build']
+const envArgs: Record<string, string> = {
   MDX,
-  NEXT_PUBLIC_LIBNAME,
+  NEXT_PUBLIC_LIBNAME: NEXT_PUBLIC_LIBNAME || '',
   BASE_PATH,
   DIST_DIR,
 }
-console.log('env=', env)
+
+// Iterate over the parsed keys
+Object.keys(argv).forEach((key) => {
+  if (key === '_') return // skip the unnamed args array
+  // Skip already processed args
+  if (key === 'libname' || key === 'basePath' || key === 'help' || key === 'h') return
+
+  if (NEXT_FLAGS.includes(key)) {
+    // It's a Next.js flag -> add to CLI args (e.g. --debug)
+    if (argv[key] === true) nextArgs.push(`--${key}`)
+  } else if (argv[key] === false && NEXT_FLAGS.includes(`no-${key}`)) {
+    // Handle --no-* flags (minimist converts --no-lint to lint: false)
+    nextArgs.push(`--no-${key}`)
+  } else {
+    // It's a custom flag -> add to Env Vars
+    envArgs[key] = String(argv[key])
+  }
+})
+
+console.log('🔹 Next Command:', nextArgs.join(' '))
+console.log('🔹 Env Injected:', envArgs)
 
 await exec(`rm -rf ${outLocalDirAbsolute}`)
 
-const cmd = await spawn('npx', ['next', 'build'], {
+const cmd = await spawn('npx', nextArgs, {
   stdio: 'inherit',
   cwd: resolve(__dirname, '..'),
   env: {
     ...process.env,
-    ...env,
+    ...envArgs,
+    NEXT_TELEMETRY_DISABLED: '1',
   },
 })
 
