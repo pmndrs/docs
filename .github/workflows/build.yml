@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: configurepages
         uses: actions/configure-pages@v5
         with:
@@ -116,9 +116,9 @@ jobs:
           NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
           NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
-          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
-          SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}'
-          EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
+          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
+          SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}'
+          EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
           ICON: '${{ inputs.icon }}'
           LOGO: '${{ inputs.logo }}'
@@ -134,6 +134,6 @@ jobs:
           THEME_CAUTION: '${{ inputs.theme_caution }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}
