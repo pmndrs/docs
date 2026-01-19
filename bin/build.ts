@@ -67,11 +67,12 @@ const envArgs: Record<string, string> = {
   DIST_DIR,
 }
 
+// Known flags that are already processed
+const PROCESSED_FLAGS = new Set(['_', 'libname', 'basePath', 'help', 'h'])
+
 // Add any additional custom flags as environment variables
 Object.keys(argv).forEach((key) => {
-  if (key === '_') return // skip the unnamed args array
-  // Skip already processed args
-  if (key === 'libname' || key === 'basePath' || key === 'help' || key === 'h') return
+  if (PROCESSED_FLAGS.has(key)) return
 
   // Add custom flag to Env Vars
   envArgs[key] = String(argv[key])
