@@ -4,6 +4,14 @@
 
 # Usage
 
+## Via npm
+
+```sh
+npx -y @pmndrs/docs build ./docs --libname="Your Library" --basePath="/your-path"
+```
+
+## Via Docker
+
 ```sh
 $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
   MDX="docs" \

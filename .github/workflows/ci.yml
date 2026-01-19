@@ -40,6 +40,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
 
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
@@ -70,6 +71,7 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   vercel-job:
     runs-on: ubuntu-latest

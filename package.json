@@ -1,7 +1,6 @@
 {
   "name": "@pmndrs/docs",
   "version": "3.1.1",
-  "private": true,
   "type": "module",
   "bin": {
     "build": "bin/build.ts"
