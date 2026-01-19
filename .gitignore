@@ -6,6 +6,9 @@
 .pnp.js
 node_modules/
 
+# pnpm
+.pnpm-debug.log*
+
 # other
 .next/
 .DS_Store
