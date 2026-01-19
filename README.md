@@ -13,4 +13,4 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 ```
 
 - you can pass any option from [configuration](docs/getting-started/introduction.mdx#Configuration)
-- you can specify any `DOCKER_TAG` value from [ghcr](https://github.com/pmndrs/docs/pkgs/container/docs)
+- you can specify any `DOCKER_TAG` value from [docs packages](https://github.com/pmndrs/docs/pkgs/container/docs) container registry
