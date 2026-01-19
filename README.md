@@ -8,7 +8,9 @@
 $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
   MDX="docs" \
   ICON="🥑" \
+  DOCKER_TAG="latest" \
   sh
 ```
 
-see [configuration](docs/getting-started/introduction.mdx#Configuration)
+- you can pass any option from [configuration](docs/getting-started/introduction.mdx#Configuration)
+- you can specify any `DOCKER_TAG` value from [ghcr](https://github.com/pmndrs/docs/pkgs/container/docs)
