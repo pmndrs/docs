@@ -2,8 +2,8 @@ FROM node:24-alpine
 
 RUN apk add --no-cache libc6-compat git && apk update
 
-# Install pnpm globally
-RUN npm install -g pnpm@10.28.1
+# Enable corepack and prepare pnpm
+RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 
 WORKDIR /app
 
