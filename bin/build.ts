@@ -122,7 +122,7 @@ Object.keys(FLAG_TO_ENV_MAP).forEach((flagName) => {
     envArgs[envName] = String(argv[flagName])
   } else if (process.env[envName]) {
     // Fallback to existing environment variable if not provided via CLI
-    envArgs[envName] = process.env[envName]!
+    envArgs[envName] = process.env[envName] || ''
   }
 })
 
