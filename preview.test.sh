@@ -12,18 +12,6 @@ calculate_hash() {
   find "$dir" -type f -exec sha256sum {} \; | sort -k 2 | sha256sum | awk '{print $1}'
 }
 
-# Check if Docker is available
-if ! command -v docker &> /dev/null; then
-  echo "Docker not found, skipping test"
-  exit 0
-fi
-
-# Check if Docker image exists
-if ! docker image inspect "$DOCKER_IMAGE" &> /dev/null; then
-  echo "Docker image $DOCKER_IMAGE not found, skipping test"
-  exit 0
-fi
-
 # Run build using shared build script
 export NEXT_PUBLIC_LIBNAME=TestLib
 ./build.sh "$TEST_MDX_DIR" "$DOCKER_IMAGE" > /dev/null 2>&1
