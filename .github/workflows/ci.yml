@@ -1,15 +1,17 @@
 # Unified CI workflow that runs on both main pushes and pull requests
 #
-# This workflow handles three main responsibilities:
-# 1. Release management (main only): Creates releases and changesets PRs
-# 2. Deployment: Deploys to Vercel (production for main, preview for PRs)
-# 3. Docker: Builds and optionally publishes Docker images
+# This workflow handles four main responsibilities:
+# 1. Validation: Runs lgtm checks (typecheck, lint, test) on all changes
+# 2. Release management (main only): Creates releases and changesets PRs
+# 3. Deployment: Deploys to Vercel (production for main, preview for PRs)
+# 4. Docker: Builds and optionally publishes Docker images
 #
 # Behavior by event type:
-# - On PR: Validates changes by building Docker image and deploying Vercel preview
+# - On PR: Validates changes with lgtm, builds Docker image, and deploys Vercel preview
 # - On main push: Full release pipeline including Docker registry push and git tags
 #
 # Job execution logic:
+# - lgtm-job: Runs on all PRs and main pushes to validate code quality
 # - release-job: Only runs on main push to handle releases
 # - vercel-job: Runs on PRs (preview) and main (production) when no changesets pending
 # - docker-job: Runs on PRs (build only) and main (build + push) when no changesets pending
@@ -33,6 +35,31 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  lgtm-job:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lgtm checks
+        run: pnpm run lgtm
+
   release-job:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
