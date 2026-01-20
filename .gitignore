@@ -17,7 +17,6 @@ build/
 dist/
 logs/
 out/
-!test-mdx/out/
 tmp/
 temp/
 
