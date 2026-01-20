@@ -21,3 +21,6 @@ tmp/
 temp/
 
 tsconfig.tsbuildinfo
+
+*storybook.log
+storybook-static
