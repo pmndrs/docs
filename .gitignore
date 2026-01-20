@@ -20,4 +20,5 @@ out/
 tmp/
 temp/
 
-tsconfig.tsbuildinfopackage-lock.json
+tsconfig.tsbuildinfo
+package-lock.json
