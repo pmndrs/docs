@@ -74,6 +74,7 @@
     "test:watch": "vitest",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
+    "lgtm": "pnpm run lint && pnpm run test",
     "prepare": "husky",
     "release": "changeset publish",
     "changeset": "changeset"
