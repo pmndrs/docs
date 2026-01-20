@@ -1,24 +1,23 @@
-# Chromatic Visual Regression Testing workflow
-# Runs on pull requests and main branch to catch visual regressions
-name: Chromatic
+# Workflow name
+name: 'Chromatic'
 
+# Event for the workflow
 on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
+# List of jobs
 jobs:
-  chromatic:
+  chromatic-deployment:
+    # Operating System
     runs-on: ubuntu-latest
-
+    # Job steps
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # Required for Chromatic to track changes
+          fetch-depth: 0 # 👈 Required to retrieve git history
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -32,10 +31,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Storybook and run Chromatic
+      # 👇 Adds Chromatic as a step in the workflow
+      - name: Publish to Chromatic
         uses: chromaui/action@latest
+        # Chromatic GitHub Action options
         with:
+          # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          buildScriptName: 'build-storybook'
-          autoAcceptChanges: ${{ github.ref == 'refs/heads/main' }}
-          exitZeroOnChanges: true # Don't fail CI on visual changes, just report them
+          # 👇 Automatically accept changes on main branch
+          autoAcceptChanges: 'main'
