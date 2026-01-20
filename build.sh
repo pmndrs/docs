@@ -8,6 +8,9 @@ set -e
 MDX="${1:-docs}"
 DOCKER_IMAGE="${2:-ghcr.io/pmndrs/docs:latest}"
 
+# Build Docker image
+docker build -t "$DOCKER_IMAGE" .
+
 # Clean output directory
 rm -rf "$MDX/out"
 
