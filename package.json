@@ -72,7 +72,7 @@
     "build": "next build",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
-    "prepare": "husky && sh scripts/copy-fonts.sh",
+    "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
     "release": "changeset publish",
     "changeset": "changeset"
   },
