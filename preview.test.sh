@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 TEST_MDX_DIR="test-mdx"
 DOCKER_IMAGE="${DOCKER_IMAGE:-pmndrs-docs-local:test}"
