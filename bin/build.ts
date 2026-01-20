@@ -3,6 +3,7 @@
 // $ npx tsx bin/build.ts ~/code/pmndrs/react-three-fiber/docs
 
 import minimist from 'minimist'
+import { snakeCase } from 'lodash-es'
 import { exec as execCb, spawn } from 'node:child_process'
 import { rm } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -81,34 +82,49 @@ const MDX = resolve(process.cwd(), mdx)
 const outHostDirAbsolute = resolve(process.cwd(), outdir)
 const outLocalDirAbsolute = resolve(__dirname, '..', 'out')
 
-// Map CLI flag names to environment variable names
-const FLAG_TO_ENV_MAP: Record<string, string> = {
+// Helper function to convert camelCase CLI flag to SCREAMING_SNAKE_CASE env var
+function flagToEnvName(flag: string): string {
+  return snakeCase(flag).toUpperCase()
+}
+
+// Map CLI flag names to their actual environment variable names
+// Using the exact names from documentation where they differ from simple conversion
+const FLAG_ENV_OVERRIDES: Record<string, string> = {
   libname: 'NEXT_PUBLIC_LIBNAME',
   libnameShort: 'NEXT_PUBLIC_LIBNAME_SHORT',
   libnameDotSuffixLabel: 'NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL',
   libnameDotSuffixHref: 'NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF',
-  basePath: 'BASE_PATH',
-  distDir: 'DIST_DIR',
-  output: 'OUTPUT',
-  homeRedirect: 'HOME_REDIRECT',
-  mdxBaseurl: 'MDX_BASEURL',
-  sourcecodeBaseurl: 'SOURCECODE_BASEURL',
-  editBaseurl: 'EDIT_BASEURL',
   url: 'NEXT_PUBLIC_URL',
-  icon: 'ICON',
-  logo: 'LOGO',
-  github: 'GITHUB',
-  discord: 'DISCORD',
-  themePrimary: 'THEME_PRIMARY',
-  themeScheme: 'THEME_SCHEME',
-  themeContrast: 'THEME_CONTRAST',
-  themeNote: 'THEME_NOTE',
-  themeTip: 'THEME_TIP',
-  themeImportant: 'THEME_IMPORTANT',
-  themeWarning: 'THEME_WARNING',
-  themeCaution: 'THEME_CAUTION',
-  contributorsPat: 'CONTRIBUTORS_PAT',
 }
+
+// Known configuration flags (from documentation)
+const KNOWN_CONFIG_FLAGS = [
+  'libname',
+  'libnameShort',
+  'libnameDotSuffixLabel',
+  'libnameDotSuffixHref',
+  'basePath',
+  'distDir',
+  'output',
+  'homeRedirect',
+  'mdxBaseurl',
+  'sourcecodeBaseurl',
+  'editBaseurl',
+  'url',
+  'icon',
+  'logo',
+  'github',
+  'discord',
+  'themePrimary',
+  'themeScheme',
+  'themeContrast',
+  'themeNote',
+  'themeTip',
+  'themeImportant',
+  'themeWarning',
+  'themeCaution',
+  'contributorsPat',
+]
 
 // Build environment variables from args
 const envArgs: Record<string, string> = {
@@ -116,8 +132,8 @@ const envArgs: Record<string, string> = {
 }
 
 // Process known configuration flags
-Object.keys(FLAG_TO_ENV_MAP).forEach((flagName) => {
-  const envName = FLAG_TO_ENV_MAP[flagName]
+KNOWN_CONFIG_FLAGS.forEach((flagName) => {
+  const envName = FLAG_ENV_OVERRIDES[flagName] || flagToEnvName(flagName)
   if (argv[flagName] !== undefined) {
     envArgs[envName] = String(argv[flagName])
   } else if (process.env[envName]) {
@@ -138,7 +154,7 @@ if (!envArgs.DIST_DIR) {
 }
 
 // Known flags that should not be passed as custom env vars
-const PROCESSED_FLAGS = new Set(['_', 'help', 'h', ...Object.keys(FLAG_TO_ENV_MAP)])
+const PROCESSED_FLAGS = new Set(['_', 'help', 'h', ...KNOWN_CONFIG_FLAGS])
 
 // Add any additional custom flags as environment variables
 Object.keys(argv).forEach((key) => {
