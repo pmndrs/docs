@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
+    "@fontsource/inconsolata": "^5.2.8",
+    "@fontsource/inter": "^5.2.8",
     "@octokit/core": "^6.1.2",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -73,7 +75,7 @@
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "lgtm": "pnpm run typecheck && pnpm run lint && pnpm run test",
-    "prepare": "husky",
+    "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
     "release": "changeset publish",
     "changeset": "changeset"
   },

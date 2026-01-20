@@ -3,13 +3,59 @@ import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { Inconsolata, Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Mcu } from 'react-mcu'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
 
-const inter = Inter({ subsets: ['latin'] })
-const inconsolata = Inconsolata({ subsets: ['latin'] })
+const inter = localFont({
+  src: [
+    {
+      path: '../fonts/inter/inter-latin-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/inter/inter-latin-500-normal.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/inter/inter-latin-600-normal.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/inter/inter-latin-700-normal.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
+const inconsolata = localFont({
+  src: [
+    {
+      path: '../fonts/inconsolata/inconsolata-latin-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/inconsolata/inconsolata-latin-600-normal.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/inconsolata/inconsolata-latin-700-normal.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  display: 'swap',
+  variable: '--font-inconsolata',
+})
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
@@ -73,11 +119,15 @@ export default function RootLayout({
   const contrast = Number(process.env.THEME_CONTRAST) || 0
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${inconsolata.variable}`}
+    >
       <head>
         <SandpackCSS />
       </head>
-      <body className={cn(inter.className, 'wrap-break-word bg-surface text-on-surface')}>
+      <body className="wrap-break-word bg-surface text-on-surface">
         <Mcu
           source={primary}
           scheme={scheme}
