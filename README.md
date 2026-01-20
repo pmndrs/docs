@@ -36,9 +36,11 @@ pnpm build-storybook
 ### CI Integration
 
 Chromatic runs automatically on:
+
 - Pull requests - to catch visual regressions
 - Main branch pushes - baselines are auto-accepted
 
 To set up Chromatic for this repository:
+
 1. Create a project at [chromatic.com](https://www.chromatic.com/)
 2. Add `CHROMATIC_PROJECT_TOKEN` as a repository secret in GitHub Settings
