@@ -3,7 +3,7 @@
 @theme {
   /* Font family */
   --font-mono:
-    'Inconsolata', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     'Courier New', monospace;
 
   /* Keyframes */
