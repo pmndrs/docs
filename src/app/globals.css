@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 
 @theme {
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-inconsolata), monospace;
+
   /* Keyframes */
   --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
   --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;

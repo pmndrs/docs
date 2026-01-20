@@ -32,6 +32,7 @@ const inter = localFont({
     },
   ],
   display: 'swap',
+  variable: '--font-inter',
 })
 
 const inconsolata = localFont({
@@ -53,6 +54,7 @@ const inconsolata = localFont({
     },
   ],
   display: 'swap',
+  variable: '--font-inconsolata',
 })
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
@@ -117,7 +119,11 @@ export default function RootLayout({
   const contrast = Number(process.env.THEME_CONTRAST) || 0
 
   return (
-    <html lang="en" suppressHydrationWarning className={cn(inter.className, inconsolata.className)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${inconsolata.variable}`}
+    >
       <head>
         <SandpackCSS />
       </head>
