@@ -13,6 +13,12 @@ jobs:
   chromatic-deployment:
     # Operating System
     runs-on: ubuntu-latest
+    
+    # Explicit permissions for security
+    permissions:
+      contents: read
+      pull-requests: write
+      
     # Job steps
     steps:
       - uses: actions/checkout@v6
