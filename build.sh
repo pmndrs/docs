@@ -3,7 +3,7 @@
 # Shared build script for running Docker-based builds
 # Usage: ./build.sh [MDX_DIR] [DOCKER_IMAGE]
 
-set -e
+set -ex
 
 MDX="${1:-docs}"
 DOCKER_IMAGE="${2:-ghcr.io/pmndrs/docs:latest}"
