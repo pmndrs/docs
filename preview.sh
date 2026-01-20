@@ -7,8 +7,7 @@ main() {
 
   export MDX="${MDX:-docs}"
   export NEXT_PUBLIC_LIBNAME="${NEXT_PUBLIC_LIBNAME:-Poimandres}"
-  export DOCKER_IMAGE="${DOCKER_IMAGE:-ghcr.io/pmndrs/docs}"
-  export DOCKER_TAG="${DOCKER_TAG:-latest}"
+  export DOCKER_IMAGE="${DOCKER_IMAGE:-ghcr.io/pmndrs/docs:latest}"
   export MDX_BASEURL="http://localhost:$_PORT"
   
   # Run build using shared build script

@@ -6,8 +6,7 @@
 set -e
 
 MDX="${1:-docs}"
-DOCKER_IMAGE="${2:-ghcr.io/pmndrs/docs}"
-DOCKER_TAG="${DOCKER_TAG:-latest}"
+DOCKER_IMAGE="${2:-ghcr.io/pmndrs/docs:latest}"
 
 # Clean output directory
 rm -rf "$MDX/out"
@@ -41,4 +40,4 @@ docker run --rm --init -t \
   -e THEME_WARNING \
   -e THEME_CAUTION \
   -e CONTRIBUTORS_PAT \
-  ${DOCKER_IMAGE}:${DOCKER_TAG} pnpm run build
+  ${DOCKER_IMAGE} pnpm run build
