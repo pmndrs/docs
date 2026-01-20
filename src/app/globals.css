@@ -3,8 +3,8 @@
 @theme {
   /* Font family */
   --font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
 
   /* Keyframes */
   --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
