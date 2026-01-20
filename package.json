@@ -73,7 +73,6 @@
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && sh scripts/copy-fonts.sh",
-    "setup-fonts": "sh scripts/copy-fonts.sh",
     "release": "changeset publish",
     "changeset": "changeset"
   },
