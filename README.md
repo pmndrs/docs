@@ -7,7 +7,11 @@
 ## Via npm
 
 ```sh
-npx -y @pmndrs/docs build ./docs --libname="Your Library" --basePath="/your-path"
+# Simplest usage with defaults (MDX=docs, OUTDIR=out)
+NEXT_PUBLIC_LIBNAME="Your Library" npx -y @pmndrs/docs build
+
+# Custom paths
+MDX=./docs NEXT_PUBLIC_LIBNAME="Your Library" BASE_PATH="/your-path" npx -y @pmndrs/docs build
 ```
 
 ## Via Docker
