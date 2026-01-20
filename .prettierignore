@@ -2,3 +2,7 @@
 
 # waiting for mdx3 support some day (https://github.com/prettier/prettier/issues/12209)
 *.mdx
+
+# Generated files
+pnpm-lock.yaml
+next-env.d.ts
