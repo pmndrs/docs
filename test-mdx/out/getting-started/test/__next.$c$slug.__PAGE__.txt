@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[7169,["/_next/static/chunks/2e3477c5761f4a2e.js","/_next/static/chunks/c5f5605927ec659a.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+0:{"buildId":"AXddq-m4CemaMyl1X6HS3","rsc":["$","$1","c",{"children":[[["$","header",null,{"className":"mb-6 mt-8 border-b border-outline-variant/50","children":[["$","h1",null,{"className":"mb-2 text-5xl font-bold tracking-tighter","children":"Test Page"}],["$","p",null,{"className":"my-2 text-base leading-5 text-on-surface-variant/50","children":"Another test page"}]]}],["$undefined","\n","$undefined","\n",["$","p",null,{"className":"my-4","children":"This is another test page to ensure we have multiple files for testing."}],"\n",["$","a",null,{"href":"#content","className":"tracking-light my-6 mt-8 block text-balance text-3xl font-bold text-on-surface no-underline hover:underline","children":["$","h2",null,{"id":"content","children":"Content"}]}],"\n",["$","p",null,{"className":"my-4","children":"Some test content here."}]]],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"loading":null,"isPartial":false}
+4:null
