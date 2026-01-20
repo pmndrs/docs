@@ -3,9 +3,13 @@ import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
+import { Inconsolata, Inter } from 'next/font/google'
 import { Mcu } from 'react-mcu'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
+
+const inter = Inter({ subsets: ['latin'] })
+const inconsolata = Inconsolata({ subsets: ['latin'] })
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
@@ -73,7 +77,7 @@ export default function RootLayout({
       <head>
         <SandpackCSS />
       </head>
-      <body className={cn('wrap-break-word bg-surface text-on-surface')}>
+      <body className={cn(inter.className, 'wrap-break-word bg-surface text-on-surface')}>
         <Mcu
           source={primary}
           scheme={scheme}
