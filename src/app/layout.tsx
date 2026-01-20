@@ -31,7 +31,6 @@ const inter = localFont({
       style: 'normal',
     },
   ],
-  variable: '--font-inter',
   display: 'swap',
 })
 
@@ -53,7 +52,6 @@ const inconsolata = localFont({
       style: 'normal',
     },
   ],
-  variable: '--font-inconsolata',
   display: 'swap',
 })
 
@@ -119,11 +117,11 @@ export default function RootLayout({
   const contrast = Number(process.env.THEME_CONTRAST) || 0
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn(inter.className, inconsolata.className)}>
       <head>
         <SandpackCSS />
       </head>
-      <body className={cn(inter.className, 'wrap-break-word bg-surface text-on-surface')}>
+      <body className="wrap-break-word bg-surface text-on-surface">
         <Mcu
           source={primary}
           scheme={scheme}

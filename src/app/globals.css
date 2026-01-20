@@ -1,15 +1,6 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Font family */
-  --font-sans:
-    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-mono:
-    'Inconsolata', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
-
   /* Keyframes */
   --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
   --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;
