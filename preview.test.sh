@@ -12,17 +12,9 @@ calculate_hash() {
   find "$dir" -type f -exec sha256sum {} \; | sort -k 2 | sha256sum | awk '{print $1}'
 }
 
-# Clean up before starting (using sudo since Docker creates files as root)
-sudo rm -rf "$TEST_MDX_DIR/out"
-
-# Run build (use docs as MDX inside container, but mount test-mdx)
-docker run --rm --init -t \
-  -v "./$TEST_MDX_DIR":/app/docs \
-  -e MDX=docs \
-  -e NEXT_PUBLIC_LIBNAME=TestLib \
-  -e DIST_DIR="docs/out" \
-  -e OUTPUT=export \
-  $DOCKER_IMAGE pnpm run build > /dev/null 2>&1
+# Run build using shared build script
+export NEXT_PUBLIC_LIBNAME=TestLib
+./build.sh "$TEST_MDX_DIR" "$DOCKER_IMAGE" > /dev/null 2>&1
 
 # Calculate hash
 HASH=$(calculate_hash "$TEST_MDX_DIR/out")
