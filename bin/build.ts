@@ -1,6 +1,6 @@
 #!/usr/bin/env -S npx tsx
 
-// $ npx tsx bin/build.ts ~/code/pmndrs/react-three-fiber/docs
+// $ MDX=docs npx tsx bin/build.ts
 
 import { exec as execCb, spawn } from 'node:child_process'
 import { rm } from 'node:fs/promises'
@@ -9,35 +9,32 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 const exec = promisify(execCb)
 
-console.log('argv=', process.argv)
-
 const args = process.argv.slice(2)
 
 // Check for help flag
 if (args.includes('--help') || args.includes('-h')) {
   console.log(`
-Usage: npx @pmndrs/docs build MDX [ OUTDIR ]
+Usage: npx @pmndrs/docs build
 
 Generate static, pmndrs-standardized documentation website from *.mdx folder.
 
 Example: 
+  MDX=docs NEXT_PUBLIC_LIBNAME="React Three Fiber" npx @pmndrs/docs build
+
+  MDX=~/code/pmndrs/react-three-fiber/docs \\
+  OUTDIR=static-out \\
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \\
   BASE_PATH="/react-three-fiber" \\
   ICON="🇨🇭" \\
-  npx @pmndrs/docs build ./docs
-
-  NEXT_PUBLIC_LIBNAME="React Three Fiber" \\
-  npx @pmndrs/docs build ~/code/pmndrs/react-three-fiber/docs static-out
-
-Arguments:
-  MDX                         Path to the folder containing the MDX files (absolute or relative to process.cwd())
-  OUTDIR                      Path to the output directory (default: "out")
+  npx @pmndrs/docs build
 
 Configuration:
   All configuration is passed via environment variables.
   See: https://github.com/pmndrs/docs/blob/main/docs/getting-started/introduction.mdx#configuration
 
-Common environment variables:
+Required/Common environment variables:
+  MDX                         Path to the folder containing the MDX files (default: "docs")
+  OUTDIR                      Path to the output directory (default: "out")
   NEXT_PUBLIC_LIBNAME         Library name (required)
   NEXT_PUBLIC_LIBNAME_SHORT   Library short name
   BASE_PATH                   Base path for the final URL
@@ -58,16 +55,9 @@ Common environment variables:
 const __filename = fileURLToPath(import.meta.url) // Converts the URL to a file path
 const __dirname = dirname(__filename) // Gets the directory name
 
-// Positional arguments only
-const mdx = args[0]
-const outdir = args[1] || 'out'
-
-if (!mdx) {
-  console.error('Error: Please provide the mdx folder as the first argument.')
-  console.error('Usage: npx @pmndrs/docs build MDX [ OUTDIR ]')
-  console.error('Run with --help for more information.')
-  process.exit(1)
-}
+// Get MDX and OUTDIR from environment variables with defaults
+const mdx = process.env.MDX || 'docs'
+const outdir = process.env.OUTDIR || 'out'
 
 const MDX = resolve(process.cwd(), mdx)
 const outHostDirAbsolute = resolve(process.cwd(), outdir)
@@ -89,6 +79,7 @@ if (!envArgs.DIST_DIR) {
 
 console.log('🔹 Env Injected:', {
   MDX: envArgs.MDX,
+  OUTDIR: outdir,
   NEXT_PUBLIC_LIBNAME: envArgs.NEXT_PUBLIC_LIBNAME,
   BASE_PATH: envArgs.BASE_PATH,
   DIST_DIR: envArgs.DIST_DIR,
