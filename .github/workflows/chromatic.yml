@@ -5,20 +5,62 @@ on: push
 jobs:
   playwright:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.0-noble
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test
-      - uses: chromaui/action@latest
+      - name: Install dependencies
+        # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
+        run: pnpm install --frozen-lockfile
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          HOME: /root
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
+          # Chromatic automatically defaults to the test-results directory.
+          # Replace with the path to your custom directory and adjust the CHROMATIC_ARCHIVE_LOCATION environment variable accordingly.
+          name: test-results
+          path: ./test-results
+          retention-days: 30
+  chromatic:
+    name: Run Chromatic
+    needs: playwright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - name:
+          Install dependencies
+          # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
+        run: pnpm install --frozen-lockfile
+      - name: Download Playwright test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: ./test-results
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          # ⚠️ Enable Playwright
           playwright: true
+          # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: 'main'
+        # ⚠️ Optionally configure the archive location with env vars
+        env:
+          CHROMATIC_ARCHIVE_LOCATION: ./test-results
