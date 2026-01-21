@@ -1,8 +1,7 @@
 #!/bin/sh
+set -ex
 
 main() {
-  trap 'kill -9 0' SIGINT
-
   export _PORT="${_PORT:-60141}"
   export DOCKER_IMAGE="${DOCKER_IMAGE:-pmndrs-docs:latest}"
 
@@ -43,7 +42,6 @@ main() {
     -e CONTRIBUTORS_PAT \
     $DOCKER_IMAGE pnpm run build
 
-  kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
   npx -y serve "$MDX/out" &
