@@ -8,12 +8,6 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
   },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
   webServer: {
     command: './start.sh',
     url: 'http://localhost:3000',
