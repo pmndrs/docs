@@ -29,6 +29,13 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'chromium-dark',
+      use: { 
+        ...devices['Desktop Chrome'],
+        colorScheme: 'dark',
+      },
+    },
   ],
 
   /* Run your local dev server before starting the tests */
