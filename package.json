@@ -78,7 +78,8 @@
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
     "release": "changeset publish",
     "changeset": "changeset",
-    "test": "playwright test"
+    "test": "playwright test",
+    "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN"
   },
   "engines": {
     "node": ">=20.9.0"

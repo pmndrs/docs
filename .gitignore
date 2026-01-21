@@ -12,6 +12,7 @@ node_modules/
 # other
 .next/
 .DS_Store
+.secrets
 
 build/
 dist/
@@ -31,4 +32,5 @@ playwright/.cache/
 chromatic-archives/
 
 *storybook.log
+*archive.log
 storybook-static

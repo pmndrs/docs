@@ -4,13 +4,14 @@ main() {
   trap 'kill -9 0' SIGINT
 
   export _PORT="${_PORT:-60141}"
+  export DOCKER_IMAGE="${DOCKER_IMAGE:-pmndrs-docs:latest}"
 
   export MDX="${MDX:-docs}"
   export NEXT_PUBLIC_LIBNAME="${NEXT_PUBLIC_LIBNAME:-Poimandres}"
-  export DOCKER_IMAGE="${DOCKER_IMAGE:-ghcr.io/pmndrs/docs}"
-  export DOCKER_TAG="${DOCKER_TAG:-latest}"
-  
+
   rm -rf "$MDX/out"
+
+  docker build -t $DOCKER_IMAGE .
 
   docker run --rm --init -t \
     -v "./$MDX":/app/docs \
@@ -40,10 +41,11 @@ main() {
     -e THEME_WARNING \
     -e THEME_CAUTION \
     -e CONTRIBUTORS_PAT \
-    $DOCKER_IMAGE:$DOCKER_TAG pnpm run build
+    $DOCKER_IMAGE pnpm run build
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+
   npx -y serve "$MDX/out" &
 
   wait
