@@ -12,6 +12,7 @@ node_modules/
 # other
 .next/
 .DS_Store
+.secrets
 
 build/
 dist/
@@ -21,3 +22,15 @@ tmp/
 temp/
 
 tsconfig.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Chromatic
+chromatic-archives/
+
+*storybook.log
+*archive.log
+storybook-static
