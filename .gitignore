@@ -21,3 +21,6 @@ tmp/
 temp/
 
 tsconfig.tsbuildinfo
+
+# generated fonts (copied from @fontsource via scripts/copy-fonts.sh)
+src/fonts/
