@@ -5,8 +5,6 @@ on: push
 jobs:
   playwright:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.56.0-noble
     steps:
       - uses: actions/checkout@v4
         with:
@@ -19,10 +17,10 @@ jobs:
       - name: Install dependencies
         # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
         run: pnpm install --frozen-lockfile
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
       - name: Run Playwright tests
         run: npx playwright test
-        env:
-          HOME: /root
       - uses: actions/upload-artifact@v4
         if: always()
         with:
