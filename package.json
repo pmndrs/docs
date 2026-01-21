@@ -9,7 +9,9 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.8",
+    "@chromatic-com/playwright": "^0.12.8",
     "@eslint/eslintrc": "^3.3.3",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@types/hast": "^3.0.4",
@@ -20,6 +22,7 @@
     "@types/react-dom": "^19.0.0",
     "@types/sanitize-html": "^2.16.0",
     "autoprefixer": "^10.4.23",
+    "chromatic": "^13.3.5",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
     "husky": "^9.1.7",
@@ -74,7 +77,9 @@
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
     "release": "changeset publish",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "test": "playwright test",
+    "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN"
   },
   "engines": {
     "node": ">=20.9.0"

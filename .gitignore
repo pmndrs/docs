@@ -12,6 +12,7 @@ node_modules/
 # other
 .next/
 .DS_Store
+.secrets
 
 build/
 dist/
@@ -24,3 +25,15 @@ tsconfig.tsbuildinfo
 
 # generated fonts (copied from @fontsource via scripts/copy-fonts.sh)
 src/fonts/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Chromatic
+chromatic-archives/
+
+*storybook.log
+*archive.log
+storybook-static
