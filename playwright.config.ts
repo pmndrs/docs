@@ -35,7 +35,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         colorScheme: 'dark',
       },
-      snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-dark-{projectName}{ext}',
+      snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
     },
   ],
 
