@@ -23,6 +23,9 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
+  /* Include project name in snapshot paths to differentiate between light and dark mode */
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
+
   /* Configure projects for major browsers */
   projects: [
     {
@@ -35,7 +38,6 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         colorScheme: 'dark',
       },
-      snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
     },
   ],
 
