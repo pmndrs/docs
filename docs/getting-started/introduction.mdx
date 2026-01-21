@@ -33,6 +33,10 @@ $ pnpm install
 
 ## Configuration
 
+> [!IMPORTANT]
+>
+> Default value is always: `""` (think *empty*).
+
 | var                                   | description                                                                                                                                                              | example                                                                                          |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | `MDX`\*                               | Path to `*.mdx` folder<br/>NB: can be relative or absolute                                                                                                               | `docs` or `~/code/myproject/documentation`                                                       |
@@ -136,6 +140,7 @@ $ (
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+
   pnpm run dev &
 
   wait
@@ -188,6 +193,7 @@ $ (
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+
   npx serve out &
 
   wait
@@ -269,6 +275,7 @@ $ (
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+
   npx -y serve "$MDX/out" &
 
   wait

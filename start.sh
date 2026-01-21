@@ -12,7 +12,7 @@ export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://docs.pmnd.rs"
 export BASE_PATH=
 export DIST_DIR=
 export OUTPUT=export
-export HOME_REDIRECT=/getting-started/introduction
+export HOME_REDIRECT=
 export MDX_BASEURL=http://localhost:$_PORT
 export SOURCECODE_BASEURL=
 export EDIT_BASEURL=
@@ -35,6 +35,7 @@ pnpm run build
 
 kill $(lsof -ti:"$_PORT")
 npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
+
 npx serve out &
 
 wait
