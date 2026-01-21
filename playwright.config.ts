@@ -33,7 +33,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: './preview.sh',
+    command: './start.sh',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },
