@@ -103,6 +103,9 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
+      # Run changesets action to create/update version PR and GitHub releases
+      # Note: We don't use the 'published' output for Docker builds anymore
+      # Instead, we detect version changes directly from package.json
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
