@@ -1,27 +1,9 @@
-# Unified CI workflow that runs on both main pushes and pull requests
-#
-# This workflow handles three main responsibilities:
-# 1. Release management (main only): Creates releases and changesets PRs
-# 2. Deployment: Deploys to Vercel (production for main, preview for PRs)
-# 3. Docker: Builds and optionally publishes Docker images
-#
-# Behavior by event type:
-# - On PR: Validates changes by building Docker image and deploying Vercel preview
-# - On main push: Full release pipeline including Docker registry push and git tags
-#
-# Job execution logic:
-# - release-job: Only runs on main push to handle releases
-# - vercel-job: Runs on PRs (preview) and main (production) when no changesets pending
-# - docker-job: Runs on PRs (build only) and main (build + push) when no changesets pending
-
 name: CI
 on:
   push:
     branches:
       - 'main'
   pull_request:
-    branches:
-      - 'main'
   workflow_dispatch:
 
 concurrency:
@@ -33,55 +15,15 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  release-job:
+  main-job:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: write
       pull-requests: write
-
-    outputs:
-      hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          publish: pnpm run release
-          createGithubReleases: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  vercel-job:
-    runs-on: ubuntu-latest
-    needs: release-job
-    # Run if release-job was skipped (PRs) or if it completed with no changesets
-    # This ensures we deploy previews for PRs and production for main (when no release is in progress)
-    if: |
-      always() &&
-      (needs.release-job.result == 'skipped' || needs.release-job.outputs.hasChangesets == 'false')
-
-    permissions:
-      contents: read
+      packages: write
+      attestations: write
+      id-token: write
 
     # Update the Production/Preview environment with the Vercel deployed URL
     environment:
@@ -89,10 +31,63 @@ jobs:
       url: ${{ steps.vercel-deploy.outputs.deployment_url }}
 
     steps:
+      #
+      # ███████ ███████ ████████ ██    ██ ██████
+      # ██      ██         ██    ██    ██ ██   ██
+      # ███████ █████      ██    ██    ██ ██████
+      #      ██ ██         ██    ██    ██ ██
+      # ███████ ███████    ██     ██████  ██
+      #
+
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+
+      #
+      #  ██████ ██   ██  █████  ███    ██  ██████  ███████ ███████ ███████ ████████
+      # ██      ██   ██ ██   ██ ████   ██ ██       ██      ██      ██         ██
+      # ██      ███████ ███████ ██ ██  ██ ██   ███ █████   ███████ █████      ██
+      # ██      ██   ██ ██   ██ ██  ██ ██ ██    ██ ██           ██ ██         ██
+      #  ██████ ██   ██ ██   ██ ██   ████  ██████  ███████ ███████ ███████    ██
+      #
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm run release # dummy release
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # We utilitily extract major and full version (for other steps)
+      - id: get-version
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
+          echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
+
+          echo "Using version: $VERSION (major: $MAJOR_VERSION)"
+
+      #
+      # ██    ██ ███████ ██████   ██████ ███████ ██
+      # ██    ██ ██      ██   ██ ██      ██      ██
+      # ██    ██ █████   ██████  ██      █████   ██
+      #  ██  ██  ██      ██   ██ ██      ██      ██
+      #   ████   ███████ ██   ██  ██████ ███████ ███████
+      #
+      # Whatever "published", we deploy to Vercel (preview for PRs, production for main)
+      #
+
       - id: vercel-deploy
         run: |
           npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
@@ -130,48 +125,24 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-  # https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
-  docker-job:
-    runs-on: ubuntu-latest
-    needs: release-job
-    # Run if release-job was skipped (PRs) or if it completed with no changesets
-    # On PRs: Build only to validate Docker configuration
-    # On main: Build and push to registry
-    if: |
-      always() &&
-      (needs.release-job.result == 'skipped' || needs.release-job.outputs.hasChangesets == 'false')
+      #
+      # ██████   ██████   ██████ ██   ██ ███████ ██████
+      # ██   ██ ██    ██ ██      ██  ██  ██      ██   ██
+      # ██   ██ ██    ██ ██      █████   █████   ██████
+      # ██   ██ ██    ██ ██      ██  ██  ██      ██   ██
+      # ██████   ██████   ██████ ██   ██ ███████ ██   ██
+      #
 
-    permissions:
-      contents: write
-      packages: write
-      attestations: write
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Get version from package.json
-        id: get-version
-        run: |
-          VERSION=$(jq -r '.version' package.json)
-          MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
-          echo "Using version: $VERSION (major: $MAJOR_VERSION)"
-
-      - name: Log in to the Container registry
-        # Only login on main pushes since PRs don't push to registry
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
+        if: steps.changesets.outputs.published == 'true'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - uses: docker/metadata-action@v5
+        if: steps.changesets.outputs.published == 'true'
         id: meta
-        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -180,26 +151,24 @@ jobs:
             type=raw,value=${{ steps.get-version.outputs.major_version }}
             type=raw,value=${{ steps.get-version.outputs.version }}
 
-      - name: Build and push Docker image
+      - uses: docker/build-push-action@v6
         id: push
-        uses: docker/build-push-action@v6
         with:
           context: .
-          # Only push to registry on main, PRs just build to validate
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          # Push only if a new version was published
+          push: ${{ steps.changesets.outputs.published == 'true' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Generate artifact attestation
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/attest-build-provenance@v3
+      - uses: actions/attest-build-provenance@v3
+        if: steps.changesets.outputs.published == 'true'
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
       - name: Update `vX` git tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: steps.changesets.outputs.published == 'true'
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
