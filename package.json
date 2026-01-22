@@ -75,7 +75,7 @@
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
-    "release": "echo 'dummy release'",
+    "release": "changeset publish",
     "changeset": "changeset",
     "test": "playwright test",
     "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN"
