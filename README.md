@@ -26,7 +26,7 @@ Visual tests are performed in the cloud, through [chromatic.yml](.github/workflo
 You can also replay locally:
 
 ```sh
-$ npx playwright test
+$ npx playwright test --update-snapshots
 $ npx chromatic --playwright --project-token $CHROMATIC_PROJECT_TOKEN
 ```
 
