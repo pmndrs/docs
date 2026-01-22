@@ -57,7 +57,7 @@ jobs:
       #  ██████ ██   ██ ██   ██ ██   ████  ██████  ███████ ███████ ███████    ██
       #
 
-      # Detect if package.json version was bumped in this commit
+      # Detect if package.json version was bumped in this push
       - name: Check if version changed
         id: version-check
         if: github.ref == 'refs/heads/main'
@@ -70,14 +70,27 @@ jobs:
             exit 1
           fi
           
-          # Check if parent commit exists and get the previous version
-          if git rev-parse HEAD~1 >/dev/null 2>&1; then
-            PREVIOUS_VERSION=$(git show HEAD~1:package.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "")
+          # Determine the base commit to compare against
+          # For push events, compare with the commit before this push
+          if [ "${{ github.event_name }}" == "push" ] && [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            BASE_COMMIT="${{ github.event.before }}"
+            echo "Comparing with commit before push: $BASE_COMMIT"
           else
-            # First commit in the repository, treat as version change
-            echo "First commit detected, treating as version change"
-            PREVIOUS_VERSION=""
+            # Fallback to HEAD~1 for other cases
+            if git rev-parse HEAD~1 >/dev/null 2>&1; then
+              BASE_COMMIT="HEAD~1"
+              echo "Comparing with HEAD~1"
+            else
+              # First commit in the repository, treat as version change
+              echo "First commit detected, treating as version change"
+              echo "changed=true" >> $GITHUB_OUTPUT
+              echo "Current version: $CURRENT_VERSION"
+              exit 0
+            fi
           fi
+          
+          # Get the previous version from the base commit
+          PREVIOUS_VERSION=$(git show $BASE_COMMIT:package.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "")
           
           echo "Current version: $CURRENT_VERSION"
           echo "Previous version: ${PREVIOUS_VERSION:-<not found>}"
