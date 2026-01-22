@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.1.3
+
+### Patch Changes
+
+- [`f0dba7d`](https://github.com/pmndrs/docs/commit/f0dba7d1e23df953f43356f09e075ff71ebfcc08) Thanks [@abernier](https://github.com/abernier)! - new ci
+
 ## 3.1.2
 
 ### Patch Changes
