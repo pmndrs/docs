@@ -57,6 +57,28 @@ jobs:
       #  ██████ ██   ██ ██   ██ ██   ████  ██████  ███████ ███████ ███████    ██
       #
 
+      # Detect if package.json version was bumped in this commit
+      - name: Check if version changed
+        id: version-check
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Get the current version
+          CURRENT_VERSION=$(jq -r '.version' package.json)
+          
+          # Get the previous version from the parent commit
+          PREVIOUS_VERSION=$(git show HEAD~1:package.json | jq -r '.version')
+          
+          echo "Current version: $CURRENT_VERSION"
+          echo "Previous version: $PREVIOUS_VERSION"
+          
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
@@ -67,7 +89,7 @@ jobs:
 
       # We utilitily extract major and full version (for other steps)
       - id: get-version
-        if: steps.changesets.outputs.hasChangesets == 'false' && github.ref == 'refs/heads/main'
+        if: steps.version-check.outputs.changed == 'true'
         run: |
           VERSION=$(jq -r '.version' package.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -133,14 +155,14 @@ jobs:
       #
 
       - uses: docker/login-action@v3
-        if: steps.changesets.outputs.hasChangesets == 'false' && github.ref == 'refs/heads/main'
+        if: steps.version-check.outputs.changed == 'true'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/metadata-action@v5
-        if: steps.changesets.outputs.hasChangesets == 'false' && github.ref == 'refs/heads/main'
+        if: steps.version-check.outputs.changed == 'true'
         id: meta
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -155,19 +177,19 @@ jobs:
         with:
           context: .
           # Push only if a new version was published
-          push: ${{ steps.changesets.outputs.hasChangesets == 'false' && github.ref == 'refs/heads/main' }}
+          push: ${{ steps.version-check.outputs.changed == 'true' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - uses: actions/attest-build-provenance@v3
-        if: steps.changesets.outputs.hasChangesets == 'false' && github.ref == 'refs/heads/main'
+        if: steps.version-check.outputs.changed == 'true'
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
       - name: Update `vX` git tag
-        if: steps.changesets.outputs.hasChangesets == 'false' && github.ref == 'refs/heads/main'
+        if: steps.version-check.outputs.changed == 'true'
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
