@@ -61,14 +61,13 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm run release # dummy release
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # We utilitily extract major and full version (for other steps)
       - id: get-version
-        if: steps.changesets.outputs.publishedPackages != ''
+        if: steps.changesets.outputs.hasChangesets == 'false'
         run: |
           VERSION=$(jq -r '.version' package.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -134,14 +133,14 @@ jobs:
       #
 
       - uses: docker/login-action@v3
-        if: steps.changesets.outputs.publishedPackages != ''
+        if: steps.changesets.outputs.hasChangesets == 'false'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/metadata-action@v5
-        if: steps.changesets.outputs.publishedPackages != ''
+        if: steps.changesets.outputs.hasChangesets == 'false'
         id: meta
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -156,19 +155,19 @@ jobs:
         with:
           context: .
           # Push only if a new version was published
-          push: ${{ steps.changesets.outputs.publishedPackages != '' }}
+          push: ${{ steps.changesets.outputs.hasChangesets == 'false' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - uses: actions/attest-build-provenance@v3
-        if: steps.changesets.outputs.publishedPackages != ''
+        if: steps.changesets.outputs.hasChangesets == 'false'
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
       - name: Update `vX` git tag
-        if: steps.changesets.outputs.publishedPackages != ''
+        if: steps.changesets.outputs.hasChangesets == 'false'
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
