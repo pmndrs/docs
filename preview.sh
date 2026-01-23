@@ -41,7 +41,7 @@ main() {
     -e THEME_WARNING \
     -e THEME_CAUTION \
     -e CONTRIBUTORS_PAT \
-    $DOCKER_IMAGE pnpm run build
+    $DOCKER_IMAGE pnpm run build || exit 1
 
   kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
