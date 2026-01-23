@@ -59,6 +59,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish
         id: changesets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: changesets/action@v1
         with:
           publish: pnpm run release # dummy release
@@ -177,12 +178,14 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
 
-          # vX tag
+          # Set version variables
+          VERSION=${{ steps.get-version.outputs.version }}
           MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
-          git tag -fa v$VERSION -m "Update version tag to v$VERSION"
 
           # vX.Y.Z tag
-          VERSION=${{ steps.get-version.outputs.version }}
+          git tag -fa v$VERSION -m "Update version tag to v$VERSION"
+
+          # vX tag
           git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
 
           git push origin v$MAJOR_VERSION v$VERSION --force
