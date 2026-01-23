@@ -171,12 +171,18 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-      - name: Update `vX` git tag
+      - name: git tags
         if: steps.check.outputs.changed == 'true'
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
 
+          # vX tag
           MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
+          git tag -fa v$VERSION -m "Update version tag to v$VERSION"
+
+          # vX.Y.Z tag
+          VERSION=${{ steps.get-version.outputs.version }}
           git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
-          git push origin v$MAJOR_VERSION --force
+
+          git push origin v$MAJOR_VERSION v$VERSION --force
