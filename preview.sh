@@ -4,14 +4,14 @@ main() {
   trap 'kill -9 0' SIGINT
 
   export _PORT="${_PORT:-60141}"
-  export DOCKER_IMAGE="${DOCKER_IMAGE:-pmndrs-docs:latest}"
+  export DOCKER_IMAGE="${DOCKER_IMAGE:-ghcr.io/pmndrs/docs:latest}"
 
   export MDX="${MDX:-docs}"
   export NEXT_PUBLIC_LIBNAME="${NEXT_PUBLIC_LIBNAME:-Poimandres}"
 
   rm -rf "$MDX/out"
 
-  docker build -t $DOCKER_IMAGE .
+  # docker build -t $DOCKER_IMAGE .
 
   docker run --rm --init -t \
     -v "./$MDX":/app/docs \
