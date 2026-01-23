@@ -1,6 +1,8 @@
 import Icon from '@/components/Icon'
+import cn from '@/lib/cn'
 import { highlight } from '@/utils/text'
 import Link from 'next/link'
+import { ComponentProps } from 'react'
 import sanitizeHtml from 'sanitize-html'
 
 export interface SearchResult {
@@ -24,38 +26,42 @@ function sanitizeAllHtmlButMark(str: string) {
   })
 }
 
-function SearchItem({ search, result }: SearchItemProps) {
+function SearchItem({
+  className,
+  search,
+  result,
+  ...props
+}: Omit<ComponentProps<typeof Link>, 'href'> & SearchItemProps) {
   return (
     <Link
+      {...props}
       href={result.url}
-      className="search-item block no-underline outline-none"
+      className={cn(className, 'block no-underline')}
       target={result.url.startsWith('http') ? '_blank' : undefined}
     >
-      <li className="px-2 py-1">
-        <div className="interactive-bg-surface-container-high flex items-center justify-between rounded-md p-4 py-5 transition-colors">
-          <div className="break-all pr-3">
-            <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
+      <div className="flex items-center justify-between rounded-md p-4 py-5">
+        <div className="break-all pr-3">
+          <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
+          <span
+            dangerouslySetInnerHTML={{
+              __html: highlight(sanitizeAllHtmlButMark(result.title), search),
+            }}
+          />
+          <div className="block pt-2 text-sm text-on-surface-variant/50">
             <span
               dangerouslySetInnerHTML={{
-                __html: highlight(sanitizeAllHtmlButMark(result.title), search),
+                __html: highlight(sanitizeAllHtmlButMark(result.content), search),
               }}
             />
-            <div className="block pt-2 text-sm text-on-surface-variant/50">
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: highlight(sanitizeAllHtmlButMark(result.content), search),
-                }}
-              />
-            </div>
           </div>
-          {result.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
-          ) : (
-            <Icon icon="enter" />
-          )}
         </div>
-      </li>
+        {result.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
+        ) : (
+          <Icon icon="enter" />
+        )}
+      </div>
     </Link>
   )
 }

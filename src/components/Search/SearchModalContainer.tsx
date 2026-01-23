@@ -3,20 +3,20 @@ import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
+import cn from '@/lib/cn'
 import { escape } from '@/utils/text'
+import { Command } from 'cmdk'
+import { useRouter } from 'next/navigation'
+import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
-import SearchModal from './SearchModal'
+import SearchItem from './SearchItem'
 
-export interface SearchModalContainerProps {
-  onClose: React.MouseEventHandler<HTMLButtonElement>
-}
-
-export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => {
-  // const router = useRouter()
-  // const boxes = useCSB()
+export const SearchModalContainer = ({
+  className,
+  close,
+}: ComponentProps<'search'> & { close: () => void }) => {
+  const router = useRouter()
   const { docs } = useDocs()
-  // console.log('docs', docs)
-  // const [lib] = router.query.slug as string[]
   const [query, setQuery] = React.useState('')
   const deferredQuery = React.useDeferredValue(query)
   const [results, setResults] = React.useState<SearchResult[]>([])
@@ -28,7 +28,7 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
 
       // Get length of matched text in result
       const relevanceOf = (result: SearchResult) =>
-        (result.title.toLowerCase().match(deferredQuery.toLowerCase())?.length ?? 0) /
+        (result.title.toLowerCase().match(escape(deferredQuery.toLowerCase()))?.length ?? 0) /
         result.title.length
 
       // Search
@@ -62,11 +62,42 @@ export const SearchModalContainer = ({ onClose }: SearchModalContainerProps) => 
   }, [docs, deferredQuery])
 
   return (
-    <SearchModal
-      search={query}
-      results={results}
-      onClose={onClose}
-      onChange={(e) => setQuery(escape(e.target.value))}
-    />
+    <search
+      className={cn('[--Search-Input-height:--spacing(16)]', 'mt-(--Search-Input-top)', className)}
+    >
+      <Command shouldFilter={false} className="">
+        <Command.Input
+          name="search"
+          id="search"
+          className="bg-surface-container block h-(--Search-Input-height) w-full rounded-md px-4 pl-10 sm:text-sm"
+          placeholder="Search the docs"
+          value={query}
+          autoFocus
+          onValueChange={(value) => setQuery(value)}
+        />
+
+        <Command.List>
+          {results.length > 0 && (
+            <div className="bg-surface-container mt-1 flex max-h-[calc((100dvh-var(--Search-Input-top)-1.5rem)-var(--Search-Input-height))] flex-col gap-1 overflow-auto rounded-md p-1">
+              {results.map((result, index) => {
+                return (
+                  <Command.Item
+                    key={`search-item-${index}`}
+                    value={result.url}
+                    onSelect={(value) => {
+                      router.push(value)
+                      close()
+                    }}
+                    className="rounded-md transition-colors data-[selected=true]:bg-surface-container-high"
+                  >
+                    <SearchItem search={query} result={result} tabIndex={-1} />
+                  </Command.Item>
+                )
+              })}
+            </div>
+          )}
+        </Command.List>
+      </Command>
+    </search>
   )
 }

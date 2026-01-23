@@ -1,5 +1,4 @@
 import path from 'node:path'
-import url from 'node:url'
 
 export default function resolveMdxUrl(src: string, mdFile: string, baseUrl?: string) {
   // console.log('')
@@ -23,10 +22,10 @@ export default function resolveMdxUrl(src: string, mdFile: string, baseUrl?: str
 
   // 4. Construct the new URL using the resolved path
   // We remove the first character if it's a '/', to properly concatenate with the baseUrl
-  const newUrlPath = resolvedPath.startsWith('/') ? resolvedPath.substr(1) : resolvedPath
+  const newUrlPath = resolvedPath.startsWith('/') ? resolvedPath.substring(1) : resolvedPath
 
-  // 5. Correctly append the path preserving the context of the baseUrl
-  return url.resolve(baseUrl + '/', newUrlPath)
+  // 5. Correctly append the path preserving the context of the baseUrl using WHATWG URL API
+  return new URL(newUrlPath, baseUrl + '/').href
 }
 
 //

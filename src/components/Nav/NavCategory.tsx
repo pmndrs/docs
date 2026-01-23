@@ -1,11 +1,7 @@
-'use client'
-
 import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import * as Collapsible from '@radix-ui/react-collapsible'
 import Link from 'next/link'
-import { ComponentProps, useState } from 'react'
-import { IoIosArrowDown } from 'react-icons/io'
+import { ComponentProps } from 'react'
 
 const INDEX_PAGE = 'introduction'
 
@@ -23,49 +19,35 @@ export function NavCategory({
   const docIndexEntry = docsEntries.find(([page]) => page === INDEX_PAGE)
   const categoryHref = docIndexEntry ? docIndexEntry[1].url : docsEntries[0][1].url
 
-  const [open, setOpen] = useState(docsEntries.some(([, doc]) => doc.url === `/${asPath}`))
+  const nonIndexItems = docsEntries.filter(([page]) => page !== INDEX_PAGE)
 
   return (
-    <Collapsible.Root
+    <div
       className={cn(
-        '[--NavItem-pad:.75rem]',
-        !docsEntries.some(([, doc]) => doc.url === `/${asPath}`) && 'opacity-50',
+        'text-sm',
+        // !docsEntries.some(([, doc]) => doc.url === `/${asPath}`) && 'opacity-50',
       )}
-      open={open}
-      onOpenChange={setOpen}
     >
       <div className="relative">
         <NavItem
           href={categoryHref}
-          className={cn('capitalize tracking-wide', 'flex items-center gap-3')}
+          className={cn('font-bold capitalize tracking-wide', 'flex items-center gap-3')}
           active={docIndexEntry && categoryHref === `/${asPath}`}
         >
           {category.replace(/\-/g, ' ')}
         </NavItem>
-        <Collapsible.Trigger
-          asChild
-          className={cn('absolute right-0 top-1/2 transition-transform', open && 'rotate-90')}
-        >
-          <div className="-translate-y-1/2 p-[--NavItem-pad]">
-            <IoIosArrowDown className="size-4 -rotate-90" />
-          </div>
-        </Collapsible.Trigger>
       </div>
 
-      <Collapsible.Content className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden">
-        <ul>
-          {docsEntries
-            .filter(([page]) => page !== INDEX_PAGE)
-            .map(([page, doc]) => (
-              <li key={page}>
-                <NavItem href={doc.url} active={doc.url === `/${asPath}`} className="text-xs">
-                  {doc.title}
-                </NavItem>
-              </li>
-            ))}
-        </ul>
-      </Collapsible.Content>
-    </Collapsible.Root>
+      <ul>
+        {nonIndexItems.map(([page, doc]) => (
+          <li key={page}>
+            <NavItem href={doc.url} active={doc.url === `/${asPath}`} className="pl-10 text-xs">
+              {doc.title}
+            </NavItem>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -81,8 +63,8 @@ function NavItem({
     <Link
       {...props}
       className={cn(
-        'block cursor-pointer rounded-r-xl p-[--NavItem-pad] pl-6',
-        active ? 'interactive-bg-primary-container' : 'interactive-bg-surface',
+        'block cursor-pointer p-3 pl-8',
+        active ? 'bg-primary-container' : 'bg-surface',
         className,
       )}
     >

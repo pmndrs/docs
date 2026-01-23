@@ -1,8 +1,18 @@
 ---
 title: Authoring
 description: How to write documentation
+sourcecode: docs/getting-started/authoring.mdx
 nav: 1
 ---
+
+<Intro>
+  This is a guide on how to write documentation. We support all [GFM](https://github.github.com/gfm/) syntax, plus some custom components that are described here.
+</Intro>
+
+<Keypoints>
+  <KeypointsItem>[Front matter](#frontmatter) metadatas</KeypointsItem>
+  <KeypointsItem>Custom [markdown](#markdown) components</KeypointsItem>
+</Keypoints>
 
 In your `MDX` folder, create any `path/to/my-document.mdx`:
 
@@ -12,28 +22,73 @@ title: My Document
 description: Lorem ipsum...
 nav: 0
 image: dog.png
+sourcecode: to/my-document.mdx
 ---
 
 MARKDOWN
 ```
 
-### Frontmatter
+## Frontmatter
 
 Any key is optional.
 
 - `title`: if not provided, last part of the path is used: `my document`
+- `description`
+- `sourcecode`: relative path to the source-code file
 - `image`:
   - relative (to the md file) or absolute path, eg: `dog.png`, `./dog.png`, `../../dog.png`, `/dog.png` or `https://animals.com/dog.png`
   - will be used as metadata image if provided
 - `nav`: order in the navigation (on the same level)
 
-### MARKDOWN
+## MARKDOWN
 
 You can use any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
 
 Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX components.
 
-#### `Img`
+### `Intro`
+
+Use at the top of the document, just after the frontmatter.
+
+```md
+<Intro>
+  This is an intro. Here you can write a long description of the article, longer than the frontmatter `description`, eventually with [links](#), lists, etc.
+  
+  Multiple paragraphs are also possible, or anything.
+</Intro>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Intro>
+  This is an intro. Here you can write a long description of the article, longer than the frontmatter `description`, eventually with [links](#), lists, etc.
+  
+  Multiple paragraphs are also possible, or anything.
+</Intro>
+</details>
+
+### `Keypoints`
+
+Can be used after `Intro`, to list main points the article covers: one bullet per `KeypointsItem`.
+
+```md
+<Keypoints title="What you'll learn">
+  <KeypointsItem>First item</KeypointsItem>
+  <KeypointsItem>Second **item**</KeypointsItem>
+</Keypoints>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Keypoints title="What you'll learn">
+  <KeypointsItem>First item</KeypointsItem>
+  <KeypointsItem>Second **item**</KeypointsItem>
+</Keypoints>
+</details>
+
+### `Img`
 
 Relative images are supported. Eg, inside your [`MDX`](introduction#configuration:~:text=MDX) folder:
 ```text {2}
@@ -91,7 +146,7 @@ Although it is probably better to use CSS for this:
 > [!NOTE]
 > See [`MDX_BASEURL`](introduction#configuration:~:text=MDX_BASEURL) to understand how it is converted to a full URL.
 
-#### Code
+### Code
 
 Line numbers/highlights are supported:
 
@@ -188,7 +243,64 @@ index 8c3317a..47ea956 100644
 
 </details>
 
-#### `Grid`
+### Mermaid
+
+[Mermaid](https://mermaid.js.org/) diagrams for flowcharts, sequence diagrams, and other visualizations. Diagrams automatically adapt to light/dark theme.
+
+````md
+```mermaid
+graph TD
+    A[Start] ==> B{Is it working?}
+    B ==>|Yes| C[Great!]
+    B ==>|No| D[Debug]
+    D ==> B
+    C ==> E[End]
+```
+````
+
+<details>
+  <summary>Result</summary>
+
+```mermaid
+graph TD
+    A[Start] ==> B{Is it working?}
+    B ==>|Yes| C[Great!]
+    B ==>|No| D[Debug]
+    D ==> B
+    C ==> E[End]
+```
+
+</details>
+
+> [!IMPORTANT]
+> Due to MDX parser limitations, use <code>==></code> instead of <code>--&gt;</code> for arrows in flowcharts.
+
+Sequence diagrams (avoid <code>--&gt;&gt;</code> because it contains <code>--&gt;</code> and will be stripped):
+
+````md
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    User->>Browser: Click button
+    Browser->>User: Display result
+```
+````
+
+<details>
+  <summary>Result</summary>
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    User->>Browser: Click button
+    Browser->>User: Display result
+```
+
+</details>
+
+### `Grid`
 
 Responsive grid.
 
@@ -216,7 +328,7 @@ Responsive grid.
 
 </details>
 
-#### `Sandpack`
+### `Sandpack`
 
 Inline sandboxes.
 
@@ -287,9 +399,211 @@ export default function App() {
 
 </details>
 
+#### `Sandpack[folder]`
 
+Instead of `files`, a `folder` prop allow you to pass a folder containing all the files:
 
-#### `Codesandbox`
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+/>
+```
+
+`folder` path is relative to the `.mdx` file:
+
+```text
+|-- getting-started
+|   |-- authoring.mdx             <= relative to this article
+|   `-- authoring-sandpack-cloud  <= the folder
+```
+
+> [!TIP]
+> It will simply:
+> - build the `files` prop for you (including all `.{js|ts|jsx|tsx|css}` it finds)
+> - build `customSetup.dependencies` from `package.json` if it exists
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+/>
+
+</details>
+
+It is also possible to pass some individual [file format](https://sandpack.codesandbox.io/docs/getting-started/usage#file-format) configuration:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  files={{
+    '/App.tsx': {
+      readOnly: true,
+      active: true,
+    },
+    '/styles.css': {
+      hidden: true
+    }
+  }}
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  files={{
+    '/App.tsx': {
+      readOnly: true,
+      active: true,
+    },
+    '/styles.css': {
+      hidden: true
+    }
+  }}
+/>
+
+</details>
+
+#### `Sandpack[fileExplorer]`
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  fileExplorer
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  fileExplorer
+/>
+
+</details>
+
+> [!TIP]
+> Conveniently, enabling `fileExplorer` will by default `[codeEditor={showTabs: false}]`.
+> You can override it with [`[codeEditor]` options](#sandpack[codeeditor])
+
+You can also pass [any `fileExplorer={options: ComponentProps<SandpackFileExplorer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#file-explorer:~:text=Preview-,Options,-If%20you%27re%20looking).
+
+#### `Sandpack[codeEditor]`
+
+You can pass [any `codeEditor={options: ComponentProps<SandpackCodeEditor>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor:~:text=Preview-,Options,-Extensions).
+
+#### `Sandpack[codeViewer]`
+
+It will render the [`SandpackCodeViewer`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer) instead of the default [`SandpackCodeEditor`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor).
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer
+/>
+
+</details>
+
+You can also pass [any `codeViewer={options: ComponentProps<SandpackCodeViewer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer:~:text=Preview-,Options,-CodeMirror%20decorations).
+
+##### `Sandpack[codeViewer][filesDecorators]`
+
+You can define per-file [decorators](https://sandpack.codesandbox.io/docs/advanced-usage/components#codemirror-decorations) through `filesDecorators` prop:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer={{
+    filesDecorators: {
+      '/App.tsx': [
+        { className: "highlight", line: 1 },
+        { className: "highlight", line: 7 },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "1" },
+          line: 7,
+          startColumn: 13,
+          endColumn: 24,
+        },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "2" },
+          line: 7,
+          startColumn: 25,
+          endColumn: 35,
+        },
+        
+      ],
+      '/styles.css': [
+        { className: "highlight", line: 4 },
+      ]
+    }
+  }}
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer={{
+    filesDecorators: {
+      '/App.tsx': [
+        { className: "highlight", line: 1 },
+        { className: "highlight", line: 7 },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "1" },
+          line: 7,
+          startColumn: 13,
+          endColumn: 24,
+        },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "2" },
+          line: 7,
+          startColumn: 25,
+          endColumn: 35,
+        },
+        
+      ],
+      '/styles.css': [
+        { className: "highlight", line: 4 },
+      ]
+    }
+  }}
+/>
+
+</details>
+
+#### `Sandpack[preview]`
+
+You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#preview:~:text=Preview-,Options,-Additional%20buttons).
+
+### `Codesandbox`
 
 ```md
 <Codesandbox id="3rjsl" />
@@ -302,7 +616,7 @@ export default function App() {
 
 </details>
 
-#### `Gha`
+### `Gha`
 
 Aka. ["GitHub alerts"](https://github.com/orgs/community/discussions/16925)
 
@@ -342,7 +656,7 @@ or better:
 
 </details>
 
-#### `Hint`
+### `Hint`
 
 > [!CAUTION]
 > Deprecated, use [`Gha[keyword="NOTE"]`](#Gha) instead.
@@ -357,5 +671,34 @@ or better:
   <summary>Result</summary>
 
 <Hint>I'm a deprecated hint. Use `Gha` instead.</Hint>
+
+</details>
+
+### `Contributors`
+
+```md
+<Contributors owner="pmndrs" repo="docs" />
+```
+
+> [!WARNING]
+> [`CONTRIBUTORS_PAT`](introduction#configuration:~:text=CONTRIBUTORS_PAT) needs to be set. Otherwise, it will display John Doe.
+
+<details>
+  <summary>Result</summary>
+
+<Contributors owner="pmndrs" repo="docs" />
+
+</details>
+
+### Backers
+
+```md
+<Backers repo="react-three-fiber" />
+```
+
+<details>
+  <summary>Result</summary>
+
+<Backers repo="react-three-fiber" />
 
 </details>

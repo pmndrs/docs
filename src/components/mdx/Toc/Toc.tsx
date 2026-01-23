@@ -2,9 +2,9 @@
 
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import { useCallback, useEffect, useState } from 'react'
+import { ComponentProps, useCallback, useEffect, useState } from 'react'
 
-export function Toc({ toc }: { toc: DocToC[] }) {
+export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] }) {
   // console.log('toc', toc)
 
   const [activeIndex, setActiveIndex] = useState<number | undefined>()
@@ -50,16 +50,16 @@ export function Toc({ toc }: { toc: DocToC[] }) {
   // }, [toc])
 
   return (
-    <div className="max-h-(screen-16) sticky top-16 flex flex-col justify-between overflow-y-auto pb-6">
-      <label className="mb-2 mt-12 text-sm font-semibold uppercase tracking-wide text-on-surface-variant/50 lg:text-xs">
+    <div className={cn(className, 'text-xs')}>
+      <p className="mb-3 font-semibold uppercase tracking-wide text-on-surface-variant/50">
         On This Page
-      </label>
+      </p>
       {toc.map(({ title, id, level }, index) => (
         <h4 key={`${title}-${index}`}>
           <a
             aria-label={title}
             className={cn(
-              'block py-1 text-xs font-normal leading-6 text-on-surface-variant/50 hover:underline',
+              'block text-balance py-2 text-on-surface-variant/50 hover:underline',
               index === activeIndex && 'text-on-surface',
             )}
             style={{ marginLeft: `${(level - 1) * 1}rem` }}

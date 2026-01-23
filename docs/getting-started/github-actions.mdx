@@ -4,7 +4,11 @@ description: Call from your CI
 nav: 3
 ---
 
-`pmndrs/docs` provides a [`build.yml`](.github/workflows/build.yml) reusable workflow, any project can use:
+<Intro>
+  This project provides a [`build.yml` reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows#calling-a-reusable-workflow) you can easily call from your own project workflow.
+</Intro>
+
+In your `.github/workflows` folder, create a eg. `docs.yml` file:
 
 ```yml
 uses: pmndrs/docs/.github/workflows/build.yml@v2
@@ -12,6 +16,8 @@ uses: pmndrs/docs/.github/workflows/build.yml@v2
     mdx: 'docs'
     libname: 'React Three Fiber'
     libname_short: 'r3f'
+    libname_dotsuffix_label: "docs"
+    libname_dotsuffix_href: "https://docs.pmnd.rs"
     home_redirect: '/getting-started/introduction'
     icon: '🇨🇭'
     logo: '/logo.png'
@@ -25,6 +31,7 @@ uses: pmndrs/docs/.github/workflows/build.yml@v2
     theme_important: '#8957e5'
     theme_warning: '#d29922'
     theme_caution: '#da3633'
+    docker_tag: '2.20.1'
 ```
 
 See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.

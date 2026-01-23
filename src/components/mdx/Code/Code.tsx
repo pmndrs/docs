@@ -1,7 +1,7 @@
 'use client'
 
 import cn from '@/lib/cn'
-import { ComponentProps, ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
 import { TbClipboard, TbClipboardCheck } from 'react-icons/tb'
 
 export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) => {
@@ -26,7 +26,8 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
         {...props}
         className={cn(
           className,
-          'bg-inverse-surface-light my-5 overflow-auto rounded-lg p-[--pad] font-mono text-sm',
+          'my-5 overflow-auto rounded-lg p-(--pad) font-mono text-sm',
+          'bg-[oklch(from_var(--mcu-on-primary-fixed)_l_calc(c*0.2)_h)] text-primary-fixed', // using a fixed color to only have 1 theme for prism
         )}
       >
         {children}
@@ -34,6 +35,7 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
       <button
         className="absolute right-0 top-0 m-4 flex size-8 items-center justify-center rounded-md text-outline-variant transition-colors hover:text-outline"
         onClick={handleClick}
+        aria-label="Copy to clipboard"
       >
         {copied ? <TbClipboardCheck className="size-6" /> : <TbClipboard className="size-6" />}
       </button>
@@ -51,8 +53,11 @@ const extractTextFromChildren = (children: ReactNode): string => {
     return children.map(extractTextFromChildren).join('')
   }
 
-  if (typeof children === 'object' && children !== null && 'props' in children) {
-    return extractTextFromChildren(children.props.children)
+  if (isValidElement(children)) {
+    const props = children.props as Record<string, unknown>
+    if ('children' in props) {
+      return extractTextFromChildren(props.children as ReactNode)
+    }
   }
 
   return ''

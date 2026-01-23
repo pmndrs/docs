@@ -1,19 +1,97 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
-import * as components from '@/components/mdx'
+import {
+  Entries,
+  Code,
+  Details,
+  Gha,
+  Grid,
+  Hint,
+  Img,
+  Intro,
+  Keypoints,
+  KeypointsItem,
+  Contributors,
+  Backers,
+  Mermaid,
+  Sandpack,
+  Summary,
+  Toc,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  ul,
+  ol,
+  li,
+  p,
+  hr,
+  blockquote,
+  table,
+  thead,
+  th,
+  tr,
+  td,
+  a,
+  img,
+  code,
+} from '@/components/mdx'
+
+const mdxComponents = {
+  Code,
+  Details,
+  Entries,
+  Gha,
+  Grid,
+  Hint,
+  Img,
+  Intro,
+  Keypoints,
+  KeypointsItem,
+  Contributors,
+  Backers,
+  Mermaid,
+  Sandpack,
+  Summary,
+  Toc,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  ul,
+  ol,
+  li,
+  p,
+  hr,
+  blockquote,
+  table,
+  thead,
+  th,
+  tr,
+  td,
+  a,
+  img,
+  code,
+}
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
-import { Codesandbox } from '@/components/mdx/Codesandbox'
-import { fetchCSB } from '@/components/mdx/Codesandbox/fetchCSB'
+import { Codesandbox1 } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
+import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
+import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
-import React, { cache } from 'react'
+import { dirname } from 'node:path'
+import { cache } from 'react'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
 
@@ -40,11 +118,11 @@ const INLINE_LINK_REGEX = /<(http[^>]+)>/g
 /**
  * Recursively crawls a directory, returning an array of file paths.
  */
-async function crawl(dir: string, filter?: RegExp, files: string[] = []) {
+export async function crawl(dir: string, filter?: (dir: string) => boolean, files: string[] = []) {
   if (fs.lstatSync(dir).isDirectory()) {
     const filenames = fs.readdirSync(dir) as string[]
     await Promise.all(filenames.map(async (filename) => crawl(`${dir}/${filename}`, filter, files)))
-  } else if (!filter || filter.test(dir)) {
+  } else if (!filter || filter(dir)) {
     files.push(dir)
   }
 
@@ -65,70 +143,36 @@ async function _getDocs(
   slugOfInterest: string[] | null,
   slugOnly = false,
 ): Promise<Doc[]> {
-  const files = await crawl(root, MARKDOWN_REGEX)
+  const files = await crawl(
+    root,
+    (dir) => !dir.includes('node_modules') && MARKDOWN_REGEX.test(dir),
+  )
   // console.log('files', files)
 
-  const docs = await Promise.all(
-    files.map(async (file) => {
-      const relFilePath = file.substring(root.length) // "/getting-started/tutorials/store.mdx"
+  //
+  // 1st pass for `entries`
+  //
 
+  const entries = await Promise.all(
+    files.map(async (file) => {
       // Get slug from local path
       const path = file.replace(`${root}/`, '')
       const slug = [...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
 
-      //
-      // "Lightest" version of the doc (for `generateStaticParams`)
-      //
-
-      if (slugOnly) {
-        return { slug } as Doc
-      }
-
-      //
-      // Common infos (for every `docs`)
-      //
-
       const url = `/${slug.join('/')}`
-
-      // editURL
-      const EDIT_BASEURL = process.env.EDIT_BASEURL
-      const editURL = EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined
-
-      // Read & parse doc
 
       //
       // frontmatter
       //
 
-      const source = await fs.promises.readFile(file, { encoding: 'utf-8' })
-      const compiled = matter(source)
+      const str = await fs.promises.readFile(file, { encoding: 'utf-8' })
+      const compiled = matter(str)
       const frontmatter = compiled.data
 
       const _lastSegment = slug[slug.length - 1]
-      const title: string = frontmatter.title ?? _lastSegment.replace(/\-/g, ' ')
+      const title: string = frontmatter.title.trim() ?? _lastSegment.replace(/\-/g, ' ')
 
-      const description: string = frontmatter.description ?? ''
-      const nav: number = frontmatter.nav ?? Infinity
-
-      const frontmatterImage: string | undefined = frontmatter.image
-      const src = frontmatterImage || process.env.LOGO
-      const image: string = src ? resolveMdxUrl(src, relFilePath, MDX_BASEURL) : ''
-
-      //
-      // MDX content
-      //
-
-      // Skip docs other than `slugOfInterest` -- better perfs)
-      // if (JSON.stringify(slug) !== JSON.stringify(slugOfInterest)) {
-      //   return {
-      //     slug,
-      //     url,
-      //     editURL,
-      //     title,
-      //     description,
-      //     nav,
-      //   } as Doc
-      // }
+      const boxes: string[] = []
 
       // Sanitize markdown
       let content = compiled.content
@@ -139,47 +183,13 @@ async function _getDocs(
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
-      //
-      // inline images
-      //
-
-      const boxes: string[] = []
-      const tableOfContents: DocToC[] = []
-
-      const { content: jsx } = await compileMDX({
-        source: `# ${title}\n ${content}`,
+      await compileMDX({
+        source: content,
         options: {
           mdxOptions: {
-            remarkPlugins: [remarkGFM],
             rehypePlugins: [
-              rehypeImg(relFilePath, MDX_BASEURL),
-              rehypeDetails,
-              rehypeSummary,
-              rehypeGha,
-              rehypePrismPlus,
-              rehypeCode(),
-              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `doc.boxes`
-              rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
+              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
             ],
-          },
-        },
-        components: {
-          ...components,
-          Codesandbox: async (props: React.ComponentProps<typeof Codesandbox>) => {
-            const ids = boxes // populated from 1.
-            // console.log('ids', ids)
-
-            //
-            // Batch fetch all CSBs of the page
-            //
-            const csbs = await fetchCSB(...ids)
-            // console.log('boxes', boxes)
-            const data = csbs[props.id]
-            // console.log('data', data)
-
-            // Merge initial props with data
-            const merged = { ...props, ...data }
-            return <Codesandbox {...merged} />
           },
         },
       })
@@ -187,16 +197,132 @@ async function _getDocs(
       return {
         slug,
         url,
-        editURL,
         title,
-        image,
-        description,
-        nav,
-        content: jsx,
         boxes,
-        tableOfContents,
+        //
+        file,
+        content,
+        frontmatter,
       }
     }),
+  )
+  // console.log('entries', entries)
+
+  //
+  // 2nd pass for `docs`
+  //
+
+  const docs = await Promise.all(
+    entries.map(
+      async ({
+        slug,
+        url,
+        title,
+        boxes,
+        // Passed from the 1st pass
+        file,
+        content,
+        frontmatter,
+      }) => {
+        const relFilePath = file.substring(root.length) // "/getting-started/tutorials/store.mdx"
+
+        //
+        // "Lightest" version of the doc (for `generateStaticParams`)
+        //
+
+        if (slugOnly) {
+          return { slug } as Doc
+        }
+
+        //
+        // Common infos (for every `docs`)
+        //
+
+        // editURL
+        const EDIT_BASEURL = process.env.EDIT_BASEURL
+        const editURL = EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined
+
+        //
+        // frontmatter
+        //
+
+        const description: string = frontmatter.description ?? ''
+
+        const sourcecode: string = frontmatter.sourcecode ?? ''
+        const SOURCECODE_BASEURL = process.env.SOURCECODE_BASEURL
+        const sourcecodeURL = SOURCECODE_BASEURL?.length
+          ? `${SOURCECODE_BASEURL}/${sourcecode}`
+          : undefined
+
+        const nav: number = frontmatter.nav ?? Infinity
+
+        const frontmatterImage: string | undefined = frontmatter.image
+        const srcImage = frontmatterImage || process.env.LOGO
+        const image: string = srcImage ? resolveMdxUrl(srcImage, relFilePath, MDX_BASEURL) : ''
+
+        //
+        // MDX content
+        //
+
+        // Skip docs other than `slugOfInterest` -- better perfs)
+        // if (JSON.stringify(slug) !== JSON.stringify(slugOfInterest)) {
+        //   return {
+        //     slug,
+        //     url,
+        //     editURL,
+        //     title,
+        //     description,
+        //     nav,
+        //   } as Doc
+        // }
+
+        //
+        // inline images
+        //
+
+        const tableOfContents: DocToC[] = []
+
+        const { content: jsx } = await compileMDX({
+          source: `# ${title}\n ${content}`,
+          options: {
+            mdxOptions: {
+              remarkPlugins: [remarkGFM],
+              rehypePlugins: [
+                rehypeImg(relFilePath, MDX_BASEURL),
+                rehypeDetails,
+                rehypeSummary,
+                rehypeGha,
+                rehypeMermaid(),
+                rehypePrismPlus,
+                rehypeCode(),
+                rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
+                rehypeSandpack(dirname(file)),
+              ],
+            },
+          },
+          components: {
+            ...mdxComponents,
+            Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
+            Entries: () => <Entries items={entries} />,
+          },
+        })
+
+        return {
+          slug,
+          url,
+          editURL,
+          sourcecode,
+          sourcecodeURL,
+          title,
+          image,
+          description,
+          nav,
+          content: jsx,
+          boxes,
+          tableOfContents,
+        }
+      },
+    ),
   )
   // console.log('docs', docs)
 

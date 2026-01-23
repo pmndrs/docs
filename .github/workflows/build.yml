@@ -12,6 +12,12 @@ on:
         type: string
       libname_short:
         type: string
+      libname_dotsuffix_label:
+        type: string
+        default: 'docs'
+      libname_dotsuffix_href:
+        type: string
+        default: 'https://docs.pmnd.rs'
       home_redirect:
         required: true
         type: string
@@ -52,15 +58,21 @@ on:
       theme_caution:
         type: string
         default: '#da3633'
+      docker_tag:
+        type: string
+        default: '2.20.1'
+        description: 'Docker image tag for ghcr.io/pmndrs/docs'
 
 jobs:
   build-job:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: configurepages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-of-setting-an-output-parameter
       - id: set-base-path
         run: echo "BASE_PATH=${{ inputs.base_path || steps.configurepages.outputs.base_path }}" >> "$GITHUB_OUTPUT"
@@ -74,9 +86,12 @@ jobs:
             -e MDX \
             -e NEXT_PUBLIC_LIBNAME \
             -e NEXT_PUBLIC_LIBNAME_SHORT \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
             -e OUTPUT=export \
             -e HOME_REDIRECT \
             -e MDX_BASEURL \
+            -e SOURCECODE_BASEURL \
             -e EDIT_BASEURL \
             -e NEXT_PUBLIC_URL \
             -e ICON \
@@ -91,15 +106,19 @@ jobs:
             -e THEME_IMPORTANT \
             -e THEME_WARNING \
             -e THEME_CAUTION \
-            ghcr.io/pmndrs/docs:2 npm run build
+            -e CONTRIBUTORS_PAT \
+            ghcr.io/pmndrs/docs:${{ inputs.docker_tag }} pnpm run build
         env:
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
+          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
+          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
-          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/${{ inputs.mdx }}'
-          EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/${{ inputs.mdx }}'
+          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
+          SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}'
+          EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
           NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
           ICON: '${{ inputs.icon }}'
           LOGO: '${{ inputs.logo }}'
@@ -113,7 +132,8 @@ jobs:
           THEME_IMPORTANT: '${{ inputs.theme_important }}'
           THEME_WARNING: '${{ inputs.theme_warning }}'
           THEME_CAUTION: '${{ inputs.theme_caution }}'
+          CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}
