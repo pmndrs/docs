@@ -59,6 +59,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish
         id: changesets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: changesets/action@v1
         with:
           publish: pnpm run release # dummy release
