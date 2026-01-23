@@ -76,6 +76,9 @@ export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] 
   useEffect(() => {
     if (!pathRef.current || !tocRef.current || itemRefs.current.length === 0) return
 
+    // Maximum stroke-dasharray length - ensures the path extends beyond visible area
+    const MAX_DASH_LENGTH = 1000
+
     const drawPath = () => {
       const path: (string | number)[] = []
       let pathIndent = 0
@@ -91,15 +94,21 @@ export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] 
 
         if (i === 0) {
           path.push('M', x, y, 'L', x, y + height)
+          pathLength += height
         } else {
-          if (pathIndent !== x) path.push('L', pathIndent, y)
+          // Account for horizontal movement in path length
+          if (pathIndent !== x) {
+            path.push('L', pathIndent, y)
+            pathLength += Math.abs(pathIndent - x)
+          }
           path.push('L', x, y)
+          pathLength += Math.abs(y - (itemRefs.current[i - 1]?.offsetTop ?? 0))
           path.push('L', x, y + height)
+          pathLength += height
         }
 
         pathIndent = x
-        itemPositions[i] = { pathStart: pathLength, pathEnd: pathLength + height }
-        pathLength += height
+        itemPositions[i] = { pathStart: pathLength - height, pathEnd: pathLength }
       })
 
       pathRef.current?.setAttribute('d', path.join(' '))
@@ -110,11 +119,11 @@ export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] 
         const pathStart = itemPositions[visibleArray[0]]?.pathStart ?? 0
         const pathEnd = itemPositions[visibleArray[visibleArray.length - 1]]?.pathEnd ?? 0
 
-        if (pathStart < pathEnd) {
+        if (pathStart <= pathEnd) {
           pathRef.current?.setAttribute('stroke-dashoffset', '1')
           pathRef.current?.setAttribute(
             'stroke-dasharray',
-            `1, ${pathStart}, ${pathEnd - pathStart}, 1000`,
+            `1, ${pathStart}, ${pathEnd - pathStart}, ${MAX_DASH_LENGTH}`,
           )
           pathRef.current?.setAttribute('opacity', '1')
         } else {
