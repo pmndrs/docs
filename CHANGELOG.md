@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.1.7
+
+### Patch Changes
+
+- [#476](https://github.com/pmndrs/docs/pull/476) [`c0e0ac7`](https://github.com/pmndrs/docs/commit/c0e0ac747e6e647940df7345ca4b7eade8cc3d50) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - tags
+
 ## 3.1.6
 
 ### Patch Changes
