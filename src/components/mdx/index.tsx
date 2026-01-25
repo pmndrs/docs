@@ -1,36 +1,23 @@
-export { Code } from './Code'
+export * from './Code'
 // export * from './Codesandbox'
-export { Details } from './Details'
-export { Entries } from './Entries'
-export { Gha } from './Gha'
-export { Grid } from './Grid'
-export { Hint } from './Hint'
-export { Img } from './Img'
-export { Intro } from './Intro'
-export { Keypoints, KeypointsItem } from './Keypoints'
-export { Mermaid } from './Mermaid'
-export { Contributors, Backers } from './People'
-export { Sandpack } from './Sandpack'
-export { Summary } from './Summary'
-export { Toc } from './Toc'
+export * from './Details'
+export * from './Entries'
+export * from './Gha'
+export * from './Grid'
+export * from './Hint'
+export * from './Img'
+export * from './Intro'
+export * from './Keypoints'
+export * from './Mermaid'
+export * from './People'
+export * from './Sandpack'
+export * from './Summary'
+export * from './Toc'
 
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
 import { ComponentProps } from 'react'
 import { Img } from './Img'
-import { Code } from './Code'
-import { Details } from './Details'
-import { Entries } from './Entries'
-import { Gha } from './Gha'
-import { Grid } from './Grid'
-import { Hint } from './Hint'
-import { Intro } from './Intro'
-import { Keypoints, KeypointsItem } from './Keypoints'
-import { Contributors, Backers } from './People'
-import { Mermaid } from './Mermaid'
-import { Sandpack } from './Sandpack'
-import { Summary } from './Summary'
-import { Toc } from './Toc'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
@@ -126,43 +113,3 @@ export const code = (props: ComponentProps<'code'>) => (
     {...props}
   />
 )
-
-// Plain object export that can be safely spread in compileMDX options
-export const mdxComponents = {
-  Code,
-  Details,
-  Entries,
-  Gha,
-  Grid,
-  Hint,
-  Img,
-  Intro,
-  Keypoints,
-  KeypointsItem,
-  Contributors,
-  Backers,
-  Mermaid,
-  Sandpack,
-  Summary,
-  Toc,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  ul,
-  ol,
-  li,
-  p,
-  hr,
-  blockquote,
-  table,
-  thead,
-  th,
-  tr,
-  td,
-  a,
-  img,
-  code,
-}
