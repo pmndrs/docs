@@ -1,53 +1,5 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
-import * as MDX from '@/components/mdx'
-
-// Helper to create a plain object from MDX namespace without triggering proxy issues
-function getMDXComponents(overrides: Record<string, any> = {}) {
-  const components: Record<string, any> = {}
-  // Manually copy known exports to avoid proxy enumeration issues
-  const keys = [
-    'Code',
-    'Details',
-    'Entries',
-    'Gha',
-    'Grid',
-    'Hint',
-    'Img',
-    'Intro',
-    'Keypoints',
-    'KeypointsItem',
-    'Contributors',
-    'Backers',
-    'Mermaid',
-    'Sandpack',
-    'Summary',
-    'Toc',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'ul',
-    'ol',
-    'li',
-    'p',
-    'hr',
-    'blockquote',
-    'table',
-    'thead',
-    'th',
-    'tr',
-    'td',
-    'a',
-    'img',
-    'code',
-  ]
-  for (const key of keys) {
-    components[key] = (MDX as any)[key]
-  }
-  return { ...components, ...overrides }
-}
+import * as mdxComponents from '@/components/mdx'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox1 } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
@@ -272,10 +224,11 @@ async function _getDocs(
               ],
             },
           },
-          components: getMDXComponents({
-            Codesandbox: (props: any) => <Codesandbox1 {...props} boxes={boxes} />,
-            Entries: () => <MDX.Entries items={entries} />,
-          }),
+          components: {
+            ...mdxComponents,
+            Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
+            Entries: () => <mdxComponents.Entries items={entries} />,
+          },
         })
 
         return {
