@@ -5,19 +5,21 @@ export const Iframe = ({
   src,
   width = '100%',
   height,
-  title = 'Embedded content',
+  title,
   className,
   aspectRatio = '16/9',
   loading = 'lazy',
   ...props
-}: ComponentProps<'iframe'> & {
+}: Omit<ComponentProps<'iframe'>, 'title'> & {
+  title: string
   aspectRatio?: string
 }) => {
-  const style = height
-    ? undefined
-    : {
-        aspectRatio,
-      }
+  const style =
+    height !== undefined && height !== ''
+      ? undefined
+      : {
+          aspectRatio,
+        }
 
   return (
     <div className={cn('my-8', className)}>
