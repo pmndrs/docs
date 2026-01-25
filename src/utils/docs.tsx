@@ -6,7 +6,6 @@ import {
   Gha,
   Grid,
   Hint,
-  Iframe,
   Img,
   Intro,
   Keypoints,
@@ -36,6 +35,7 @@ import {
   td,
   a,
   img,
+  iframe,
   code,
 } from '@/components/mdx'
 
@@ -46,7 +46,6 @@ const mdxComponents = {
   Gha,
   Grid,
   Hint,
-  Iframe,
   Img,
   Intro,
   Keypoints,
@@ -76,6 +75,7 @@ const mdxComponents = {
   td,
   a,
   img,
+  iframe,
   code,
 }
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'

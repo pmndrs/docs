@@ -5,7 +5,6 @@ export * from './Entries'
 export * from './Gha'
 export * from './Grid'
 export * from './Hint'
-export * from './Iframe'
 export * from './Img'
 export * from './Intro'
 export * from './Keypoints'
@@ -107,6 +106,35 @@ export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'
 }
 
 export const img = Img
+
+export const iframe = ({
+  src,
+  width = '100%',
+  height,
+  title,
+  className,
+  loading = 'lazy',
+  style,
+  ...props
+}: ComponentProps<'iframe'>) => {
+  const aspectRatioStyle =
+    height !== undefined && height !== '' ? undefined : { aspectRatio: '16/9' }
+
+  return (
+    <div className={cn('my-8', className)}>
+      <iframe
+        src={src}
+        width={width}
+        height={height}
+        title={title}
+        loading={loading}
+        className="bg-surface-container w-full rounded-lg border-0"
+        style={{ ...aspectRatioStyle, ...style }}
+        {...props}
+      />
+    </div>
+  )
+}
 
 export const code = (props: ComponentProps<'code'>) => (
   <code

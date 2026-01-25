@@ -1,0 +1,32 @@
+---
+title: iframe Test
+description: Testing natural HTML iframe
+nav: 999
+---
+
+# Natural HTML iframe
+
+This demonstrates using the standard `<iframe>` HTML element.
+
+## Basic Example (16:9 aspect ratio by default)
+
+<iframe 
+  src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-box--box-st&viewMode=story" 
+  title="Drei Box Storybook"
+/>
+
+## With Custom Height
+
+<iframe 
+  src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-center--center-st&viewMode=story" 
+  title="Drei Center Storybook"
+  height="400px"
+/>
+
+## With Custom Style
+
+<iframe 
+  src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+  title="Drei AccumulativeShadows Storybook"
+  style={{aspectRatio: '4/3'}}
+/>

@@ -146,12 +146,12 @@ Although it is probably better to use CSS for this:
 > [!NOTE]
 > See [`MDX_BASEURL`](introduction#configuration:~:text=MDX_BASEURL) to understand how it is converted to a full URL.
 
-### `Iframe`
+### `iframe`
 
-Embed external content like Storybook stories, YouTube videos, or any iframe-compatible content.
+Embed external content like Storybook stories, YouTube videos, or any iframe-compatible content using the standard HTML `<iframe>` element.
 
 ```md
-<Iframe 
+<iframe 
   src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
   title="Drei AccumulativeShadows Storybook"
 />
@@ -160,35 +160,35 @@ Embed external content like Storybook stories, YouTube videos, or any iframe-com
 <details>
   <summary>Result</summary>
 
-<Iframe 
+<iframe 
   src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
   title="Drei AccumulativeShadows Storybook"
 />
 
 </details>
 
-By default, the iframe uses a 16:9 aspect ratio. You can customize it:
+By default, iframes use a 16:9 aspect ratio. You can override this with an explicit height:
 
 ```md
-<Iframe 
-  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-  title="YouTube video"
-  aspectRatio="4/3"
-/>
-```
-
-Or specify an explicit height:
-
-```md
-<Iframe 
+<iframe 
   src="https://drei.pmnd.rs/iframe.html?id=staging-accumulativeshadows--accumulative-shadow-st" 
   title="Storybook"
   height="600px"
 />
 ```
 
+Or use custom styles:
+
+```md
+<iframe 
+  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+  title="YouTube video"
+  style={{aspectRatio: '4/3'}}
+/>
+```
+
 > [!TIP]
-> The `Iframe` component supports all standard HTML iframe attributes like `allow`, `sandbox`, `referrerPolicy`, etc.
+> All standard HTML iframe attributes are supported: `allow`, `sandbox`, `referrerPolicy`, etc.
 
 ### Code
 
