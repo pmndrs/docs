@@ -12,6 +12,34 @@ nav: 0
 
 [Those projects](https://github.com/search?q=%22uses%3A+pmndrs%2Fdocs%2F.github%2Fworkflows%2Fbuild.yml%22+language%3AYAML&type=code&l=YAML) are known to be using this generator.
 
+## Usage
+
+```sh
+$ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
+  MDX="docs" \
+  ICON="🥑" \
+  DOCKER_IMAGE="ghcr.io/pmndrs/docs:latest" \
+  sh
+```
+
+- you can pass any option from [configuration](#Configuration)
+- in `DOCKER_IMAGE`, you can specify any `:tag` value from [docs packages](https://github.com/pmndrs/docs/pkgs/container/docs) container registry
+
+## Test
+
+Visual tests are performed in the cloud, through [chromatic.yml](../../.github/workflows/chromatic.yml).
+
+<details>
+
+You can also replay locally:
+
+```sh
+$ npx playwright test --update-snapshots
+$ npx chromatic --playwright --project-token $CHROMATIC_PROJECT_TOKEN
+```
+
+</details>
+
 ## INSTALL
 
 Pre-requisites:
