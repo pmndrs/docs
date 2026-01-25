@@ -1,10 +1,14 @@
 # editor settings
 .vscode/
 
+# environment variables
+.env*.local
+
 # dependencies
 .pnp
 .pnp.js
 node_modules/
+package-lock.json
 
 # pnpm
 .pnpm-debug.log*

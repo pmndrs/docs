@@ -146,6 +146,50 @@ Although it is probably better to use CSS for this:
 > [!NOTE]
 > See [`MDX_BASEURL`](introduction#configuration:~:text=MDX_BASEURL) to understand how it is converted to a full URL.
 
+### `Iframe`
+
+Embed external content like Storybook stories, YouTube videos, or any iframe-compatible content.
+
+```md
+<Iframe 
+  src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+  title="Drei AccumulativeShadows Storybook"
+/>
+```
+
+<details>
+  <summary>Result</summary>
+
+<Iframe 
+  src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+  title="Drei AccumulativeShadows Storybook"
+/>
+
+</details>
+
+By default, the iframe uses a 16:9 aspect ratio. You can customize it:
+
+```md
+<Iframe 
+  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+  title="YouTube video"
+  aspectRatio="4/3"
+/>
+```
+
+Or specify an explicit height:
+
+```md
+<Iframe 
+  src="https://drei.pmnd.rs/iframe.html?id=staging-accumulativeshadows--accumulative-shadow-st" 
+  title="Storybook"
+  height="600px"
+/>
+```
+
+> [!TIP]
+> The `Iframe` component supports all standard HTML iframe attributes like `allow`, `sandbox`, `referrerPolicy`, etc.
+
 ### Code
 
 Line numbers/highlights are supported:
