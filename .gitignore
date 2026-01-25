@@ -23,6 +23,7 @@ tmp/
 temp/
 
 tsconfig.tsbuildinfo
+next-env.d.ts
 
 # Playwright
 test-results/
