@@ -1,18 +1,18 @@
-export * from './Code'
+export { Code } from './Code'
 // export * from './Codesandbox'
-export * from './Details'
-export * from './Entries'
-export * from './Gha'
-export * from './Grid'
-export * from './Hint'
-export * from './Img'
-export * from './Intro'
-export * from './Keypoints'
-export * from './Mermaid'
-export * from './People'
-export * from './Sandpack'
-export * from './Summary'
-export * from './Toc'
+export { Details } from './Details'
+export { Entries } from './Entries'
+export { Gha } from './Gha'
+export { Grid } from './Grid'
+export { Hint } from './Hint'
+export { Img } from './Img'
+export { Intro } from './Intro'
+export { Keypoints, KeypointsItem } from './Keypoints'
+export { Mermaid } from './Mermaid'
+export { Contributors, Backers } from './People'
+export { Sandpack } from './Sandpack'
+export { Summary } from './Summary'
+export { Toc } from './Toc'
 
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
@@ -127,8 +127,7 @@ export const code = (props: ComponentProps<'code'>) => (
   />
 )
 
-// Export a plain object containing all MDX components
-// This can be imported and spread in compileMDX options
+// Plain object export that can be safely spread in compileMDX options
 export const mdxComponents = {
   Code,
   Details,
