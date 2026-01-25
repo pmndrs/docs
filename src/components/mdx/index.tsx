@@ -113,3 +113,59 @@ export const code = (props: ComponentProps<'code'>) => (
     {...props}
   />
 )
+
+// Re-import all components to create a components object for compileMDX
+import { Code } from './Code'
+import { Details } from './Details'
+import { Entries } from './Entries'
+import { Gha } from './Gha'
+import { Grid } from './Grid'
+import { Hint } from './Hint'
+import { Intro } from './Intro'
+import { Keypoints, KeypointsItem } from './Keypoints'
+import { Contributors, Backers } from './People'
+import { Mermaid } from './Mermaid'
+import { Sandpack } from './Sandpack'
+import { Summary } from './Summary'
+import { Toc } from './Toc'
+
+// Export a plain object containing all MDX components
+// This can be imported and spread in compileMDX options
+export const mdxComponents = {
+  Code,
+  Details,
+  Entries,
+  Gha,
+  Grid,
+  Hint,
+  Img,
+  Intro,
+  Keypoints,
+  KeypointsItem,
+  Contributors,
+  Backers,
+  Mermaid,
+  Sandpack,
+  Summary,
+  Toc,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  ul,
+  ol,
+  li,
+  p,
+  hr,
+  blockquote,
+  table,
+  thead,
+  th,
+  tr,
+  td,
+  a,
+  img,
+  code,
+}
