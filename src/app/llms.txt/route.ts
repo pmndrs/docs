@@ -15,10 +15,8 @@ export async function GET() {
     const docs = await getDocs(MDX, null, false)
 
     // Generate llms.txt content
-    let content = '# Documentation\n\n'
-
     const libname = process.env.NEXT_PUBLIC_LIBNAME || 'Documentation'
-    content += `# ${libname}\n\n`
+    let content = `# ${libname}\n\n`
 
     // Add each document
     for (const doc of docs) {
