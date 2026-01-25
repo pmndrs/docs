@@ -1,6 +1,5 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import * as MDX from '@/components/mdx'
-import { Entries } from '@/components/mdx'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox1 } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
@@ -227,7 +226,7 @@ async function _getDocs(
           },
           components: Object.assign({}, MDX, {
             Codesandbox: (props: any) => <Codesandbox1 {...props} boxes={boxes} />,
-            Entries: () => <Entries items={entries} />,
+            Entries: () => <MDX.Entries items={entries} />,
           }),
         })
 
