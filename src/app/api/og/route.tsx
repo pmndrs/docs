@@ -14,7 +14,14 @@ export async function GET(request: NextRequest) {
     }
 
     const slug = slugParam.split('/')
-    const { doc } = await getData(...slug)
+    let doc
+    try {
+      const result = await getData(...slug)
+      doc = result.doc
+    } catch (error) {
+      console.error('Error fetching doc data:', error)
+      return new Response('Doc not found', { status: 404 })
+    }
 
     const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME || 'Documentation'
     const primary = process.env.THEME_PRIMARY || '#323e48'
