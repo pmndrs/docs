@@ -117,18 +117,19 @@ export const iframe = ({
   style,
   ...props
 }: ComponentProps<'iframe'>) => {
+  // Apply default 16:9 aspect ratio only when height is not specified
   const aspectRatioStyle =
     height !== undefined && height !== '' ? undefined : { aspectRatio: '16/9' }
 
   return (
-    <div className={cn('my-8', className)}>
+    <div className="my-8">
       <iframe
         src={src}
         width={width}
         height={height}
         title={title}
         loading={loading}
-        className="bg-surface-container w-full rounded-lg border-0"
+        className={cn('bg-surface-container w-full rounded-lg border-0', className)}
         style={{ ...aspectRatioStyle, ...style }}
         {...props}
       />
