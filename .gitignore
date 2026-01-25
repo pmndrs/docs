@@ -21,6 +21,9 @@ out/
 tmp/
 temp/
 
+# Generated OG images (build artifacts)
+public/og/
+
 tsconfig.tsbuildinfo
 
 # Playwright
