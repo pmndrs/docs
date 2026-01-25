@@ -17,7 +17,20 @@ export * from './Toc'
 import cn from '@/lib/cn'
 import { MARKDOWN_REGEX } from '@/utils/docs'
 import { ComponentProps } from 'react'
+import { Code } from './Code'
+import { Details } from './Details'
+import { Entries } from './Entries'
+import { Gha } from './Gha'
+import { Grid } from './Grid'
+import { Hint } from './Hint'
 import { Img } from './Img'
+import { Intro } from './Intro'
+import { Keypoints, KeypointsItem } from './Keypoints'
+import { Contributors, Backers } from './People'
+import { Mermaid } from './Mermaid'
+import { Sandpack } from './Sandpack'
+import { Summary } from './Summary'
+import { Toc } from './Toc'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
@@ -113,21 +126,6 @@ export const code = (props: ComponentProps<'code'>) => (
     {...props}
   />
 )
-
-// Re-import all components to create a components object for compileMDX
-import { Code } from './Code'
-import { Details } from './Details'
-import { Entries } from './Entries'
-import { Gha } from './Gha'
-import { Grid } from './Grid'
-import { Hint } from './Hint'
-import { Intro } from './Intro'
-import { Keypoints, KeypointsItem } from './Keypoints'
-import { Contributors, Backers } from './People'
-import { Mermaid } from './Mermaid'
-import { Sandpack } from './Sandpack'
-import { Summary } from './Summary'
-import { Toc } from './Toc'
 
 // Export a plain object containing all MDX components
 // This can be imported and spread in compileMDX options
