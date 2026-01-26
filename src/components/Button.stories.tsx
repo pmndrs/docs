@@ -19,21 +19,18 @@ type Story = StoryObj<typeof meta>
 
 // Stories render the Button as it would be used in MDX
 export const Default: Story = {
-  args: {},
   render: () => (
     <Button>Click me</Button>
   ),
 }
 
 export const Primary: Story = {
-  args: {},
   render: () => (
     <Button>Primary Button</Button>
   ),
 }
 
 export const LongText: Story = {
-  args: {},
   render: () => (
     <Button>This is a button with longer text</Button>
   ),
