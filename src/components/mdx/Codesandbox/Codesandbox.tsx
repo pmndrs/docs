@@ -12,7 +12,6 @@ export type CSB = {
 }
 
 type CodesandboxProps = CSB & {
-  hideTitle?: boolean
   embed?: boolean
 } & ComponentProps<'a'> & {
     imgProps?: ComponentProps<'img'>
@@ -20,16 +19,19 @@ type CodesandboxProps = CSB & {
 
 export function Codesandbox({
   id,
-  title = '',
-  description = '',
+  title,
+  description,
   screenshot_url,
   tags = [],
   //
-  hideTitle = false,
   embed = false,
   className,
   imgProps: { className: imgClassName } = {},
 }: CodesandboxProps) {
+  // Auto-generate screenshot_url from id if not provided
+  const screenshotUrl =
+    screenshot_url || `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`
+
   return (
     <>
       {embed ? (
@@ -47,19 +49,17 @@ export function Codesandbox({
           rel="noreferrer"
           className={cn('mb-2 block', className)}
         >
-          {screenshot_url && (
-            <Img
-              src={screenshot_url}
-              alt={title}
-              width={1763}
-              height={926}
-              className={cn('aspect-video object-cover', imgClassName)}
-            />
-          )}
+          <Img
+            src={screenshotUrl}
+            alt={title || ''}
+            width={1763}
+            height={926}
+            className={cn('aspect-video object-cover', imgClassName)}
+          />
         </a>
       )}
 
-      {!hideTitle && (
+      {title && (
         <>
           <h6 className={cn('mt-2 text-xs text-on-surface-variant')}>{title}</h6>
           {description && <p className={cn('mt-1')}>{description}</p>}

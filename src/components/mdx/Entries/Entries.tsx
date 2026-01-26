@@ -36,8 +36,6 @@ export async function Entries({
                         <Codesandbox
                           key={id}
                           id={id}
-                          screenshot_url={`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}
-                          hideTitle
                           className="inline-block"
                           imgProps={{ className: 'h-[1em] w-auto rounded-[1px]' }}
                         />
