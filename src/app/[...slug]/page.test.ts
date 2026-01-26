@@ -56,7 +56,7 @@ const ogImageTemplate = (src: string) => `
 
 test.describe('og images', () => {
   // Skip responsive viewports for OG image tests - images are always 1200x630
-  test.skip(({ browserName }, testInfo) => testInfo.project.name === 'w375')
+  test.skip(({}, testInfo) => testInfo.project.name === 'w375')
 
   test('introduction og', async ({ page }) => {
     await page.goto('/')
