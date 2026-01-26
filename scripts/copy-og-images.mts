@@ -31,12 +31,14 @@ try {
 
   // Copy OG images to out directory
   fs.cpSync(sourceDir, targetDir, { recursive: true })
-  
+
   // Count files copied
-  const files = fs.readdirSync(targetDir, { recursive: true }).filter(f => f.endsWith('.png'))
+  const allEntries = fs.readdirSync(targetDir, { recursive: true })
+  const files = allEntries.filter((f) => typeof f === 'string' && f.endsWith('.png'))
   console.log(`✓ Copied ${files.length} OG images to out/og/ directory`)
 } catch (error) {
-  console.error('Error copying OG images:', error.message)
+  const errorMessage = error?.message || String(error)
+  console.error('Error copying OG images:', errorMessage)
   // Don't fail the build
   process.exit(0)
 }
