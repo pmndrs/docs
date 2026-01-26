@@ -2,7 +2,6 @@ import { Img } from '@/components/mdx'
 
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
-import { fetchCSB } from './fetchCSB'
 
 export type CSB = {
   id: string
@@ -85,19 +84,18 @@ export function Codesandbox0({
   )
 }
 
-export async function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
-  const ids = boxes // populated from 1.
-  // console.log('ids', ids)
-
-  //
-  // Batch fetch all CSBs of the page
-  //
-  const csbs = await fetchCSB(...ids)
-  // console.log('boxes', boxes)
-  const data = csbs[props.id]
-  // console.log('data', data)
-
-  // Merge initial props with data
-  const merged = { ...data, ...props }
+export function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
+  // Directly construct the screenshot URL without fetching from API
+  const screenshot_url = `https://codesandbox.io/api/v1/sandboxes/${props.id}/screenshot.png`
+  
+  // Use props with constructed screenshot URL
+  const merged = {
+    screenshot_url,
+    title: props.title || '',
+    description: props.description || '',
+    tags: props.tags || [],
+    ...props,
+  }
+  
   return <Codesandbox0 {...merged} />
 }
