@@ -1,11 +1,12 @@
 import cn from '@/lib/cn'
-import { ReactNode } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 import { BiCommentError } from 'react-icons/bi'
 import { CgInfo } from 'react-icons/cg'
 import { HiOutlineLightBulb } from 'react-icons/hi2'
 import { PiSealWarning, PiWarning } from 'react-icons/pi'
 
-import { p as P } from '@/components/mdx'
+// Inline p component to avoid importing from main index
+const P = (props: ComponentProps<'p'>) => <p className="my-4" {...props} />
 
 type Style = {
   icon: React.ComponentType
