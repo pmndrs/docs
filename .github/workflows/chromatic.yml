@@ -53,13 +53,11 @@ jobs:
         with:
           name: test-results
           path: ./test-results
-      - name: Publish Storybook to Chromatic
+      - name: Run Chromatic
         uses: chromaui/action@latest
         with:
           # ⚠️ Enable Playwright
           playwright: true
-          # ⚠️ Enable Storybook
-          onlyChanged: true
           # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: 'main'
