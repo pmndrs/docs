@@ -728,3 +728,27 @@ or better:
 <Backers repo="react-three-fiber" />
 
 </details>
+
+### `Entries`
+
+Displays all documentation pages grouped by their top-level category (first part of the slug). Each entry shows the page title with links to associated CodeSandbox examples.
+
+```md
+<Entries />
+```
+
+<details>
+  <summary>Result</summary>
+
+<Entries />
+
+</details>
+
+You can exclude specific groups from the listing:
+
+```md
+<Entries excludedGroups={['getting-started', 'examples']} />
+```
+
+> [!NOTE]
+> The `Entries` component automatically receives all documentation pages from the system. It groups them by the first segment of their URL path (e.g., 'getting-started', 'tutorials', etc.).
