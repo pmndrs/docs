@@ -74,7 +74,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next",
     "start": "next start",
-    "build": "next build",
+    "build": "tsx scripts/generate-og-images.mts && next build",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",

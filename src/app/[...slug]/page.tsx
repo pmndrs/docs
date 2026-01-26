@@ -13,12 +13,22 @@ export async function generateMetadata({ params }: Props) {
   const title = `${doc.title} - ${process.env.NEXT_PUBLIC_LIBNAME}`
   const description = doc.description
   const url = doc.url
+  // Use generated OG image, fallback to doc.image or nothing
+  const ogImage = `/og/${slug.join('/')}.png`
 
   return {
     title,
     description,
     openGraph: {
       title,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: doc.title,
+        },
+      ],
       description,
       url,
       type: 'article',

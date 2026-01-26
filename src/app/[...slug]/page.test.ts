@@ -49,19 +49,19 @@ test('github-actions dark', async ({ page }) => {
 //
 
 test('introduction og', async ({ page }) => {
-  await page.goto('/getting-started/introduction/opengraph-image')
+  await page.goto('/og/getting-started/introduction.png')
   await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 
 test('authoring og', async ({ page }) => {
-  await page.goto('/getting-started/authoring/opengraph-image')
+  await page.goto('/og/getting-started/authoring.png')
   await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 
 test('github-actions og', async ({ page }) => {
-  await page.goto('/getting-started/github-actions/opengraph-image')
+  await page.goto('/og/getting-started/github-actions.png')
   await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
