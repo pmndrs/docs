@@ -42,9 +42,35 @@ Any key is optional.
 
 ## MARKDOWN
 
-You can use any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
+Worth mentioning, you can use **standard HTML**, with [tailwind](https://tailwindcss.com) support:
 
-Plus, all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX components.
+```md
+<div>
+  <iframe src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+    className="w-full h-60 rounded-lg"
+  />
+  <p className="mt-1 text-xs text-on-surface-variant">This is an embed iframe of [Drei's `<AccumulativeShadows>` story](https://drei.pmnd.rs/?path=/docs/staging-accumulativeshadows--docs).</p>
+</div>
+```
+
+<details>
+  <summary>Result</summary>
+
+<div>
+  <iframe src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+    className="w-full h-60 rounded-lg"
+  />
+  <p className="mt-1 text-xs text-on-surface-variant">This is an embed iframe of [Drei's `<AccumulativeShadows>` story](https://drei.pmnd.rs/?path=/docs/staging-accumulativeshadows--docs).</p>
+</div>
+</details>
+
+> [!TIP]
+>
+> We use [react-mcu](https://github.com/abernier/react-mcu) colors, eg: `text-on-surface-variant` above
+
+Plus:
+- any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
+- all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX components.
 
 ### `Intro`
 
