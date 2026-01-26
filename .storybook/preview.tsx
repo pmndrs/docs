@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/nextjs-vite'
 import '../src/app/globals.css'
-import { McuProvider } from 'react-mcu'
+import { Mcu } from 'react-mcu'
 
 const preview: Preview = {
   parameters: {
@@ -13,11 +13,11 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <McuProvider>
+      <Mcu source="#6750A4" scheme="tonalSpot">
         <div className="p-8">
           <Story />
         </div>
-      </McuProvider>
+      </Mcu>
     ),
   ],
 }
