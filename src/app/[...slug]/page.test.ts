@@ -48,47 +48,29 @@ test('github-actions dark', async ({ page }) => {
 // Test OG images
 //
 
+const ogImageTemplate = (src: string) => `
+  <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#000">
+    <img src="${src}" style="max-width:100%;height:auto" />
+  </body>
+`
+
 test('introduction og', async ({ page }) => {
   await page.goto('/')
-  await page.setContent(`
-    <!DOCTYPE html>
-    <html>
-      <head><title>OG Image: Introduction</title></head>
-      <body style="margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #000;">
-        <img src="/og/getting-started/introduction.png" alt="Introduction OG Image" style="max-width: 100%; height: auto;" />
-      </body>
-    </html>
-  `)
+  await page.setContent(ogImageTemplate('/og/getting-started/introduction.png'))
   await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 
 test('authoring og', async ({ page }) => {
   await page.goto('/')
-  await page.setContent(`
-    <!DOCTYPE html>
-    <html>
-      <head><title>OG Image: Authoring</title></head>
-      <body style="margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #000;">
-        <img src="/og/getting-started/authoring.png" alt="Authoring OG Image" style="max-width: 100%; height: auto;" />
-      </body>
-    </html>
-  `)
+  await page.setContent(ogImageTemplate('/og/getting-started/authoring.png'))
   await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 
 test('github-actions og', async ({ page }) => {
   await page.goto('/')
-  await page.setContent(`
-    <!DOCTYPE html>
-    <html>
-      <head><title>OG Image: GitHub Actions</title></head>
-      <body style="margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #000;">
-        <img src="/og/getting-started/github-actions.png" alt="GitHub Actions OG Image" style="max-width: 100%; height: auto;" />
-      </body>
-    </html>
-  `)
+  await page.setContent(ogImageTemplate('/og/getting-started/github-actions.png'))
   await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
