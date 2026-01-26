@@ -21,12 +21,16 @@ test('introduction dark', async ({ page }) => {
 test('authoring', async ({ page }) => {
   await page.goto('/getting-started/authoring')
   await page.waitForLoadState('networkidle')
+  // Expand all <details> elements to show their content in screenshots
+  await page.$$eval('details', (details) => details.forEach((el) => (el.open = true)))
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 test('authoring dark', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('/getting-started/authoring')
   await page.waitForLoadState('networkidle')
+  // Expand all <details> elements to show their content in screenshots
+  await page.$$eval('details', (details) => details.forEach((el) => (el.open = true)))
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 
