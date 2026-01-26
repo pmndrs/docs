@@ -78,6 +78,7 @@ const mdxComponents = {
 }
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
+import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
@@ -171,6 +172,8 @@ async function _getDocs(
       const _lastSegment = slug[slug.length - 1]
       const title: string = frontmatter.title.trim() ?? _lastSegment.replace(/\-/g, ' ')
 
+      const boxes: string[] = []
+
       // Sanitize markdown
       let content = compiled.content
         // Remove <!-- --> comments from frontMatter
@@ -180,10 +183,22 @@ async function _getDocs(
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
+      await compileMDX({
+        source: content,
+        options: {
+          mdxOptions: {
+            rehypePlugins: [
+              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
+            ],
+          },
+        },
+      })
+
       return {
         slug,
         url,
         title,
+        boxes,
         //
         file,
         content,
@@ -203,6 +218,7 @@ async function _getDocs(
         slug,
         url,
         title,
+        boxes,
         // Passed from the 1st pass
         file,
         content,
@@ -302,6 +318,7 @@ async function _getDocs(
           description,
           nav,
           content: jsx,
+          boxes,
           tableOfContents,
         }
       },

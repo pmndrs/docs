@@ -7,6 +7,7 @@ type Entry = {
   title: string
   url: string
   slug: string[]
+  boxes: string[]
 }
 
 export async function Entries({
@@ -25,11 +26,22 @@ export async function Entries({
             <Fragment key={group}>
               <h2 className="my-8 text-xl capitalize first-of-type:mt-0">{group}</h2>
               <ul className="text-sm">
-                {entries?.map(({ title, url }) => (
+                {entries?.map(({ title, url, boxes }) => (
                   <li key={url} className="flex gap-1">
                     <a href={url} className="text-primary">
                       {title}
                     </a>
+                    <span className="inline-flex gap-1">
+                      {boxes.map((id) => (
+                        <Codesandbox
+                          key={id}
+                          id={id}
+                          hideTitle
+                          className="inline-block"
+                          imgProps={{ className: 'h-[1em] w-auto rounded-[1px]' }}
+                        />
+                      ))}
+                    </span>
                   </li>
                 ))}
               </ul>
