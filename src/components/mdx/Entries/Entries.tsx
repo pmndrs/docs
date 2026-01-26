@@ -1,7 +1,7 @@
 import { ComponentProps, Fragment } from 'react'
 
 import { groupBy } from 'lodash-es'
-import { Codesandbox1 } from '../Codesandbox'
+import { Codesandbox } from '../Codesandbox'
 
 type Entry = {
   title: string
@@ -33,11 +33,9 @@ export async function Entries({
                     </a>
                     <span className="inline-flex gap-1">
                       {boxes.map((id) => (
-                        <Codesandbox1
+                        <Codesandbox
                           key={id}
                           id={id}
-                          boxes={[id]}
-                          hideTitle
                           className="inline-block"
                           imgProps={{ className: 'h-[1em] w-auto rounded-[1px]' }}
                         />

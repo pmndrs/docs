@@ -1,1 +1,1 @@
-export * from './Codesandbox'
+export { Codesandbox, type CSB } from './Codesandbox'

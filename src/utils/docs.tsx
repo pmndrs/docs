@@ -77,7 +77,7 @@ const mdxComponents = {
   code,
 }
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
-import { Codesandbox1 } from '@/components/mdx/Codesandbox'
+import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
@@ -302,7 +302,7 @@ async function _getDocs(
           },
           components: {
             ...mdxComponents,
-            Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
+            Codesandbox: (props) => <Codesandbox {...props} />,
             Entries: () => <Entries items={entries} />,
           },
         })
