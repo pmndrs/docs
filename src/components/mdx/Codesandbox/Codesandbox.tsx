@@ -84,7 +84,7 @@ export function Codesandbox0({
   )
 }
 
-export function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
+export function Codesandbox1({ boxes: _boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
   // Directly construct the screenshot URL without fetching from API
   const screenshot_url = `https://codesandbox.io/api/v1/sandboxes/${props.id}/screenshot.png`
   
