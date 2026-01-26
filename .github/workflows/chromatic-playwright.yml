@@ -28,8 +28,8 @@ jobs:
           name: test-results
           path: ./test-results
           retention-days: 30
-  chromatic-playwright:
-    name: Run Chromatic (Playwright)
+  chromatic:
+    name: Run Chromatic
     needs: playwright
     runs-on: ubuntu-latest
     steps:
