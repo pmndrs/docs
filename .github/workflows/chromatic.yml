@@ -49,7 +49,7 @@ jobs:
           # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
         run: pnpm install --frozen-lockfile
       - name: Download Playwright test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: test-results
           path: ./test-results
