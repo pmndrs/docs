@@ -54,8 +54,8 @@ importers:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.3)
       match-sorter:
-        specifier: ^6.3.4
-        version: 6.4.0
+        specifier: ^8.2.0
+        version: 8.2.0
       mermaid:
         specifier: ^11.12.2
         version: 11.12.2
@@ -3652,9 +3652,8 @@ packages:
     engines: {node: '>= 20'}
     hasBin: true
 
-  match-sorter@6.4.0:
-    resolution: {integrity: sha512-d4664ahzdL1QTTvmK1iI0JsrxWeJ6gn33qkYtnPg3mcn+naBLtXSgSPOe+X2vUgtgGwaAk3eiaj7gwKjjMAq+Q==}
-    deprecated: This was arguably a breaking change. Not in API, but more results can be returned. Upgrade to the next major when you are ready for that
+  match-sorter@8.2.0:
+    resolution: {integrity: sha512-qRVB7wYMJXizAWR4TKo5UYwgW7oAVzA8V9jve0wGzRvV91ou9dcqL+/2gJtD0PZ/Pm2Fq6cVT4VHXHmDFVMGRA==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -9076,7 +9075,7 @@ snapshots:
 
   marked@16.4.2: {}
 
-  match-sorter@6.4.0:
+  match-sorter@8.2.0:
     dependencies:
       '@babel/runtime': 7.28.6
       remove-accents: 0.5.0
