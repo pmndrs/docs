@@ -1,7 +1,6 @@
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
-import { li as Li } from '../li'
-import { ul as Ul } from '../ul'
+import { li as Li, ul as Ul } from '../index'
 
 export function Keypoints({
   title = 'Keypoints',
