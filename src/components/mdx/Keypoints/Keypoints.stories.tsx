@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Keypoints, KeypointsItem } from '../Keypoints'
+import { Keypoints, KeypointsItem } from './Keypoints'
 
 const meta = {
   title: 'MDX Components/Keypoints',

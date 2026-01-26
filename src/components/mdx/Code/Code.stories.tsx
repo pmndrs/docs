@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Code } from '../Code'
+import { Code } from './Code'
 
 const meta = {
   title: 'MDX Components/Code',
