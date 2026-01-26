@@ -6,7 +6,6 @@ const output = process.env.OUTPUT || undefined
 const nextConfig = {
   productionBrowserSourceMaps: true,
   images: {
-    // domains: ['codesandbox.io'],
     unoptimized: true,
   },
   basePath,

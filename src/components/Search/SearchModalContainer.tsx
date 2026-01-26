@@ -37,16 +37,6 @@ export const SearchModalContainer = ({
       ) satisfies SearchResult[]
       // console.log('candidateResults', candidateResults)
       // candidateResults = candidateResults.filter((entry) => entry.description.length > 0)
-      // .concat(
-      //   Object.entries(boxes).flatMap(([id, data]) => ({
-      //     ...data,
-      //     label: 'codesandbox.io',
-      //     description: data.description ?? '',
-      //     content: data.content ?? '',
-      //     url: `https://codesandbox.io/s/${id}`,
-      //     image: data?.screenshot_url,
-      //   }))
-      // )
 
       const results = matchSorter(candidateResults, deferredQuery, {
         keys: ['title', 'description', 'content'],

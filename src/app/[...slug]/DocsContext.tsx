@@ -24,7 +24,6 @@ export type Doc = {
   description: string
   image: string
   content: ReactNode
-  boxes: string[]
   tableOfContents: DocToC[]
 }
 
