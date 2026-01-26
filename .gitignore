@@ -9,6 +9,9 @@ node_modules/
 # pnpm
 .pnpm-debug.log*
 
+# npm (ignore if using pnpm)
+package-lock.json
+
 # other
 .next/
 .DS_Store

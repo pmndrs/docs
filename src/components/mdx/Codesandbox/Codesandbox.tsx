@@ -2,7 +2,6 @@ import { Img } from '@/components/mdx'
 
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
-import { fetchCSB } from './fetchCSB'
 
 export type CSB = {
   id: string
@@ -12,14 +11,14 @@ export type CSB = {
   tags?: string[]
 }
 
-type Codesandbox0Props = CSB & {
+type CodesandboxProps = CSB & {
   hideTitle?: boolean
   embed?: boolean
 } & ComponentProps<'a'> & {
     imgProps?: ComponentProps<'img'>
   }
 
-export function Codesandbox0({
+export function Codesandbox({
   id,
   title = '',
   description = '',
@@ -30,7 +29,7 @@ export function Codesandbox0({
   embed = false,
   className,
   imgProps: { className: imgClassName } = {},
-}: Codesandbox0Props) {
+}: CodesandboxProps) {
   return (
     <>
       {embed ? (
@@ -83,21 +82,4 @@ export function Codesandbox0({
       )}
     </>
   )
-}
-
-export async function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
-  const ids = boxes // populated from 1.
-  // console.log('ids', ids)
-
-  //
-  // Batch fetch all CSBs of the page
-  //
-  const csbs = await fetchCSB(...ids)
-  // console.log('boxes', boxes)
-  const data = csbs[props.id]
-  // console.log('data', data)
-
-  // Merge initial props with data
-  const merged = { ...data, ...props }
-  return <Codesandbox0 {...merged} />
 }
