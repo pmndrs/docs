@@ -6,6 +6,12 @@ const meta = {
   component: Gha,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component:
+          "Styled alert boxes for different types of notifications, following GitHub's alert syntax.",
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Gha>

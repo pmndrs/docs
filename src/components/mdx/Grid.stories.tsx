@@ -6,6 +6,11 @@ const meta = {
   component: Grid,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component: 'A responsive grid layout component for organizing content in columns.',
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Grid>

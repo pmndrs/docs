@@ -6,6 +6,11 @@ const meta = {
   component: Code,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component: 'Code blocks with syntax highlighting and copy functionality.',
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Code>

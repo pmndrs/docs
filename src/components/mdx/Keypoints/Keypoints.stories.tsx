@@ -6,6 +6,11 @@ const meta = {
   component: Keypoints,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component: 'Highlighted key points section with a bullet list.',
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Keypoints>

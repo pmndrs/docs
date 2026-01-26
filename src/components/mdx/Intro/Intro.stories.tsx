@@ -6,6 +6,12 @@ const meta = {
   component: Intro,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component:
+          'Introduction paragraph with larger text that provides a summary of the content.',
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Intro>

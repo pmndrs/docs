@@ -7,6 +7,11 @@ const meta = {
   component: Details,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component: 'Collapsible content sections using HTML details/summary elements.',
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Details>
