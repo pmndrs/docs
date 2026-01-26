@@ -52,7 +52,7 @@
     "gray-matter": "^4.0.3",
     "image-size": "^1.1.1",
     "lodash-es": "^4.17.21",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "^0.563.0",
     "match-sorter": "^6.3.4",
     "mermaid": "^11.12.2",
     "next": "^16.1.3",
