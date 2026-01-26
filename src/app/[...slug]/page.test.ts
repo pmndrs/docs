@@ -23,6 +23,8 @@ test('authoring', async ({ page }) => {
   await page.waitForLoadState('networkidle')
   // Expand all <details> elements to show their content in screenshots
   await page.$$eval('details', (details) => details.forEach((el) => (el.open = true)))
+  // Wait for any new content (like Sandpack iframes) to load after expanding
+  await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 test('authoring dark', async ({ page }) => {
@@ -31,6 +33,8 @@ test('authoring dark', async ({ page }) => {
   await page.waitForLoadState('networkidle')
   // Expand all <details> elements to show their content in screenshots
   await page.$$eval('details', (details) => details.forEach((el) => (el.open = true)))
+  // Wait for any new content (like Sandpack iframes) to load after expanding
+  await page.waitForLoadState('networkidle')
   await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
 })
 
