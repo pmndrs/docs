@@ -49,8 +49,8 @@ test('github-actions dark', async ({ page }) => {
 //
 
 const ogImageTemplate = (src: string) => `
-  <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#000">
-    <img src="${src}" style="max-width:100%;height:auto" />
+  <body>
+    <img src="${src}" />
   </body>
 `
 
