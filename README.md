@@ -17,37 +17,6 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 - you can pass any option from [configuration](docs/getting-started/introduction.mdx#Configuration)
 - in `DOCKER_IMAGE`, you can specify any `:tag` value from [docs packages](https://github.com/pmndrs/docs/pkgs/container/docs) container registry
 
-# Development
-
-## Storybook
-
-Storybook is set up to develop and test MDX components in isolation. All MDX components are available in the Storybook UI with various examples and interactive controls.
-
-To run Storybook locally:
-
-```sh
-$ pnpm storybook
-```
-
-This will start Storybook on [http://localhost:6006](http://localhost:6006).
-
-To build Storybook for production:
-
-```sh
-$ pnpm build-storybook
-```
-
-### Available Components
-
-The following MDX components are available in Storybook:
-
-- **Grid** - Responsive grid layout for organizing content (2, 3, or 4 columns)
-- **GitHub Alerts** - Styled alert boxes (Note, Tip, Important, Warning, Caution)
-- **Keypoints** - Highlighted key points section with bullet list
-- **Details** - Collapsible content sections
-- **Intro** - Introduction paragraph with larger text
-- **Code** - Code blocks with syntax highlighting and copy functionality
-
 # Test
 
 Visual tests are performed in the cloud, through [chromatic.yml](.github/workflows/chromatic.yml).
