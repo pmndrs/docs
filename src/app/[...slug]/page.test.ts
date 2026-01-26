@@ -25,7 +25,8 @@ test('authoring', async ({ page }) => {
   await page.$$eval('details', (details) => details.forEach((el) => (el.open = true)))
   // Wait for any new content (like Sandpack iframes) to load after expanding
   await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
+  // Note: Not using fullPage:true because expanded details make page too tall for Chromatic (>25M px limit)
+  await expect(page).toHaveScreenshot({ timeout: 10000 })
 })
 test('authoring dark', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' })
@@ -35,7 +36,8 @@ test('authoring dark', async ({ page }) => {
   await page.$$eval('details', (details) => details.forEach((el) => (el.open = true)))
   // Wait for any new content (like Sandpack iframes) to load after expanding
   await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
+  // Note: Not using fullPage:true because expanded details make page too tall for Chromatic (>25M px limit)
+  await expect(page).toHaveScreenshot({ timeout: 10000 })
 })
 
 //
