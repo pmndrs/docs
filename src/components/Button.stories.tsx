@@ -1,33 +1,37 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Button } from './Button'
 
-const meta: Meta<typeof Button> = {
+const meta = {
   title: 'Components/Button',
   component: Button,
   tags: ['autodocs'],
-  argTypes: {
-    children: { control: 'text' },
-    onClick: { action: 'clicked' },
+  parameters: {
+    docs: {
+      description: {
+        component: 'A simple button component demonstrating Storybook setup.',
+      },
+    },
   },
-}
+} satisfies Meta<typeof Button>
 
 export default meta
-type Story = StoryObj<typeof Button>
+type Story = StoryObj<typeof meta>
 
+// Stories render the Button as it would be used in MDX
 export const Default: Story = {
-  args: {
-    children: 'Click me',
-  },
+  render: () => (
+    <Button>Click me</Button>
+  ),
 }
 
 export const Primary: Story = {
-  args: {
-    children: 'Primary Button',
-  },
+  render: () => (
+    <Button>Primary Button</Button>
+  ),
 }
 
 export const LongText: Story = {
-  args: {
-    children: 'This is a button with longer text',
-  },
+  render: () => (
+    <Button>This is a button with longer text</Button>
+  ),
 }
