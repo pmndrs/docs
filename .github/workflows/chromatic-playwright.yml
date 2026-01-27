@@ -61,6 +61,7 @@ jobs:
           # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_PLAYWRIGHT }}
           autoAcceptChanges: 'main'
+          onlyChanged: true
         # ⚠️ Optionally configure the archive location with env vars
         env:
           CHROMATIC_ARCHIVE_LOCATION: ./test-results
