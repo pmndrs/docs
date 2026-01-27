@@ -17,11 +17,4 @@ mkdir -p ~/.config/act && echo "-P ubuntu-latest=catthehacker/ubuntu:act-latest"
 
 ## Meta: Self-Improvement
 
-When you identify something that could improve the **quality, reliability, simplicity, or performance** of your sessions, propose a change to this file.
-
-**How to propose:**
-1. Explain what you learned during your session
-2. Suggest a specific addition or modification to these instructions
-3. Explain how it improves quality, reliability, simplicity, or performance
-
-The developer will decide whether to accept your suggestion.
+To improve quality, reliability, simplicity, or performance: explain what you learned, propose a specific change to this file, and justify the improvement.
