@@ -5,7 +5,6 @@
 .pnp
 .pnp.js
 node_modules/
-package-lock.json
 
 # pnpm
 .pnpm-debug.log*
