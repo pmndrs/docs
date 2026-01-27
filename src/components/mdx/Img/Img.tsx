@@ -1,8 +1,9 @@
-import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
 
 import sizeOf from 'image-size'
 import { resolve } from 'path'
+
+import { ImgClient } from './Img.client'
 
 export async function Img({
   src,
@@ -35,16 +36,5 @@ export async function Img({
     dims.height ??= width && ratio ? Math.round(Number(width) / ratio) : h
   }
 
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      decoding="async"
-      loading="lazy"
-      alt={alt}
-      className={cn('bg-surface-container inline-block rounded-lg', className)}
-      {...dims}
-      {...props}
-    />
-  )
+  return <ImgClient src={src} alt={alt} className={className} {...dims} {...props} />
 }

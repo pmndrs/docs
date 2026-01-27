@@ -4,9 +4,9 @@ import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
 
 /**
- * Client-side version of Img component for Storybook
- * This version doesn't perform server-side image size detection
- * but accepts the same props as the server component
+ * Client-side rendering component for images
+ * Used by both the server component (after dimension detection)
+ * and directly in Storybook stories
  */
 export function ImgClient({
   src,
