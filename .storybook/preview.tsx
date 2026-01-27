@@ -13,6 +13,7 @@ const preview: Preview = {
       },
     },
   },
+  tags: ['autodocs'],
   decorators: [
     withThemeByClassName({
       themes: {
