@@ -9,7 +9,7 @@ import { useEffect } from 'react'
  *
  * Example migration:
  * Old: <Grid cols={2}><li>...</li></Grid>
- * New: <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-list text-sm mb-4"><li>...</li></ul>
+ * New: <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-list text-sm mb-4"><li>...</li></ul>
  */
 export const Grid = ({ children, cols = 4 }: { children: React.ReactNode; cols?: number }) => {
   useEffect(() => {
