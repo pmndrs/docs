@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.1.8
+
+### Patch Changes
+
+- [`25a0b47`](https://github.com/pmndrs/docs/commit/25a0b47b2be0a0f1a7cb880fb3499b9d63b24507) Thanks [@abernier](https://github.com/abernier)! - mermaid
+
 ## 3.1.7
 
 ### Patch Changes
