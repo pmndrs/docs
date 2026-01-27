@@ -6,10 +6,8 @@ nav: 8
 ---
 
 <Intro>
-  The Sandpack component provides inline, interactive code sandboxes powered by CodeSandbox. It supports multiple templates, custom dependencies, file organization, and advanced features like file explorers, code viewers, and SSR rendering, making it perfect for live code examples in documentation.
+  Interactive code sandboxes powered by CodeSandbox.
 </Intro>
-
-Inline sandboxes.
 
 > [!NOTE]
 > See Sandpack [official documentation](https://sandpack.codesandbox.io/docs/getting-started/usage) for full usage.
@@ -75,7 +73,7 @@ export default function App() {
 
 [^1]: https://sandpack.codesandbox.io/docs/guides/ssr#nextjs-app-dir  
 
-**Sandpack with folder prop**:
+#### `Sandpack[folder]`
 
 Instead of `files`, a `folder` prop allow you to pass a folder containing all the files:
 
@@ -89,9 +87,9 @@ Instead of `files`, a `folder` prop allow you to pass a folder containing all th
 `folder` path is relative to the `.mdx` file:
 
 ```text
-|-- authoring
-|   |-- sandpack.mdx                 <= relative to this article
-|   `-- authoring-sandpack-cloud     <= the folder
+|-- getting-started
+|   |-- authoring.mdx             <= relative to this article
+|   `-- authoring-sandpack-cloud  <= the folder
 ```
 
 > [!TIP]
@@ -105,6 +103,8 @@ result:
   template="react-ts"
   folder="authoring-sandpack-cloud"
 />
+
+---
 
 It is also possible to pass some individual [file format](https://sandpack.codesandbox.io/docs/getting-started/usage#file-format) configuration:
 
@@ -140,7 +140,7 @@ result:
   }}
 />
 
-**Sandpack with fileExplorer**:
+#### `Sandpack[fileExplorer]`
 
 ```tsx
 <Sandpack
@@ -162,13 +162,15 @@ result:
 > Conveniently, enabling `fileExplorer` will by default `[codeEditor={showTabs: false}]`.
 > You can override it with [`[codeEditor]` options](#sandpack[codeeditor])
 
+---
+
 You can also pass [any `fileExplorer={options: ComponentProps<SandpackFileExplorer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#file-explorer:~:text=Preview-,Options,-If%20you%27re%20looking).
 
-**Sandpack with codeEditor**:
+#### `Sandpack[codeEditor]`
 
 You can pass [any `codeEditor={options: ComponentProps<SandpackCodeEditor>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor:~:text=Preview-,Options,-Extensions).
 
-**Sandpack with codeViewer**:
+#### `Sandpack[codeViewer]`
 
 It will render the [`SandpackCodeViewer`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer) instead of the default [`SandpackCodeEditor`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor).
 
@@ -190,7 +192,7 @@ result:
 
 You can also pass [any `codeViewer={options: ComponentProps<SandpackCodeViewer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer:~:text=Preview-,Options,-CodeMirror%20decorations).
 
-## `Sandpack[codeViewer][filesDecorators]`
+##### `Sandpack[codeViewer][filesDecorators]`
 
 You can define per-file [decorators](https://sandpack.codesandbox.io/docs/advanced-usage/components#codemirror-decorations) through `filesDecorators` prop:
 
@@ -260,6 +262,6 @@ result:
   }}
 />
 
-**Sandpack with preview**:
+#### `Sandpack[preview]`
 
 You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#preview:~:text=Preview-,Options,-Additional%20buttons).

@@ -19,7 +19,7 @@ const pages = [
   '/authoring/hint',
   '/authoring/contributors',
   '/authoring/backers',
-  '/getting-started/github-actions',
+  '/github-actions/introduction',
 ]
 
 for (const pagePath of pages) {
