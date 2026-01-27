@@ -6,6 +6,8 @@ Before every `report_progress`, run:
 act -W .github/workflows/ci.yml -n
 ```
 
+Note: `act` may take 1-2 minutes to complete. Do not use `timeout` - it needs time to clone actions.
+
 If `act` is not installed:
 
 ```bash
