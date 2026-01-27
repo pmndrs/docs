@@ -1,13 +1,22 @@
 ---
-title: Grid
-description: Responsive grid layout component
+title: Grid (Deprecated)
+description: Responsive grid layout component - Use Tailwind CSS grid instead
 sourcecode: docs/authoring/grid.mdx
 nav: 7
 ---
 
+> [!CAUTION]
+> **This component is deprecated.**
+> 
+> Please use HTML with [Tailwind CSS v4 grid utilities](https://tailwindcss.com/docs/grid-template-columns) instead.
+
 <Intro>
-  Responsive grid layout.
+  The `<Grid>` MDX component is deprecated. Use native HTML with Tailwind CSS grid utilities for better flexibility and modern CSS features.
 </Intro>
+
+## Migration Guide
+
+### Old Approach (Deprecated)
 
 ```md
 <Grid cols={2}>
@@ -18,7 +27,51 @@ nav: 7
 </Grid>
 ```
 
-result:
+### New Approach (Recommended)
+
+Use Tailwind CSS v4 grid utilities with native HTML:
+
+```md
+<ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-list text-sm mb-4">
+  <li>A</li>
+  <li>B</li>
+  <li>C</li>
+  ...
+</ul>
+```
+
+For a 3-column grid:
+
+```md
+<ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 grid-list text-sm mb-4">
+  <li>A</li>
+  <li>B</li>
+  <li>C</li>
+  ...
+</ul>
+```
+
+For a 4-column grid:
+
+```md
+<ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 grid-list text-sm mb-4">
+  <li>A</li>
+  <li>B</li>
+  <li>C</li>
+  ...
+</ul>
+```
+
+## Benefits of Using Tailwind CSS Grid
+
+- **More flexible**: Use any number of columns with [Tailwind's grid-cols utilities](https://tailwindcss.com/docs/grid-template-columns)
+- **Better control**: Fine-tune spacing, alignment, and responsive behavior
+- **Standard CSS**: No custom components to maintain
+- **Modern features**: Access to all Tailwind v4 grid features like `grid-auto-flow`, `grid-auto-rows`, etc.
+
+## Legacy Example (Still Works)
+
+The old Grid component still works but will be removed in a future version:
 
 <Grid cols={2}>
   <li>A</li>
