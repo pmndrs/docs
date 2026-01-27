@@ -1,8 +1,7 @@
-import { Img } from '@/components/mdx'
-
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
 import { fetchCSB } from './fetchCSB'
+import { Img } from '../Img'
 
 export type CSB = {
   id: string
