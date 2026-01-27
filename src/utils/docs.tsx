@@ -1,52 +1,48 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import {
   a,
-  Backers,
   blockquote,
-  Code,
   code,
-  Contributors,
-  Details,
-  Entries,
-  Gha,
-  Grid,
   h1,
   h2,
   h3,
   h4,
   h5,
   h6,
-  Hint,
   hr,
-  Img,
-  img,
-  Intro,
-  Keypoints,
-  KeypointsItem,
   li,
-  Mermaid,
   ol,
   p,
-  Sandpack,
-  Summary,
   table,
   td,
   th,
   thead,
-  Toc,
   tr,
   ul,
 } from '@/components/mdx'
-
+import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox1 } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
+import { Entries } from '@/components/mdx/Entries'
+import { Gha } from '@/components/mdx/Gha'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
+import { Grid } from '@/components/mdx/Grid'
+import { Hint } from '@/components/mdx/Hint'
+import { Img } from '@/components/mdx/Img'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
+import { Intro } from '@/components/mdx/Intro'
+import { Keypoints, KeypointsItem } from '@/components/mdx/Keypoints'
+import { Mermaid } from '@/components/mdx/Mermaid'
 import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
+import { Backers, Contributors } from '@/components/mdx/People'
+import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
+import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
+import { Toc } from '@/components/mdx/Toc'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
@@ -56,46 +52,6 @@ import { dirname } from 'node:path'
 import { cache } from 'react'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
-
-// TODO: replace with `import * as mdxComponents from '@/components/mdx' once no more issue with turbopack and spreading `...mdxComponents` ("TypeError: 'ownKeys' on proxy")
-const SUPPORTED_MDX_COMPONENTS = {
-  Code,
-  Details,
-  Entries,
-  Gha,
-  Grid,
-  Hint,
-  Img,
-  Intro,
-  Keypoints,
-  KeypointsItem,
-  Contributors,
-  Backers,
-  Mermaid,
-  Sandpack,
-  Summary,
-  Toc,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  ul,
-  ol,
-  li,
-  p,
-  hr,
-  blockquote,
-  table,
-  thead,
-  th,
-  tr,
-  td,
-  a,
-  img,
-  code,
-}
 
 /**
  * Checks for .md(x) file extension
@@ -303,7 +259,44 @@ async function _getDocs(
             },
           },
           components: {
-            ...SUPPORTED_MDX_COMPONENTS,
+            ...{
+              Code,
+              Details,
+              Entries,
+              Gha,
+              Grid,
+              Hint,
+              Img,
+              Intro,
+              Keypoints,
+              KeypointsItem,
+              Contributors,
+              Backers,
+              Mermaid,
+              Sandpack,
+              Summary,
+              Toc,
+              h1,
+              h2,
+              h3,
+              h4,
+              h5,
+              h6,
+              ul,
+              ol,
+              li,
+              p,
+              hr,
+              blockquote,
+              table,
+              thead,
+              th,
+              tr,
+              td,
+              a,
+              img: Img,
+              code,
+            },
             Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
             Entries: () => <Entries items={entries} />,
           },

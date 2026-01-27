@@ -1,0 +1,73 @@
+---
+title: Authoring
+description: How to write documentation
+sourcecode: docs/authoring/introduction.mdx
+nav: 1
+---
+
+<Intro>
+  This is a guide on how to write documentation. We support all [GFM](https://github.github.com/gfm/) syntax, plus some custom components that are described here.
+</Intro>
+
+<Keypoints>
+  <KeypointsItem>[Front matter](#frontmatter) metadatas</KeypointsItem>
+  <KeypointsItem>Custom [markdown](#markdown) components</KeypointsItem>
+</Keypoints>
+
+In your `MDX` folder, create any `path/to/my-document.mdx`:
+
+```md
+---
+title: My Document
+description: Lorem ipsum...
+nav: 0
+image: dog.png
+sourcecode: to/my-document.mdx
+---
+
+MARKDOWN
+```
+
+## Frontmatter
+
+Any key is optional.
+
+- `title`: if not provided, last part of the path is used: `my document`
+- `description`
+- `sourcecode`: relative path to the source-code file
+- `image`:
+  - relative (to the md file) or absolute path, eg: `dog.png`, `./dog.png`, `../../dog.png`, `/dog.png` or `https://animals.com/dog.png`
+  - will be used as metadata image if provided
+- `nav`: order in the navigation (on the same level)
+
+## MARKDOWN
+
+Worth mentioning, you can use **standard HTML**, with [tailwind](https://tailwindcss.com) support:
+
+```md
+<div>
+  <iframe src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+    className="w-full h-60 rounded-lg"
+  />
+  <p className="mt-1 text-xs text-on-surface-variant">This is an embed iframe of [Drei's `<AccumulativeShadows>` story](https://drei.pmnd.rs/?path=/docs/staging-accumulativeshadows--docs).</p>
+</div>
+```
+
+result:
+
+<div>
+  <iframe src="https://drei.pmnd.rs/iframe.html?globals=&args=&id=staging-accumulativeshadows--accumulative-shadow-st&viewMode=story" 
+    className="w-full h-60 rounded-lg"
+  />
+  <p className="mt-1 text-xs text-on-surface-variant">This is an embed iframe of [Drei's `<AccumulativeShadows>` story](https://drei.pmnd.rs/?path=/docs/staging-accumulativeshadows--docs).</p>
+</div>
+
+> [!TIP]
+>
+> We use [react-mcu](https://github.com/abernier/react-mcu) colors, eg: `text-on-surface-variant` above
+
+Plus:
+- any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
+- all exported [`components/mdx/index.tsx`](components/mdx/index.tsx) MDX components.
+
+See the following pages for detailed documentation on each custom component.
