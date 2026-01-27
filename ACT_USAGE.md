@@ -1,23 +1,23 @@
-# Test des Workflows GitHub avec `act`
+# Testing GitHub Workflows with `act`
 
-Ce guide explique comment utiliser `act` pour exécuter et tester les workflows GitHub Actions localement dans ce repository.
+This guide explains how to use `act` to execute and test GitHub Actions workflows locally in this repository.
 
-> **Note pour les agents Copilot:** Des instructions spécifiques pour la validation pre-push sont disponibles dans [.github/agents/README.md](.github/agents/README.md)
+> **Note for Copilot agents:** Specific instructions for pre-push validation are available in [.github/agents/README.md](.github/agents/README.md)
 
-## 🎯 Objectif
+## 🎯 Objective
 
-`act` permet de :
-- ✅ Tester les workflows localement avant de les pousser sur GitHub
-- 🐛 Déboguer les problèmes de CI/CD rapidement
-- ⚡ Itérer sur les configurations sans polluer l'historique Git
-- 🤖 Validation automatique pour les agents Copilot avant chaque push
+`act` allows you to:
+- ✅ Test workflows locally before pushing to GitHub
+- 🐛 Debug CI/CD issues quickly
+- ⚡ Iterate on configurations without polluting Git history
+- 🤖 Automatic validation for Copilot agents before each push
 
-## 📦 Installation de `act`
+## 📦 Installing `act`
 
-`act` a été installé et configuré dans cet environnement. Si vous souhaitez l'installer ailleurs :
+`act` has been installed and configured in this environment. If you want to install it elsewhere:
 
 ```bash
-# Télécharger et installer le binaire
+# Download and install the binary
 cd /tmp
 curl -L https://github.com/nektos/act/releases/latest/download/act_Linux_x86_64.tar.gz -o act.tar.gz
 tar xzf act.tar.gz
@@ -25,83 +25,83 @@ sudo mv act /usr/local/bin/
 act --version
 ```
 
-## 🚀 Utilisation rapide
+## 🚀 Quick Start
 
-### Via le script helper
+### Via the helper script
 
-Nous avons créé un script pratique pour simplifier l'utilisation :
+We have created a convenient script to simplify usage:
 
 ```bash
-# Lister tous les workflows
+# List all workflows
 ./scripts/test-workflows.sh list
 
-# Tester le workflow CI en mode dry-run (recommandé)
+# Test CI workflow in dry-run mode (recommended)
 ./scripts/test-workflows.sh ci --dry-run
 
-# Tester uniquement le job playwright du workflow chromatic
+# Test only the playwright job from chromatic workflow
 ./scripts/test-workflows.sh chromatic --dry-run --job playwright
 ```
 
-### Via la commande act directement
+### Via act command directly
 
 ```bash
-# Lister les workflows disponibles
+# List available workflows
 act -l
 
-# Dry-run du workflow CI
+# Dry-run of CI workflow
 act -W .github/workflows/ci.yml -n
 
-# Dry-run du job playwright
+# Dry-run of playwright job
 act -W .github/workflows/chromatic.yml -j playwright -n
 
-# Exécution réelle (attention aux effets de bord !)
+# Real execution (beware of side effects!)
 act -W .github/workflows/chromatic.yml -j playwright
 ```
 
-## 📋 Workflows disponibles
+## 📋 Available Workflows
 
-| Workflow | Fichier | Description | Statut Test |
-|----------|---------|-------------|-------------|
-| **CI** | `ci.yml` | Pipeline principal avec Vercel & Docker | ✅ Testé |
-| **Chromatic** | `chromatic.yml` | Tests visuels Playwright | ✅ Testé |
-| **Build** | `build.yml` | Workflow réutilisable pour docs | ℹ️ Workflow call |
-| **Docs** | `docs.yml` | Génération et déploiement docs | ℹ️ Nécessite Pages |
+| Workflow | File | Description | Test Status |
+|----------|------|-------------|-------------|
+| **CI** | `ci.yml` | Main pipeline with Vercel & Docker | ✅ Tested |
+| **Chromatic** | `chromatic.yml` | Playwright visual tests | ✅ Tested |
+| **Build** | `build.yml` | Reusable workflow for docs | ℹ️ Workflow call |
+| **Docs** | `docs.yml` | Documentation generation and deployment | ℹ️ Requires Pages |
 
-## ⚠️ Limitations importantes
+## ⚠️ Important Limitations
 
-### Secrets manquants
+### Missing Secrets
 
-Les workflows qui nécessitent des secrets ne fonctionneront pas complètement :
-- `VERCEL_TOKEN` (pour le déploiement Vercel)
-- `CHROMATIC_PROJECT_TOKEN` (pour Chromatic)
-- `GITHUB_TOKEN` (accès API GitHub limité)
+Workflows that require secrets will not work completely:
+- `VERCEL_TOKEN` (for Vercel deployment)
+- `CHROMATIC_PROJECT_TOKEN` (for Chromatic)
+- `GITHUB_TOKEN` (limited GitHub API access)
 
-### Services externes
+### External Services
 
-Certaines étapes échoueront sans accès aux services :
-- Déploiement Vercel
-- Push vers Docker Registry
-- Publication sur GitHub Pages
-- Upload vers Chromatic
+Some steps will fail without access to services:
+- Vercel deployment
+- Push to Docker Registry
+- Publish to GitHub Pages
+- Upload to Chromatic
 
-### Mode recommandé : Dry-run
+### Recommended Mode: Dry-run
 
-Pour la plupart des cas, le **mode dry-run** (`-n`) est suffisant et recommandé :
+For most cases, **dry-run mode** (`-n`) is sufficient and recommended:
 ```bash
 act -W .github/workflows/ci.yml -n
 ```
 
-Ce mode :
-- ✅ Valide la syntaxe du workflow
-- ✅ Simule toutes les étapes
-- ✅ N'exécute pas réellement les commandes
-- ✅ Pas d'effets de bord
+This mode:
+- ✅ Validates workflow syntax
+- ✅ Simulates all steps
+- ✅ Does not actually execute commands
+- ✅ No side effects
 
-## 📊 Résultats des tests effectués
+## 📊 Test Results Performed
 
 ### ✅ CI Workflow (ci.yml)
 
-Test en dry-run réussi avec toutes les étapes validées :
+Successful dry-run test with all steps validated:
 
 ```
 ✅ Set up job
@@ -110,16 +110,16 @@ Test en dry-run réussi avec toutes les étapes validées :
 ✅ actions/setup-node@v6
 ✅ pnpm install --frozen-lockfile
 ✅ Check version bump
-✅ Vercel deploy (simulé)
-✅ Docker build-push (simulé)
+✅ Vercel deploy (simulated)
+✅ Docker build-push (simulated)
 ✅ Complete job
 ```
 
-**Durée**: ~13 secondes (dry-run)
+**Duration**: ~13 seconds (dry-run)
 
-### ✅ Chromatic Workflow - Job Playwright (chromatic.yml)
+### ✅ Chromatic Workflow - Playwright Job (chromatic.yml)
 
-Test en dry-run réussi :
+Successful dry-run test:
 
 ```
 ✅ Set up job
@@ -132,86 +132,86 @@ Test en dry-run réussi :
 ✅ Complete job
 ```
 
-**Durée**: ~8 secondes (dry-run)
+**Duration**: ~8 seconds (dry-run)
 
-## 🔧 Configuration avancée
+## 🔧 Advanced Configuration
 
-### Fichier de configuration `~/.config/act/actrc`
+### Configuration file `~/.config/act/actrc`
 
-Pour personnaliser le comportement de `act` :
+To customize `act` behavior:
 
 ```bash
-# Utiliser l'image medium par défaut
+# Use medium image by default
 -P ubuntu-latest=catthehacker/ubuntu:act-latest
 
-# Désactiver les pulls Docker répétés
+# Disable repeated Docker pulls
 --pull=false
 
-# Variables d'environnement par défaut
+# Default environment variables
 --env GITHUB_TOKEN=ghp_xxxxx
 ```
 
-### Utiliser des secrets locaux
+### Using local secrets
 
-Créer un fichier `.secrets` (ne pas commiter !) :
+Create a `.secrets` file (do not commit!):
 
 ```bash
 VERCEL_TOKEN=xxx
 CHROMATIC_PROJECT_TOKEN=xxx
 ```
 
-Puis l'utiliser :
+Then use it:
 
 ```bash
 act -W .github/workflows/ci.yml --secret-file .secrets
 ```
 
-## 📚 Documentation complémentaire
+## 📚 Additional Documentation
 
-- [Documentation officielle de act](https://nektosact.com/)
-- [Guide détaillé dans docs/act-demo.md](./docs/act-demo.md)
-- [Workflows GitHub Actions](https://docs.github.com/en/actions)
-- **[Instructions pour agents Copilot](.github/agents/README.md)** - Validation pre-push obligatoire
+- [Official act documentation](https://nektosact.com/)
+- [Detailed guide in docs/act-demo.md](./docs/act-demo.md)
+- [GitHub Actions Workflows](https://docs.github.com/en/actions)
+- **[Instructions for Copilot agents](.github/agents/README.md)** - Mandatory pre-push validation
 
-## 💡 Conseils
+## 💡 Tips
 
-1. **Toujours tester en dry-run d'abord** : `act -n`
-2. **Utiliser le script helper** : Plus simple et sécurisé
-3. **Tester job par job** : Utiliser `-j <job-name>` pour isoler les tests
-4. **Nettoyer les containers Docker** : `docker ps -a | grep act` puis `docker rm`
-5. **Pour les agents Copilot** : Toujours valider avec `act` avant `report_progress`
+1. **Always test in dry-run first**: `act -n`
+2. **Use the helper script**: Simpler and safer
+3. **Test job by job**: Use `-j <job-name>` to isolate tests
+4. **Clean up Docker containers**: `docker ps -a | grep act` then `docker rm`
+5. **For Copilot agents**: Always validate with `act` before `report_progress`
 
-## 🤖 Pour les agents Copilot
+## 🤖 For Copilot Agents
 
-**Validation pre-push obligatoire :** Avant chaque utilisation de `report_progress`, vous devez :
+**Mandatory pre-push validation:** Before each use of `report_progress`, you must:
 
 ```bash
-# Valider le workflow CI avec act
+# Validate CI workflow with act
 act -W .github/workflows/ci.yml -n
 ```
 
-Consultez les [instructions complètes pour agents](.github/agents/README.md) pour plus de détails sur :
-- Quand valider (pour quels types de changements)
-- Comment gérer les échecs de validation
-- Processus complet de validation pre-push
+See the [complete instructions for agents](.github/agents/README.md) for more details on:
+- When to validate (for which types of changes)
+- How to handle validation failures
+- Complete pre-push validation process
 
-Cette étape est **obligatoire** pour maintenir la qualité du code et éviter les échecs CI.
+This step is **mandatory** to maintain code quality and avoid CI failures.
 
-## ❓ Aide
+## ❓ Help
 
-Pour toute question ou problème :
+For any questions or issues:
 
 ```bash
-# Aide du script
+# Script help
 ./scripts/test-workflows.sh --help
 
-# Aide de act
+# Act help
 act --help
 
-# Voir les logs détaillés
+# View detailed logs
 act -W .github/workflows/ci.yml -n --verbose
 ```
 
 ---
 
-**Note**: Ce setup a été testé et validé le 2026-01-27. Les workflows `ci.yml` et `chromatic.yml` (job playwright) ont été testés avec succès en mode dry-run.
+**Note**: This setup was tested and validated on 2026-01-27. The `ci.yml` and `chromatic.yml` (playwright job) workflows were successfully tested in dry-run mode.

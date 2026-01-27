@@ -1,11 +1,11 @@
-# Utilisation de `act` pour exécuter les workflows GitHub localement
+# Using `act` to Execute GitHub Workflows Locally
 
-Ce document explique comment utiliser `act` pour tester les workflows GitHub Actions de ce repository en local.
+This document explains how to use `act` to test GitHub Actions workflows from this repository locally.
 
-## Installation de `act`
+## Installing `act`
 
 ```bash
-# Via le binaire GitHub (recommandé)
+# Via GitHub binary (recommended)
 cd /tmp
 curl -L https://github.com/nektos/act/releases/latest/download/act_Linux_x86_64.tar.gz -o act.tar.gz
 tar xzf act.tar.gz
@@ -13,73 +13,73 @@ sudo mv act /usr/local/bin/
 act --version
 ```
 
-## Workflows disponibles
+## Available Workflows
 
-Ce repository contient 4 workflows :
+This repository contains 4 workflows:
 
-1. **ci.yml** - Workflow principal CI/CD avec déploiement Vercel et Docker
-2. **build.yml** - Workflow réutilisable pour construire la documentation
-3. **chromatic.yml** - Tests visuels avec Playwright et Chromatic
-4. **docs.yml** - Génération et déploiement de la documentation
+1. **ci.yml** - Main CI/CD workflow with Vercel and Docker deployment
+2. **build.yml** - Reusable workflow for building documentation
+3. **chromatic.yml** - Visual tests with Playwright and Chromatic
+4. **docs.yml** - Documentation generation and deployment
 
-## Commandes utiles
+## Useful Commands
 
-### Lister les workflows et jobs disponibles
+### List available workflows and jobs
 
 ```bash
 act -l
 ```
 
-### Exécuter un workflow en mode dry-run (simulation)
+### Execute a workflow in dry-run mode (simulation)
 
 ```bash
-# Test du workflow CI
+# Test CI workflow
 act -W .github/workflows/ci.yml -n
 
-# Test du job playwright du workflow chromatic
+# Test playwright job from chromatic workflow
 act -W .github/workflows/chromatic.yml -j playwright -n
 ```
 
-### Exécuter un workflow réellement (attention aux effets de bord)
+### Execute a workflow for real (beware of side effects)
 
 ```bash
-# Exécuter le workflow chromatic (job playwright seulement)
+# Execute chromatic workflow (playwright job only)
 act -W .github/workflows/chromatic.yml -j playwright
 
-# Exécuter avec des variables d'environnement
+# Execute with environment variables
 act -W .github/workflows/ci.yml --env GITHUB_TOKEN=xxx
 ```
 
 ## Limitations
 
-⚠️ **Important** : L'exécution de workflows avec `act` a des limitations :
+⚠️ **Important**: Running workflows with `act` has limitations:
 
-1. **Secrets manquants** : Les secrets GitHub (VERCEL_TOKEN, CHROMATIC_PROJECT_TOKEN, etc.) ne sont pas disponibles
-2. **Services externes** : Les déploiements vers Vercel, registries Docker, etc. ne fonctionneront pas complètement
-3. **Compatibilité** : Certaines actions GitHub peuvent avoir un comportement différent avec `act`
-4. **Ressources** : Les workflows nécessitant beaucoup de ressources peuvent échouer
+1. **Missing secrets**: GitHub secrets (VERCEL_TOKEN, CHROMATIC_PROJECT_TOKEN, etc.) are not available
+2. **External services**: Deployments to Vercel, Docker registries, etc. will not work completely
+3. **Compatibility**: Some GitHub Actions may behave differently with `act`
+4. **Resources**: Workflows requiring many resources may fail
 
-## Résultats des tests
+## Test Results
 
-### ✅ ci.yml - Dry-run réussi
+### ✅ ci.yml - Successful dry-run
 
-Le workflow principal a été testé en mode dry-run et toutes les étapes sont validées :
-- Setup job avec l'image Ubuntu
-- Clonage des actions nécessaires
-- Simulation de toutes les étapes (checkout, pnpm install, vercel deploy, docker build, etc.)
+The main workflow was tested in dry-run mode and all steps are validated:
+- Setup job with Ubuntu image
+- Cloning of necessary actions
+- Simulation of all steps (checkout, pnpm install, vercel deploy, docker build, etc.)
 
-### ✅ chromatic.yml - Dry-run réussi
+### ✅ chromatic.yml - Successful dry-run
 
-Le job `playwright` a été testé avec succès :
-- Utilisation de l'image Playwright officielle
-- Installation des dépendances
-- Exécution des tests Playwright
+The `playwright` job was successfully tested:
+- Use of official Playwright image
+- Dependencies installation
+- Playwright tests execution
 
 ## Conclusion
 
-`act` est un outil puissant pour :
-- 🧪 Tester les workflows localement avant de les pousser
-- 🐛 Déboguer les problèmes de workflow
-- ⚡ Itérer rapidement sur les configurations CI/CD
+`act` is a powerful tool for:
+- 🧪 Testing workflows locally before pushing
+- 🐛 Debugging workflow issues
+- ⚡ Rapidly iterating on CI/CD configurations
 
-Cependant, pour les workflows complexes avec des dépendances externes, le mode dry-run (`-n`) est souvent le plus utile pour valider la syntaxe et la structure du workflow.
+However, for complex workflows with external dependencies, dry-run mode (`-n`) is often the most useful for validating workflow syntax and structure.
