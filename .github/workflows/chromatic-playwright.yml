@@ -1,4 +1,4 @@
-name: 'Chromatic'
+name: 'Chromatic Playwright'
 
 on: push
 
@@ -59,7 +59,7 @@ jobs:
           # ⚠️ Enable Playwright
           playwright: true
           # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_PLAYWRIGHT }}
           autoAcceptChanges: 'main'
         # ⚠️ Optionally configure the archive location with env vars
         env:
