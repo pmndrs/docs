@@ -15,8 +15,6 @@ cd /tmp && curl -L https://github.com/nektos/act/releases/latest/download/act_Li
 mkdir -p ~/.config/act && echo "-P ubuntu-latest=catthehacker/ubuntu:act-latest" > ~/.config/act/actrc
 ```
 
-Skip validation only for documentation-only changes (`.md` files in `docs/`).
-
 ## Meta: Self-Improvement
 
 When you identify something that could improve the **quality, reliability, simplicity, or performance** of your sessions, propose a change to this file.
