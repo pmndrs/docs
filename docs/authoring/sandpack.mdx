@@ -5,7 +5,9 @@ sourcecode: docs/authoring/sandpack.mdx
 nav: 8
 ---
 
-## `Sandpack`
+<Intro>
+  The Sandpack component provides inline, interactive code sandboxes powered by CodeSandbox. It supports multiple templates, custom dependencies, file organization, and advanced features like file explorers, code viewers, and SSR rendering, making it perfect for live code examples in documentation.
+</Intro>
 
 Inline sandboxes.
 
@@ -40,7 +42,7 @@ export default function App() {
 />
 ```
 
-### Result
+result:
 
 <Sandpack
   template="react-ts"
@@ -73,7 +75,7 @@ export default function App() {
 
 [^1]: https://sandpack.codesandbox.io/docs/guides/ssr#nextjs-app-dir  
 
-## `Sandpack[folder]`
+**Sandpack with folder prop**:
 
 Instead of `files`, a `folder` prop allow you to pass a folder containing all the files:
 
@@ -97,7 +99,7 @@ Instead of `files`, a `folder` prop allow you to pass a folder containing all th
 > - build the `files` prop for you (including all `.{js|ts|jsx|tsx|css}` it finds)
 > - build `customSetup.dependencies` from `package.json` if it exists
 
-### Result
+result:
 
 <Sandpack
   template="react-ts"
@@ -122,7 +124,7 @@ It is also possible to pass some individual [file format](https://sandpack.codes
 />
 ```
 
-### Result
+result:
 
 <Sandpack
   template="react-ts"
@@ -138,7 +140,7 @@ It is also possible to pass some individual [file format](https://sandpack.codes
   }}
 />
 
-## `Sandpack[fileExplorer]`
+**Sandpack with fileExplorer**:
 
 ```tsx
 <Sandpack
@@ -148,7 +150,7 @@ It is also possible to pass some individual [file format](https://sandpack.codes
 />
 ```
 
-### Result
+result:
 
 <Sandpack
   template="react-ts"
@@ -162,11 +164,11 @@ It is also possible to pass some individual [file format](https://sandpack.codes
 
 You can also pass [any `fileExplorer={options: ComponentProps<SandpackFileExplorer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#file-explorer:~:text=Preview-,Options,-If%20you%27re%20looking).
 
-## `Sandpack[codeEditor]`
+**Sandpack with codeEditor**:
 
 You can pass [any `codeEditor={options: ComponentProps<SandpackCodeEditor>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor:~:text=Preview-,Options,-Extensions).
 
-## `Sandpack[codeViewer]`
+**Sandpack with codeViewer**:
 
 It will render the [`SandpackCodeViewer`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer) instead of the default [`SandpackCodeEditor`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor).
 
@@ -178,7 +180,7 @@ It will render the [`SandpackCodeViewer`](https://sandpack.codesandbox.io/docs/a
 />
 ```
 
-### Result
+result:
 
 <Sandpack
   template="react-ts"
@@ -225,7 +227,7 @@ You can define per-file [decorators](https://sandpack.codesandbox.io/docs/advanc
 />
 ```
 
-### Result
+result:
 
 <Sandpack
   template="react-ts"
@@ -258,6 +260,6 @@ You can define per-file [decorators](https://sandpack.codesandbox.io/docs/advanc
   }}
 />
 
-## `Sandpack[preview]`
+**Sandpack with preview**:
 
 You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#preview:~:text=Preview-,Options,-Additional%20buttons).

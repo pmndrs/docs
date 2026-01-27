@@ -5,7 +5,9 @@ sourcecode: docs/authoring/contributors.mdx
 nav: 12
 ---
 
-## `Contributors`
+<Intro>
+  The Contributors component displays avatars and profiles of GitHub repository contributors. It fetches contributor data from the GitHub API and presents them in a visual grid, acknowledging the people who have contributed to the project.
+</Intro>
 
 ```md
 <Contributors owner="pmndrs" repo="docs" />
@@ -14,6 +16,6 @@ nav: 12
 > [!WARNING]
 > [`CONTRIBUTORS_PAT`](introduction#configuration:~:text=CONTRIBUTORS_PAT) needs to be set. Otherwise, it will display John Doe.
 
-### Result
+result:
 
 <Contributors owner="pmndrs" repo="docs" />

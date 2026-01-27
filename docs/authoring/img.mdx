@@ -1,11 +1,13 @@
 ---
-title: Images
+title: Img
 description: Using images in documentation
 sourcecode: docs/authoring/img.mdx
 nav: 4
 ---
 
-## `Img`
+<Intro>
+  The Img component and markdown image syntax provide flexible ways to display images in your documentation. Images can be referenced relatively, with automatic dimension handling to prevent layout shift, and support both markdown and HTML syntax for advanced styling.
+</Intro>
 
 Relative images are supported. Eg, inside your [`MDX`](introduction#configuration:~:text=MDX) folder:
 ```text {2}
@@ -22,7 +24,7 @@ title: Images
 ![](gutenberg.jpg)
 ```
 
-### Result
+result:
 
 ![](gutenberg.jpg)
 
@@ -37,7 +39,7 @@ It is also possible to specify only one dimension (other is inferred from intrin
 <img src="gutenberg.jpg" height="200" />
 ```
 
-### Result
+result:
 
 <img src="gutenberg.jpg" height="200" />
 
@@ -47,7 +49,7 @@ Although it is probably better to use CSS for this:
 <img src="gutenberg.jpg" style={{width: 'auto', height: '10rem'}} />
 ```
 
-### Result
+result:
 
 <img src="gutenberg.jpg" style={{width: 'auto', height: '10rem'}} />
 
