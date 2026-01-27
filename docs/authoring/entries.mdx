@@ -1,0 +1,41 @@
+---
+title: Entries
+description: Display a grouped directory listing of documentation pages
+sourcecode: docs/authoring/entries.mdx
+nav: 14
+---
+
+<Intro>
+  Displays all documentation entries in a multi-column layout, grouped by category.
+</Intro>
+
+The `Entries` component automatically generates a directory listing of all documentation pages in the site, organized by their top-level category (first segment of the slug).
+
+```md
+<Entries />
+```
+
+result:
+
+<Entries />
+
+---
+
+## Excluding categories
+
+You can exclude specific categories from the listing using the `excludedGroups` prop:
+
+```md
+<Entries excludedGroups={['getting-started', 'tutorials']} />
+```
+
+The default excluded groups are `['getting-started']`.
+
+## How it works
+
+The component:
+- Groups all documentation pages by their first slug segment (category)
+- Displays categories in alphabetical order with capitalized headings
+- Shows each page's title as a clickable link
+- Includes codesandbox icons next to pages that contain codesandbox examples
+- Renders in a responsive multi-column layout (2 columns on mobile, 3 on desktop)
