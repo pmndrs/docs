@@ -69,36 +69,6 @@ const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
 const INLINE_LINK_REGEX = /<(http[^>]+)>/g
 
 /**
- * Removes HTML comments from markdown
- */
-const COMMENT_REGEX = /<!--[\s\S]*?-->/g
-
-/**
- * Sanitizes markdown by removing HTML comments while preserving code blocks.
- * This prevents Mermaid diagram arrows (-->) from being accidentally removed.
- */
-function sanitizeMarkdown(content: string): string {
-  const codeBlocks: string[] = []
-
-  // Step 1: Replace all code blocks (both fenced and inline) with placeholders
-  let sanitized = content.replace(/(```[\s\S]*?```|`[^`\n]+`)/g, (match) => {
-    const index = codeBlocks.length
-    codeBlocks.push(match)
-    return `__CODE_BLOCK_${index}__`
-  })
-
-  // Step 2: Remove HTML comments from the protected content
-  sanitized = sanitized.replace(COMMENT_REGEX, '')
-
-  // Step 3: Restore code blocks
-  sanitized = sanitized.replace(/__CODE_BLOCK_(\d+)__/g, (match, index) => {
-    return codeBlocks[parseInt(index)]
-  })
-
-  return sanitized
-}
-
-/**
  * Recursively crawls a directory, returning an array of file paths.
  */
 export async function crawl(dir: string, filter?: (dir: string) => boolean, files: string[] = []) {
@@ -163,9 +133,6 @@ async function _getDocs(
         .replace(FRONTMATTER_REGEX, '')
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
-
-      // Remove HTML comments while preserving code blocks (e.g., Mermaid diagrams with --> arrows)
-      content = sanitizeMarkdown(content)
 
       await compileMDX({
         source: content,
