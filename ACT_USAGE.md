@@ -2,12 +2,15 @@
 
 Ce guide explique comment utiliser `act` pour exécuter et tester les workflows GitHub Actions localement dans ce repository.
 
+> **Note pour les agents Copilot:** Des instructions spécifiques pour la validation pre-push sont disponibles dans [.github/agents/README.md](.github/agents/README.md)
+
 ## 🎯 Objectif
 
 `act` permet de :
 - ✅ Tester les workflows localement avant de les pousser sur GitHub
 - 🐛 Déboguer les problèmes de CI/CD rapidement
 - ⚡ Itérer sur les configurations sans polluer l'historique Git
+- 🤖 Validation automatique pour les agents Copilot avant chaque push
 
 ## 📦 Installation de `act`
 
@@ -168,6 +171,7 @@ act -W .github/workflows/ci.yml --secret-file .secrets
 - [Documentation officielle de act](https://nektosact.com/)
 - [Guide détaillé dans docs/act-demo.md](./docs/act-demo.md)
 - [Workflows GitHub Actions](https://docs.github.com/en/actions)
+- **[Instructions pour agents Copilot](.github/agents/README.md)** - Validation pre-push obligatoire
 
 ## 💡 Conseils
 
@@ -175,6 +179,23 @@ act -W .github/workflows/ci.yml --secret-file .secrets
 2. **Utiliser le script helper** : Plus simple et sécurisé
 3. **Tester job par job** : Utiliser `-j <job-name>` pour isoler les tests
 4. **Nettoyer les containers Docker** : `docker ps -a | grep act` puis `docker rm`
+5. **Pour les agents Copilot** : Toujours valider avec `act` avant `report_progress`
+
+## 🤖 Pour les agents Copilot
+
+**Validation pre-push obligatoire :** Avant chaque utilisation de `report_progress`, vous devez :
+
+```bash
+# Valider le workflow CI avec act
+act -W .github/workflows/ci.yml -n
+```
+
+Consultez les [instructions complètes pour agents](.github/agents/README.md) pour plus de détails sur :
+- Quand valider (pour quels types de changements)
+- Comment gérer les échecs de validation
+- Processus complet de validation pre-push
+
+Cette étape est **obligatoire** pour maintenir la qualité du code et éviter les échecs CI.
 
 ## ❓ Aide
 
