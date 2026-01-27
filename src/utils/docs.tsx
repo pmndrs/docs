@@ -60,8 +60,9 @@ export const MARKDOWN_REGEX = /\.mdx?/
 
 /**
  * Uncomments frontMatter from vanilla markdown
+ * Matches only the opening <!-- before --- frontmatter
  */
-const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
+const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)/g
 
 /**
  * Removes <https://inline.links> formatting from markdown
