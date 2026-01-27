@@ -16,3 +16,14 @@ mkdir -p ~/.config/act && echo "-P ubuntu-latest=catthehacker/ubuntu:act-latest"
 ```
 
 Skip validation only for documentation-only changes (`.md` files in `docs/`).
+
+## Meta: Self-Improvement
+
+When you identify something that could improve the **quality, reliability, simplicity, or performance** of your sessions, propose a change to this file.
+
+**How to propose:**
+1. Explain what you learned during your session
+2. Suggest a specific addition or modification to these instructions
+3. Explain how it improves quality, reliability, simplicity, or performance
+
+The developer will decide whether to accept your suggestion.
