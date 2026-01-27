@@ -59,16 +59,6 @@ import remarkGFM from 'remark-gfm'
 export const MARKDOWN_REGEX = /\.mdx?/
 
 /**
- * Uncomments frontMatter from vanilla markdown
- */
-const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
-
-/**
- * Removes multi and single-line comments from markdown
- */
-const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
-
-/**
  * Removes <https://inline.links> formatting from markdown
  */
 const INLINE_LINK_REGEX = /<(http[^>]+)>/g
@@ -134,10 +124,6 @@ async function _getDocs(
 
       // Sanitize markdown
       let content = compiled.content
-        // Remove <!-- --> comments from frontMatter
-        .replace(FRONTMATTER_REGEX, '')
-        // Remove extraneous comments from post
-        .replace(COMMENT_REGEX, '')
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
