@@ -6,10 +6,8 @@ nav: 6
 ---
 
 <Intro>
-  Text-based diagrams.
+  [Mermaid](https://mermaid.js.org/) text-based diagrams. Automatically adapt to light/dark theme.
 </Intro>
-
-[Mermaid](https://mermaid.js.org/) diagrams for flowcharts, sequence diagrams, and other visualizations. Diagrams automatically adapt to light/dark theme.
 
 ````md
 ```mermaid
@@ -35,8 +33,6 @@ graph TD
 
 ---
 
-Sequence diagrams:
-
 ````md
 ```mermaid
 sequenceDiagram
@@ -55,4 +51,28 @@ sequenceDiagram
     participant Browser
     User->>Browser: Click button
     Browser-->>User: Display result
+```
+
+---
+
+[KaTeX support](https://github.com/mermaid-js/mermaid/pull/2885):
+
+````md
+```mermaid
+graph LR
+    A["$$f(\relax{x}) = \int_{-\infty}^\infty \hat{f}(\xi)\,e^{2 \pi i \xi x}\,d\xi$$"] -->|"$$\Bigg(\bigg(\Big(\big((\frac{-b\pm\sqrt{b^2-4ac}}{2a})\big)\Big)\bigg)\Bigg)$$"| B("$$1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}} {1+\frac{e^{-8\pi}} {1+\cdots}}}}$$")
+    A -->|"$$\overbrace{a+b+c}^{\text{note}}$$"| C("$$\phase{-78^\circ}$$")
+    B --> D("$$x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}$$")
+    C --> E("$$x(t)=c_1\begin{bmatrix}-\cos{t}+\sin{t}\\ 2\cos{t} \end{bmatrix}e^{2t}$$")
+```
+````
+
+result:
+
+```mermaid
+graph LR
+    A["$$f(\relax{x}) = \int_{-\infty}^\infty \hat{f}(\xi)\,e^{2 \pi i \xi x}\,d\xi$$"] -->|"$$\Bigg(\bigg(\Big(\big((\frac{-b\pm\sqrt{b^2-4ac}}{2a})\big)\Big)\bigg)\Bigg)$$"| B("$$1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}} {1+\frac{e^{-8\pi}} {1+\cdots}}}}$$")
+    A -->|"$$\overbrace{a+b+c}^{\text{note}}$$"| C("$$\phase{-78^\circ}$$")
+    B --> D("$$x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}$$")
+    C --> E("$$x(t)=c_1\begin{bmatrix}-\cos{t}+\sin{t}\\ 2\cos{t} \end{bmatrix}e^{2t}$$")
 ```
