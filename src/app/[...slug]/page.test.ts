@@ -4,6 +4,8 @@ import { test, expect } from '@chromatic-com/playwright'
 // Test any docs/**/*.mdx page
 //
 
+const timeout = 60000
+
 const pages = [
   '/getting-started/introduction',
   '/authoring/introduction',
@@ -13,8 +15,8 @@ const pages = [
   '/authoring/code',
   '/authoring/mermaid',
   '/authoring/grid',
-  // '/authoring/sandpack',
-  // '/authoring/codesandbox',
+  '/authoring/sandpack',
+  '/authoring/codesandbox',
   '/authoring/gha',
   '/authoring/hint',
   '/authoring/contributors',
@@ -28,13 +30,13 @@ for (const pagePath of pages) {
   test(pageName, async ({ page }) => {
     await page.goto(pagePath)
     await page.waitForLoadState('networkidle')
-    await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
+    await expect(page).toHaveScreenshot({ fullPage: true, timeout })
   })
 
   test(`${pageName} dark`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'dark' })
     await page.goto(pagePath)
     await page.waitForLoadState('networkidle')
-    await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
+    await expect(page).toHaveScreenshot({ fullPage: true, timeout })
   })
 }
