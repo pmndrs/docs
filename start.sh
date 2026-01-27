@@ -6,7 +6,7 @@ export _PORT=60141
 
 export MDX=docs
 export NEXT_PUBLIC_LIBNAME="Poimandres"
-export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
+export NEXT_PUBLIC_LIBNAME_SHORT="pmnd"
 export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs"
 export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://docs.pmnd.rs"
 export BASE_PATH=
