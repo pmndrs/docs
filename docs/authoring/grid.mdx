@@ -8,70 +8,33 @@ nav: 7
 > [!CAUTION]
 > **This component is deprecated.**
 > 
-> Please use HTML with [Tailwind CSS v4 grid utilities](https://tailwindcss.com/docs/grid-template-columns) instead.
+> Please use HTML with [Tailwind CSS grid utilities](https://tailwindcss.com/docs/grid-template-columns) instead.
 
 <Intro>
-  The `<Grid>` MDX component is deprecated. Use native HTML with Tailwind CSS grid utilities for better flexibility and modern CSS features.
+  The `<Grid>` MDX component is deprecated. Use native HTML with Tailwind CSS grid utilities instead.
 </Intro>
 
-## Migration Guide
+## Migration
 
-### Old Approach (Deprecated)
-
+**Before:**
 ```md
 <Grid cols={2}>
   <li>A</li>
   <li>B</li>
-  <li>C</li>
-  ...
 </Grid>
 ```
 
-### New Approach (Recommended)
-
-Use Tailwind CSS v4 grid utilities with native HTML:
-
+**After:**
 ```md
 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-list text-sm mb-4">
   <li>A</li>
   <li>B</li>
-  <li>C</li>
-  ...
 </ul>
 ```
 
-For a 3-column grid:
+See [Tailwind CSS grid documentation](https://tailwindcss.com/docs/grid-template-columns) for more options.
 
-```md
-<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 grid-list text-sm mb-4">
-  <li>A</li>
-  <li>B</li>
-  <li>C</li>
-  ...
-</ul>
-```
-
-For a 4-column grid:
-
-```md
-<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 grid-list text-sm mb-4">
-  <li>A</li>
-  <li>B</li>
-  <li>C</li>
-  ...
-</ul>
-```
-
-## Benefits of Using Tailwind CSS Grid
-
-- **More flexible**: Use any number of columns with [Tailwind's grid-cols utilities](https://tailwindcss.com/docs/grid-template-columns)
-- **Better control**: Fine-tune spacing, alignment, and responsive behavior
-- **Standard CSS**: No custom components to maintain
-- **Modern features**: Access to all Tailwind v4 grid features like `grid-auto-flow`, `grid-auto-rows`, etc.
-
-## Legacy Example (Still Works)
-
-The old Grid component still works but will be removed in a future version:
+## Legacy Example
 
 <Grid cols={2}>
   <li>A</li>
