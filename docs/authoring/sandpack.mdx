@@ -1,0 +1,267 @@
+---
+title: Sandpack
+description: Inline sandboxes for interactive code examples
+sourcecode: docs/authoring/sandpack.mdx
+nav: 8
+---
+
+<Intro>
+  Interactive code sandboxes powered by CodeSandbox.
+</Intro>
+
+> [!NOTE]
+> See Sandpack [official documentation](https://sandpack.codesandbox.io/docs/getting-started/usage) for full usage.
+
+```tsx
+<Sandpack
+  template="react-ts"
+  customSetup={{
+    dependencies: {
+      'three': 'latest',
+      '@react-three/fiber': 'latest',
+      '@react-three/drei': 'latest'
+    },
+  }}
+  files={{
+    '/styles.css': `html,body,#root {height:100%;margin:unset;}`,
+    '/App.tsx': `import { Canvas } from '@react-three/fiber'
+import { Cloud, CameraControls } from '@react-three/drei'
+
+export default function App() {
+  return (
+    <Canvas camera={{position: [0,-13,0]}}>
+      <Cloud speed={.4} growth={6} />
+      <ambientLight intensity={Math.PI} />
+      <CameraControls />
+    </Canvas>
+  )
+}`,
+  }}
+/>
+```
+
+result:
+
+<Sandpack
+  template="react-ts"
+  customSetup={{
+    dependencies: {
+      'three': 'latest',
+      '@react-three/fiber': 'latest',
+      '@react-three/drei': 'latest'
+    },
+  }}
+  files={{
+    '/styles.css': `html,body,#root {height:100%;margin:unset;}`,
+    '/App.tsx': `import { Canvas } from '@react-three/fiber'
+import { Cloud, CameraControls } from '@react-three/drei'
+
+export default function App() {
+  return (
+    <Canvas camera={{position: [0,-13,0]}}>
+      <Cloud speed={.4} growth={6} />
+      <ambientLight intensity={Math.PI} />
+      <CameraControls />
+    </Canvas>
+  )
+}`,
+  }}
+/>
+
+> [!TIP]
+> Sandpack UI SSR-rendering[^1] is also supported (out of the box).
+
+[^1]: https://sandpack.codesandbox.io/docs/guides/ssr#nextjs-app-dir  
+
+#### `Sandpack[folder]`
+
+Instead of `files`, a `folder` prop allows you to pass a folder containing all the files:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+/>
+```
+
+`folder` path is relative to the `.mdx` file:
+
+```text
+|-- getting-started
+|   |-- authoring.mdx             <= relative to this article
+|   `-- authoring-sandpack-cloud     <= the folder
+```
+
+> [!TIP]
+> It will simply:
+> - build the `files` prop for you (including all `.{js|ts|jsx|tsx|css}` it finds)
+> - build `customSetup.dependencies` from `package.json` if it exists
+
+result:
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+/>
+
+---
+
+It is also possible to pass some individual [file format](https://sandpack.codesandbox.io/docs/getting-started/usage#file-format) configuration:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  files={{
+    '/App.tsx': {
+      readOnly: true,
+      active: true,
+    },
+    '/styles.css': {
+      hidden: true
+    }
+  }}
+/>
+```
+
+result:
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  files={{
+    '/App.tsx': {
+      readOnly: true,
+      active: true,
+    },
+    '/styles.css': {
+      hidden: true
+    }
+  }}
+/>
+
+#### `Sandpack[fileExplorer]`
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  fileExplorer
+/>
+```
+
+result:
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  fileExplorer
+/>
+
+> [!TIP]
+> Conveniently, enabling `fileExplorer` will by default `[codeEditor={showTabs: false}]`.
+> You can override it with [`[codeEditor]` options](#sandpack[codeeditor])
+
+---
+
+You can also pass [any `fileExplorer={options: ComponentProps<SandpackFileExplorer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#file-explorer:~:text=Preview-,Options,-If%20you%27re%20looking).
+
+#### `Sandpack[codeEditor]`
+
+You can pass [any `codeEditor={options: ComponentProps<SandpackCodeEditor>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor:~:text=Preview-,Options,-Extensions).
+
+#### `Sandpack[codeViewer]`
+
+It will render the [`SandpackCodeViewer`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer) instead of the default [`SandpackCodeEditor`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-editor).
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer
+/>
+```
+
+result:
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer
+/>
+
+You can also pass [any `codeViewer={options: ComponentProps<SandpackCodeViewer>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#code-viewer:~:text=Preview-,Options,-CodeMirror%20decorations).
+
+##### `Sandpack[codeViewer][filesDecorators]`
+
+You can define per-file [decorators](https://sandpack.codesandbox.io/docs/advanced-usage/components#codemirror-decorations) through `filesDecorators` prop:
+
+```tsx
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer={{
+    filesDecorators: {
+      '/App.tsx': [
+        { className: "highlight", line: 1 },
+        { className: "highlight", line: 7 },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "1" },
+          line: 7,
+          startColumn: 13,
+          endColumn: 24,
+        },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "2" },
+          line: 7,
+          startColumn: 25,
+          endColumn: 35,
+        },
+        
+      ],
+      '/styles.css': [
+        { className: "highlight", line: 4 },
+      ]
+    }
+  }}
+/>
+```
+
+result:
+
+<Sandpack
+  template="react-ts"
+  folder="authoring-sandpack-cloud"
+  codeViewer={{
+    filesDecorators: {
+      '/App.tsx': [
+        { className: "highlight", line: 1 },
+        { className: "highlight", line: 7 },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "1" },
+          line: 7,
+          startColumn: 13,
+          endColumn: 24,
+        },
+        {
+          className: "widget",
+          elementAttributes: { "data-id": "2" },
+          line: 7,
+          startColumn: 25,
+          endColumn: 35,
+        },
+        
+      ],
+      '/styles.css': [
+        { className: "highlight", line: 4 },
+      ]
+    }
+  }}
+/>
+
+#### `Sandpack[preview]`
+
+You can pass [any `preview={options: ComponentProps<SandpackPreview>}`](https://sandpack.codesandbox.io/docs/advanced-usage/components#preview:~:text=Preview-,Options,-Additional%20buttons).

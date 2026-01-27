@@ -1,0 +1,61 @@
+---
+title: Mermaid
+description: Creating diagrams with Mermaid
+sourcecode: docs/authoring/mermaid.mdx
+nav: 6
+---
+
+<Intro>
+  Text-based diagrams.
+</Intro>
+
+[Mermaid](https://mermaid.js.org/) diagrams for flowcharts, sequence diagrams, and other visualizations. Diagrams automatically adapt to light/dark theme.
+
+````md
+```mermaid
+graph TD
+    A[Start] ==> B{Is it working?}
+    B ==>|Yes| C[Great!]
+    B ==>|No| D[Debug]
+    D ==> B
+    C ==> E[End]
+```
+````
+
+result:
+
+```mermaid
+graph TD
+    A[Start] ==> B{Is it working?}
+    B ==>|Yes| C[Great!]
+    B ==>|No| D[Debug]
+    D ==> B
+    C ==> E[End]
+```
+
+> [!IMPORTANT]
+> Due to MDX parser limitations, use <code>==></code> instead of <code>--&gt;</code> for arrows in flowcharts.
+
+---
+
+Sequence diagrams (avoid <code>--&gt;&gt;</code> because it contains <code>--&gt;</code> and will be stripped):
+
+````md
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    User->>Browser: Click button
+    Browser->>User: Display result
+```
+````
+
+result:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    User->>Browser: Click button
+    Browser->>User: Display result
+```

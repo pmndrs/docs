@@ -51,9 +51,11 @@ export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] 
 
   return (
     <div className={cn(className, 'text-xs')}>
-      <p className="mb-3 font-semibold uppercase tracking-wide text-on-surface-variant/50">
-        On This Page
-      </p>
+      {toc.length > 0 && (
+        <p className="mb-3 font-semibold uppercase tracking-wide text-on-surface-variant/50">
+          On This Page
+        </p>
+      )}
       {toc.map(({ title, id, level }, index) => (
         <h4 key={`${title}-${index}`}>
           <a

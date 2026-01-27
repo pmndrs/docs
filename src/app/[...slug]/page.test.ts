@@ -4,42 +4,39 @@ import { test, expect } from '@chromatic-com/playwright'
 // Test any docs/**/*.mdx page
 //
 
-test('introduction', async ({ page }) => {
-  await page.goto('/getting-started/introduction')
-  await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
-})
-test('introduction dark', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' })
-  await page.goto('/getting-started/introduction')
-  await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
-})
+const timeout = 60000
 
-//
+const pages = [
+  '/getting-started/introduction',
+  '/authoring/introduction',
+  '/authoring/intro',
+  '/authoring/keypoints',
+  '/authoring/img',
+  '/authoring/code',
+  '/authoring/mermaid',
+  '/authoring/grid',
+  // '/authoring/sandpack',
+  // '/authoring/codesandbox',
+  '/authoring/gha',
+  '/authoring/hint',
+  '/authoring/contributors',
+  '/authoring/backers',
+  '/github-actions/introduction',
+]
 
-test('authoring', async ({ page }) => {
-  await page.goto('/getting-started/authoring')
-  await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
-})
-test('authoring dark', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' })
-  await page.goto('/getting-started/authoring')
-  await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
-})
+for (const pagePath of pages) {
+  const pageName = pagePath.replace(/\//g, '_').replace(/^_/, '')
 
-//
+  test(pageName, async ({ page }) => {
+    await page.goto(pagePath)
+    await page.waitForLoadState('networkidle')
+    await expect(page).toHaveScreenshot({ fullPage: true, timeout })
+  })
 
-test('github-actions', async ({ page }) => {
-  await page.goto('/getting-started/github-actions')
-  await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
-})
-test('github-actions dark', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' })
-  await page.goto('/getting-started/github-actions')
-  await page.waitForLoadState('networkidle')
-  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10000 })
-})
+  test(`${pageName} dark`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await page.goto(pagePath)
+    await page.waitForLoadState('networkidle')
+    await expect(page).toHaveScreenshot({ fullPage: true, timeout })
+  })
+}
