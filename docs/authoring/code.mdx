@@ -1,0 +1,94 @@
+---
+title: Code Syntax Highlighting
+description: Code blocks with syntax highlighting and line numbers
+sourcecode: docs/authoring/code.mdx
+nav: 5
+---
+
+## Code
+
+Line numbers/highlights are supported:
+
+````md
+```tsx {1,4-6} showLineNumbers
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
+```
+````
+
+## Result
+
+```tsx {1,4-6} showLineNumbers
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
+```
+
+You can start at a specific `X` line number `showLineNumbers=X`:
+
+````md
+```tsx {1,4-6} showLineNumbers=150
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
+```
+````
+
+## Result
+
+```tsx {1,4-6} showLineNumbers=150
+type Props = {who: string}
+
+function Hi({who}: Props) {
+  return (
+    <p>Hello, {who}!</p>
+  )
+}
+```
+
+`diff` format is supported:
+
+````md
+```diff
+diff --git a/example.txt b/example.txt
+index 8c3317a..47ea956 100644
+--- a/example.txt
++++ b/example.txt
+@@ -1,4 +1,4 @@
+-Hello, World!
++Hello, GitHub World!
+ Here are some changes:
+-This line will be modified.
++This line has been modified.
+ This line will stay the same.
+```
+````
+
+## Result
+
+```diff
+diff --git a/example.txt b/example.txt
+index 8c3317a..47ea956 100644
+--- a/example.txt
++++ b/example.txt
+@@ -1,4 +1,4 @@
+-Hello, World!
++Hello, GitHub World!
+ Here are some changes:
+-This line will be modified.
++This line has been modified.
+ This line will stay the same.
+```
