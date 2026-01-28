@@ -21,8 +21,17 @@ export async function generateStaticParams() {
   })
 }
 
-export async function GET(request: Request, context: { params: Promise<{ slug: string[] }> }) {
-  const { slug } = await context.params
+export async function GET(
+  request: Request,
+  context: { params: Promise<Record<string, string | string[]>> },
+) {
+  const params = await context.params
+  const slug = params?.slug as string[] | undefined
+
+  if (!slug) {
+    notFound()
+  }
+
   const { MDX } = process.env
   if (!MDX) throw new Error('MDX env var not set')
 
