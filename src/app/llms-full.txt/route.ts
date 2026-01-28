@@ -1,82 +1,17 @@
 import { crawl, MARKDOWN_REGEX } from '@/utils/docs'
 import matter from 'gray-matter'
 import fs from 'node:fs'
-import { remark } from 'remark'
-import remarkMdx from 'remark-mdx'
-import remarkstringify from 'remark-stringify'
-import { visit } from 'unist-util-visit'
 
 export const dynamic = 'force-static'
 
 /**
- * Remark plugin to replace JSX/MDX components with textual placeholders
+ * Basic cleanup of markdown content
  */
-function remarkStripJsx() {
-  return (tree: any) => {
-    visit(tree, (node: any, index: number | undefined, parent: any) => {
-      if (typeof index === 'undefined' || !parent) return
-
-      // Remove ESM imports/exports
-      if (node.type === 'mdxjsEsm') {
-        parent.children.splice(index, 1)
-        return index
-      }
-
-      // Handle JSX components (e.g., <Grid>, <Intro>, <Keypoints>)
-      if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
-        // Get the component name
-        const componentName = node.name || 'Unknown'
-
-        // Only replace React components (those starting with uppercase)
-        // Keep HTML tags (lowercase) as-is
-        if (componentName && /^[A-Z]/.test(componentName)) {
-          // Replace with a paragraph containing the placeholder text
-          const placeholderNode = {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                value: `[Render of ${componentName} component]`,
-              },
-            ],
-          }
-
-          parent.children.splice(index, 1, placeholderNode)
-          return index
-        }
-      }
-    })
-  }
-}
-
-/**
- * Clean markdown by removing JSX/MDX components using remark
- */
-async function cleanMarkdown(content: string): Promise<string> {
-  try {
-    const result = await remark()
-      .use(remarkMdx) // Parse MDX
-      .use(remarkStripJsx) // Strip JSX components
-      .use(remarkstringify, {
-        // Configure stringify options
-        bullet: '-',
-        emphasis: '_',
-        fences: true,
-        listItemIndent: 'one',
-      })
-      .process(content)
-
-    // Clean up multiple empty lines
-    const cleaned = String(result)
-      .replace(/\n{3,}/g, '\n\n')
-      .trim()
-
-    return cleaned
-  } catch (error) {
-    console.error('Error processing markdown:', error)
-    // Fallback to original content if processing fails
-    return content
-  }
+function cleanMarkdown(content: string): string {
+  // Just do basic cleanup - keep JSX tags as-is
+  return content
+    .replace(/\n{3,}/g, '\n\n') // Clean up multiple empty lines
+    .trim()
 }
 
 export async function GET() {
@@ -100,7 +35,7 @@ export async function GET() {
       const title: string = frontmatter.title?.trim() ?? slug[slug.length - 1].replace(/\-/g, ' ')
       const description: string = frontmatter.description ?? ''
       const nav: number = frontmatter.nav ?? Infinity
-      const content = await cleanMarkdown(compiled.content)
+      const content = cleanMarkdown(compiled.content)
 
       return {
         url,
