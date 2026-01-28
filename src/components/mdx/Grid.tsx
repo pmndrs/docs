@@ -1,8 +1,7 @@
 import cn from '@/lib/cn'
 
 /**
- * @deprecated Use native HTML with Tailwind CSS grid utilities instead.
- * See https://tailwindcss.com/docs/grid-template-columns
+ * @deprecated
  */
 export const Grid = ({ children, cols = 4 }: { children: React.ReactNode; cols?: number }) => (
   <div>

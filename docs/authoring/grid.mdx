@@ -1,40 +1,31 @@
 ---
 title: Grid (Deprecated)
-description: Responsive grid layout component - Use Tailwind CSS grid instead
+description: Responsive grid layout component
 sourcecode: docs/authoring/grid.mdx
 nav: 7
 ---
 
 > [!CAUTION]
-> **This component is deprecated.**
-> 
-> Please use HTML with [Tailwind CSS grid utilities](https://tailwindcss.com/docs/grid-template-columns) instead.
+>
+> Deprecated, use [tailwind `grid-cols-*`](https://tailwindcss.com/docs/grid-template-columns) instead.
 
 <Intro>
-  The `<Grid>` MDX component is deprecated. Use native HTML with Tailwind CSS grid utilities instead.
+  Responsive grid layout.
 </Intro>
 
-## Migration
-
-**Before:**
 ```md
 <Grid cols={2}>
   <li>A</li>
   <li>B</li>
+  <li>C</li>
+  <li>D</li>
+  <li>E</li>
+  <li>F</li>
+  <li>G</li>
 </Grid>
 ```
 
-**After:**
-```md
-<ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 grid-list text-sm mb-4">
-  <li>A</li>
-  <li>B</li>
-</ul>
-```
-
-See [Tailwind CSS grid documentation](https://tailwindcss.com/docs/grid-template-columns) for more options.
-
-## Legacy Example
+result:
 
 <Grid cols={2}>
   <li>A</li>
