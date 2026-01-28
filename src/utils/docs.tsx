@@ -132,11 +132,13 @@ async function _getDocs(
   slugOfInterest: string[] | null,
   slugOnly = false,
 ): Promise<Doc[]> {
-  //
-  // 1st pass for `entries` - using shared parseDocsMetadata
-  //
-
   const parsedDocs = await parseDocsMetadata(root)
+
+  //
+  // Step 1: Extract Codesandbox IDs from all docs
+  // This requires a lightweight MDX compilation with only rehypeCodesandbox plugin
+  // to reliably parse JSX components and extract their IDs
+  //
 
   const entries = await Promise.all(
     parsedDocs.map(async (parsed) => {
@@ -149,12 +151,13 @@ async function _getDocs(
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
+      // Lightweight compilation to extract Codesandbox IDs
       await compileMDX({
         source: sanitizedContent,
         options: {
           mdxOptions: {
             rehypePlugins: [
-              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
+              rehypeCodesandbox(boxes), // Populates boxes array with IDs
             ],
           },
         },
@@ -172,10 +175,10 @@ async function _getDocs(
       }
     }),
   )
-  // console.log('entries', entries)
 
   //
-  // 2nd pass for `docs`
+  // Step 2: Full MDX compilation with all plugins and components
+  // Now that we have all Codesandbox IDs, we can compile with full configuration
   //
 
   const docs = await Promise.all(
@@ -185,7 +188,7 @@ async function _getDocs(
         url,
         title,
         boxes,
-        // Passed from the 1st pass
+        // From step 1
         file,
         content,
         frontmatter,
