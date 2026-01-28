@@ -27,19 +27,23 @@ function remarkStripJsx() {
         // Get the component name
         const componentName = node.name || 'Unknown'
 
-        // Replace with a paragraph containing the placeholder text
-        const placeholderNode = {
-          type: 'paragraph',
-          children: [
-            {
-              type: 'text',
-              value: `[Render of ${componentName} component]`,
-            },
-          ],
-        }
+        // Only replace React components (those starting with uppercase)
+        // Keep HTML tags (lowercase) as-is
+        if (componentName && /^[A-Z]/.test(componentName)) {
+          // Replace with a paragraph containing the placeholder text
+          const placeholderNode = {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                value: `[Render of ${componentName} component]`,
+              },
+            ],
+          }
 
-        parent.children.splice(index, 1, placeholderNode)
-        return index
+          parent.children.splice(index, 1, placeholderNode)
+          return index
+        }
       }
     })
   }
