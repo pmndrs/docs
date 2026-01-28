@@ -1,41 +1,70 @@
 import { crawl, MARKDOWN_REGEX } from '@/utils/docs'
 import matter from 'gray-matter'
 import fs from 'node:fs'
+import { remark } from 'remark'
+import remarkMdx from 'remark-mdx'
+import remarkstringify from 'remark-stringify'
+import { visit } from 'unist-util-visit'
 
 export const dynamic = 'force-static'
 
 /**
- * Remove JSX/MDX components and clean up markdown for plain text output
+ * Remark plugin to strip JSX/MDX components from the AST
  */
-function cleanMarkdown(content: string): string {
-  let result = content
+function remarkStripJsx() {
+  return (tree: any) => {
+    visit(tree, (node: any, index: number | undefined, parent: any) => {
+      if (typeof index === 'undefined' || !parent) return
 
-  // Remove self-closing JSX tags like <Component />
-  result = result.replace(/<[A-Z][a-zA-Z0-9]*[^>]*\/>/g, '')
+      // Remove ESM imports/exports
+      if (node.type === 'mdxjsEsm') {
+        parent.children.splice(index, 1)
+        return index
+      }
 
-  // Remove JSX component blocks (opening and closing tags with content)
-  // Keep applying until no more matches (handles nested components)
-  let prevResult
-  let maxIterations = 20 // Safety limit
-  let iterations = 0
+      // Handle JSX components (e.g., <Grid>, <Intro>, <Keypoints>)
+      if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
+        // Keep only the children (the text content inside)
+        if (node.children && node.children.length > 0) {
+          parent.children.splice(index, 1, ...node.children)
+        } else {
+          // If no children, remove the element entirely
+          parent.children.splice(index, 1)
+        }
+        return index
+      }
+    })
+  }
+}
 
-  do {
-    prevResult = result
-    // Match opening tag, content, and corresponding closing tag
-    result = result.replace(/<[A-Z][a-zA-Z0-9]*(?:\s[^>]*)?>[\s\S]*?<\/[A-Z][a-zA-Z0-9]*>/g, '')
-    iterations++
-  } while (result !== prevResult && iterations < maxIterations)
+/**
+ * Clean markdown by removing JSX/MDX components using remark
+ */
+async function cleanMarkdown(content: string): Promise<string> {
+  try {
+    const result = await remark()
+      .use(remarkMdx) // Parse MDX
+      .use(remarkStripJsx) // Strip JSX components
+      .use(remarkstringify, {
+        // Configure stringify options
+        bullet: '-',
+        emphasis: '_',
+        fences: true,
+        listItemIndent: 'one',
+      })
+      .process(content)
 
-  // Clean up any remaining orphaned tags (shouldn't happen but just in case)
-  result = result.replace(/<\/?[A-Z][a-zA-Z0-9]*(?:\s[^>]*)?>/g, '')
+    // Clean up multiple empty lines
+    const cleaned = String(result)
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
 
-  // Remove inline link syntax <https://...>
-  result = result.replace(/<(http[^>]+)>/g, '$1')
-
-  // Clean up multiple empty lines
-  result = result.replace(/\n{3,}/g, '\n\n')
-
-  return result.trim()
+    return cleaned
+  } catch (error) {
+    console.error('Error processing markdown:', error)
+    // Fallback to original content if processing fails
+    return content
+  }
 }
 
 export async function GET() {
@@ -59,7 +88,7 @@ export async function GET() {
       const title: string = frontmatter.title?.trim() ?? slug[slug.length - 1].replace(/\-/g, ' ')
       const description: string = frontmatter.description ?? ''
       const nav: number = frontmatter.nav ?? Infinity
-      const content = cleanMarkdown(compiled.content)
+      const content = await cleanMarkdown(compiled.content)
 
       return {
         url,
