@@ -16,7 +16,7 @@ const pages = [
   '/authoring/mermaid',
   '/authoring/grid',
   // '/authoring/sandpack',
-  // '/authoring/codesandbox',
+  '/authoring/codesandbox',
   '/authoring/gha',
   '/authoring/hint',
   '/authoring/contributors',
