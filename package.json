@@ -24,7 +24,6 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/sanitize-html": "^2.16.0",
-    "@vitest/ui": "^4.0.18",
     "autoprefixer": "^10.4.23",
     "chromatic": "^13.3.5",
     "eslint": "^9.0.0",
@@ -86,8 +85,7 @@
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
     "release": "changeset publish",
     "changeset": "changeset",
-    "test": "playwright test",
-    "test:unit": "vitest",
+    "test": "vitest && playwright test",
     "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
