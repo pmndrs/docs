@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.2.0
+
+### Minor Changes
+
+- [#513](https://github.com/pmndrs/docs/pull/513) [`115aa47`](https://github.com/pmndrs/docs/commit/115aa4767d12db20a5e0e56ba9f825f6a4486acf) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - llms.txt
+
 ## 3.1.8
 
 ### Patch Changes
