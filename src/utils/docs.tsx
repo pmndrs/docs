@@ -65,13 +65,14 @@ const INLINE_LINK_REGEX = /<(http[^>]+)>/g
 
 /**
  * Extracts Codesandbox IDs from markdown content without MDX compilation
+ * Matches self-closing Codesandbox tags like: <Codesandbox id="xyz" />
  */
-const CODESANDBOX_ID_REGEX = /<Codesandbox\s+id=["']([^"']+)["']\s*\/>/g
-
 function extractCodesandboxIds(content: string): string[] {
   const ids: string[] = []
+  // Create new RegExp instance to avoid state issues with global flag
+  const regex = /<Codesandbox\s+id=["']([^"']+)["']\s*\/>/g
   let match
-  while ((match = CODESANDBOX_ID_REGEX.exec(content)) !== null) {
+  while ((match = regex.exec(content)) !== null) {
     ids.push(match[1])
   }
   return ids
