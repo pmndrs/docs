@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.2.2
+
+### Patch Changes
+
+- [`8d1012b`](https://github.com/pmndrs/docs/commit/8d1012b1fa8d1c08757931c3af5447071a8b3b0f) Thanks [@abernier](https://github.com/abernier)! - rehypeLink
+
 ## 3.2.1
 
 ### Patch Changes
