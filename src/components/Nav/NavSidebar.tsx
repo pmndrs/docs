@@ -5,11 +5,7 @@ import cn from '@/lib/cn'
 import * as React from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   SidebarContent,
   SidebarGroup,
@@ -26,13 +22,7 @@ type NavList = Record<string, Record<string, Doc>>
 
 const INDEX_PAGE = 'introduction'
 
-export function NavContent({
-  docs,
-  asPath,
-}: {
-  docs: Doc[]
-  asPath: string
-}) {
+export function NavContent({ docs, asPath }: { docs: Doc[]; asPath: string }) {
   const nav = React.useMemo(
     () =>
       docs.reduce((acc, doc) => {
@@ -55,20 +45,17 @@ export function NavContent({
             {Object.entries(nav).map(([category, categoryDocs]) => {
               const docsEntries = Object.entries(categoryDocs)
               const docIndexEntry = docsEntries.find(([page]) => page === INDEX_PAGE)
-              const categoryHref = docIndexEntry
-                ? docIndexEntry[1].url
-                : docsEntries[0][1].url
+              const categoryHref = docIndexEntry ? docIndexEntry[1].url : docsEntries[0][1].url
               const nonIndexItems = docsEntries.filter(([page]) => page !== INDEX_PAGE)
               const isActive = docsEntries.some(([, doc]) => doc.url === `/${asPath}`)
 
               return (
-                <Collapsible
-                  key={category}
-                  className="group/collapsible"
-                  defaultOpen={isActive}
-                >
+                <Collapsible key={category} className="group/collapsible" defaultOpen={isActive}>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={docIndexEntry && categoryHref === `/${asPath}`}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={docIndexEntry && categoryHref === `/${asPath}`}
+                    >
                       <Link href={categoryHref} className="font-bold capitalize">
                         {category.replace(/\-/g, ' ')}
                       </Link>
