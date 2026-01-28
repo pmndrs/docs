@@ -125,6 +125,8 @@ export default function RootLayout({
       className={`${inter.variable} ${inconsolata.variable}`}
     >
       <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" />
         <SandpackCSS />
       </head>
       <body className="wrap-break-word bg-surface text-on-surface">
