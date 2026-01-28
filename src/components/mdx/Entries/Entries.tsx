@@ -12,7 +12,7 @@ type Entry = {
 
 export async function Entries({
   items,
-  excludedGroups = ['getting-started'],
+  excludedGroups = [],
   ...props
 }: { items: Entry[]; excludedGroups?: string[] } & ComponentProps<'div'>) {
   const groupedEntries = groupBy(items, ({ slug }) => slug[0])
