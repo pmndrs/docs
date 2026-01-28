@@ -9,7 +9,7 @@ import { visit } from 'unist-util-visit'
 export const dynamic = 'force-static'
 
 /**
- * Remark plugin to strip JSX/MDX components from the AST
+ * Remark plugin to replace JSX/MDX components with textual placeholders
  */
 function remarkStripJsx() {
   return (tree: any) => {
@@ -24,13 +24,21 @@ function remarkStripJsx() {
 
       // Handle JSX components (e.g., <Grid>, <Intro>, <Keypoints>)
       if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
-        // Keep only the children (the text content inside)
-        if (node.children && node.children.length > 0) {
-          parent.children.splice(index, 1, ...node.children)
-        } else {
-          // If no children, remove the element entirely
-          parent.children.splice(index, 1)
+        // Get the component name
+        const componentName = node.name || 'Unknown'
+
+        // Replace with a paragraph containing the placeholder text
+        const placeholderNode = {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: `[Render of ${componentName} component]`,
+            },
+          ],
         }
+
+        parent.children.splice(index, 1, placeholderNode)
         return index
       }
     })
