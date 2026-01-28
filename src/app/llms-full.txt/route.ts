@@ -1,6 +1,4 @@
-import { crawl, MARKDOWN_REGEX } from '@/utils/docs'
-import matter from 'gray-matter'
-import fs from 'node:fs'
+import { parseDocsMetadata } from '@/utils/docs'
 
 export const dynamic = 'force-static'
 
@@ -15,49 +13,18 @@ function cleanMarkdown(content: string): string {
 }
 
 export async function GET() {
-  const { MDX } = process.env
+  const { MDX, NEXT_PUBLIC_LIBNAME, NEXT_PUBLIC_URL } = process.env
   if (!MDX) throw new Error('MDX env var not set')
+  if (!NEXT_PUBLIC_LIBNAME) throw new Error('NEXT_PUBLIC_LIBNAME env var not set')
 
-  // Get all markdown files
-  const files = await crawl(MDX, (dir) => !dir.includes('node_modules') && MARKDOWN_REGEX.test(dir))
+  const docs = await parseDocsMetadata(MDX)
 
-  // Parse files to get metadata and content
-  const docs = await Promise.all(
-    files.map(async (file) => {
-      const path = file.replace(`${MDX}/`, '')
-      const slug = [...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
-      const url = `/${slug.join('/')}`
-
-      const str = await fs.promises.readFile(file, { encoding: 'utf-8' })
-      const compiled = matter(str)
-      const frontmatter = compiled.data
-
-      const title: string = frontmatter.title?.trim() ?? slug[slug.length - 1].replace(/\-/g, ' ')
-      const description: string = frontmatter.description ?? ''
-      const nav: number = frontmatter.nav ?? Infinity
-      const content = cleanMarkdown(compiled.content)
-
-      return {
-        url,
-        title,
-        description,
-        nav,
-        content,
-      }
-    }),
-  )
-
-  // Sort by nav order
-  docs.sort((a, b) => a.nav - b.nav)
+  const baseUrl = NEXT_PUBLIC_URL || ''
 
   // Generate llms-full.txt content
-  const header = `# pmndrs/docs - Full Documentation
+  const header = `${NEXT_PUBLIC_LIBNAME}
 
-Documentation generator for pmndrs/* projects.
-
-This is a static MDX documentation generator with a GitHub reusable workflow, primarily used for pmndrs/* projects.
-
-================================================================================
+Full documentation content.
 
 `
 
@@ -65,14 +32,13 @@ This is a static MDX documentation generator with a GitHub reusable workflow, pr
     header +
     docs
       .map((doc) => {
-        return `# ${doc.title}
+        const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
+        return `---
 
-URL: ${doc.url}
-Source: ${doc.url}.md
+${doc.title}
+URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
-${doc.content}
-
-================================================================================
+${cleanMarkdown(doc.content)}
 `
       })
       .join('\n')
