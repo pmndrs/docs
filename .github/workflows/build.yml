@@ -81,14 +81,14 @@ jobs:
 
           docker run --rm --init \
             -v "./$MDX":/app/docs \
-            -e BASE_PATH \
-            -e DIST_DIR="$MDX/out$BASE_PATH" \
             -e MDX \
             -e NEXT_PUBLIC_LIBNAME \
             -e NEXT_PUBLIC_LIBNAME_SHORT \
             -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
             -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
-            -e OUTPUT=export \
+            -e BASE_PATH \
+            -e DIST_DIR \
+            -e OUTPUT \
             -e HOME_REDIRECT \
             -e MDX_BASEURL \
             -e SOURCECODE_BASEURL \
@@ -109,12 +109,14 @@ jobs:
             -e CONTRIBUTORS_PAT \
             ghcr.io/pmndrs/docs:${{ inputs.docker_tag }} pnpm run build
         env:
-          BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
           NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
           NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
+          BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
+          DIST_DIR: '${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}'
+          OUTPUT: 'export'
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
           SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}'
