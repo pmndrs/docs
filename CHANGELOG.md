@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.2.3
+
+### Patch Changes
+
+- [`23d3a9a`](https://github.com/pmndrs/docs/commit/23d3a9aafdf459356f7564a45951696ca340ad0e) Thanks [@abernier](https://github.com/abernier)! - order
+
 ## 3.2.2
 
 ### Patch Changes
