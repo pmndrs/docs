@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.2.1
+
+### Patch Changes
+
+- [`933b964`](https://github.com/pmndrs/docs/commit/933b964ecac027ab3efb43b863b8a80a30f63caa) Thanks [@abernier](https://github.com/abernier)! - basePath for llms
+
 ## 3.2.0
 
 ### Minor Changes
