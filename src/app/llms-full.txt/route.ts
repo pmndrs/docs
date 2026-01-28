@@ -8,17 +8,34 @@ export const dynamic = 'force-static'
  * Remove JSX/MDX components and clean up markdown for plain text output
  */
 function cleanMarkdown(content: string): string {
-  return (
-    content
-      // Remove JSX components like <Intro>, <Keypoints>, etc.
-      .replace(/<[A-Z][^>]*>[\s\S]*?<\/[A-Z][^>]*>/g, '')
-      .replace(/<[A-Z][^>]*\/>/g, '')
-      // Remove inline link syntax <https://...>
-      .replace(/<(http[^>]+)>/g, '$1')
-      // Clean up multiple empty lines
-      .replace(/\n{3,}/g, '\n\n')
-      .trim()
-  )
+  let result = content
+
+  // Remove self-closing JSX tags like <Component />
+  result = result.replace(/<[A-Z][a-zA-Z0-9]*[^>]*\/>/g, '')
+
+  // Remove JSX component blocks (opening and closing tags with content)
+  // Keep applying until no more matches (handles nested components)
+  let prevResult
+  let maxIterations = 20 // Safety limit
+  let iterations = 0
+
+  do {
+    prevResult = result
+    // Match opening tag, content, and corresponding closing tag
+    result = result.replace(/<[A-Z][a-zA-Z0-9]*(?:\s[^>]*)?>[\s\S]*?<\/[A-Z][a-zA-Z0-9]*>/g, '')
+    iterations++
+  } while (result !== prevResult && iterations < maxIterations)
+
+  // Clean up any remaining orphaned tags (shouldn't happen but just in case)
+  result = result.replace(/<\/?[A-Z][a-zA-Z0-9]*(?:\s[^>]*)?>/g, '')
+
+  // Remove inline link syntax <https://...>
+  result = result.replace(/<(http[^>]+)>/g, '$1')
+
+  // Clean up multiple empty lines
+  result = result.replace(/\n{3,}/g, '\n\n')
+
+  return result.trim()
 }
 
 export async function GET() {
