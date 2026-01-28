@@ -23,7 +23,6 @@ import {
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox1 } from '@/components/mdx/Codesandbox'
-import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { Entries } from '@/components/mdx/Entries'
@@ -63,6 +62,20 @@ export const MARKDOWN_REGEX = /\.mdx?/
  * Removes <https://inline.links> formatting from markdown
  */
 const INLINE_LINK_REGEX = /<(http[^>]+)>/g
+
+/**
+ * Extracts Codesandbox IDs from markdown content without MDX compilation
+ */
+const CODESANDBOX_ID_REGEX = /<Codesandbox\s+id=["']([^"']+)["']\s*\/>/g
+
+function extractCodesandboxIds(content: string): string[] {
+  const ids: string[] = []
+  let match
+  while ((match = CODESANDBOX_ID_REGEX.exec(content)) !== null) {
+    ids.push(match[1])
+  }
+  return ids
+}
 
 /**
  * Recursively crawls a directory, returning an array of file paths.
@@ -133,49 +146,41 @@ async function _getDocs(
   slugOnly = false,
 ): Promise<Doc[]> {
   //
-  // 1st pass for `entries` - using shared parseDocsMetadata
+  // Parse all docs metadata
   //
 
   const parsedDocs = await parseDocsMetadata(root)
 
-  const entries = await Promise.all(
-    parsedDocs.map(async (parsed) => {
-      const { file, slug, url, title, frontmatter, content } = parsed
+  //
+  // Prepare entries with extracted Codesandbox IDs (no MDX compilation needed)
+  //
 
-      const boxes: string[] = []
+  const entries = parsedDocs.map((parsed) => {
+    const { file, slug, url, title, frontmatter, content } = parsed
 
-      // Sanitize markdown
-      const sanitizedContent = content
-        // Remove inline link syntax
-        .replace(INLINE_LINK_REGEX, '$1')
+    // Sanitize markdown
+    const sanitizedContent = content
+      // Remove inline link syntax
+      .replace(INLINE_LINK_REGEX, '$1')
 
-      await compileMDX({
-        source: sanitizedContent,
-        options: {
-          mdxOptions: {
-            rehypePlugins: [
-              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
-            ],
-          },
-        },
-      })
+    // Extract Codesandbox IDs without MDX compilation
+    const boxes = extractCodesandboxIds(sanitizedContent)
 
-      return {
-        slug,
-        url,
-        title,
-        boxes,
-        //
-        file,
-        content: sanitizedContent,
-        frontmatter,
-      }
-    }),
-  )
+    return {
+      slug,
+      url,
+      title,
+      boxes,
+      //
+      file,
+      content: sanitizedContent,
+      frontmatter,
+    }
+  })
   // console.log('entries', entries)
 
   //
-  // 2nd pass for `docs`
+  // Compile MDX content for docs
   //
 
   const docs = await Promise.all(
@@ -185,7 +190,7 @@ async function _getDocs(
         url,
         title,
         boxes,
-        // Passed from the 1st pass
+        // Passed from preparation
         file,
         content,
         frontmatter,
