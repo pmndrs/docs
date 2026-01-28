@@ -63,6 +63,7 @@ export function NavContent({ docs, asPath }: { docs: Doc[]; asPath: string }) {
                     {nonIndexItems.length > 0 && (
                       <CollapsibleTrigger asChild>
                         <button
+                          aria-label="Toggle category items"
                           className={cn(
                             'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 opacity-70 outline-hidden transition-transform hover:opacity-100',
                             'group-data-[state=open]/collapsible:rotate-90',
