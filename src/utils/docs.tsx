@@ -34,6 +34,7 @@ import { Hint } from '@/components/mdx/Hint'
 import { Img } from '@/components/mdx/Img'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { Intro } from '@/components/mdx/Intro'
+import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
 import { Keypoints, KeypointsItem } from '@/components/mdx/Keypoints'
 import { Mermaid } from '@/components/mdx/Mermaid'
 import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
@@ -253,6 +254,7 @@ async function _getDocs(
             mdxOptions: {
               remarkPlugins: [remarkGFM],
               rehypePlugins: [
+                rehypeLink(process.env.BASE_PATH),
                 rehypeImg(relFilePath, MDX_BASEURL),
                 rehypeDetails,
                 rehypeSummary,
