@@ -117,6 +117,7 @@ export default function RootLayout({
     | 'tonalSpot'
     | 'vibrant'
   const contrast = Number(process.env.THEME_CONTRAST) || 0
+  const basePath = process.env.BASE_PATH || ''
 
   return (
     <html
@@ -125,6 +126,8 @@ export default function RootLayout({
       className={`${inter.variable} ${inconsolata.variable}`}
     >
       <head>
+        <link rel="alternate" type="text/plain" href={`${basePath}/llms.txt`} />
+        <link rel="alternate" type="text/plain" href={`${basePath}/llms-full.txt`} />
         <SandpackCSS />
       </head>
       <body className="wrap-break-word bg-surface text-on-surface">
