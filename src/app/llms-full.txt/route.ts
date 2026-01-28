@@ -68,6 +68,7 @@ This is a static MDX documentation generator with a GitHub reusable workflow, pr
         return `# ${doc.title}
 
 URL: ${doc.url}
+Source: ${doc.url}.md
 ${doc.description ? `Description: ${doc.description}\n` : ''}
 ${doc.content}
 

@@ -47,7 +47,7 @@ This is a static MDX documentation generator with a GitHub reusable workflow, pr
 
 ## Documentation
 
-${docs.map((doc) => `- ${doc.title}: ${doc.url}${doc.description ? ` - ${doc.description}` : ''}`).join('\n')}
+${docs.map((doc) => `- ${doc.title}: ${doc.url} (source: ${doc.url}.md)${doc.description ? ` - ${doc.description}` : ''}`).join('\n')}
 
 ---
 
