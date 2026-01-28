@@ -1,5 +1,4 @@
 import { crawl, MARKDOWN_REGEX } from '@/utils/docs'
-import matter from 'gray-matter'
 import fs from 'node:fs'
 import { notFound } from 'next/navigation'
 
@@ -33,39 +32,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
 
   try {
     // Try .mdx first, then .md
-    let rawContent: string
+    let content: string
     try {
-      rawContent = await fs.promises.readFile(filePath, { encoding: 'utf-8' })
+      content = await fs.promises.readFile(filePath, { encoding: 'utf-8' })
     } catch {
-      rawContent = await fs.promises.readFile(altFilePath, { encoding: 'utf-8' })
+      content = await fs.promises.readFile(altFilePath, { encoding: 'utf-8' })
     }
 
-    // Parse frontmatter
-    const { data: frontmatter, content } = matter(rawContent)
-
-    // Replace YAML frontmatter with llms.txt compatible format
-    // Format: key-value pairs separated by newlines, followed by content
-    const frontmatterLines: string[] = []
-    
-    if (frontmatter.title) {
-      frontmatterLines.push(`# ${frontmatter.title}`)
-    }
-    if (frontmatter.description) {
-      frontmatterLines.push(`> ${frontmatter.description}`)
-    }
-    
-    // Add other metadata as comments
-    const otherMetadata = Object.entries(frontmatter)
-      .filter(([key]) => key !== 'title' && key !== 'description')
-      .map(([key, value]) => `<!-- ${key}: ${value} -->`)
-    
-    frontmatterLines.push(...otherMetadata)
-
-    const outputContent = frontmatterLines.length > 0 
-      ? `${frontmatterLines.join('\n')}\n\n${content}` 
-      : content
-
-    return new Response(outputContent, {
+    // Return the raw MDX source file as-is
+    return new Response(content, {
       headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
       },
