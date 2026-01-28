@@ -220,7 +220,8 @@ $ (
   export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
   export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs"
   export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://docs.pmnd.rs"
-  export BASE_PATH=
+  export BASE_PATH=/toto
+  export DIST_DIR="$MDX/out$BASE_PATH"
   export OUTPUT=export
   export HOME_REDIRECT=/getting-started/introduction
   export MDX_BASEURL=http://localhost:$_PORT
@@ -251,7 +252,7 @@ $ (
     -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
     -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
     -e BASE_PATH \
-    -e DIST_DIR="$MDX/out$BASE_PATH" \
+    -e DIST_DIR \
     -e OUTPUT \
     -e HOME_REDIRECT \
     -e MDX_BASEURL \
