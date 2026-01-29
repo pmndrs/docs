@@ -5,7 +5,12 @@
  * It provides a helpful message to users.
  */
 
-export function SandpackPlaceholder({ folder, ...props }: any) {
+interface SandpackPlaceholderProps {
+  folder?: string
+  [key: string]: any
+}
+
+export function SandpackPlaceholder({ folder, ...props }: SandpackPlaceholderProps) {
   return (
     <div
       style={{

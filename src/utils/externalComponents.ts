@@ -17,7 +17,7 @@ type ExternalComponentsConfig = {
  * 
  * By default, all external components are enabled for backward compatibility.
  */
-export async function loadExternalComponentsConfig(): Promise<ExternalComponentsConfig> {
+export function loadExternalComponentsConfig(): ExternalComponentsConfig {
   const sandpackEnabled = process.env.EXTERNAL_SANDPACK !== 'false'
   
   return {
@@ -38,20 +38,13 @@ export function isSandpackInstalled(): boolean {
 }
 
 /**
- * Check if Sandpack is available (enabled and installed)
- */
-export function isSandpackAvailable(config: ExternalComponentsConfig): boolean {
-  return Boolean(config.sandpack) && isSandpackInstalled()
-}
-
-/**
  * Get Sandpack component and utilities if available
  * Returns the Sandpack component if enabled and available,
  * or a placeholder component otherwise.
+ * 
+ * @param config - External components configuration
  */
-export async function getSandpackComponent() {
-  const config = await loadExternalComponentsConfig()
-  
+export async function getSandpackComponent(config: ExternalComponentsConfig) {
   // If Sandpack is disabled, return placeholder
   if (!config.sandpack) {
     const { SandpackPlaceholder } = await import('@/components/mdx/Sandpack/SandpackPlaceholder')
@@ -64,7 +57,7 @@ export async function getSandpackComponent() {
     return Sandpack
   } catch (error) {
     // If Sandpack import fails (not installed), return placeholder
-    console.warn('Sandpack is enabled but @codesandbox/sandpack-react is not installed.')
+    console.warn('Sandpack is enabled but failed to load:', error)
     const { SandpackPlaceholder } = await import('@/components/mdx/Sandpack/SandpackPlaceholder')
     return SandpackPlaceholder
   }
@@ -73,10 +66,14 @@ export async function getSandpackComponent() {
 /**
  * Get Sandpack rehype plugin if available
  * Returns null if Sandpack is disabled or not available
+ * 
+ * @param config - External components configuration
+ * @param dir - Directory path for the plugin
  */
-export async function getSandpackRehypePlugin(dir: string) {
-  const config = await loadExternalComponentsConfig()
-  
+export async function getSandpackRehypePlugin(
+  config: ExternalComponentsConfig,
+  dir: string
+) {
   // If Sandpack is disabled, don't load the plugin
   if (!config.sandpack) {
     return null

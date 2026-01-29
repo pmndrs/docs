@@ -136,13 +136,11 @@ async function _getDocs(
   slugOnly = false,
 ): Promise<Doc[]> {
   //
-  // Load external components configuration
+  // Load external components configuration once
   //
-  const externalConfig = await loadExternalComponentsConfig()
+  const externalConfig = loadExternalComponentsConfig()
   // Always get Sandpack component (will be placeholder if disabled/unavailable)
-  const Sandpack = await getSandpackComponent()
-  // Only get rehype plugin if Sandpack is enabled
-  const sandpackRehypePlugin = externalConfig.sandpack ? await getSandpackRehypePlugin(root) : null
+  const Sandpack = await getSandpackComponent(externalConfig)
 
   //
   // 1st pass for `entries` - using shared parseDocsMetadata
@@ -273,9 +271,9 @@ async function _getDocs(
           rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
         ]
 
-        // Add Sandpack plugin if available
-        if (sandpackRehypePlugin) {
-          const sandpackPluginForFile = await getSandpackRehypePlugin(dirname(file))
+        // Add Sandpack plugin if enabled
+        if (externalConfig.sandpack) {
+          const sandpackPluginForFile = await getSandpackRehypePlugin(externalConfig, dirname(file))
           if (sandpackPluginForFile) {
             rehypePlugins.push(sandpackPluginForFile)
           }
