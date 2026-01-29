@@ -26,39 +26,62 @@ export async function loadExternalComponentsConfig(): Promise<ExternalComponents
 }
 
 /**
- * Check if Sandpack is available
+ * Check if Sandpack package is installed
  */
-export function isSandpackAvailable(config: ExternalComponentsConfig): boolean {
-  if (!config.sandpack) return false
-  
+export function isSandpackInstalled(): boolean {
   try {
     require.resolve('@codesandbox/sandpack-react')
     return true
   } catch {
-    console.warn(
-      'Sandpack is enabled but @codesandbox/sandpack-react is not installed. ' +
-      'Run: npm install @codesandbox/sandpack-react'
-    )
     return false
   }
 }
 
 /**
+ * Check if Sandpack is available (enabled and installed)
+ */
+export function isSandpackAvailable(config: ExternalComponentsConfig): boolean {
+  return Boolean(config.sandpack) && isSandpackInstalled()
+}
+
+/**
  * Get Sandpack component and utilities if available
+ * Returns the Sandpack component if enabled and available,
+ * or a placeholder component otherwise.
  */
 export async function getSandpackComponent() {
+  const config = await loadExternalComponentsConfig()
+  
+  // If Sandpack is disabled, return placeholder
+  if (!config.sandpack) {
+    const { SandpackPlaceholder } = await import('@/components/mdx/Sandpack/SandpackPlaceholder')
+    return SandpackPlaceholder
+  }
+  
+  // If Sandpack is enabled, try to load it
   try {
     const { Sandpack } = await import('@/components/mdx/Sandpack')
     return Sandpack
   } catch (error) {
-    return null
+    // If Sandpack import fails (not installed), return placeholder
+    console.warn('Sandpack is enabled but @codesandbox/sandpack-react is not installed.')
+    const { SandpackPlaceholder } = await import('@/components/mdx/Sandpack/SandpackPlaceholder')
+    return SandpackPlaceholder
   }
 }
 
 /**
  * Get Sandpack rehype plugin if available
+ * Returns null if Sandpack is disabled or not available
  */
 export async function getSandpackRehypePlugin(dir: string) {
+  const config = await loadExternalComponentsConfig()
+  
+  // If Sandpack is disabled, don't load the plugin
+  if (!config.sandpack) {
+    return null
+  }
+  
   try {
     const { rehypeSandpack } = await import('@/components/mdx/Sandpack/rehypeSandpack')
     return rehypeSandpack(dir)

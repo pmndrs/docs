@@ -139,7 +139,9 @@ async function _getDocs(
   // Load external components configuration
   //
   const externalConfig = await loadExternalComponentsConfig()
-  const Sandpack = externalConfig.sandpack ? await getSandpackComponent() : null
+  // Always get Sandpack component (will be placeholder if disabled/unavailable)
+  const Sandpack = await getSandpackComponent()
+  // Only get rehype plugin if Sandpack is enabled
   const sandpackRehypePlugin = externalConfig.sandpack ? await getSandpackRehypePlugin(root) : null
 
   //
@@ -302,7 +304,7 @@ async function _getDocs(
               Contributors,
               Backers,
               Mermaid,
-              ...(Sandpack ? { Sandpack } : {}),
+              Sandpack,
               Summary,
               Toc,
               h1,
