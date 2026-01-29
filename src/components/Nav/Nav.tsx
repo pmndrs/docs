@@ -2,8 +2,8 @@
 
 import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import * as Tree from '@/components/primitives/Tree'
-import type { RecursiveNode } from '@/components/primitives/Tree'
+import * as Tree from '@abernier/radix-tree'
+import type { RecursiveNode } from '@abernier/radix-tree'
 import Link from 'next/link'
 import * as React from 'react'
 import { IoIosArrowDown } from 'react-icons/io'

@@ -48,6 +48,7 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
+    "@abernier/radix-tree": "^1.0.2",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@fontsource/inconsolata": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
