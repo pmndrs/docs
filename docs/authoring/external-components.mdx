@@ -1,0 +1,97 @@
+---
+title: External Components
+description: Optional MDX components that can be enabled on demand
+nav: 9
+---
+
+<Intro>
+  External components are optional MDX components that can be enabled or disabled via environment variables. This allows you to keep your documentation lightweight by only including the components you need.
+</Intro>
+
+## Configuration
+
+External components are configured via environment variables:
+
+```sh
+# Disable Sandpack component
+export EXTERNAL_SANDPACK=false
+
+# Build without Sandpack
+npm run build
+```
+
+## Available External Components
+
+### Sandpack
+
+Interactive code sandboxes powered by CodeSandbox.
+
+**Installation:**
+
+```sh
+npm install @codesandbox/sandpack-react
+```
+
+**Configuration:**
+
+Sandpack is **enabled by default**. To disable it:
+
+```sh
+export EXTERNAL_SANDPACK=false
+```
+
+**Usage:**
+
+See the [Sandpack documentation](./sandpack.mdx) for full usage details.
+
+> [!NOTE]
+> If Sandpack is enabled but the package is not installed, the system will show a warning and skip rendering Sandpack components.
+
+## Disabling External Components
+
+To disable an external component, set its environment variable to `false`:
+
+```sh
+export EXTERNAL_SANDPACK=false
+```
+
+When disabled:
+- The component will not be available in MDX files
+- The dependency is not required
+- Your documentation bundle will be smaller
+
+You can also disable components at build time:
+
+```sh
+EXTERNAL_SANDPACK=false npm run build
+```
+
+## Benefits
+
+External components allow you to:
+- **Reduce bundle size** - Only include what you need
+- **Faster builds** - Fewer dependencies to process
+- **Flexible configuration** - Enable/disable per environment
+- **Backward compatibility** - Existing projects continue to work
+
+## Default Configuration
+
+By default, all external components are **enabled** to maintain backward compatibility with existing projects.
+
+## Environment Variables Reference
+
+| Variable | Component | Default | Description |
+|----------|-----------|---------|-------------|
+| `EXTERNAL_SANDPACK` | Sandpack | `true` | Set to `false` to disable Sandpack |
+
+## Creating Custom External Components
+
+To add your own external component to this system:
+
+1. Create your component in `src/components/mdx/YourComponent/`
+2. Add it to the external components registry in `src/utils/externalComponents.ts`
+3. Add a new environment variable (e.g., `EXTERNAL_YOURCOMPONENT`)
+4. Update this documentation
+
+> [!TIP]
+> This architecture allows the documentation system to remain modular and extensible while keeping the core lightweight.

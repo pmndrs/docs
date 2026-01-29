@@ -39,13 +39,16 @@ import { Keypoints, KeypointsItem } from '@/components/mdx/Keypoints'
 import { Mermaid } from '@/components/mdx/Mermaid'
 import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { Backers, Contributors } from '@/components/mdx/People'
-import { Sandpack } from '@/components/mdx/Sandpack'
-import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { Toc } from '@/components/mdx/Toc'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
+import {
+  loadExternalComponentsConfig,
+  getSandpackComponent,
+  getSandpackRehypePlugin,
+} from '@/utils/externalComponents'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
@@ -132,6 +135,13 @@ async function _getDocs(
   slugOfInterest: string[] | null,
   slugOnly = false,
 ): Promise<Doc[]> {
+  //
+  // Load external components configuration
+  //
+  const externalConfig = await loadExternalComponentsConfig()
+  const Sandpack = externalConfig.sandpack ? await getSandpackComponent() : null
+  const sandpackRehypePlugin = externalConfig.sandpack ? await getSandpackRehypePlugin(root) : null
+
   //
   // 1st pass for `entries` - using shared parseDocsMetadata
   //
@@ -248,23 +258,33 @@ async function _getDocs(
 
         const tableOfContents: DocToC[] = []
 
+        // Build rehype plugins array conditionally
+        const rehypePlugins = [
+          rehypeLink(process.env.BASE_PATH),
+          rehypeImg(relFilePath, MDX_BASEURL),
+          rehypeDetails,
+          rehypeSummary,
+          rehypeGha,
+          rehypeMermaid(),
+          rehypePrismPlus,
+          rehypeCode(),
+          rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
+        ]
+
+        // Add Sandpack plugin if available
+        if (sandpackRehypePlugin) {
+          const sandpackPluginForFile = await getSandpackRehypePlugin(dirname(file))
+          if (sandpackPluginForFile) {
+            rehypePlugins.push(sandpackPluginForFile)
+          }
+        }
+
         const { content: jsx } = await compileMDX({
           source: `# ${title}\n ${content}`,
           options: {
             mdxOptions: {
               remarkPlugins: [remarkGFM],
-              rehypePlugins: [
-                rehypeLink(process.env.BASE_PATH),
-                rehypeImg(relFilePath, MDX_BASEURL),
-                rehypeDetails,
-                rehypeSummary,
-                rehypeGha,
-                rehypeMermaid(),
-                rehypePrismPlus,
-                rehypeCode(),
-                rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
-                rehypeSandpack(dirname(file)),
-              ],
+              rehypePlugins,
             },
           },
           components: {
@@ -282,7 +302,7 @@ async function _getDocs(
               Contributors,
               Backers,
               Mermaid,
-              Sandpack,
+              ...(Sandpack ? { Sandpack } : {}),
               Summary,
               Toc,
               h1,

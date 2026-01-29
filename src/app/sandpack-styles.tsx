@@ -2,7 +2,6 @@
 
 'use client'
 
-import { getSandpackCssText } from '@codesandbox/sandpack-react'
 import { useServerInsertedHTML } from 'next/navigation'
 
 /**
@@ -10,7 +9,14 @@ import { useServerInsertedHTML } from 'next/navigation'
  */
 export const SandpackCSS = () => {
   useServerInsertedHTML(() => {
-    return <style dangerouslySetInnerHTML={{ __html: getSandpackCssText() }} id="sandpack" />
+    try {
+      // Try to load Sandpack CSS if available
+      const { getSandpackCssText } = require('@codesandbox/sandpack-react')
+      return <style dangerouslySetInnerHTML={{ __html: getSandpackCssText() }} id="sandpack" />
+    } catch {
+      // Sandpack not installed, skip CSS injection
+      return null
+    }
   })
   return null
 }
