@@ -275,9 +275,7 @@ export type FlatNode<T extends RecursiveNode = RecursiveNode> = Omit<T, 'nodes'>
   ancestors: (string | null)[]
 }
 
-type TreeFactoryBaseProps<T extends RecursiveNode> = {
-  /** */
-} & TreeProps
+type TreeFactoryBaseProps<T extends RecursiveNode> = TreeProps
 
 type TreeFactoryProps<T extends RecursiveNode> =
   | (TreeFactoryBaseProps<T> & {
@@ -306,6 +304,24 @@ function TreeFactory<T extends RecursiveNode>({
   VItem,
   ...treeProps
 }: TreeFactoryProps<T>) {
+  // Handle virtualized mode separately
+  if (virtualized) {
+    return (
+      <Tree {...treeProps}>
+        <VItems flatItems={flatItems}>{VItem}</VItems>
+      </Tree>
+    )
+  }
+
+  // Non-virtualized mode - Item and Group are guaranteed to be defined
+  if (!Item || !Group || !items) {
+    throw new Error('TreeFactory requires items, Item, and Group when not virtualized')
+  }
+
+  // Store in constants to help TypeScript understand they're not undefined
+  const ItemComponent = Item
+  const GroupComponent = Group
+
   //
   // Recursive render of a node
   //
@@ -317,13 +333,13 @@ function TreeFactory<T extends RecursiveNode>({
     return (
       <React.Fragment key={id}>
         <TreeItem nodeId={id} hasChildNodes={hasChildNodes} asChild>
-          {Item!(item)}
+          {ItemComponent(item)}
         </TreeItem>
 
         {/* If there are children, wrap them in a <TreeGroup> */}
         {hasChildNodes && (
           <TreeGroup parentId={id} asChild>
-            {Group!({
+            {GroupComponent({
               ...item,
               children: nodes?.map((child) => renderNode(child as T)),
             })}
@@ -333,53 +349,8 @@ function TreeFactory<T extends RecursiveNode>({
     )
   }
 
-  return (
-    <Tree {...treeProps}>
-      {virtualized ? (
-        <VItems flatItems={flatItems}>{VItem}</VItems>
-      ) : (
-        items.map((item) => renderNode(item))
-      )}
-    </Tree>
-  )
+  return <Tree {...treeProps}>{items.map((item) => renderNode(item))}</Tree>
 }
-
-// VItems
-
-//
-//
-//
-
-// function getAllSelectedKeysWithChildren(tree: RecursiveNode[], selectedKeys: Set<string>) {
-//     const ret = new Set<string>();
-
-//     // Depth-first collection of child keys, including the node's own key
-//     function collectAllKeys(node: RecursiveNode) {
-//         ret.add(node.id);
-//         if (node.nodes) {
-//             for (const child of node.nodes) {
-//                 collectAllKeys(child);
-//             }
-//         }
-//     }
-
-//     // Traverse the entire tree to find matching nodes whose key is selected
-//     function traverse(nodes: RecursiveNode[]) {
-//         for (const node of nodes) {
-//             // If node's key is in `selectedKeys`, collect it & its descendants
-//             if (selectedKeys.has(node.id)) {
-//                 collectAllKeys(node);
-//             }
-//             // Keep traversing even if node's key isn't selected, because its children might be
-//             if (node.nodes?.length) {
-//                 traverse(node.nodes);
-//             }
-//         }
-//     }
-
-//     traverse(tree);
-//     return ret;
-// }
 
 /**
  * Flatten `nodes` into a 1-level array, with additional `depth` and `hasChildNodes` metadata
@@ -448,9 +419,6 @@ function VItems<T extends RecursiveNode>(
   const { flatItems, children: render, __scopeTree } = props
   const { openKeys, selectedKeys } = useTreeContext(TREE_NAME, __scopeTree)
 
-  // const allSelectedKeys = getAllSelectedKeysWithChildren(items, selectedKeys);
-  const allSelectedKeys = selectedKeys
-
   return (
     <>
       {flatItems.map((flatItem) => (
@@ -458,10 +426,9 @@ function VItems<T extends RecursiveNode>(
           key={flatItem.id}
           nodeId={flatItem.id}
           hasChildNodes={flatItem.hasChildNodes}
-          aria-selected={allSelectedKeys.has(flatItem.id) || undefined}
+          aria-selected={selectedKeys.has(flatItem.id) || undefined}
           aria-expanded={openKeys.has(flatItem.id) || undefined}
           aria-level={flatItem.depth}
-          // {...flatItem} // depth
           asChild
         >
           {render(flatItem)}

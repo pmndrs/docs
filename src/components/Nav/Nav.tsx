@@ -92,11 +92,13 @@ export function Nav({
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  // The tree handles the toggle via keyboard/click on the item
+                  // Get the tree item element to check its expansion state
                   const treeItem = e.currentTarget.closest('[role="treeitem"]')
                   if (treeItem) {
+                    const isExpanded = treeItem.getAttribute('aria-expanded') === 'true'
+                    // Dispatch the appropriate key event to toggle
                     const keyEvent = new KeyboardEvent('keydown', {
-                      key: 'ArrowRight',
+                      key: isExpanded ? 'ArrowLeft' : 'ArrowRight',
                       bubbles: true,
                     })
                     treeItem.dispatchEvent(keyEvent)
@@ -106,7 +108,7 @@ export function Nav({
                   'absolute right-0 top-1/2 -translate-y-1/2 p-(--NavItem-pad) transition-transform',
                   'aria-expanded:rotate-90',
                 )}
-                aria-label="Toggle"
+                aria-label={`Toggle ${title} submenu`}
               >
                 <IoIosArrowDown className="size-(--arrow-size) -rotate-90" />
               </button>
@@ -132,7 +134,7 @@ function buildTree(docs: Doc[]): NavNode[] {
     docs.forEach((doc) => {
       if (doc.slug.length > level) {
         const matchesPrefix = slugPath.every((segment, i) => doc.slug[i] === segment)
-        if (matchesPrefix && doc.slug.length > level) {
+        if (matchesPrefix) {
           const nextSegment = doc.slug[level]
           const children = childrenByPrefix.get(nextSegment) || []
           children.push(doc)
@@ -147,8 +149,9 @@ function buildTree(docs: Doc[]): NavNode[] {
         // Find docs for sorting by nav property
         const docsA = childrenByPrefix.get(a) || []
         const docsB = childrenByPrefix.get(b) || []
-        const navA = docsA.find((d) => d.slug[d.slug.length - 1] === a)?.nav || 0
-        const navB = docsB.find((d) => d.slug[d.slug.length - 1] === b)?.nav || 0
+        // Match docs where the segment matches at the current level
+        const navA = docsA.find((d) => d.slug.length === level + 1 && d.slug[level] === a)?.nav || 0
+        const navB = docsB.find((d) => d.slug.length === level + 1 && d.slug[level] === b)?.nav || 0
         return navA - navB
       })
       .forEach(([segment, segmentDocs]) => {

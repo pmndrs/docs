@@ -1,4 +1,4 @@
-import { Component, useMemo, useState, type ComponentProps } from 'react'
+import { useMemo, useState, type ComponentProps } from 'react'
 
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 
