@@ -1,5 +1,6 @@
 import cn from '@/lib/cn'
 import { getData, getDocs } from '@/utils/docs'
+import { parseInlineCode } from '@/utils/text'
 
 export type Props = {
   params: Promise<{ slug: string[] }>
@@ -35,10 +36,25 @@ export default async function Page({ params }: Props) {
 
   const { doc } = await getData(...slug) // [ 'getting-started', 'introduction' ]
 
+  const titleSegments = parseInlineCode(doc.title)
+
   return (
     <>
       <header className={cn('mb-6 mt-8 border-b', 'border-outline-variant/50')}>
-        <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc.title}</h1>
+        <h1 className="mb-2 text-5xl font-bold tracking-tighter">
+          {titleSegments.map((segment, index) =>
+            segment.type === 'code' ? (
+              <code
+                key={index}
+                className="bg-surface-container-high rounded-md px-1.5 py-0.5 font-mono text-[85%]"
+              >
+                {segment.content}
+              </code>
+            ) : (
+              segment.content
+            ),
+          )}
+        </h1>
         {!!doc?.description?.length && (
           <p className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
             {doc.description}
