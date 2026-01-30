@@ -3,6 +3,18 @@ import { parseDocsMetadata } from '@/utils/docs'
 export const dynamic = 'force-static'
 
 /**
+ * Escape XML special characters
+ */
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
+/**
  * Basic cleanup of markdown content
  */
 function cleanMarkdown(content: string): string {
@@ -33,9 +45,9 @@ Full documentation content.
     docs
       .map((doc) => {
         const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
-        return `<document title="${doc.title}" path="${url}">
-${doc.description ? `Description: ${doc.description}\n` : ''}
-${cleanMarkdown(doc.content)}
+        return `<document title="${escapeXml(doc.title)}" path="${escapeXml(url)}">
+${doc.description ? `Description: ${escapeXml(doc.description)}\n` : ''}
+${escapeXml(cleanMarkdown(doc.content))}
 </document>
 `
       })
