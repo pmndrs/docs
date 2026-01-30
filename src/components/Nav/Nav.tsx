@@ -3,17 +3,19 @@
 import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
 import * as Tree from '@abernier/radix-tree'
-import type { RecursiveNode } from '@abernier/radix-tree'
+import { flatten, type FlatNode } from '@abernier/radix-tree'
 import Link from 'next/link'
 import * as React from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 
 const INDEX_PAGE = 'introduction'
 
-type NavNode = RecursiveNode & {
+type NavNode = {
+  id: string
   title: string
   url?: string
   nav: number
+  nodes?: NavNode[]
 }
 
 export function Nav({
@@ -26,10 +28,11 @@ export function Nav({
   asPath: string
   collapsible: boolean
 }) {
-  const tree = React.useMemo(() => buildTree(docs), [docs])
+  // Convert flat docs to nested structure (simpler than before)
+  const items = React.useMemo(() => docsToNavNodes(docs), [docs])
 
-  // Find active keys (all nodes that contain the active path)
-  const activeKeys = React.useMemo(() => {
+  // Find active keys and their ancestors
+  const defaultOpenKeys = React.useMemo(() => {
     const keys: string[] = []
     const currentPath = `/${asPath}`
 
@@ -40,35 +43,42 @@ export function Nav({
           keys.push(...nodeAncestors)
         }
         if (node.nodes) {
-          findActiveKeys(node.nodes as NavNode[], nodeAncestors)
+          findActiveKeys(node.nodes, nodeAncestors)
         }
       }
     }
 
-    findActiveKeys(tree)
+    findActiveKeys(items)
     return keys
-  }, [tree, asPath])
+  }, [items, asPath])
+
+  const [openKeys, setOpenKeys] = React.useState<string[]>(defaultOpenKeys)
+
+  // Flatten items based on which keys are open
+  const flatItems = React.useMemo(() => flatten(items, new Set(openKeys)), [items, openKeys])
 
   return (
     <Tree.Factory
       className={cn(className)}
-      items={tree}
-      defaultOpenKeys={activeKeys}
+      virtualized
+      flatItems={flatItems}
+      openKeys={openKeys}
+      onOpenKeysChange={setOpenKeys}
       loop={false}
-      Item={({ id, title, url, nodes }) => {
+      VItem={({ id, title, url, depth, hasChildNodes }) => {
         const isActive = url === `/${asPath}`
-        const hasChildren = Boolean(nodes?.length)
 
         return (
-          <div className="relative">
+          <div className="relative" style={{ marginLeft: `${depth * 16}px` }}>
             {url ? (
               <Link
                 href={url}
                 className={cn(
                   'block cursor-pointer rounded-r-xl p-(--NavItem-pad) pl-(--rgrid-m)',
-                  hasChildren && 'pr-[calc(2*var(--NavItem-pad)+var(--arrow-size))]',
+                  hasChildNodes && 'pr-[calc(2*var(--NavItem-pad)+var(--arrow-size))]',
                   'text-sm [--NavItem-pad:.75rem] [--arrow-size:--spacing(4)]',
-                  'capitalize tracking-wide',
+                  depth === 0 && 'capitalize tracking-wide',
+                  depth > 0 && 'text-xs',
                   isActive ? 'bg-primary-container' : 'bg-surface',
                 )}
               >
@@ -78,16 +88,17 @@ export function Nav({
               <div
                 className={cn(
                   'block rounded-r-xl p-(--NavItem-pad) pl-(--rgrid-m)',
-                  hasChildren && 'pr-[calc(2*var(--NavItem-pad)+var(--arrow-size))]',
+                  hasChildNodes && 'pr-[calc(2*var(--NavItem-pad)+var(--arrow-size))]',
                   'text-sm [--NavItem-pad:.75rem] [--arrow-size:--spacing(4)]',
-                  'capitalize tracking-wide',
+                  depth === 0 && 'capitalize tracking-wide',
+                  depth > 0 && 'text-xs',
                   isActive ? 'bg-primary-container' : 'bg-surface',
                 )}
               >
                 {title}
               </div>
             )}
-            {collapsible && hasChildren && (
+            {collapsible && hasChildNodes && (
               <button
                 onClick={(e) => {
                   e.preventDefault()
@@ -116,16 +127,12 @@ export function Nav({
           </div>
         )
       }}
-      Group={({ children }) => <div className="aria-hidden:hidden [&>*]:text-xs">{children}</div>}
     />
   )
 }
 
-// Build a recursive tree structure from flat docs array
-function buildTree(docs: Doc[]): NavNode[] {
-  const tree: NavNode[] = []
-
-  // Build tree recursively
+// Convert flat docs array to nested NavNode structure
+function docsToNavNodes(docs: Doc[]): NavNode[] {
   const buildNode = (slugPath: string[], level: number = 0): NavNode[] => {
     const nodes: NavNode[] = []
     const childrenByPrefix = new Map<string, Doc[]>()
