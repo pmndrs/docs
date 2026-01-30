@@ -1,58 +1,11 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
-import {
-  a,
-  blockquote,
-  code,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  hr,
-  li,
-  ol,
-  p,
-  table,
-  td,
-  th,
-  thead,
-  tr,
-  ul,
-} from '@/components/mdx'
-import { Code } from '@/components/mdx/Code'
-import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
-import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
-import { Details } from '@/components/mdx/Details'
-import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
-import { Entries } from '@/components/mdx/Entries'
-import { Gha } from '@/components/mdx/Gha'
-import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
-import { Grid } from '@/components/mdx/Grid'
-import { Hint } from '@/components/mdx/Hint'
-import { Img } from '@/components/mdx/Img'
-import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
-import { Intro } from '@/components/mdx/Intro'
-import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
-import { Keypoints, KeypointsItem } from '@/components/mdx/Keypoints'
-import { Mermaid } from '@/components/mdx/Mermaid'
-import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
-import { Backers, Contributors } from '@/components/mdx/People'
-import { Sandpack } from '@/components/mdx/Sandpack'
-import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
-import { Summary } from '@/components/mdx/Summary'
-import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
-import { Toc } from '@/components/mdx/Toc'
-import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
+import { compileMdxContent, compileMdxFrontmatter } from '@/utils/compileMdxContent'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
-import { dirname } from 'node:path'
 import { cache } from 'react'
-import rehypePrismPlus from 'rehype-prism-plus'
-import remarkGFM from 'remark-gfm'
 
 /**
  * Checks for .md(x) file extension
@@ -212,7 +165,14 @@ async function _getDocs(
         // frontmatter
         //
 
+        // Keep description as string for metadata (SEO)
         const description: string = frontmatter.description ?? ''
+
+        // Compile frontmatter description as MDX for display
+        const compiledDescription = description
+          ? await compileMdxFrontmatter(description, relFilePath, MDX_BASEURL)
+          : null
+        const descriptionJsx = compiledDescription?.content
 
         const sourcecode: string = frontmatter.sourcecode ?? ''
         const SOURCECODE_BASEURL = process.env.SOURCECODE_BASEURL
@@ -248,68 +208,16 @@ async function _getDocs(
 
         const tableOfContents: DocToC[] = []
 
-        const { content: jsx } = await compileMDX({
-          source: `# ${title}\n ${content}`,
-          options: {
-            mdxOptions: {
-              remarkPlugins: [remarkGFM],
-              rehypePlugins: [
-                rehypeLink(process.env.BASE_PATH),
-                rehypeImg(relFilePath, MDX_BASEURL),
-                rehypeDetails,
-                rehypeSummary,
-                rehypeGha,
-                rehypeMermaid(),
-                rehypePrismPlus,
-                rehypeCode(),
-                rehypeToc(tableOfContents, url, title), // 2. will populate `doc.tableOfContents`
-                rehypeSandpack(dirname(file)),
-              ],
-            },
-          },
-          components: {
-            ...{
-              Code,
-              Details,
-              Entries,
-              Gha,
-              Grid,
-              Hint,
-              Img,
-              Intro,
-              Keypoints,
-              KeypointsItem,
-              Contributors,
-              Backers,
-              Mermaid,
-              Sandpack,
-              Summary,
-              Toc,
-              h1,
-              h2,
-              h3,
-              h4,
-              h5,
-              h6,
-              ul,
-              ol,
-              li,
-              p,
-              hr,
-              blockquote,
-              table,
-              thead,
-              th,
-              tr,
-              td,
-              a,
-              img: Img,
-              code,
-            },
-            Codesandbox: (props) => <Codesandbox {...props} />,
-            Entries: () => <Entries items={entries} />,
-          },
-        })
+        const { content: jsx } = await compileMdxContent(
+          `# ${title}\n ${content}`,
+          relFilePath,
+          file,
+          MDX_BASEURL,
+          title,
+          url,
+          tableOfContents,
+          entries,
+        )
 
         return {
           slug,
@@ -320,6 +228,7 @@ async function _getDocs(
           title,
           image,
           description,
+          descriptionJsx,
           nav,
           content: jsx,
           boxes,

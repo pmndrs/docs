@@ -22,6 +22,7 @@ export type Doc = {
   nav: number
   title: string
   description: string
+  descriptionJsx?: ReactNode
   image: string
   content: ReactNode
   boxes: string[]
