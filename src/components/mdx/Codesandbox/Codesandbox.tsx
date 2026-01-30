@@ -1,7 +1,7 @@
+import { Img } from '@/components/mdx/Img'
+
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
-import { fetchCSB } from './fetchCSB'
-import { Img } from '../Img'
 
 export type CSB = {
   id: string
@@ -11,25 +11,27 @@ export type CSB = {
   tags?: string[]
 }
 
-type Codesandbox0Props = CSB & {
-  hideTitle?: boolean
+type CodesandboxProps = CSB & {
   embed?: boolean
 } & ComponentProps<'a'> & {
     imgProps?: ComponentProps<'img'>
   }
 
-export function Codesandbox0({
+export function Codesandbox({
   id,
-  title = '',
-  description = '',
+  title,
+  description,
   screenshot_url,
   tags = [],
   //
-  hideTitle = false,
   embed = false,
   className,
   imgProps: { className: imgClassName } = {},
-}: Codesandbox0Props) {
+}: CodesandboxProps) {
+  // Auto-generate screenshot_url from id if not provided
+  const screenshotUrl =
+    screenshot_url || `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`
+
   return (
     <>
       {embed ? (
@@ -47,19 +49,17 @@ export function Codesandbox0({
           rel="noreferrer"
           className={cn('mb-2 block', className)}
         >
-          {screenshot_url && (
-            <Img
-              src={screenshot_url}
-              alt={title}
-              width={1763}
-              height={926}
-              className={cn('aspect-video object-cover', imgClassName)}
-            />
-          )}
+          <Img
+            src={screenshotUrl}
+            alt={title || ''}
+            width={1763}
+            height={926}
+            className={cn('aspect-video object-cover', imgClassName)}
+          />
         </a>
       )}
 
-      {!hideTitle && (
+      {title && (
         <>
           <h6 className={cn('mt-2 text-xs text-on-surface-variant')}>{title}</h6>
           {description && <p className={cn('mt-1')}>{description}</p>}
@@ -82,21 +82,4 @@ export function Codesandbox0({
       )}
     </>
   )
-}
-
-export async function Codesandbox1({ boxes, ...props }: { boxes: string[] } & Codesandbox0Props) {
-  const ids = boxes // populated from 1.
-  // console.log('ids', ids)
-
-  //
-  // Batch fetch all CSBs of the page
-  //
-  const csbs = await fetchCSB(...ids)
-  // console.log('boxes', boxes)
-  const data = csbs[props.id]
-  // console.log('data', data)
-
-  // Merge initial props with data
-  const merged = { ...data, ...props }
-  return <Codesandbox0 {...merged} />
 }
