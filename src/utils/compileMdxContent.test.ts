@@ -105,9 +105,9 @@ describe('compileMdxContent', () => {
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
     // Code blocks have complex HTML structure with syntax highlighting
-    expect(html).toContain('<div')
-    expect(html).toContain('<pre')
-    expect(html).toContain('<code')
+    expect(html).toMatch(/<div[^>]*>/)
+    expect(html).toMatch(/<pre[^>]*>/)
+    expect(html).toMatch(/<code[^>]*>/)
     expect(html).toContain('const')
     expect(html).toContain('x')
     expect(html).toContain('1')
