@@ -3,7 +3,7 @@ import { ComponentProps, Fragment } from 'react'
 import { groupBy } from 'lodash-es'
 import { Codesandbox } from '../Codesandbox'
 
-type Entry = {
+export type Entry = {
   title: string
   url: string
   slug: string[]

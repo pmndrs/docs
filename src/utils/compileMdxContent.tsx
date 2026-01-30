@@ -25,7 +25,7 @@ import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
-import { Entries } from '@/components/mdx/Entries'
+import { Entries, type Entry } from '@/components/mdx/Entries'
 import { Gha } from '@/components/mdx/Gha'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
 import { Grid } from '@/components/mdx/Grid'
@@ -76,7 +76,7 @@ export async function compileMdxContent(
   title: string,
   url: string,
   tableOfContents: DocToC[],
-  entries: Array<{ slug: string[]; url: string; title: string; boxes: string[] }>,
+  entries: Entry[],
 ) {
   return await compileMDX({
     source,
