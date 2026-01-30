@@ -39,9 +39,9 @@ export default async function Page({ params }: Props) {
     <>
       <header className={cn('mb-6 mt-8 border-b', 'border-outline-variant/50')}>
         <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc.title}</h1>
-        {!!doc?.descriptionJsx && (
+        {(doc?.descriptionJsx || doc?.description) && (
           <div className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
-            {doc.descriptionJsx}
+            {doc.descriptionJsx || doc.description}
           </div>
         )}
       </header>

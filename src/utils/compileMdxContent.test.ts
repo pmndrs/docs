@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { compileMdxFrontmatter } from './compileMdxContent'
+import { compileMdxFrontmatter, compileMdxContent } from './compileMdxContent'
 import { renderToString } from 'react-dom/server'
 
 describe('compileMdxFrontmatter', () => {
@@ -62,5 +62,64 @@ describe('compileMdxFrontmatter', () => {
     expect(html).toContain('documentation')
     expect(html).toContain('code')
     expect(html).toContain('links')
+  })
+})
+
+describe('compileMdxContent', () => {
+  const relFilePath = '/test/file.mdx'
+  const absoluteFilePath = '/home/user/docs/test/file.mdx'
+  const baseUrl = undefined
+  const title = 'Test Title'
+  const url = '/test/file'
+  const tableOfContents: any[] = []
+  const entries: any[] = []
+
+  it('compiles full MDX content with text', async () => {
+    const result = await compileMdxContent(
+      'This is **bold** text with *italic* formatting.',
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    )
+    expect(result.content).toBeDefined()
+    const html = renderToString(result.content as React.ReactElement)
+    expect(html).toContain('bold')
+    expect(html).toContain('italic')
+  })
+
+  it('compiles MDX with code blocks', async () => {
+    const result = await compileMdxContent(
+      '```js\nconst x = 1;\n```',
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    )
+    expect(result.content).toBeDefined()
+    const html = renderToString(result.content as React.ReactElement)
+    expect(html).toContain('const')
+  })
+
+  it('compiles MDX with links', async () => {
+    const result = await compileMdxContent(
+      'Check [this link](#section)',
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    )
+    expect(result.content).toBeDefined()
+    const html = renderToString(result.content as React.ReactElement)
+    expect(html).toContain('this link')
   })
 })

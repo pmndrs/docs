@@ -146,7 +146,7 @@ export async function compileMdxContent(
  * Compiles simple MDX content (for frontmatter values).
  * Uses a minimal set of plugins suitable for inline content.
  *
- * @param source - The MDX source content to compile (e.g., frontmatter title)
+ * @param source - The MDX source content to compile (e.g., frontmatter description or title)
  * @param relFilePath - Relative file path for link/image resolution
  * @param baseUrl - Base URL for resolving MDX URLs
  * @returns Compiled MDX result with content JSX

@@ -168,10 +168,12 @@ async function _getDocs(
         // Keep description as string for metadata (SEO)
         const description: string = frontmatter.description ?? ''
 
-        // Compile frontmatter description as MDX for display
-        const compiledDescription = description
-          ? await compileMdxFrontmatter(description, relFilePath, MDX_BASEURL)
-          : null
+        // Compile frontmatter description as MDX for display (only if it contains MDX syntax)
+        const needsMdxCompilation = /[*`[\]_]/.test(description)
+        const compiledDescription =
+          description && needsMdxCompilation
+            ? await compileMdxFrontmatter(description, relFilePath, MDX_BASEURL)
+            : null
         const descriptionJsx = compiledDescription?.content
 
         const sourcecode: string = frontmatter.sourcecode ?? ''
