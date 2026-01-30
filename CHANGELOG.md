@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.3.0
+
+### Minor Changes
+
+- [#525](https://github.com/pmndrs/docs/pull/525) [`7e6d0f1`](https://github.com/pmndrs/docs/commit/7e6d0f1b611919d157066343e393ab237c26b364) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - frontmatter md support
+
 ## 3.2.3
 
 ### Patch Changes
