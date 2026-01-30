@@ -10,8 +10,8 @@ export async function generateMetadata({ params }: Props) {
 
   const { doc } = await getData(...slug)
 
-  const title = `${doc.title} - ${process.env.NEXT_PUBLIC_LIBNAME}`
-  const description = doc.description
+  const title = `${doc.metadata.title} - ${process.env.NEXT_PUBLIC_LIBNAME}`
+  const description = doc.metadata.description
   const url = doc.url
   const image = doc.image
 
@@ -39,10 +39,10 @@ export default async function Page({ params }: Props) {
     <>
       <header className={cn('mb-6 mt-8 border-b', 'border-outline-variant/50')}>
         <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc.title}</h1>
-        {!!doc?.description?.length && (
-          <p className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
+        {doc.description && (
+          <div className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
             {doc.description}
-          </p>
+          </div>
         )}
       </header>
       {doc ? <>{doc.content}</> : 'empty doc'}

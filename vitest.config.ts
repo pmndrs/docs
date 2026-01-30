@@ -1,9 +1,16 @@
 import { defineConfig } from 'vitest/config'
+import path from 'path'
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   test: {
     exclude: [
-      '**/page.test.tsx', // exclude Playwright page tests
+      'node_modules',
+      '**/page.test.{ts,tsx}', // exclude Playwright page tests
     ],
   },
 })

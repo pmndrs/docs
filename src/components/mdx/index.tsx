@@ -91,7 +91,7 @@ export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'
 
 export const code = (props: ComponentProps<'code'>) => (
   <code
-    className="bg-surface-container-high rounded-md px-1.5 py-0.5 font-mono text-[85%]"
+    className="bg-surface-container-high rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
     {...props}
   />
 )
