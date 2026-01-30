@@ -95,6 +95,10 @@ async function _getDocs(
     parsedDocs.map(async (parsed) => {
       const { file, slug, url, title, frontmatter, content } = parsed
 
+      // Compile frontmatter title as MDX
+      const compiledTitle = await compileMdxFrontmatter(title)
+      const titleJsx = compiledTitle.content
+
       const boxes: string[] = []
 
       // Sanitize markdown
@@ -116,7 +120,8 @@ async function _getDocs(
       return {
         slug,
         url,
-        title,
+        title: titleJsx,
+        titleRaw: title, // Keep raw string for metadata
         boxes,
         //
         file,
@@ -137,6 +142,7 @@ async function _getDocs(
         slug,
         url,
         title,
+        titleRaw,
         boxes,
         // Passed from the 1st pass
         file,
@@ -165,19 +171,14 @@ async function _getDocs(
         // frontmatter
         //
 
-        // Compile frontmatter title as MDX for display
-        const compiledTitle = title
-          ? await compileMdxFrontmatter(title, relFilePath, MDX_BASEURL)
-          : null
-        const titleJsx = compiledTitle?.content
+        // title is already compiled from entries
+        const titleJsx = title
 
         // Keep description as string for metadata (SEO)
         const description: string = frontmatter.description ?? ''
 
         // Compile frontmatter description as MDX for display
-        const compiledDescription = description
-          ? await compileMdxFrontmatter(description, relFilePath, MDX_BASEURL)
-          : null
+        const compiledDescription = description ? await compileMdxFrontmatter(description) : null
         const descriptionJsx = compiledDescription?.content
 
         const sourcecode: string = frontmatter.sourcecode ?? ''
@@ -215,11 +216,11 @@ async function _getDocs(
         const tableOfContents: DocToC[] = []
 
         const compiledContent = await compileMdxContent(
-          `# ${title}\n ${content}`,
+          `# ${titleRaw}\n ${content}`,
           relFilePath,
           file,
           MDX_BASEURL,
-          title,
+          titleRaw,
           url,
           tableOfContents,
           entries,
@@ -235,7 +236,7 @@ async function _getDocs(
           title: titleJsx,
           description: descriptionJsx,
           metadata: {
-            title,
+            title: titleRaw,
             description,
           },
           image,

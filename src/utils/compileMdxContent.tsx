@@ -151,24 +151,18 @@ export async function compileMdxContent(
  * @param baseUrl - Base URL for resolving MDX URLs
  * @returns Compiled MDX result with content JSX
  */
-export async function compileMdxFrontmatter(
-  source: string,
-  relFilePath: string,
-  baseUrl: string | undefined,
-) {
+export async function compileMdxFrontmatter(source: string) {
   return await compileMDX({
     source: `<>${source}</>`, // hack: wrap in fragment to avoid <p> wrapping
     options: {
       mdxOptions: {
         remarkPlugins: [remarkGFM],
-        rehypePlugins: [rehypeLink(process.env.BASE_PATH), rehypeImg(relFilePath, baseUrl)],
+        rehypePlugins: [rehypeLink(process.env.BASE_PATH)],
       },
     },
     components: {
       a,
-      img: Img,
       code,
-      p,
     },
   })
 }

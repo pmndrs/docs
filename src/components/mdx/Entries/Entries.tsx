@@ -1,10 +1,10 @@
-import { ComponentProps, Fragment } from 'react'
+import { ComponentProps, Fragment, ReactElement } from 'react'
 
 import { groupBy } from 'lodash-es'
 import { Codesandbox } from '../Codesandbox'
 
 export type Entry = {
-  title: string
+  title: ReactElement
   url: string
   slug: string[]
   boxes: string[]
