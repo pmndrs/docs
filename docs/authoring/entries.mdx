@@ -19,37 +19,5 @@ result:
 
 <Entries />
 
----
-
-## CodeSandbox integration
-
-When a documentation page includes a CodeSandbox component, the Entries listing will automatically display a CodeSandbox icon next to that page's link. For example, this page includes:
-
-```md
-<Codesandbox id="5w35n6" />
-```
-
-result:
-
-<Codesandbox id="5w35n6" />
-
-This means this page will appear in the Entries listing with a CodeSandbox icon.
-
----
-
-## Excluding categories
-
-You can exclude specific categories from the listing using the `excludedGroups` prop:
-
-```md
-<Entries excludedGroups={['getting-started', 'tutorials']} />
-```
-
-## How it works
-
-The component:
-- Groups all documentation pages by their first slug segment (category)
-- Displays categories in alphabetical order with capitalized headings
-- Shows each page's title as a clickable link
-- Includes CodeSandbox icons next to pages that contain CodeSandbox examples
-- Renders in a responsive multi-column layout (2 columns on mobile, 3 on desktop)
+> [!TIP]
+> When a page includes a `<CodeSandbox>` component, the Entries listing will automatically display its thumb next to that page's link.
