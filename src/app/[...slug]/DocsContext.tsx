@@ -13,6 +13,11 @@ export type DocToC = {
   label: string
 }
 
+export type DocMetadata = {
+  title: string
+  description: string
+}
+
 export type Doc = {
   slug: string[]
   url: string
@@ -20,10 +25,9 @@ export type Doc = {
   sourcecode?: string
   sourcecodeURL?: string
   nav: number
-  title: string
-  titleJsx?: ReactNode
-  description: string
-  descriptionJsx?: ReactNode
+  title?: ReactNode
+  description?: ReactNode
+  metadata: DocMetadata
   image: string
   content: ReactNode
   boxes: string[]
