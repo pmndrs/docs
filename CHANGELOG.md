@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.3.1
+
+### Patch Changes
+
+- [#527](https://github.com/pmndrs/docs/pull/527) [`0119134`](https://github.com/pmndrs/docs/commit/0119134cb25e8166dabff935838beafe29cfbdb7) Thanks [@abernier](https://github.com/abernier)! - entries
+
 ## 3.3.0
 
 ### Minor Changes
