@@ -34,7 +34,6 @@ jobs:
       theme_important: '#8957e5'
       theme_warning: '#d29922'
       theme_caution: '#da3633'
-      docker_tag: '3'
 
   deploy:
     needs: build
