@@ -9,7 +9,8 @@ export default defineConfig({
   },
   test: {
     exclude: [
-      '**/page.test.tsx', // exclude Playwright page tests
+      'node_modules',
+      '**/page.test.{ts,tsx}', // exclude Playwright page tests
     ],
   },
 })

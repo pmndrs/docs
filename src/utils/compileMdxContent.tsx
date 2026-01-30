@@ -157,7 +157,7 @@ export async function compileMdxFrontmatter(
   baseUrl: string | undefined,
 ) {
   return await compileMDX({
-    source,
+    source: `<>${source}</>`, // hack: wrap in fragment to avoid <p> wrapping
     options: {
       mdxOptions: {
         remarkPlugins: [remarkGFM],

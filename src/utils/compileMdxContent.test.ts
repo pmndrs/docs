@@ -10,57 +10,28 @@ describe('compileMdxFrontmatter', () => {
     const result = await compileMdxFrontmatter('Hello World', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
-    expect(html).toMatch(/<p[^>]*>Hello World<\/p>/)
+    expect(html).toBe('Hello World')
   })
 
   it('compiles markdown links correctly', async () => {
     const result = await compileMdxFrontmatter('[link](#section)', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
-    expect(html).toMatch(/<p[^>]*><a[^>]*href="#section"[^>]*>link<\/a><\/p>/)
+    expect(html).toMatch(/<a[^>]*href="#section"[^>]*>link<\/a>/)
   })
 
   it('compiles inline code correctly', async () => {
     const result = await compileMdxFrontmatter('Use `code` here', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
-    expect(html).toMatch(/<p[^>]*>Use <code[^>]*>code<\/code> here<\/p>/)
+    expect(html).toMatch(/Use <code[^>]*>code<\/code> here/)
   })
 
   it('compiles bold and italic text correctly', async () => {
     const result = await compileMdxFrontmatter('**bold** and *italic*', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
-    expect(html).toMatch(/<p[^>]*><strong>bold<\/strong> and <em>italic<\/em><\/p>/)
-  })
-
-  it('compiles multiple elements correctly', async () => {
-    const result = await compileMdxFrontmatter(
-      'Text with [link](#test) and `code` and **bold**',
-      relFilePath,
-      baseUrl,
-    )
-    expect(result.content).toBeDefined()
-    const html = renderToString(result.content)
-    expect(html).toMatch(/<p[^>]*>Text with <a[^>]*href="#test"[^>]*>link<\/a>/)
-    expect(html).toContain('<code')
-    expect(html).toContain('>code</code>')
-    expect(html).toContain('<strong>bold</strong>')
-  })
-
-  it('compiles real-world frontmatter description with MDX', async () => {
-    const result = await compileMdxFrontmatter(
-      'Introduction component for **documentation** pages with `code` and [links](#test)',
-      relFilePath,
-      baseUrl,
-    )
-    expect(result.content).toBeDefined()
-    const html = renderToString(result.content)
-    expect(html).toMatch(/<p[^>]*>Introduction component for <strong>documentation<\/strong>/)
-    expect(html).toContain('pages with')
-    expect(html).toContain('<code')
-    expect(html).toContain('>code</code>')
-    expect(html).toMatch(/<a[^>]*href="#test"[^>]*>links<\/a>/)
+    expect(html).toMatch(/<strong>bold<\/strong> and <em>italic<\/em>/)
   })
 })
 

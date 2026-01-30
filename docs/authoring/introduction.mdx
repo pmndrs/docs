@@ -40,22 +40,20 @@ Any key is optional.
   - will be used as metadata image if provided
 - `nav`: order in the navigation (on the same level)
 
-### MDX Support in Frontmatter
-
-Frontmatter values like `title` and `description` support **Markdown formatting**. You can use inline elements like bold, italic, code, and links:
-
 ```yaml
 ---
-title: '`Intro`'
+title: "`Intro` component"
 description: Introduction component for **documentation** pages with `code` and [links](#test)
 ---
 ```
 
-The compiled MDX will render with proper formatting in the page header.
-
 > [!TIP]
 >
-> When using special characters like backticks (`) in frontmatter values, wrap the entire value in quotes: `title: '`Intro`'` or `title: "`Intro`"`. For plain text without special characters, quotes are optional: `title: My Title`.
+> `title` and `description` support markdown.
+
+> [!CAUTION]
+>
+> If starting with backtick, eg: ``title: "`Intro` component"`` wrap value in quotes
 
 ## MARKDOWN
 
