@@ -1,90 +1,49 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import {
-  Entries,
-  Code,
-  Details,
-  Gha,
-  Grid,
-  Hint,
-  Img,
-  Intro,
-  Keypoints,
-  KeypointsItem,
-  Contributors,
-  Backers,
-  Mermaid,
-  Sandpack,
-  Summary,
-  Toc,
+  a,
+  blockquote,
+  code,
   h1,
   h2,
   h3,
   h4,
   h5,
   h6,
-  ul,
-  ol,
-  li,
-  p,
   hr,
-  blockquote,
+  li,
+  ol,
+  p,
   table,
-  thead,
-  th,
-  tr,
   td,
-  a,
-  img,
-  code,
+  th,
+  thead,
+  tr,
+  ul,
 } from '@/components/mdx'
-
-const mdxComponents = {
-  Code,
-  Details,
-  Entries,
-  Gha,
-  Grid,
-  Hint,
-  Img,
-  Intro,
-  Keypoints,
-  KeypointsItem,
-  Contributors,
-  Backers,
-  Mermaid,
-  Sandpack,
-  Summary,
-  Toc,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  ul,
-  ol,
-  li,
-  p,
-  hr,
-  blockquote,
-  table,
-  thead,
-  th,
-  tr,
-  td,
-  a,
-  img,
-  code,
-}
+import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
+import { Entries } from '@/components/mdx/Entries'
+import { Gha } from '@/components/mdx/Gha'
 import { rehypeGha } from '@/components/mdx/Gha/rehypeGha'
+import { Grid } from '@/components/mdx/Grid'
+import { Hint } from '@/components/mdx/Hint'
+import { Img } from '@/components/mdx/Img'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
+import { Intro } from '@/components/mdx/Intro'
+import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
+import { Keypoints, KeypointsItem } from '@/components/mdx/Keypoints'
+import { Mermaid } from '@/components/mdx/Mermaid'
 import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
+import { Backers, Contributors } from '@/components/mdx/People'
+import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
+import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
+import { Toc } from '@/components/mdx/Toc'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
@@ -99,16 +58,6 @@ import remarkGFM from 'remark-gfm'
  * Checks for .md(x) file extension
  */
 export const MARKDOWN_REGEX = /\.mdx?/
-
-/**
- * Uncomments frontMatter from vanilla markdown
- */
-const FRONTMATTER_REGEX = /^<!--[\s\n]*?(?=---)|(?!---)[\s\n]*?-->/g
-
-/**
- * Removes multi and single-line comments from markdown
- */
-const COMMENT_REGEX = /<!--(.|\n)*?-->|<!--[^\n]*?\n/g
 
 /**
  * Removes <https://inline.links> formatting from markdown
@@ -130,6 +79,46 @@ export async function crawl(dir: string, filter?: (dir: string) => boolean, file
 }
 
 /**
+ * Parses docs metadata from a given root directory.
+ */
+export async function parseDocsMetadata(root: string) {
+  const files = await crawl(
+    root,
+    (dir) => !dir.includes('node_modules') && MARKDOWN_REGEX.test(dir),
+  )
+
+  const docs = await Promise.all(
+    files.map(async (file) => {
+      const path = file.replace(`${root}/`, '')
+      const slug = [...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
+      const url = `/${slug.join('/')}`
+
+      const str = await fs.promises.readFile(file, { encoding: 'utf-8' })
+      const compiled = matter(str)
+      const frontmatter = compiled.data
+      const content = compiled.content
+
+      const title: string = frontmatter.title?.trim() ?? slug[slug.length - 1].replace(/\-/g, ' ')
+      const description: string = frontmatter.description ?? ''
+      const nav: number = frontmatter.nav ?? Infinity
+
+      return {
+        file,
+        url,
+        slug,
+        title,
+        description,
+        nav,
+        content,
+        frontmatter,
+      }
+    }),
+  )
+
+  return docs.sort((a, b) => a.nav - b.nav)
+}
+
+/**
  * Fetches all docs, filters to a lib if specified.
  *
  * @param root - absolute or relative (to cwd) path to docs folder
@@ -143,48 +132,25 @@ async function _getDocs(
   slugOfInterest: string[] | null,
   slugOnly = false,
 ): Promise<Doc[]> {
-  const files = await crawl(
-    root,
-    (dir) => !dir.includes('node_modules') && MARKDOWN_REGEX.test(dir),
-  )
-  // console.log('files', files)
+  //
+  // 1st pass for `entries` - using shared parseDocsMetadata
+  //
 
-  //
-  // 1st pass for `entries`
-  //
+  const parsedDocs = await parseDocsMetadata(root)
 
   const entries = await Promise.all(
-    files.map(async (file) => {
-      // Get slug from local path
-      const path = file.replace(`${root}/`, '')
-      const slug = [...path.replace(MARKDOWN_REGEX, '').toLowerCase().split('/')]
-
-      const url = `/${slug.join('/')}`
-
-      //
-      // frontmatter
-      //
-
-      const str = await fs.promises.readFile(file, { encoding: 'utf-8' })
-      const compiled = matter(str)
-      const frontmatter = compiled.data
-
-      const _lastSegment = slug[slug.length - 1]
-      const title: string = frontmatter.title.trim() ?? _lastSegment.replace(/\-/g, ' ')
+    parsedDocs.map(async (parsed) => {
+      const { file, slug, url, title, frontmatter, content } = parsed
 
       const boxes: string[] = []
 
       // Sanitize markdown
-      let content = compiled.content
-        // Remove <!-- --> comments from frontMatter
-        .replace(FRONTMATTER_REGEX, '')
-        // Remove extraneous comments from post
-        .replace(COMMENT_REGEX, '')
+      const sanitizedContent = content
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
       await compileMDX({
-        source: content,
+        source: sanitizedContent,
         options: {
           mdxOptions: {
             rehypePlugins: [
@@ -201,7 +167,7 @@ async function _getDocs(
         boxes,
         //
         file,
-        content,
+        content: sanitizedContent,
         frontmatter,
       }
     }),
@@ -288,6 +254,7 @@ async function _getDocs(
             mdxOptions: {
               remarkPlugins: [remarkGFM],
               rehypePlugins: [
+                rehypeLink(process.env.BASE_PATH),
                 rehypeImg(relFilePath, MDX_BASEURL),
                 rehypeDetails,
                 rehypeSummary,
@@ -301,7 +268,44 @@ async function _getDocs(
             },
           },
           components: {
-            ...mdxComponents,
+            ...{
+              Code,
+              Details,
+              Entries,
+              Gha,
+              Grid,
+              Hint,
+              Img,
+              Intro,
+              Keypoints,
+              KeypointsItem,
+              Contributors,
+              Backers,
+              Mermaid,
+              Sandpack,
+              Summary,
+              Toc,
+              h1,
+              h2,
+              h3,
+              h4,
+              h5,
+              h6,
+              ul,
+              ol,
+              li,
+              p,
+              hr,
+              blockquote,
+              table,
+              thead,
+              th,
+              tr,
+              td,
+              a,
+              img: Img,
+              code,
+            },
             Codesandbox: (props) => <Codesandbox {...props} />,
             Entries: () => <Entries items={entries} />,
           },

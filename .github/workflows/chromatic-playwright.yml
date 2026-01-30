@@ -1,4 +1,4 @@
-name: 'Chromatic'
+name: 'Chromatic Playwright'
 
 on: push
 
@@ -8,11 +8,11 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.57.0-noble
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
@@ -23,7 +23,7 @@ jobs:
         run: npx playwright test --update-snapshots
         env:
           HOME: /root
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           # Chromatic automatically defaults to the test-results directory.
@@ -36,11 +36,11 @@ jobs:
     needs: playwright
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
@@ -49,7 +49,7 @@ jobs:
           # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
         run: pnpm install --frozen-lockfile
       - name: Download Playwright test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: test-results
           path: ./test-results
@@ -59,7 +59,7 @@ jobs:
           # ⚠️ Enable Playwright
           playwright: true
           # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_PLAYWRIGHT }}
           autoAcceptChanges: 'main'
         # ⚠️ Optionally configure the archive location with env vars
         env:

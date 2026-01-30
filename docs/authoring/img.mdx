@@ -1,0 +1,61 @@
+---
+title: Img
+description: Using images in documentation
+sourcecode: docs/authoring/img.mdx
+nav: 4
+---
+
+<Intro>
+  Display images using markdown or HTML syntax with automatic dimensions and relative path support.
+</Intro>
+
+Relative images are supported. Eg, inside your [`MDX`](introduction#configuration:~:text=MDX) folder:
+```text {2}
+|-- authoring
+|   |-- img.mdx  <= relative to this article
+|   `-- gutenberg.jpg
+```
+
+```md
+---
+title: Authoring
+---
+
+![](gutenberg.jpg)
+```
+
+result:
+
+![](gutenberg.jpg)
+
+> [!TIP]
+> You are encouraged to use relative images, since dimensions are automatically added as `img[width][height]` attributes.
+>
+> For others, think about adding them to **prevent layout shift**.
+
+---
+
+It is also possible to specify only one dimension (other is inferred from intrinsic ratio), eg:
+
+```md
+<img src="gutenberg.jpg" height="200" />
+```
+
+result:
+
+<img src="gutenberg.jpg" height="200" />
+
+---
+
+Although it is probably better to use CSS for this:
+
+```md
+<img src="gutenberg.jpg" style={{width: 'auto', height: '10rem'}} />
+```
+
+result:
+
+<img src="gutenberg.jpg" style={{width: 'auto', height: '10rem'}} />
+
+> [!NOTE]
+> See [`MDX_BASEURL`](/getting-started/introduction#configuration:~:text=MDX_BASEURL) to understand how it is converted to a full URL.

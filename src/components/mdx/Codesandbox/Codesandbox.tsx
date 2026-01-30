@@ -1,4 +1,4 @@
-import { Img } from '@/components/mdx'
+import { Img } from '@/components/mdx/Img'
 
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'

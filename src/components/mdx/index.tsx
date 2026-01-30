@@ -1,23 +1,7 @@
-export * from './Code'
-// export * from './Codesandbox'
-export * from './Details'
-export * from './Entries'
-export * from './Gha'
-export * from './Grid'
-export * from './Hint'
-export * from './Img'
-export * from './Intro'
-export * from './Keypoints'
-export * from './Mermaid'
-export * from './People'
-export * from './Sandpack'
-export * from './Summary'
-export * from './Toc'
-
 import cn from '@/lib/cn'
-import { MARKDOWN_REGEX } from '@/utils/docs'
 import { ComponentProps } from 'react'
-import { Img } from './Img'
+
+const MARKDOWN_REGEX = /\.mdx?/
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
@@ -104,8 +88,6 @@ export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'
     <a {...props} href={href} target={target} rel={rel} className={cn(className, 'text-primary')} />
   )
 }
-
-export const img = Img
 
 export const code = (props: ComponentProps<'code'>) => (
   <code
