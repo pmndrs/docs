@@ -214,7 +214,7 @@ async function _getDocs(
 
         const tableOfContents: DocToC[] = []
 
-        const { content: jsx } = await compileMdxContent(
+        const compiledContent = await compileMdxContent(
           `# ${title}\n ${content}`,
           relFilePath,
           file,
@@ -224,6 +224,7 @@ async function _getDocs(
           tableOfContents,
           entries,
         )
+        const contentJsx = compiledContent.content
 
         return {
           slug,
@@ -239,7 +240,7 @@ async function _getDocs(
           },
           image,
           nav,
-          content: jsx,
+          content: contentJsx,
           boxes,
           tableOfContents,
         }
