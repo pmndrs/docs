@@ -21,6 +21,7 @@ const pages = [
   '/authoring/hint',
   '/authoring/contributors',
   '/authoring/backers',
+  '/authoring/entries',
   '/github-actions/introduction',
 ]
 

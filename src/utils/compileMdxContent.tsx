@@ -1,4 +1,3 @@
-import type { CompileMDXResult } from 'next-mdx-remote/rsc'
 import {
   a,
   blockquote,
