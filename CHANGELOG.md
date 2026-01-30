@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.3.2
+
+### Patch Changes
+
+- [`a0deaab`](https://github.com/pmndrs/docs/commit/a0deaab2f7bf19a565dbee723e136650c06abc9f) Thanks [@abernier](https://github.com/abernier)! - docker_tag 3
+
 ## 3.3.1
 
 ### Patch Changes
