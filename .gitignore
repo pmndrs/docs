@@ -9,6 +9,10 @@ node_modules/
 # pnpm
 .pnpm-debug.log*
 
+# environment
+.env.local
+.env*.local
+
 # other
 .next/
 .DS_Store
