@@ -9,14 +9,14 @@ describe('compileMdxFrontmatter', () => {
   it('compiles plain text correctly', async () => {
     const result = await compileMdxFrontmatter('Hello World', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('Hello World')
   })
 
   it('compiles markdown links correctly', async () => {
     const result = await compileMdxFrontmatter('[link](#section)', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('href')
     expect(html).toContain('link')
   })
@@ -24,14 +24,14 @@ describe('compileMdxFrontmatter', () => {
   it('compiles inline code correctly', async () => {
     const result = await compileMdxFrontmatter('Use `code` here', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('code')
   })
 
   it('compiles bold and italic text correctly', async () => {
     const result = await compileMdxFrontmatter('**bold** and *italic*', relFilePath, baseUrl)
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('bold')
     expect(html).toContain('italic')
   })
@@ -43,7 +43,7 @@ describe('compileMdxFrontmatter', () => {
       baseUrl,
     )
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('Text with')
     expect(html).toContain('link')
     expect(html).toContain('code')
@@ -57,7 +57,7 @@ describe('compileMdxFrontmatter', () => {
       baseUrl,
     )
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('Introduction component for')
     expect(html).toContain('documentation')
     expect(html).toContain('code')
@@ -86,7 +86,7 @@ describe('compileMdxContent', () => {
       entries,
     )
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('bold')
     expect(html).toContain('italic')
   })
@@ -103,7 +103,7 @@ describe('compileMdxContent', () => {
       entries,
     )
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('const')
   })
 
@@ -119,7 +119,7 @@ describe('compileMdxContent', () => {
       entries,
     )
     expect(result.content).toBeDefined()
-    const html = renderToString(result.content as React.ReactElement)
+    const html = renderToString(result.content)
     expect(html).toContain('this link')
   })
 })

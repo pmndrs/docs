@@ -77,7 +77,7 @@ export async function compileMdxContent(
   url: string,
   tableOfContents: DocToC[],
   entries: Array<{ slug: string[]; url: string; title: string; boxes: string[] }>,
-): Promise<CompileMDXResult> {
+) {
   return await compileMDX({
     source,
     options: {
@@ -155,7 +155,7 @@ export async function compileMdxFrontmatter(
   source: string,
   relFilePath: string,
   baseUrl: string | undefined,
-): Promise<CompileMDXResult> {
+) {
   return await compileMDX({
     source,
     options: {

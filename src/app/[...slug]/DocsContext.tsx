@@ -21,6 +21,7 @@ export type Doc = {
   sourcecodeURL?: string
   nav: number
   title: string
+  titleJsx?: ReactNode
   description: string
   descriptionJsx?: ReactNode
   image: string
