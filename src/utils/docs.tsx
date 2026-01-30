@@ -22,7 +22,7 @@ import {
 } from '@/components/mdx'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
-import { Codesandbox1 } from '@/components/mdx/Codesandbox'
+import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
@@ -306,7 +306,7 @@ async function _getDocs(
               img: Img,
               code,
             },
-            Codesandbox: (props) => <Codesandbox1 {...props} boxes={boxes} />,
+            Codesandbox: (props) => <Codesandbox {...props} />,
             Entries: () => <Entries items={entries} />,
           },
         })
