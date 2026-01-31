@@ -1,141 +1,151 @@
-import { createMcpHandler } from 'mcp-handler'
-import * as cheerio from 'cheerio'
-import fetch from 'node-fetch'
-import { z } from 'zod'
-import { libs } from '@/app/page'
+import { NextResponse } from 'next/server'
 
-// Force dynamic rendering for this API route (required for static export builds)
-export const dynamic = 'force-dynamic'
+// Check if we're in static export mode at build time
+const IS_EXPORT_MODE = process.env.OUTPUT === 'export'
 
-/**
- * Gets the full documentation URL for a library.
- * Handles both external URLs (https://) and internal routes (/).
- */
-function getLibraryDocUrl(libKey: string): string | null {
-  const lib = libs[libKey]
-  if (!lib) return null
+// When in export mode, use force-static to allow the route to be exported
+// Otherwise use force-dynamic for server-side execution
+export const dynamic = IS_EXPORT_MODE ? 'force-static' : 'force-dynamic'
+export const revalidate = false
 
-  // If the library has a full external URL, use it directly
-  if (lib.url.startsWith('https://')) {
-    return lib.url
+// Lazy load dependencies only when needed (not in export mode)
+let mcpHandler: any = null
+
+async function getMcpHandler() {
+  if (mcpHandler) return mcpHandler
+
+  if (IS_EXPORT_MODE) {
+    // Return a placeholder in export mode
+    return null
   }
 
-  // For internal routes, construct the full URL with docs.pmnd.rs base
-  if (lib.url.startsWith('/')) {
-    return `https://docs.pmnd.rs${lib.url}`
+  // Dynamically import MCP dependencies
+  const { createMcpHandler } = await import('mcp-handler')
+  const cheerio = await import('cheerio')
+  const fetch = (await import('node-fetch')).default
+  const { z } = await import('zod')
+  const { libs } = await import('@/app/page')
+
+  /**
+   * Gets the full documentation URL for a library.
+   * Handles both external URLs (https://) and internal routes (/).
+   */
+  function getLibraryDocUrl(libKey: string): string | null {
+    const lib = libs[libKey]
+    if (!lib) return null
+
+    if (lib.url.startsWith('https://')) {
+      return lib.url
+    }
+
+    if (lib.url.startsWith('/')) {
+      return `https://docs.pmnd.rs${lib.url}`
+    }
+
+    return null
   }
 
-  return null
-}
+  const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key) !== null) as [
+    string,
+    ...string[],
+  ]
 
-// Extract library names as a constant for efficiency
-const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key) !== null) as [
-  string,
-  ...string[],
-]
-
-const handler = createMcpHandler(
-  (server) => {
-    // Register list_pages tool
-    server.registerTool(
-      'list_pages',
-      {
-        title: 'List Pages',
-        description: 'List all available paths for a pmndrs library.',
-        inputSchema: {
-          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
+  mcpHandler = createMcpHandler(
+    (server: any) => {
+      server.registerTool(
+        'list_pages',
+        {
+          title: 'List Pages',
+          description: 'List all available paths for a pmndrs library.',
+          inputSchema: {
+            lib: z.enum(LIBRARY_NAMES).describe('The library name'),
+          },
         },
-      },
-      async ({ lib }) => {
-        const url = getLibraryDocUrl(lib)
-        if (!url) {
-          throw new Error(`Unknown library: ${lib}`)
-        }
+        async ({ lib }: { lib: string }) => {
+          const url = getLibraryDocUrl(lib)
+          if (!url) throw new Error(`Unknown library: ${lib}`)
 
-        try {
           const response = await fetch(`${url}/llms-full.txt`)
-          if (!response.ok) {
-            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
-          }
+          if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`)
+
           const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
-
           const paths = $('page')
-            .map((_, el) => $(el).attr('path'))
+            .map((_: any, el: any) => $(el).attr('path'))
             .get()
 
-          return {
-            content: [
-              {
-                type: 'text',
-                text: paths.join('\n'),
-              },
-            ],
-          }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error)
-          throw new Error(`MCP server error: ${errorMessage}`)
-        }
-      },
-    )
-
-    // Register get_page_content tool
-    server.registerTool(
-      'get_page_content',
-      {
-        title: 'Get Page Content',
-        description: 'Get surgical content of a specific page.',
-        inputSchema: {
-          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
-          path: z.string().describe('The page path (e.g., /docs/api/hooks/use-frame)'),
+          return { content: [{ type: 'text', text: paths.join('\n') }] }
         },
-      },
-      async ({ lib, path }) => {
-        const url = getLibraryDocUrl(lib)
-        if (!url) {
-          throw new Error(`Unknown library: ${lib}`)
-        }
+      )
 
-        try {
+      server.registerTool(
+        'get_page_content',
+        {
+          title: 'Get Page Content',
+          description: 'Get surgical content of a specific page.',
+          inputSchema: {
+            lib: z.enum(LIBRARY_NAMES).describe('The library name'),
+            path: z.string().describe('The page path'),
+          },
+        },
+        async ({ lib, path }: { lib: string; path: string }) => {
+          const url = getLibraryDocUrl(lib)
+          if (!url) throw new Error(`Unknown library: ${lib}`)
+
           const response = await fetch(`${url}/llms-full.txt`)
-          if (!response.ok) {
-            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
-          }
+          if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`)
+
           const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
+          const page = $('page').filter((_: any, el: any) => $(el).attr('path') === path)
 
-          // Use .filter() to avoid CSS selector injection
-          const page = $('page').filter((_, el) => $(el).attr('path') === path)
-          if (page.length === 0) {
-            throw new Error(`Page not found: ${path}`)
-          }
-
-          return {
-            content: [
-              {
-                type: 'text',
-                text: page.text().trim(),
-              },
-            ],
-          }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error)
-          throw new Error(`MCP server error: ${errorMessage}`)
-        }
-      },
-    )
-  },
-  {
-    serverInfo: {
-      name: 'pmndrs-docs',
-      version: '1.0.0',
+          if (page.length === 0) throw new Error(`Page not found: ${path}`)
+          return { content: [{ type: 'text', text: page.text().trim() }] }
+        },
+      )
     },
-  },
-  {
-    basePath: '/mcp',
-    maxDuration: 60,
-    verboseLogs: false,
-  },
-)
+    {
+      serverInfo: {
+        name: 'pmndrs-docs',
+        version: '1.0.0',
+      },
+    },
+    {
+      basePath: '/mcp',
+      maxDuration: 60,
+      verboseLogs: false,
+    },
+  )
 
-export { handler as GET, handler as POST }
+  return mcpHandler
+}
+
+export async function GET(request: Request) {
+  if (IS_EXPORT_MODE) {
+    return NextResponse.json(
+      {
+        error: 'MCP server unavailable',
+        message: 'This endpoint requires server-side execution. Deploy to Vercel or use a server environment.',
+      },
+      { status: 503 }
+    )
+  }
+
+  const handler = await getMcpHandler()
+  return handler(request)
+}
+
+export async function POST(request: Request) {
+  if (IS_EXPORT_MODE) {
+    return NextResponse.json(
+      {
+        error: 'MCP server unavailable',
+        message: 'This endpoint requires server-side execution. Deploy to Vercel or use a server environment.',
+      },
+      { status: 503 }
+    )
+  }
+
+  const handler = await getMcpHandler()
+  return handler(request)
+}

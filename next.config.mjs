@@ -12,14 +12,6 @@ const nextConfig = {
   basePath,
   distDir,
   output,
-  // Exclude /mcp route from static export (it's a dynamic API route)
-  ...(output === 'export' && {
-    exportPathMap: async function (defaultPathMap) {
-      const pathMap = { ...defaultPathMap }
-      delete pathMap['/mcp']
-      return pathMap
-    },
-  }),
   async redirects() {
     return [
       {
