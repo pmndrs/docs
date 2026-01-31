@@ -5,32 +5,20 @@ import { z } from 'zod'
 import { libs } from '@/src/app/page'
 
 /**
- * Mapping of internal library routes to their federated documentation sites.
- */
-const URL_MAPPING: Record<string, string> = {
-  '/react-three-fiber': 'https://r3f.docs.pmnd.rs',
-  '/drei': 'https://drei.docs.pmnd.rs',
-  '/zustand': 'https://zustand.docs.pmnd.rs',
-  '/a11y': 'https://a11y.docs.pmnd.rs',
-  '/react-postprocessing': 'https://postprocessing.docs.pmnd.rs',
-  '/uikit': 'https://uikit.docs.pmnd.rs',
-  '/xr': 'https://xr.docs.pmnd.rs',
-}
-
-/**
  * Gets the full documentation URL for a library.
+ * Only supports libraries with external URLs (starting with https://).
  */
 function getLibraryDocUrl(libKey: string): string | null {
   const lib = libs[libKey]
   if (!lib) return null
 
-  // If the library has a full URL (starts with https://), use it
+  // Only support libraries with full external URLs
   if (lib.url.startsWith('https://')) {
     return lib.url
   }
 
-  // Return mapped URL if it exists
-  return URL_MAPPING[lib.url] || null
+  // Internal routes are not supported for MCP
+  return null
 }
 
 // Extract library names as a constant for efficiency
