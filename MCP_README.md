@@ -23,7 +23,12 @@ npx @pmndrs/docs mcp
 
 ## Usage
 
-The MCP server runs over stdio and exposes two tools:
+The MCP server can be accessed in two ways:
+
+1. **stdio (local)**: For local AI agents - `npx @pmndrs/docs mcp`
+2. **HTTP/SSE (remote)**: For remote AI agents - `https://docs.pmnd.rs/mcp`
+
+Both modes expose two tools:
 
 ### 1. `list_pages`
 
@@ -88,7 +93,9 @@ The server currently supports the following pmndrs libraries:
 
 ## Adding to AI Agent Configurations
 
-### Claude Desktop
+### Local Usage (stdio)
+
+#### Claude Desktop
 
 Add to your `claude_desktop_config.json`:
 
@@ -103,7 +110,7 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-### Cursor / Windsurf
+#### Cursor / Windsurf
 
 Add to your MCP settings:
 
@@ -115,9 +122,74 @@ Add to your MCP settings:
 }
 ```
 
+### Remote Usage (HTTP/SSE)
+
+For remote access, AI agents can connect to the `/mcp` endpoint via HTTP:
+
+**Endpoint:** `https://docs.pmnd.rs/mcp` (or your deployment URL)
+
+#### SSE Connection
+
+```bash
+# Connect via SSE for streaming
+curl -N https://docs.pmnd.rs/mcp
+```
+
+#### HTTP POST Requests
+
+```bash
+# List available tools
+curl -X POST https://docs.pmnd.rs/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"method": "tools/list", "params": {}}'
+
+# Call a tool
+curl -X POST https://docs.pmnd.rs/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "tools/call",
+    "params": {
+      "name": "list_pages",
+      "arguments": {"lib": "react-three-fiber"}
+    }
+  }'
+```
+
+#### Remote Agent Configuration
+
+Configure remote AI agents to use the HTTP endpoint:
+
+```json
+{
+  "mcpServers": {
+    "pmndrs": {
+      "url": "https://docs.pmnd.rs/mcp",
+      "transport": "sse"
+    }
+  }
+}
+```
+
 ## Architecture
 
-The server works by:
+The server supports two transport modes:
+
+### stdio Transport (Local)
+
+- Run via `npx @pmndrs/docs mcp`
+- Uses stdin/stdout for communication
+- Ideal for local AI agent integration
+- Lower latency, no network overhead
+
+### HTTP/SSE Transport (Remote)
+
+- Accessible via `/mcp` route
+- GET: Server-Sent Events for streaming connection
+- POST: Direct HTTP requests for tool calls
+- Ideal for remote AI agents or web-based tools
+- Supports CORS for cross-origin requests
+
+Both transports work by:
 
 1. Fetching `/llms-full.txt` from the library's documentation site
 2. Parsing the XML-like `<page>` tags that wrap each documentation page
