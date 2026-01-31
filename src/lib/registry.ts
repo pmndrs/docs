@@ -19,17 +19,17 @@ export const REGISTRY: Record<string, LibraryConfig> = {
     title: 'React Three Fiber',
     description: 'React-three-fiber is a React renderer for three.js',
   },
-  'zustand': {
+  zustand: {
     url: 'https://zustand.docs.pmnd.rs',
     title: 'Zustand',
     description: 'A small, fast and scalable state-management solution',
   },
-  'drei': {
+  drei: {
     url: 'https://drei.docs.pmnd.rs',
     title: 'Drei',
     description: 'Useful helpers and abstractions for react-three-fiber',
   },
-  'viverse': {
+  viverse: {
     url: 'https://pmndrs.github.io/viverse',
     title: 'viverse',
     description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE',
