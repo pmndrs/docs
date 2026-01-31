@@ -12,29 +12,31 @@ export interface LibraryConfig {
 }
 
 /**
+ * Mapping of internal library routes to their federated documentation sites.
+ */
+const URL_MAPPING: Record<string, string> = {
+  '/react-three-fiber': 'https://r3f.docs.pmnd.rs',
+  '/drei': 'https://drei.docs.pmnd.rs',
+  '/zustand': 'https://zustand.docs.pmnd.rs',
+  '/a11y': 'https://a11y.docs.pmnd.rs',
+  '/react-postprocessing': 'https://postprocessing.docs.pmnd.rs',
+  '/uikit': 'https://uikit.docs.pmnd.rs',
+  '/xr': 'https://xr.docs.pmnd.rs',
+}
+
+/**
  * Derives the full documentation URL for a library based on its configuration.
  * This handles the various URL patterns used across pmndrs libraries.
  */
-function getLibraryDocUrl(lib: Library, libKey: string): string | null {
+function getLibraryDocUrl(lib: Library): string | null {
   // If the library has a full URL (starts with https://), use it
   if (lib.url.startsWith('https://')) {
     return lib.url
   }
 
-  // Map internal routes to their federated doc sites
-  const urlMapping: Record<string, string> = {
-    '/react-three-fiber': 'https://r3f.docs.pmnd.rs',
-    '/drei': 'https://drei.docs.pmnd.rs',
-    '/zustand': 'https://zustand.docs.pmnd.rs',
-    '/a11y': 'https://a11y.docs.pmnd.rs',
-    '/react-postprocessing': 'https://postprocessing.docs.pmnd.rs',
-    '/uikit': 'https://uikit.docs.pmnd.rs',
-    '/xr': 'https://xr.docs.pmnd.rs',
-  }
-
   // Return mapped URL if it exists
-  if (urlMapping[lib.url]) {
-    return urlMapping[lib.url]
+  if (URL_MAPPING[lib.url]) {
+    return URL_MAPPING[lib.url]
   }
 
   // For libraries without a federated doc site, return null
@@ -47,7 +49,7 @@ function getLibraryDocUrl(lib: Library, libKey: string): string | null {
  */
 export const REGISTRY: Record<string, LibraryConfig> = Object.entries(libs)
   .map(([key, lib]) => {
-    const url = getLibraryDocUrl(lib, key)
+    const url = getLibraryDocUrl(lib)
     if (!url) return null
 
     return [
