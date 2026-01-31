@@ -1,18 +1,7 @@
 import { parseDocsMetadata } from '@/utils/docs'
+import { create } from 'xmlbuilder2'
 
 export const dynamic = 'force-static'
-
-/**
- * Escapes special XML characters in attribute values
- */
-function escapeXmlAttribute(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
-}
 
 /**
  * Basic cleanup of markdown content
@@ -33,26 +22,33 @@ export async function GET() {
 
   const baseUrl = NEXT_PUBLIC_URL || ''
 
-  // Generate llms-full.txt content
+  // Generate llms-full.txt content with proper XML
   const header = `${NEXT_PUBLIC_LIBNAME}
 
 Full documentation content.
 
 `
 
-  const fullContent =
-    header +
-    docs
-      .map((doc) => {
-        const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
-        return `<page path="${escapeXmlAttribute(doc.url)}" title="${escapeXmlAttribute(doc.title)}">
-URL: ${url}
+  // Build XML for each page
+  const pages = docs.map((doc) => {
+    const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
+    const pageContent = `URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
-${cleanMarkdown(doc.content)}
-</page>
-`
-      })
-      .join('\n')
+${cleanMarkdown(doc.content)}`
+
+    // Create XML element using xmlbuilder2
+    const root = create({ version: '1.0' })
+    const page = root.ele('page', {
+      path: doc.url,
+      title: doc.title,
+    })
+    page.txt(pageContent)
+
+    // Return the XML string without the XML declaration
+    return page.end({ headless: true })
+  })
+
+  const fullContent = header + pages.join('\n') + '\n'
 
   return new Response(fullContent, {
     headers: {

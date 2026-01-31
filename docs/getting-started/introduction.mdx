@@ -295,3 +295,43 @@ These URLs are linked in the HTML header as:
 <link rel="alternate" type="text/plain" href="/llms.txt" />
 <link rel="alternate" type="text/plain" href="/llms-full.txt" />
 ```
+
+## MCP Server
+
+The documentation is also accessible via a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server at the `/mcp` endpoint. This enables AI agents to surgically query specific documentation pages without downloading entire sites.
+
+### Usage
+
+Connect to the MCP server at `https://docs.pmnd.rs/mcp`:
+
+```bash
+# Direct connection (Streamable HTTP)
+curl https://docs.pmnd.rs/mcp
+
+# For stdio-only clients, use mcp-remote
+npx -y mcp-remote https://docs.pmnd.rs/mcp
+```
+
+### AI Agent Configuration
+
+Configure AI agents to use the MCP server:
+
+```json
+{
+  "mcpServers": {
+    "pmndrs": {
+      "url": "https://docs.pmnd.rs/mcp",
+      "transport": "sse"
+    }
+  }
+}
+```
+
+### Available Tools
+
+The server exposes two tools:
+
+- **`list_pages(lib)`** - Lists all available documentation paths for a library
+- **`get_page_content(lib, path)`** - Retrieves the full content of a specific page
+
+Supported libraries: react-three-fiber, react-spring, drei, zustand, jotai, valtio, a11y, react-postprocessing, uikit, xr, prai, viverse, leva
