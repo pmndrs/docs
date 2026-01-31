@@ -33,12 +33,11 @@ Full documentation content.
     docs
       .map((doc) => {
         const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
-        return `---
-
-${doc.title}
+        return `<page path="${doc.url}" title="${doc.title}">
 URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
 ${cleanMarkdown(doc.content)}
+</page>
 `
       })
       .join('\n')
