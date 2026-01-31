@@ -123,7 +123,8 @@ export async function GET(request: NextRequest) {
           throw new Error('Path must be a string')
         }
 
-        const page = $(`page[path="${path}"]`)
+        // Use .filter() to avoid CSS selector injection
+        const page = $('page').filter((_, el) => $(el).attr('path') === path)
         if (page.length === 0) {
           throw new Error(`Page not found: ${path}`)
         }
@@ -291,7 +292,8 @@ export async function POST(request: NextRequest) {
           throw new Error('Path must be a string')
         }
 
-        const page = $(`page[path="${path}"]`)
+        // Use .filter() to avoid CSS selector injection
+        const page = $('page').filter((_, el) => $(el).attr('path') === path)
         if (page.length === 0) {
           throw new Error(`Page not found: ${path}`)
         }

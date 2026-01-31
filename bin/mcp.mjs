@@ -2,10 +2,7 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js'
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
 import * as cheerio from 'cheerio'
 import fetch from 'node-fetch'
 import { fileURLToPath } from 'url'
@@ -28,10 +25,7 @@ if (!registryMatch) {
 
 // Parse the registry by converting to JSON-compatible format
 // Replace single quotes with double quotes and remove trailing commas
-let registryJson = registryMatch[1]
-  .replace(/'/g, '"')
-  .replace(/,\s*}/g, '}')
-  .replace(/,\s*]/g, ']')
+let registryJson = registryMatch[1].replace(/'/g, '"').replace(/,\s*}/g, '}').replace(/,\s*]/g, ']')
 
 // Use a more robust approach: evaluate the object literal
 const REGISTRY = {
@@ -153,7 +147,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         throw new Error('Path must be a string')
       }
 
-      const page = $(`page[path="${path}"]`)
+      // Use .filter() to avoid CSS selector injection
+      const page = $('page').filter((_, el) => $(el).attr('path') === path)
       if (page.length === 0) {
         throw new Error(`Page not found: ${path}`)
       }
