@@ -2,7 +2,7 @@ import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import fetch from 'node-fetch'
 import { z } from 'zod'
-import { libs } from '@/src/app/page'
+import { libs } from '@/app/page'
 
 /**
  * Gets the full documentation URL for a library.
@@ -123,8 +123,10 @@ const handler = createMcpHandler(
     )
   },
   {
-    name: 'pmndrs-docs',
-    version: '1.0.0',
+    serverInfo: {
+      name: 'pmndrs-docs',
+      version: '1.0.0',
+    },
   },
   {
     basePath: '/mcp',
