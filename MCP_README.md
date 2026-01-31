@@ -9,7 +9,7 @@ This MCP server provides surgical access to documentation across the pmndrs ecos
 1. List all available documentation pages for a library
 2. Fetch specific page content on-demand
 
-The server is accessible via HTTP/SSE at the `/mcp` endpoint.
+The server is accessible via HTTP/SSE at the `/mcp` endpoint using [mcp-handler](https://github.com/vercel/mcp-handler) for Vercel deployment.
 
 ## Usage
 
