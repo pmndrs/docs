@@ -123,7 +123,7 @@ const handler = createMcpHandler(
     )
   },
   {
-    name: 'pmndrs-mcp',
+    name: 'pmndrs-docs',
     version: '1.0.0',
   },
   {
