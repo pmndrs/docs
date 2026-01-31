@@ -2,10 +2,42 @@ import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import fetch from 'node-fetch'
 import { z } from 'zod'
-import { REGISTRY } from '@/lib/registry'
+import { libs } from '@/src/app/page'
+
+/**
+ * Mapping of internal library routes to their federated documentation sites.
+ */
+const URL_MAPPING: Record<string, string> = {
+  '/react-three-fiber': 'https://r3f.docs.pmnd.rs',
+  '/drei': 'https://drei.docs.pmnd.rs',
+  '/zustand': 'https://zustand.docs.pmnd.rs',
+  '/a11y': 'https://a11y.docs.pmnd.rs',
+  '/react-postprocessing': 'https://postprocessing.docs.pmnd.rs',
+  '/uikit': 'https://uikit.docs.pmnd.rs',
+  '/xr': 'https://xr.docs.pmnd.rs',
+}
+
+/**
+ * Gets the full documentation URL for a library.
+ */
+function getLibraryDocUrl(libKey: string): string | null {
+  const lib = libs[libKey]
+  if (!lib) return null
+
+  // If the library has a full URL (starts with https://), use it
+  if (lib.url.startsWith('https://')) {
+    return lib.url
+  }
+
+  // Return mapped URL if it exists
+  return URL_MAPPING[lib.url] || null
+}
 
 // Extract library names as a constant for efficiency
-const LIBRARY_NAMES = Object.keys(REGISTRY) as [string, ...string[]]
+const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key) !== null) as [
+  string,
+  ...string[],
+]
 
 const handler = createMcpHandler(
   (server) => {
@@ -20,13 +52,13 @@ const handler = createMcpHandler(
         },
       },
       async ({ lib }) => {
-        const config = REGISTRY[lib]
-        if (!config) {
+        const url = getLibraryDocUrl(lib)
+        if (!url) {
           throw new Error(`Unknown library: ${lib}`)
         }
 
         try {
-          const response = await fetch(`${config.url}/llms-full.txt`)
+          const response = await fetch(`${url}/llms-full.txt`)
           if (!response.ok) {
             throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
           }
@@ -64,13 +96,13 @@ const handler = createMcpHandler(
         },
       },
       async ({ lib, path }) => {
-        const config = REGISTRY[lib]
-        if (!config) {
+        const url = getLibraryDocUrl(lib)
+        if (!url) {
           throw new Error(`Unknown library: ${lib}`)
         }
 
         try {
-          const response = await fetch(`${config.url}/llms-full.txt`)
+          const response = await fetch(`${url}/llms-full.txt`)
           if (!response.ok) {
             throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
           }
