@@ -1,5 +1,5 @@
 import { parseDocsMetadata } from '@/utils/docs'
-import { create } from 'xmlbuilder2'
+import { fragment } from 'xmlbuilder2'
 
 export const dynamic = 'force-static'
 
@@ -29,22 +29,23 @@ Full documentation content.
 
 `
 
-  // Build XML for each page
+  // Build XML for each page using fragment mode for efficiency
   const pages = docs.map((doc) => {
     const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
     const pageContent = `URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
 ${cleanMarkdown(doc.content)}`
 
-    // Create XML element using xmlbuilder2
-    const root = create({ version: '1.0' })
-    const page = root.ele('page', {
-      path: doc.url,
-      title: doc.title,
-    })
-    page.txt(pageContent)
+    // Create XML fragment for efficient generation
+    const page = fragment()
+      .ele('page', {
+        path: doc.url,
+        title: doc.title,
+      })
+      .txt(pageContent)
+      .up()
 
-    // Return the XML string without the XML declaration
+    // Return the XML string
     return page.end({ headless: true })
   })
 
