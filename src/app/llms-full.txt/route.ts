@@ -1,4 +1,5 @@
 import { parseDocsMetadata } from '@/utils/docs'
+import { fragment } from 'xmlbuilder2'
 
 export const dynamic = 'force-static'
 
@@ -21,27 +22,34 @@ export async function GET() {
 
   const baseUrl = NEXT_PUBLIC_URL || ''
 
-  // Generate llms-full.txt content
+  // Generate llms-full.txt content with proper XML
   const header = `${NEXT_PUBLIC_LIBNAME}
 
 Full documentation content.
 
 `
 
-  const fullContent =
-    header +
-    docs
-      .map((doc) => {
-        const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
-        return `---
-
-${doc.title}
-URL: ${url}
+  // Build XML for each page using fragment mode for efficiency
+  const pages = docs.map((doc) => {
+    const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
+    const pageContent = `URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
-${cleanMarkdown(doc.content)}
-`
+${cleanMarkdown(doc.content)}`
+
+    // Create XML fragment for efficient generation
+    const page = fragment()
+      .ele('page', {
+        path: doc.url,
+        title: doc.title,
       })
-      .join('\n')
+      .txt(pageContent)
+      .up()
+
+    // Return the XML string
+    return page.end({ headless: true })
+  })
+
+  const fullContent = header + pages.join('\n') + '\n'
 
   return new Response(fullContent, {
     headers: {
