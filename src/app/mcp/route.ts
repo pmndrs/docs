@@ -6,18 +6,22 @@ import { libs } from '@/src/app/page'
 
 /**
  * Gets the full documentation URL for a library.
- * Only supports libraries with external URLs (starting with https://).
+ * Handles both external URLs (https://) and internal routes (/).
  */
 function getLibraryDocUrl(libKey: string): string | null {
   const lib = libs[libKey]
   if (!lib) return null
 
-  // Only support libraries with full external URLs
+  // If the library has a full external URL, use it directly
   if (lib.url.startsWith('https://')) {
     return lib.url
   }
 
-  // Internal routes are not supported for MCP
+  // For internal routes, construct the full URL with docs.pmnd.rs base
+  if (lib.url.startsWith('/')) {
+    return `https://docs.pmnd.rs${lib.url}`
+  }
+
   return null
 }
 
