@@ -4,6 +4,9 @@ import fetch from 'node-fetch'
 import { z } from 'zod'
 import { REGISTRY } from '@/lib/registry'
 
+// Extract library names as a constant for efficiency
+const LIBRARY_NAMES = Object.keys(REGISTRY) as [string, ...string[]]
+
 const handler = createMcpHandler(
   (server) => {
     // Register list_pages tool
@@ -13,7 +16,7 @@ const handler = createMcpHandler(
         title: 'List Pages',
         description: 'List all available paths for a pmndrs library.',
         inputSchema: {
-          lib: z.enum(Object.keys(REGISTRY) as [string, ...string[]]).describe('The library name'),
+          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
         },
       },
       async ({ lib }) => {
@@ -56,7 +59,7 @@ const handler = createMcpHandler(
         title: 'Get Page Content',
         description: 'Get surgical content of a specific page.',
         inputSchema: {
-          lib: z.enum(Object.keys(REGISTRY) as [string, ...string[]]).describe('The library name'),
+          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
           path: z.string().describe('The page path (e.g., /docs/api/hooks/use-frame)'),
         },
       },
