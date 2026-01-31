@@ -29,7 +29,7 @@ export interface Library {
   docs?: string
 }
 
-const libs: Record<string, Library> = {
+export const libs: Record<string, Library> = {
   'react-three-fiber': {
     title: 'React Three Fiber',
     url: '/react-three-fiber',
