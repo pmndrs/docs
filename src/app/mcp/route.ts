@@ -4,6 +4,9 @@ import fetch from 'node-fetch'
 import { z } from 'zod'
 import { libs } from '@/app/page'
 
+// Force dynamic rendering for this API route (required for static export builds)
+export const dynamic = 'force-dynamic'
+
 /**
  * Gets the full documentation URL for a library.
  * Handles both external URLs (https://) and internal routes (/).
