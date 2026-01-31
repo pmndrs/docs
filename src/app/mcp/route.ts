@@ -1,30 +1,19 @@
-import { NextResponse } from 'next/server'
+import { createMcpHandler } from 'mcp-handler'
+import * as cheerio from 'cheerio'
+import fetch from 'node-fetch'
+import { z } from 'zod'
+import { libs } from '@/app/page'
 
-// Check if we're in static export mode at build time
-const IS_EXPORT_MODE = process.env.OUTPUT === 'export'
-
-// When in export mode, use force-static to allow the route to be exported
-// Otherwise use force-dynamic for server-side execution
-export const dynamic = IS_EXPORT_MODE ? 'force-static' : 'force-dynamic'
+// Force dynamic rendering - this route cannot be statically exported
+export const dynamic = 'force-dynamic'
 export const revalidate = false
+export const runtime = 'nodejs'
 
-// Lazy load dependencies only when needed (not in export mode)
+// Cache the handler instance
 let mcpHandler: any = null
 
 async function getMcpHandler() {
   if (mcpHandler) return mcpHandler
-
-  if (IS_EXPORT_MODE) {
-    // Return a placeholder in export mode
-    return null
-  }
-
-  // Dynamically import MCP dependencies
-  const { createMcpHandler } = await import('mcp-handler')
-  const cheerio = await import('cheerio')
-  const fetch = (await import('node-fetch')).default
-  const { z } = await import('zod')
-  const { libs } = await import('@/app/page')
 
   /**
    * Gets the full documentation URL for a library.
@@ -121,31 +110,11 @@ async function getMcpHandler() {
 }
 
 export async function GET(request: Request) {
-  if (IS_EXPORT_MODE) {
-    return NextResponse.json(
-      {
-        error: 'MCP server unavailable',
-        message: 'This endpoint requires server-side execution. Deploy to Vercel or use a server environment.',
-      },
-      { status: 503 }
-    )
-  }
-
   const handler = await getMcpHandler()
   return handler(request)
 }
 
 export async function POST(request: Request) {
-  if (IS_EXPORT_MODE) {
-    return NextResponse.json(
-      {
-        error: 'MCP server unavailable',
-        message: 'This endpoint requires server-side execution. Deploy to Vercel or use a server environment.',
-      },
-      { status: 503 }
-    )
-  }
-
   const handler = await getMcpHandler()
   return handler(request)
 }
