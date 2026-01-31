@@ -4,8 +4,7 @@
   "version": "3.3.2",
   "type": "module",
   "bin": {
-    "build": "bin/build.mjs",
-    "mcp": "bin/mcp.mjs"
+    "build": "bin/build.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",

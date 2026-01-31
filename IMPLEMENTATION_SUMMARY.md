@@ -26,17 +26,17 @@ This implementation transforms the pmndrs documentation ecosystem into an AI-nat
 
 ### 2. MCP Server Implementation ✓
 
-**File:** `bin/mcp.mjs` (executable)
+**File:** `src/app/mcp/route.ts`
 
 Created a Model Context Protocol server that:
 
-- Runs over stdio transport for AI agent integration
+- Runs over HTTP/SSE transport for remote AI agent integration
 - Implements two tools:
   - `list_pages`: Lists all documentation paths for a library
   - `get_page_content`: Retrieves specific page content
 - Uses Cheerio for efficient XML parsing
 - Supports federated documentation across multiple pmndrs libraries
-- Can be invoked via `npx @pmndrs/docs mcp`
+- Accessible via `/mcp` endpoint
 
 ### 3. Library Registry ✓
 
@@ -55,13 +55,11 @@ This registry serves as the single source of truth for library documentation URL
 
 **File:** `package.json`
 
-Added:
+Added dependencies:
 
-- New bin entry: `"mcp": "bin/mcp.mjs"`
-- Dependencies:
-  - `@modelcontextprotocol/sdk@^1.0.4` - MCP protocol implementation
-  - `cheerio@^1.0.0` - Fast XML/HTML parser
-  - `node-fetch@^3.3.2` - HTTP client for Node.js
+- `@modelcontextprotocol/sdk@^1.0.4` - MCP protocol implementation
+- `cheerio@^1.0.0` - Fast XML/HTML parser
+- `node-fetch@^3.3.2` - HTTP client for Node.js
 
 **File:** `pnpm-lock.yaml`
 
@@ -73,9 +71,9 @@ Updated with new dependency resolutions.
 
 Comprehensive documentation including:
 
-- Installation instructions
+- HTTP/SSE endpoint usage instructions
 - Usage examples for both MCP tools
-- Integration guides for Claude Desktop, Cursor, Windsurf
+- Integration guide for remote AI agents
 - Architecture explanation
 - Future enhancement roadmap
 
@@ -106,23 +104,30 @@ Comprehensive documentation including:
 Once deployed, AI agents can use the MCP server like this:
 
 ```bash
-# Start the MCP server
-npx @pmndrs/docs mcp
+# Access the remote MCP server via HTTP
+curl -X POST https://docs.pmnd.rs/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "tools/call",
+    "params": {
+      "name": "list_pages",
+      "arguments": {"lib": "react-three-fiber"}
+    }
+  }'
 
-# Tool: list_pages
-{
-  "name": "list_pages",
-  "arguments": { "lib": "react-three-fiber" }
-}
-
-# Tool: get_page_content
-{
-  "name": "get_page_content",
-  "arguments": {
-    "lib": "react-three-fiber",
-    "path": "/docs/api/hooks/use-frame"
-  }
-}
+# Get specific page content
+curl -X POST https://docs.pmnd.rs/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "tools/call",
+    "params": {
+      "name": "get_page_content",
+      "arguments": {
+        "lib": "react-three-fiber",
+        "path": "/docs/api/hooks/use-frame"
+      }
+    }
+  }'
 ```
 
 ## Architecture Benefits
@@ -130,8 +135,9 @@ npx @pmndrs/docs mcp
 1. **Surgical Access:** Agents fetch only the documentation they need
 2. **Federated:** Works across multiple pmndrs library doc sites
 3. **Standardized:** Uses MCP for universal AI agent compatibility
-4. **Maintainable:** Registry-based system easy to extend
-5. **Secure:** XML escaping and validation throughout
+4. **Remote Access:** HTTP/SSE transport for remote AI agents
+5. **Maintainable:** Registry-based system easy to extend
+6. **Secure:** XML escaping and validation throughout
 
 ## Future Enhancements (Not Implemented)
 
@@ -145,12 +151,12 @@ As mentioned in the problem statement, future evolutions could include:
 ## Files Changed
 
 - `src/app/llms-full.txt/route.ts` - Added page tag wrapping + XML escaping
-- `bin/mcp.mjs` - New MCP server implementation
+- `src/app/mcp/route.ts` - New HTTP/SSE MCP server implementation
 - `src/lib/registry.ts` - New library registry
-- `package.json` - Added bin entry and dependencies
+- `package.json` - Added dependencies
 - `pnpm-lock.yaml` - Updated dependency lock
 - `MCP_README.md` - New documentation
 
 ## Conclusion
 
-This PR successfully implements the foundation for the pmndrs "Federated AI Docs" Initiative. The implementation is minimal, focused, and provides the critical infrastructure needed for AI agents to surgically access pmndrs documentation across the ecosystem.
+This PR successfully implements the foundation for the pmndrs "Federated AI Docs" Initiative. The implementation is minimal, focused, and provides the critical infrastructure needed for AI agents to surgically access pmndrs documentation across the ecosystem via a remote HTTP/SSE endpoint.

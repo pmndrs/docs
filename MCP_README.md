@@ -9,26 +9,13 @@ This MCP server provides surgical access to documentation across the pmndrs ecos
 1. List all available documentation pages for a library
 2. Fetch specific page content on-demand
 
-## Installation
-
-```bash
-npm install -g @pmndrs/docs
-```
-
-Or use directly with npx:
-
-```bash
-npx @pmndrs/docs mcp
-```
+The server is accessible via HTTP/SSE at the `/mcp` endpoint.
 
 ## Usage
 
-The MCP server can be accessed in two ways:
+The MCP server is accessible via HTTP at `https://docs.pmnd.rs/mcp` (or your deployment URL).
 
-1. **stdio (local)**: For local AI agents - `npx @pmndrs/docs mcp`
-2. **HTTP/SSE (remote)**: For remote AI agents - `https://docs.pmnd.rs/mcp`
-
-Both modes expose two tools:
+The server exposes two tools:
 
 ### 1. `list_pages`
 
@@ -91,51 +78,20 @@ The server currently supports the following pmndrs libraries:
 - `drei` - https://drei.docs.pmnd.rs
 - `viverse` - https://pmndrs.github.io/viverse
 
-## Adding to AI Agent Configurations
+## HTTP/SSE Access
 
-### Local Usage (stdio)
-
-#### Claude Desktop
-
-Add to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "pmndrs": {
-      "command": "npx",
-      "args": ["@pmndrs/docs", "mcp"]
-    }
-  }
-}
-```
-
-#### Cursor / Windsurf
-
-Add to your MCP settings:
-
-```json
-{
-  "pmndrs": {
-    "command": "npx @pmndrs/docs mcp"
-  }
-}
-```
-
-### Remote Usage (HTTP/SSE)
-
-For remote access, AI agents can connect to the `/mcp` endpoint via HTTP:
+The MCP server is accessible via the `/mcp` endpoint:
 
 **Endpoint:** `https://docs.pmnd.rs/mcp` (or your deployment URL)
 
-#### SSE Connection
+### SSE Connection
 
 ```bash
 # Connect via SSE for streaming
 curl -N https://docs.pmnd.rs/mcp
 ```
 
-#### HTTP POST Requests
+### HTTP POST Requests
 
 ```bash
 # List available tools
@@ -155,9 +111,9 @@ curl -X POST https://docs.pmnd.rs/mcp \
   }'
 ```
 
-#### Remote Agent Configuration
+### AI Agent Configuration
 
-Configure remote AI agents to use the HTTP endpoint:
+Configure AI agents to use the HTTP endpoint:
 
 ```json
 {
@@ -172,16 +128,7 @@ Configure remote AI agents to use the HTTP endpoint:
 
 ## Architecture
 
-The server supports two transport modes:
-
-### stdio Transport (Local)
-
-- Run via `npx @pmndrs/docs mcp`
-- Uses stdin/stdout for communication
-- Ideal for local AI agent integration
-- Lower latency, no network overhead
-
-### HTTP/SSE Transport (Remote)
+The server uses HTTP/SSE transport:
 
 - Accessible via `/mcp` route
 - GET: Server-Sent Events for streaming connection
@@ -189,7 +136,7 @@ The server supports two transport modes:
 - Ideal for remote AI agents or web-based tools
 - Supports CORS for cross-origin requests
 
-Both transports work by:
+The server works by:
 
 1. Fetching `/llms-full.txt` from the library's documentation site
 2. Parsing the XML-like `<page>` tags that wrap each documentation page
@@ -222,14 +169,14 @@ The library registry is maintained in `src/lib/registry.ts`. To add a new librar
 
 ## Development
 
-Run the server locally:
+The server runs as part of the Next.js application at `/mcp`. Start the development server:
 
 ```bash
 cd /path/to/pmndrs/docs
-node bin/mcp.mjs
+pnpm run dev
 ```
 
-The server will start and listen for MCP requests on stdio.
+Then access the MCP server at `http://localhost:3000/mcp`.
 
 ## Future Enhancements
 
