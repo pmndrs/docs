@@ -25,23 +25,26 @@ ${libraryList}
 ### 1. \`docs://pmndrs/manifest\`
 This skill manifest - provides an overview of the server, its capabilities, and usage guidelines.
 
+### 2. \`docs://{lib}/index\`
+Index of available documentation pages for each library. Each library has its own index resource:
+- \`docs://zustand/index\` - Zustand documentation index
+- \`docs://jotai/index\` - Jotai documentation index
+- \`docs://valtio/index\` - Valtio documentation index
+- And similarly for all other supported libraries
+
+**Output format:**
+Each line contains: \`{page_path} - {page_title}\`
+
+**Example:**
+\`\`\`
+/docs/guides/typescript - TypeScript Guide
+/docs/api/create - create API
+/docs/guides/auto-generating-selectors - Auto-generating Selectors
+\`\`\`
+
 ## Available Tools
 
-### 1. \`list_pages\`
-Lists all available documentation page paths for a specific library.
-
-**Input:**
-- \`lib\` (string): The library name
-
-**Output:**
-- A plain text list of page paths, one per line
-
-**Example usage:**
-\`\`\`
-Use list_pages with lib="zustand" to discover all Zustand documentation pages
-\`\`\`
-
-### 2. \`get_page_content\`
+### 1. \`get_page_content\`
 Retrieves the full content of a specific documentation page.
 
 **Input:**
@@ -59,8 +62,8 @@ Use get_page_content with lib="zustand" and path="/docs/guides/typescript" to ge
 ## Best Practices
 
 ### Efficient Querying
-1. **Always start with \`list_pages\` tool** to discover available documentation before requesting specific pages
-2. **Cache page lists** when possible to minimize redundant requests
+1. **Always start with library index resources** (e.g., \`docs://zustand/index\`) to discover available documentation before requesting specific pages
+2. **Use resource URIs** to access page indexes - they're more efficient than tool calls for listing content
 3. **Use specific page paths** rather than trying to guess URLs
 
 ### Understanding the Content
@@ -86,6 +89,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
 
 Resources use the \`docs://\` URI scheme:
 - \`docs://pmndrs/manifest\` - This skill manifest document
+- \`docs://{lib}/index\` - Page index for each library (e.g., \`docs://zustand/index\`)
 
 ## Technical Notes
 
@@ -119,8 +123,8 @@ Resources use the \`docs://\` URI scheme:
 1. User asks: "How do I use TypeScript with Zustand?"
 
 2. Agent thinks: I should check what Zustand documentation is available
-   → Access resource docs://zustand/index
-   → Discover there's a "/docs/guides/typescript" page
+   → Read resource docs://zustand/index
+   → Discover there's a "/docs/guides/typescript - TypeScript Guide" page
 
 3. Agent retrieves content:
    → Call tool get_page_content(lib="zustand", path="/docs/guides/typescript")

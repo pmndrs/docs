@@ -54,49 +54,40 @@ const handler = createMcpHandler(
       },
     )
 
-    // Register list_pages tool
-    server.registerTool(
-      'list_pages',
-      {
-        title: 'List Pages',
-        description: 'List all available page paths for a specific library.',
-        inputSchema: {
-          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
+    // Register dynamic resources for each library index (alternative to resource templates)
+    LIBRARY_NAMES.forEach((lib) => {
+      server.registerResource(
+        `${lib} Index`,
+        `docs://${lib}/index`,
+        {
+          description: `List of available pages for the ${lib} library.`,
+          mimeType: 'text/plain',
         },
-      },
-      async ({ lib }) => {
-        const url = getLibraryDocUrl(lib)
-        if (!url) {
-          throw new Error(`Unknown library: ${lib}`)
-        }
+        async () => {
+          const url = getLibraryDocUrl(lib)
+          if (!url) throw new Error(`URL not found for ${lib}`)
 
-        try {
+          // Fetch the remote file
           const response = await fetch(`${url}/llms-full.txt`)
-          if (!response.ok) {
-            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
-          }
           const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
 
-          // Extract only the paths to avoid saturating the context
+          // Extract paths + titles to help AI choose intelligently
           const paths = $('page')
-            .map((_, el) => $(el).attr('path'))
+            .map((_, el) => `${$(el).attr('path')} - ${$(el).attr('title') || 'Untitled'}`)
             .get()
 
           return {
-            content: [
+            contents: [
               {
-                type: 'text',
+                uri: `docs://${lib}/index`,
                 text: paths.join('\n'),
               },
             ],
           }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error)
-          throw new Error(`MCP server error: ${errorMessage}`)
-        }
-      },
-    )
+        },
+      )
+    })
 
     // Register get_page_content tool
     server.registerTool(

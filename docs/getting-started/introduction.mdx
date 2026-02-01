@@ -332,10 +332,10 @@ Configure AI agents to use the MCP server:
 The server provides MCP resources for discovering content:
 
 - **`docs://pmndrs/manifest`** - Server description, capabilities, and usage guidelines
+- **`docs://{lib}/index`** - List of available pages for each library (e.g., `docs://zustand/index`, `docs://jotai/index`)
 
 ### Available Tools
 
-The server exposes tools for discovering and retrieving content:
+The server exposes tools for retrieving content:
 
-- **`list_pages(lib)`** - Lists all available page paths for a specific library
 - **`get_page_content(lib, path)`** - Retrieves the full content of a specific documentation page
