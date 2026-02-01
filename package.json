@@ -4,8 +4,7 @@
   "version": "3.3.2",
   "type": "module",
   "bin": {
-    "build": "bin/build.mjs",
-    "mcp-local": "bin/mcp-local.mts"
+    "build": "bin/build.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",
@@ -82,7 +81,6 @@
     "remark-gfm": "^4.0.1",
     "sanitize-html": "^2.17.0",
     "tailwind-merge": "^3.4.0",
-    "tsx": "^4.19.2",
     "unist-util-visit": "^5.0.0",
     "xmlbuilder2": "^3.1.1",
     "zod": "^3.24.1"

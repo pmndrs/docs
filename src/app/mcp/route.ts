@@ -1,8 +1,8 @@
 import { createMcpHandler } from 'mcp-handler'
+import * as cheerio from 'cheerio'
 import fetch from 'node-fetch'
 import { z } from 'zod'
 import { libs } from '@/app/page'
-import { type DataSource, listPages, getPageContent } from '@/lib/mcp-tools'
 
 /**
  * Gets the full documentation URL for a library.
@@ -31,28 +31,6 @@ const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key) !=
   ...string[],
 ]
 
-/**
- * Remote data source implementation - fetches from URLs
- */
-const remoteDataSource: DataSource = {
-  async fetchLlmsFullText(libKey: string): Promise<string> {
-    const url = getLibraryDocUrl(libKey)
-    if (!url) {
-      throw new Error(`Unknown library: ${libKey}`)
-    }
-
-    const response = await fetch(`${url}/llms-full.txt`)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
-    }
-    return await response.text()
-  },
-
-  getAvailableLibraries(): string[] {
-    return LIBRARY_NAMES
-  },
-}
-
 const handler = createMcpHandler(
   (server) => {
     // Register list_pages tool
@@ -66,8 +44,23 @@ const handler = createMcpHandler(
         },
       },
       async ({ lib }) => {
+        const url = getLibraryDocUrl(lib)
+        if (!url) {
+          throw new Error(`Unknown library: ${lib}`)
+        }
+
         try {
-          const paths = await listPages(remoteDataSource, lib)
+          const response = await fetch(`${url}/llms-full.txt`)
+          if (!response.ok) {
+            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
+          }
+          const fullText = await response.text()
+          const $ = cheerio.load(fullText, { xmlMode: true })
+
+          const paths = $('page')
+            .map((_, el) => $(el).attr('path'))
+            .get()
+
           return {
             content: [
               {
@@ -95,13 +88,30 @@ const handler = createMcpHandler(
         },
       },
       async ({ lib, path }) => {
+        const url = getLibraryDocUrl(lib)
+        if (!url) {
+          throw new Error(`Unknown library: ${lib}`)
+        }
+
         try {
-          const content = await getPageContent(remoteDataSource, lib, path)
+          const response = await fetch(`${url}/llms-full.txt`)
+          if (!response.ok) {
+            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
+          }
+          const fullText = await response.text()
+          const $ = cheerio.load(fullText, { xmlMode: true })
+
+          // Use .filter() to avoid CSS selector injection
+          const page = $('page').filter((_, el) => $(el).attr('path') === path)
+          if (page.length === 0) {
+            throw new Error(`Page not found: ${path}`)
+          }
+
           return {
             content: [
               {
                 type: 'text',
-                text: content,
+                text: page.text().trim(),
               },
             ],
           }
