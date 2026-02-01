@@ -18,23 +18,27 @@ This MCP (Model Context Protocol) server provides programmatic access to documen
 The server supports all pmndrs ecosystem libraries including:
 ${libraryList}
 
-## Available Tools
+## Available Resources
 
-### 1. \`list_pages\`
-Lists all available documentation pages for a specific library.
+### 1. \`docs://pmndrs/manifest\`
+This skill manifest - provides an overview of the server, its capabilities, and usage guidelines.
 
-**Input:**
-- \`lib\` (string): The library name (e.g., "zustand", "drei", "react-three-fiber")
+### 2. \`docs://{lib}/index\` (Resource Template)
+Lists all available documentation page paths for a specific library.
+
+**URI Pattern:** \`docs://{lib}/index\` where \`{lib}\` is the library name
+
+**Examples:**
+- \`docs://zustand/index\` - List all Zustand documentation pages
+- \`docs://drei/index\` - List all Drei documentation pages
+- \`docs://jotai/index\` - List all Jotai documentation pages
 
 **Output:**
-- A list of page paths, one per line
+- A plain text list of page paths, one per line
 
-**Example usage:**
-\`\`\`
-Use list_pages with lib="zustand" to see all available Zustand documentation pages
-\`\`\`
+## Available Tools
 
-### 2. \`get_page_content\`
+### 1. \`get_page_content\`
 Retrieves the full content of a specific documentation page.
 
 **Input:**
@@ -52,7 +56,7 @@ Use get_page_content with lib="zustand" and path="/docs/guides/typescript" to ge
 ## Best Practices
 
 ### Efficient Querying
-1. **Always start with \`list_pages\`** to discover available documentation before requesting specific pages
+1. **Always start with \`docs://{lib}/index\` resource** to discover available documentation before requesting specific pages
 2. **Cache page lists** when possible to minimize redundant requests
 3. **Use specific page paths** rather than trying to guess URLs
 
@@ -77,8 +81,9 @@ Always handle errors gracefully and consider alternative approaches when a speci
 
 ## Resource URI Scheme
 
-Resources use the \`docs://pmndrs/\` URI scheme:
+Resources use the \`docs://\` URI scheme:
 - \`docs://pmndrs/manifest\` - This skill manifest document
+- \`docs://{lib}/index\` - Page index for a specific library (e.g., \`docs://zustand/index\`)
 
 ## Technical Notes
 
@@ -101,9 +106,10 @@ Resources use the \`docs://pmndrs/\` URI scheme:
 ## Getting Started
 
 1. Connect to the server at \`https://docs.pmnd.rs/api/sse\`
-2. Use \`list_pages\` to discover available documentation
-3. Request specific pages with \`get_page_content\`
-4. Combine information from multiple pages to provide comprehensive answers
+2. Read \`docs://pmndrs/manifest\` to understand server capabilities
+3. Access \`docs://{lib}/index\` to discover available documentation for a library
+4. Request specific pages with \`get_page_content\` tool
+5. Combine information from multiple pages to provide comprehensive answers
 
 ## Example Workflow
 
@@ -111,11 +117,11 @@ Resources use the \`docs://pmndrs/\` URI scheme:
 1. User asks: "How do I use TypeScript with Zustand?"
 
 2. Agent thinks: I should check what Zustand documentation is available
-   → Call list_pages(lib="zustand")
+   → Access resource docs://zustand/index
    → Discover there's a "/docs/guides/typescript" page
 
 3. Agent retrieves content:
-   → Call get_page_content(lib="zustand", path="/docs/guides/typescript")
+   → Call tool get_page_content(lib="zustand", path="/docs/guides/typescript")
    
 4. Agent synthesizes answer from the documentation content
 \`\`\`
