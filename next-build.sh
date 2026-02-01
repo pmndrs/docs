@@ -10,12 +10,26 @@
 #   OUTPUT=export npm run build  # Static export (GitHub Pages)
 #   npm run build                # Server build (Vercel)
 
-mkdir -p tmp
-test "$OUTPUT" = "export" && mv src/app/api tmp/api-backup
+# Check if we're building in export mode
+if [ "$OUTPUT" = "export" ]; then
+  IS_EXPORT=true
+else
+  IS_EXPORT=false
+fi
 
+# Move API directory if building for export
+if [ "$IS_EXPORT" = "true" ]; then
+  mkdir -p tmp
+  mv src/app/api tmp/api-backup
+fi
+
+# Run Next.js build
 next build
 STATUS=$?
 
-mv tmp/api-backup src/app/api 2>/dev/null
+# Restore API directory if it was moved
+if [ "$IS_EXPORT" = "true" ]; then
+  mv tmp/api-backup src/app/api
+fi
 
 exit $STATUS
