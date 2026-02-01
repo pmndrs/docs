@@ -6,10 +6,10 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js'
-import * as cheerio from 'cheerio'
 import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { listPages, getPageContent } from '../src/lib/mcp-tools.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -34,7 +34,7 @@ const libs = {
 
 /**
  * Gets the local path to llms-full.txt for a library.
- * For local execution, we expect the files to be in the dist/export directory.
+ * For local execution, we expect the files to be in the out/ directory.
  */
 function getLocalLlmsPath(libKey) {
   const lib = libs[libKey]
@@ -47,32 +47,12 @@ function getLocalLlmsPath(libKey) {
 
   // For internal routes, construct the local path
   if (lib.url.startsWith('/')) {
-    // Assuming build output is in dist/export
+    // Assuming build output is in out/
     const localPath = resolve(__dirname, '..', 'out', lib.url.substring(1), 'llms-full.txt')
     return localPath
   }
 
   return null
-}
-
-/**
- * Read local llms-full.txt file for a library
- */
-function readLocalLlms(libKey) {
-  const localPath = getLocalLlmsPath(libKey)
-  if (!localPath) {
-    throw new Error(
-      `Library ${libKey} uses external URL. Local mode only supports internal libraries.`,
-    )
-  }
-
-  try {
-    return readFileSync(localPath, 'utf-8')
-  } catch (error) {
-    throw new Error(
-      `Failed to read local llms-full.txt at ${localPath}. Make sure to build the project first with: npm run build`,
-    )
-  }
 }
 
 // Get list of locally available libraries
@@ -84,6 +64,32 @@ const LIBRARY_NAMES = Object.keys(libs).filter((key) => {
 if (LIBRARY_NAMES.length === 0) {
   console.error('No local libraries available. Make sure to build the project first.')
   process.exit(1)
+}
+
+/**
+ * Local data source implementation - reads from local files
+ */
+const localDataSource = {
+  async fetchLlmsFullText(libKey) {
+    const localPath = getLocalLlmsPath(libKey)
+    if (!localPath) {
+      throw new Error(
+        `Library ${libKey} uses external URL. Local mode only supports internal libraries.`,
+      )
+    }
+
+    try {
+      return readFileSync(localPath, 'utf-8')
+    } catch (error) {
+      throw new Error(
+        `Failed to read local llms-full.txt at ${localPath}. Make sure to build the project first with: npm run build`,
+      )
+    }
+  },
+
+  getAvailableLibraries() {
+    return LIBRARY_NAMES
+  },
 }
 
 // Create MCP server
@@ -139,19 +145,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   ],
 }))
 
-// Register tool call handler
+// Register tool call handler - uses shared business logic
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params
 
   if (name === 'list_pages') {
     try {
-      const fullText = readLocalLlms(args.lib)
-      const $ = cheerio.load(fullText, { xmlMode: true })
-
-      const paths = $('page')
-        .map((_, el) => $(el).attr('path'))
-        .get()
-
+      const paths = await listPages(localDataSource, args.lib)
       return {
         content: [
           {
@@ -176,20 +176,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (name === 'get_page_content') {
     try {
-      const fullText = readLocalLlms(args.lib)
-      const $ = cheerio.load(fullText, { xmlMode: true })
-
-      // Use .filter() to avoid CSS selector injection
-      const page = $('page').filter((_, el) => $(el).attr('path') === args.path)
-      if (page.length === 0) {
-        throw new Error(`Page not found: ${args.path}`)
-      }
-
+      const content = await getPageContent(localDataSource, args.lib, args.path)
       return {
         content: [
           {
             type: 'text',
-            text: page.text().trim(),
+            text: content,
           },
         ],
       }
