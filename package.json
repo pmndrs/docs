@@ -87,7 +87,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next",
     "start": "next start",
-    "build": "sh -c '[ \"$OUTPUT\" = \"export\" ] && (trap \"mv .api-backup src/app/api 2>/dev/null || true\" EXIT; mv src/app/api .api-backup); next build; [ -d .api-backup ] && mv .api-backup src/app/api || true'",
+    "build": "test \"$OUTPUT\" = \"export\" && mv src/app/api tmp/api-backup; next build; mv tmp/api-backup src/app/api 2>/dev/null || true",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",

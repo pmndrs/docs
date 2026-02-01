@@ -18,6 +18,7 @@ node_modules/
 .DS_Store
 .secrets
 .api-backup
+tmp/api-backup
 
 build/
 dist/
