@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { libs } from '@/app/page'
 
+export const dynamic = 'force-static'
+
 export async function GET() {
   // Extract library information dynamically from libs
   const libraryList = Object.entries(libs)
