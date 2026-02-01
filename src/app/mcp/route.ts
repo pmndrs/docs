@@ -1,6 +1,5 @@
 import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
-import fetch from 'node-fetch'
 import { z } from 'zod'
 import { libs } from '@/app/page'
 
