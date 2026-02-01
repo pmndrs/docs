@@ -2,8 +2,8 @@ import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
 import { libs } from '@/app/page'
-import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js'
-import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate'
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp'
 
 /**
  * Gets the full documentation URL for a library.
