@@ -320,8 +320,8 @@ Configure AI agents to use the MCP server:
 {
   "mcpServers": {
     "pmndrs": {
-      "url": "https://docs.pmnd.rs/api/sse",
-      "transport": "sse"
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/client-sse", "https://docs.pmnd.rs/api/sse"]
     }
   }
 }
