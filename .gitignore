@@ -17,7 +17,6 @@ node_modules/
 .next/
 .DS_Store
 .secrets
-.api-backup
 tmp/api-backup
 
 build/
