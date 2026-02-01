@@ -54,20 +54,17 @@ const handler = createMcpHandler(
       },
     )
 
-    // Register list_pages tool
-    server.registerTool(
-      'list_pages',
+    // Register library page index resource template
+    server.registerResourceTemplate(
+      'docs://{lib}/index',
       {
-        title: 'List Pages',
-        description: 'List all available paths for a pmndrs library.',
-        inputSchema: {
-          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
-        },
+        name: 'Library Page Index',
+        description: 'Lists all available paths for a specific library.',
       },
       async ({ lib }) => {
         const url = getLibraryDocUrl(lib)
         if (!url) {
-          throw new Error(`Unknown library: ${lib}`)
+          throw new Error(`Library ${lib} not found`)
         }
 
         try {
@@ -78,14 +75,16 @@ const handler = createMcpHandler(
           const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
 
+          // Extract only the paths to avoid saturating the context
           const paths = $('page')
             .map((_, el) => $(el).attr('path'))
             .get()
 
           return {
-            content: [
+            contents: [
               {
-                type: 'text',
+                uri: `docs://${lib}/index`,
+                mimeType: 'text/plain',
                 text: paths.join('\n'),
               },
             ],
