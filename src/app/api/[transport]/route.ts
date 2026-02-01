@@ -32,6 +32,28 @@ const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key) !=
 
 const handler = createMcpHandler(
   (server) => {
+    // Register manifest resource
+    server.registerResource(
+      'docs://pmndrs/manifest',
+      {
+        name: 'PMNDRS Skill Manifest',
+        description: 'Global description and behavior rules for this MCP server.',
+        mimeType: 'text/markdown',
+      },
+      async () => {
+        // Fetch the skill.md file hosted on docs.pmnd.rs
+        const content = await fetch('https://docs.pmnd.rs/skill.md').then((r) => r.text())
+        return {
+          contents: [
+            {
+              uri: 'docs://pmndrs/manifest',
+              text: content,
+            },
+          ],
+        }
+      },
+    )
+
     // Register list_pages tool
     server.registerTool(
       'list_pages',
