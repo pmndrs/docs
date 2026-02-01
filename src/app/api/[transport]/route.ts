@@ -2,6 +2,8 @@ import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
 import { libs } from '@/app/page'
+import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js'
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
 
 /**
  * Gets the full documentation URL for a library.
@@ -34,9 +36,9 @@ const handler = createMcpHandler(
   (server) => {
     // Register manifest resource
     server.registerResource(
+      'PMNDRS Skill Manifest',
       'docs://pmndrs/manifest',
       {
-        name: 'PMNDRS Skill Manifest',
         description: 'Global description and behavior rules for this MCP server.',
         mimeType: 'text/markdown',
       },
@@ -55,13 +57,23 @@ const handler = createMcpHandler(
     )
 
     // Register library page index resource template
-    server.registerResourceTemplate(
-      'docs://{lib}/index',
+    server.registerResource(
+      'Library Page Index',
+      new ResourceTemplate(new UriTemplate('docs://{lib}/index'), {
+        list: undefined, // No listing callback - clients discover resources dynamically
+      }),
       {
-        name: 'Library Page Index',
         description: 'Lists all available paths for a specific library.',
+        mimeType: 'text/plain',
       },
-      async ({ lib }) => {
+      async (uri: URL) => {
+        // Extract library name from URI
+        const match = uri.href.match(/^docs:\/\/([^\/]+)\/index$/)
+        if (!match) {
+          throw new Error('Invalid resource URI format')
+        }
+        const lib = match[1]
+
         const url = getLibraryDocUrl(lib)
         if (!url) {
           throw new Error(`Library ${lib} not found`)
@@ -83,7 +95,7 @@ const handler = createMcpHandler(
           return {
             contents: [
               {
-                uri: `docs://${lib}/index`,
+                uri: uri.href,
                 mimeType: 'text/plain',
                 text: paths.join('\n'),
               },
