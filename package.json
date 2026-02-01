@@ -87,7 +87,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next",
     "start": "next start",
-    "prebuild": "node scripts/prebuild.mjs",
+    "prebuild": "test \"$OUTPUT\" = \"export\" && rm -rf src/app/mcp || true",
     "build": "next build",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
