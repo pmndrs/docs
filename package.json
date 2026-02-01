@@ -89,6 +89,7 @@
     "start": "next start",
     "prebuild": "test \"$OUTPUT\" = \"export\" && rm -rf src/app/api || true",
     "build": "next build",
+    "postbuild": "test \"$OUTPUT\" = \"export\" && git restore src/app/api || true",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
