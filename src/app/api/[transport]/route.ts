@@ -54,18 +54,20 @@ const handler = createMcpHandler(
       },
     )
 
-    // Register library page index resource template
-    server.registerResourceTemplate(
-      'docs://{lib}/index',
+    // Register list_pages tool
+    server.registerTool(
+      'list_pages',
       {
-        name: 'Library Page Index',
-        description: 'Lists all available paths for a specific library.',
-        mimeType: 'text/plain',
+        title: 'List Pages',
+        description: 'List all available page paths for a specific library.',
+        inputSchema: {
+          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
+        },
       },
-      async ({ lib }: { lib: string }) => {
+      async ({ lib }) => {
         const url = getLibraryDocUrl(lib)
         if (!url) {
-          throw new Error(`Library ${lib} not found`)
+          throw new Error(`Unknown library: ${lib}`)
         }
 
         try {
@@ -82,10 +84,9 @@ const handler = createMcpHandler(
             .get()
 
           return {
-            contents: [
+            content: [
               {
-                uri: `docs://${lib}/index`,
-                mimeType: 'text/plain',
+                type: 'text',
                 text: paths.join('\n'),
               },
             ],

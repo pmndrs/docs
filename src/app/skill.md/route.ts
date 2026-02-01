@@ -25,22 +25,23 @@ ${libraryList}
 ### 1. \`docs://pmndrs/manifest\`
 This skill manifest - provides an overview of the server, its capabilities, and usage guidelines.
 
-### 2. \`docs://{lib}/index\` (Resource Template)
+## Available Tools
+
+### 1. \`list_pages\`
 Lists all available documentation page paths for a specific library.
 
-**URI Pattern:** \`docs://{lib}/index\` where \`{lib}\` is the library name
-
-**Examples:**
-- \`docs://zustand/index\` - List all Zustand documentation pages
-- \`docs://drei/index\` - List all Drei documentation pages
-- \`docs://jotai/index\` - List all Jotai documentation pages
+**Input:**
+- \`lib\` (string): The library name
 
 **Output:**
 - A plain text list of page paths, one per line
 
-## Available Tools
+**Example usage:**
+\`\`\`
+Use list_pages with lib="zustand" to discover all Zustand documentation pages
+\`\`\`
 
-### 1. \`get_page_content\`
+### 2. \`get_page_content\`
 Retrieves the full content of a specific documentation page.
 
 **Input:**
@@ -58,7 +59,7 @@ Use get_page_content with lib="zustand" and path="/docs/guides/typescript" to ge
 ## Best Practices
 
 ### Efficient Querying
-1. **Always start with \`docs://{lib}/index\` resource** to discover available documentation before requesting specific pages
+1. **Always start with \`list_pages\` tool** to discover available documentation before requesting specific pages
 2. **Cache page lists** when possible to minimize redundant requests
 3. **Use specific page paths** rather than trying to guess URLs
 
@@ -85,7 +86,6 @@ Always handle errors gracefully and consider alternative approaches when a speci
 
 Resources use the \`docs://\` URI scheme:
 - \`docs://pmndrs/manifest\` - This skill manifest document
-- \`docs://{lib}/index\` - Page index for a specific library (e.g., \`docs://zustand/index\`)
 
 ## Technical Notes
 
