@@ -6,8 +6,9 @@ import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
+// Also support libraries with local paths starting with / (served from current server)
 const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
-  ([, lib]) => lib.docs_url.includes('pmndrs.github.io')
+  ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/')
 )
 
 const handler = createMcpHandler(
@@ -44,8 +45,13 @@ const handler = createMcpHandler(
           mimeType: 'text/plain',
         },
         async () => {
-          const url = lib.docs_url
+          let url = lib.docs_url
           if (!url) throw new Error(`URL not found for ${libname}`)
+          
+          // If URL starts with /, prepend the base URL (for local routes)
+          if (url.startsWith('/')) {
+            url = `https://docs.pmnd.rs${url}`
+          }
 
           // Fetch the remote file
           const response = await fetch(`${url}/llms-full.txt`)
@@ -84,9 +90,14 @@ const handler = createMcpHandler(
         },
       },
       async ({ lib, path }) => {
-        const url = libs[lib].docs_url
+        let url = libs[lib].docs_url
         if (!url) {
           throw new Error(`Unknown library: ${lib}`)
+        }
+        
+        // If URL starts with /, prepend the base URL (for local routes)
+        if (url.startsWith('/')) {
+          url = `https://docs.pmnd.rs${url}`
         }
 
         try {
