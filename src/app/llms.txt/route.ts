@@ -23,6 +23,28 @@ ${docs
   })
   .join('\n')}
 
+## MCP Server
+
+This documentation is available via Model Context Protocol (MCP) server at https://docs.pmnd.rs/api/sse
+
+The server provides:
+- **Manifest**: docs://pmndrs/manifest - Server capabilities and usage guidelines
+- **Skill**: https://docs.pmnd.rs/skill.md - Comprehensive documentation on how to use the MCP server
+- **Resources**: docs://{library}/index - Page indexes for each library (zustand, jotai, valtio, etc.)
+- **Tool**: get_page_content(library, path) - Retrieve specific documentation pages
+
+Configure in your MCP client:
+\`\`\`json
+{
+  "mcpServers": {
+    "pmndrs": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/client-sse", "https://docs.pmnd.rs/api/sse"]
+    }
+  }
+}
+\`\`\`
+
 ---
 
 For full documentation content, see ${baseUrl}/llms-full.txt
