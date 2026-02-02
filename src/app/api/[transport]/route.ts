@@ -98,9 +98,6 @@ const handler = createMcpHandler(
       },
       async ({ lib, path }) => {
         let url: string = libs[lib].docs_url
-        if (!url) {
-          throw new Error(`Unknown library: ${lib}`)
-        }
 
         if (url.startsWith('/')) {
           url = toAbsoluteUrl(url)
