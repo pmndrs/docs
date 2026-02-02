@@ -48,9 +48,13 @@ const handler = createMcpHandler(
           let url = lib.docs_url
           if (!url) throw new Error(`URL not found for ${libname}`)
           
-          // If URL starts with /, prepend the base URL (for local routes)
+          // If URL starts with /, it's a local route on the current server
+          // Use the Vercel URL or fallback to localhost for local development
           if (url.startsWith('/')) {
-            url = `https://docs.pmnd.rs${url}`
+            const baseUrl = process.env.VERCEL_URL 
+              ? `https://${process.env.VERCEL_URL}` 
+              : process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.pmnd.rs'
+            url = `${baseUrl}${url}`
           }
 
           // Fetch the remote file
@@ -95,9 +99,13 @@ const handler = createMcpHandler(
           throw new Error(`Unknown library: ${lib}`)
         }
         
-        // If URL starts with /, prepend the base URL (for local routes)
+        // If URL starts with /, it's a local route on the current server
+        // Use the Vercel URL or fallback to localhost for local development
         if (url.startsWith('/')) {
-          url = `https://docs.pmnd.rs${url}`
+          const baseUrl = process.env.VERCEL_URL 
+            ? `https://${process.env.VERCEL_URL}` 
+            : process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.pmnd.rs'
+          url = `${baseUrl}${url}`
         }
 
         try {
