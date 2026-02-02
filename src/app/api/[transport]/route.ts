@@ -5,7 +5,10 @@ import type { Entries } from 'type-fest'
 import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 
 // Extract entries and library names as constants for efficiency
-const libsEntries = Object.entries(libs) as Entries<typeof libs>
+// Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
+const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
+  ([, lib]) => lib.docs_url.includes('pmndrs.github.io')
+)
 
 const handler = createMcpHandler(
   (server) => {
