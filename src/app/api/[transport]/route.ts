@@ -1,34 +1,11 @@
 import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
+import type { Entries } from 'type-fest'
 import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 
-/**
- * Gets the full documentation URL for a library.
- * Handles both external URLs (https://) and internal routes (/).
- */
-function getLibraryDocUrl(libKey: SUPPORTED_LIBRARY_NAMES): string | null {
-  const lib = libs[libKey]
-  if (!lib) return null
-
-  // If the library has a full external URL, use it directly
-  if (lib.docs_url.startsWith('https://')) {
-    return lib.docs_url
-  }
-
-  // For internal routes, construct the full URL with docs.pmnd.rs base
-  if (lib.docs_url.startsWith('/')) {
-    return `https://docs.pmnd.rs${lib.docs_url}`
-  }
-
-  return null
-}
-
-// Extract library names as a constant for efficiency
-const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key as SUPPORTED_LIBRARY_NAMES) !== null) as [
-  SUPPORTED_LIBRARY_NAMES,
-  ...SUPPORTED_LIBRARY_NAMES[],
-]
+// Extract entries and library names as constants for efficiency
+const libsEntries = Object.entries(libs) as Entries<typeof libs>
 
 const handler = createMcpHandler(
   (server) => {
@@ -55,17 +32,17 @@ const handler = createMcpHandler(
     )
 
     // Register dynamic resources for each library index (alternative to resource templates)
-    LIBRARY_NAMES.forEach((lib) => {
+    for (const [libname, lib] of libsEntries) {
       server.registerResource(
-        `${lib} Index`,
-        `docs://${lib}/index`,
+        `${libname} Index`,
+        `docs://${libname}/index`,
         {
-          description: `List of available pages for the ${lib} library.`,
+          description: `List of available pages for the ${libname} library.`,
           mimeType: 'text/plain',
         },
         async () => {
-          const url = getLibraryDocUrl(lib)
-          if (!url) throw new Error(`URL not found for ${lib}`)
+          const url = lib.docs_url
+          if (!url) throw new Error(`URL not found for ${libname}`)
 
           // Fetch the remote file
           const response = await fetch(`${url}/llms-full.txt`)
@@ -80,28 +57,31 @@ const handler = createMcpHandler(
           return {
             contents: [
               {
-                uri: `docs://${lib}/index`,
+                uri: `docs://${libname}/index`,
                 text: paths.join('\n'),
               },
             ],
           }
         },
       )
-    })
+    }
 
     // Register get_page_content tool
+    const LIBNAMES = libsEntries.map(([libname]) => libname)
     server.registerTool(
       'get_page_content',
       {
         title: 'Get Page Content',
         description: 'Get surgical content of a specific page.',
         inputSchema: {
-          lib: z.enum(LIBRARY_NAMES).describe('The library name'),
+          lib: z
+            .enum(LIBNAMES as [SUPPORTED_LIBRARY_NAMES, ...SUPPORTED_LIBRARY_NAMES[]])
+            .describe('The library name'),
           path: z.string().describe('The page path (e.g., /docs/api/hooks/use-frame)'),
         },
       },
       async ({ lib, path }) => {
-        const url = getLibraryDocUrl(lib)
+        const url = libs[lib].docs_url
         if (!url) {
           throw new Error(`Unknown library: ${lib}`)
         }

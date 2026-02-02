@@ -194,7 +194,7 @@ export default function Page() {
                         {data.description}
                       </div>
                     </div>
-                    {data.icon && (
+                    {'icon' in data && data.icon && (
                       <a
                         href={data.github}
                         target="_blank"
