@@ -12,13 +12,13 @@ function getLibraryDocUrl(libKey: string): string | null {
   if (!lib) return null
 
   // If the library has a full external URL, use it directly
-  if (lib.url.startsWith('https://')) {
-    return lib.url
+  if (lib.docs_url.startsWith('https://')) {
+    return lib.docs_url
   }
 
   // For internal routes, construct the full URL with docs.pmnd.rs base
-  if (lib.url.startsWith('/')) {
-    return `https://docs.pmnd.rs${lib.url}`
+  if (lib.docs_url.startsWith('/')) {
+    return `https://docs.pmnd.rs${lib.docs_url}`
   }
 
   return null

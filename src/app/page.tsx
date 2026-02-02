@@ -15,7 +15,7 @@ import { redirect } from 'next/navigation'
 
 export interface Library {
   title: string
-  url: string
+  docs_url: string
   github: string
   description: string
   // Optional banner image
@@ -24,25 +24,21 @@ export interface Library {
   icon?: string
   iconWidth?: number
   iconHeight?: number
-  // Optional repository to fetch and serve docs from
-  // <user>/<repo>/<branch>/<path/to/dir>
-  docs?: string
 }
 
 export const libs: Record<string, Library> = {
   'react-three-fiber': {
     title: 'React Three Fiber',
-    url: '/react-three-fiber',
+    docs_url: 'https://pmndrs.github.io/react-three-fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
-    docs: 'pmndrs/react-three-fiber/master/docs',
     icon: r3fIcon.src,
     iconWidth: r3fIcon.width,
     iconHeight: r3fIcon.height,
   },
   'react-spring': {
     title: 'React Spring',
-    url: 'https://react-spring.io',
+    docs_url: 'https://react-spring.io',
     github: 'https://github.com/pmndrs/react-spring',
     description: 'Bring your components to life with simple spring animation primitives for React',
     icon: reactSpringIcon.src,
@@ -51,7 +47,7 @@ export const libs: Record<string, Library> = {
   },
   drei: {
     title: 'Drei',
-    url: '/drei',
+    docs_url: 'https://pmndrs.github.io/drei',
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
@@ -61,18 +57,17 @@ export const libs: Record<string, Library> = {
   },
   zustand: {
     title: 'Zustand',
-    url: '/zustand',
+    docs_url: 'https://pmndrs.github.io/zustand',
     github: 'https://github.com/pmndrs/zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     icon: zustandIcon.src,
     iconWidth: zustandIcon.width,
     iconHeight: zustandIcon.height,
-    docs: 'pmndrs/zustand/main/docs',
   },
   jotai: {
     title: 'Jotai',
-    url: 'https://jotai.org/docs/introduction',
+    docs_url: 'https://jotai.org/docs/introduction',
     github: 'https://github.com/pmndrs/jotai',
     description: 'Jotai is a primitive and flexible state management library for React',
     icon: jotaiIcon.src,
@@ -81,75 +76,67 @@ export const libs: Record<string, Library> = {
   },
   valtio: {
     title: 'Valtio',
-    url: 'https://valtio.pmnd.rs',
+    docs_url: 'https://valtio.pmnd.rs',
     github: 'https://github.com/pmndrs/valtio',
     description: 'Valtio makes proxy-state simple for React and Vanilla',
   },
   a11y: {
     title: 'A11y',
-    url: '/a11y',
+    docs_url: 'https://pmndrs.github.io/react-three-a11y',
     github: 'https://github.com/pmndrs/react-three-a11y',
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
-    docs: 'pmndrs/react-three-a11y/main/docs',
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
-    url: '/react-postprocessing',
+    docs_url: 'https://pmndrs.github.io/react-postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
-    docs: 'pmndrs/react-postprocessing/master/docs',
     icon: ppIcon.src,
     iconWidth: ppIcon.width,
     iconHeight: ppIcon.height,
   },
   uikit: {
     title: 'uikit',
-    url: '/uikit',
+    docs_url: 'https://pmndrs.github.io/uikit/docs',
     github: 'https://github.com/pmndrs/uikit',
     description: 'uikit brings user interfaces to @react-three/fiber',
     icon: uiKitIcon.src,
     iconWidth: uiKitIcon.width,
     iconHeight: uiKitIcon.height,
-    docs: 'pmndrs/uikit/main/docs',
   },
   xr: {
     title: 'xr',
-    url: '/xr',
+    docs_url: 'https://pmndrs.github.io/xr/docs',
     github: 'https://github.com/pmndrs/xr',
     description: 'VR/AR for @react-three/fiber',
-    docs: 'pmndrs/xr/main/docs',
   },
   docs: {
     title: 'Docs',
-    url: '/getting-started/introduction',
+    docs_url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
     icon: docsIcon.src,
     iconWidth: docsIcon.width,
     iconHeight: docsIcon.height,
-    docs: 'pmndrs/docs/main/docs',
   },
   prai: {
     title: 'prai',
-    url: 'https://pmndrs.github.io/prai',
+    docs_url: 'https://pmndrs.github.io/prai',
     github: 'https://github.com/pmndrs/prai',
     description: 'JS Framework for building step-by-step LLM instructions`',
-    docs: 'pmndrs/prai/main/docs',
   },
   viverse: {
     title: 'viverse',
-    url: 'https://pmndrs.github.io/viverse',
+    docs_url: 'https://pmndrs.github.io/viverse',
     github: 'https://github.com/pmndrs/viverse',
     description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE and beyond.',
-    docs: 'pmndrs/viverse/main/docs',
   },
   leva: {
     title: 'leva',
-    url: 'https://pmndrs.github.io/leva',
+    docs_url: 'https://pmndrs.github.io/leva',
     github: 'https://github.com/pmndrs/leva',
     description: 'React-first components GUI',
-    docs: 'pmndrs/leva/main/docs',
   },
 }
 
@@ -225,7 +212,7 @@ export default function Page() {
                   </div>
                   <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
                     <Link
-                      href={data.url}
+                      href={data.docs_url}
                       className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                     >
                       <Icon icon="docs" />
