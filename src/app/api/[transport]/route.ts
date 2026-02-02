@@ -8,8 +8,16 @@ import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 // Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
 // Also support libraries with local paths starting with / (served from current server)
 const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
-  ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/')
+  ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/'),
 )
+
+function toAbsoluteUrl(url: string) {
+  // Use Vercel URL in production, fallback to NEXT_PUBLIC_URL otherwise
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_URL ?? '')
+  return `${baseUrl}${url}`
+}
 
 const handler = createMcpHandler(
   (server) => {
@@ -38,23 +46,18 @@ const handler = createMcpHandler(
     // Register dynamic resources for each library index (alternative to resource templates)
     for (const [libname, lib] of libsEntries) {
       server.registerResource(
-        `${libname} Index`,
+        `${libname} index`,
         `docs://${libname}/index`,
         {
           description: `List of available pages for the ${libname} library.`,
           mimeType: 'text/plain',
         },
         async () => {
-          let url = lib.docs_url
+          let url: string = lib.docs_url
           if (!url) throw new Error(`URL not found for ${libname}`)
-          
-          // If URL starts with /, it's a local route on the current server
-          // Use the Vercel URL or fallback to localhost for local development
+
           if (url.startsWith('/')) {
-            const baseUrl = process.env.VERCEL_URL 
-              ? `https://${process.env.VERCEL_URL}` 
-              : process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.pmnd.rs'
-            url = `${baseUrl}${url}`
+            url = toAbsoluteUrl(url)
           }
 
           // Fetch the remote file
@@ -94,18 +97,13 @@ const handler = createMcpHandler(
         },
       },
       async ({ lib, path }) => {
-        let url = libs[lib].docs_url
+        let url: string = libs[lib].docs_url
         if (!url) {
           throw new Error(`Unknown library: ${lib}`)
         }
-        
-        // If URL starts with /, it's a local route on the current server
-        // Use the Vercel URL or fallback to localhost for local development
+
         if (url.startsWith('/')) {
-          const baseUrl = process.env.VERCEL_URL 
-            ? `https://${process.env.VERCEL_URL}` 
-            : process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.pmnd.rs'
-          url = `${baseUrl}${url}`
+          url = toAbsoluteUrl(url)
         }
 
         try {
