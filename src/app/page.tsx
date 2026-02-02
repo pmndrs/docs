@@ -26,7 +26,7 @@ export interface Library {
   iconHeight?: number
 }
 
-export const libs: Record<string, Library> = {
+export const libs = {
   'react-three-fiber': {
     title: 'React Three Fiber',
     docs_url: 'https://pmndrs.github.io/react-three-fiber',
@@ -138,7 +138,9 @@ export const libs: Record<string, Library> = {
     github: 'https://github.com/pmndrs/leva',
     description: 'React-first components GUI',
   },
-}
+} as const
+
+export type SUPPORTED_LIBRARY_NAMES = keyof typeof libs
 
 const title = 'Poimandres documentation'
 const description = `Index of documentation for pmndrs/* libraries`

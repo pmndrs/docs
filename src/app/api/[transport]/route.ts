@@ -1,13 +1,13 @@
 import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
-import { libs } from '@/app/page'
+import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 
 /**
  * Gets the full documentation URL for a library.
  * Handles both external URLs (https://) and internal routes (/).
  */
-function getLibraryDocUrl(libKey: string): string | null {
+function getLibraryDocUrl(libKey: SUPPORTED_LIBRARY_NAMES): string | null {
   const lib = libs[libKey]
   if (!lib) return null
 
@@ -25,9 +25,9 @@ function getLibraryDocUrl(libKey: string): string | null {
 }
 
 // Extract library names as a constant for efficiency
-const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key) !== null) as [
-  string,
-  ...string[],
+const LIBRARY_NAMES = Object.keys(libs).filter((key) => getLibraryDocUrl(key as SUPPORTED_LIBRARY_NAMES) !== null) as [
+  SUPPORTED_LIBRARY_NAMES,
+  ...SUPPORTED_LIBRARY_NAMES[],
 ]
 
 const handler = createMcpHandler(
