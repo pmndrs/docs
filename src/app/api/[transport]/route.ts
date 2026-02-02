@@ -54,7 +54,6 @@ const handler = createMcpHandler(
         },
         async () => {
           let url: string = lib.docs_url
-          if (!url) throw new Error(`URL not found for ${libname}`)
 
           if (url.startsWith('/')) {
             url = toAbsoluteUrl(url)
