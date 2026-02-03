@@ -1,0 +1,26 @@
+---
+title: "`Keypoints`"
+description: Keypoints component for highlighting main article topics
+sourcecode: docs/authoring/keypoints.mdx
+nav: 3
+---
+
+<Intro>
+  Highlights key takeaways as a visually distinct bulleted list.
+</Intro>
+
+Can be used after `Intro`, to list main points the article covers: one bullet per `KeypointsItem`.
+
+```md
+<Keypoints title="What you'll learn">
+  <KeypointsItem>First item</KeypointsItem>
+  <KeypointsItem>Second **item**</KeypointsItem>
+</Keypoints>
+```
+
+result:
+
+<Keypoints title="What you'll learn">
+  <KeypointsItem>First item</KeypointsItem>
+  <KeypointsItem>Second **item**</KeypointsItem>
+</Keypoints>

@@ -1,0 +1,41 @@
+# editor settings
+.vscode/
+
+# dependencies
+.pnp
+.pnp.js
+node_modules/
+
+# pnpm
+.pnpm-debug.log*
+
+# environment
+.env.local
+.env*.local
+
+# other
+.next/
+.DS_Store
+.secrets
+
+build/
+dist/
+logs/
+out/
+tmp/
+temp/
+
+tsconfig.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Chromatic
+chromatic-archives/
+
+*storybook.log
+*archive.log
+storybook-static
+src/stories

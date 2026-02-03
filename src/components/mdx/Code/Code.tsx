@@ -1,0 +1,64 @@
+'use client'
+
+import cn from '@/lib/cn'
+import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
+import { TbClipboard, TbClipboardCheck } from 'react-icons/tb'
+
+export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) => {
+  const [copied, setCopied] = useState(false)
+
+  const handleClick = async () => {
+    const textToCopy = extractTextFromChildren(children)
+
+    await navigator.clipboard.writeText(textToCopy)
+    setCopied(true)
+  }
+
+  useEffect(() => {
+    if (!copied) return
+    const int = setTimeout(() => setCopied(false), 2000)
+    return () => clearTimeout(int)
+  }, [copied])
+
+  return (
+    <div className={cn('relative')}>
+      <pre
+        {...props}
+        className={cn(
+          className,
+          'my-5 overflow-auto rounded-lg p-(--pad) font-mono text-sm',
+          'bg-[oklch(from_var(--mcu-on-primary-fixed)_l_calc(c*0.2)_h)] text-primary-fixed', // using a fixed color to only have 1 theme for prism
+        )}
+      >
+        {children}
+      </pre>
+      <button
+        className="absolute right-0 top-0 m-4 flex size-8 items-center justify-center rounded-md text-outline-variant transition-colors hover:text-outline"
+        onClick={handleClick}
+        aria-label="Copy to clipboard"
+      >
+        {copied ? <TbClipboardCheck className="size-6" /> : <TbClipboard className="size-6" />}
+      </button>
+    </div>
+  )
+}
+
+// Recursive function to extract text content from React nodes
+const extractTextFromChildren = (children: ReactNode): string => {
+  if (typeof children === 'string') {
+    return children
+  }
+
+  if (Array.isArray(children)) {
+    return children.map(extractTextFromChildren).join('')
+  }
+
+  if (isValidElement(children)) {
+    const props = children.props as Record<string, unknown>
+    if ('children' in props) {
+      return extractTextFromChildren(props.children as ReactNode)
+    }
+  }
+
+  return ''
+}
