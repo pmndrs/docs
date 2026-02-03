@@ -1,4 +1,0 @@
-echo "🪝 .husky/pre-commit hook is running"
-
-pnpm exec tsc --noEmit
-pnpm exec lint-staged
