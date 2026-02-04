@@ -29,7 +29,7 @@ const handler = createMcpHandler(
     //
 
     server.registerResource(
-      'Poimandres documentation MCP server Manifest',
+      'pmndrs-docs Manifest',
       'docs://pmndrs/manifest',
       {
         description: 'Global description and behavior rules for this MCP server.',
