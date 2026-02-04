@@ -13,9 +13,12 @@ const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
 
 function toAbsoluteUrl(url: string) {
   // Use Vercel URL in production, fallback to NEXT_PUBLIC_URL otherwise
+  console.log('VERCEL_URL:', process.env.VERCEL_URL)
+  console.log('NEXT_PUBLIC_URL:', process.env.NEXT_PUBLIC_URL)
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : (process.env.NEXT_PUBLIC_URL ?? '')
+  console.log('baseUrl:', baseUrl, 'url:', url)
   return `${baseUrl}${url}`
 }
 
