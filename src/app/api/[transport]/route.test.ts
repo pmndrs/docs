@@ -39,11 +39,6 @@ const server = setupServer(
   http.get('https://zustand.docs.pmnd.rs/llms-full.txt', () => {
     return HttpResponse.text(mockLlmsFullTxt)
   }),
-
-  // Mock llms-full.txt for local library
-  http.get('https://docs.pmnd.rs/docs/llms-full.txt', () => {
-    return HttpResponse.text(mockLlmsFullTxt)
-  }),
 )
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }))
