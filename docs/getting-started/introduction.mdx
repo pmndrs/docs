@@ -111,7 +111,6 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 $ (
   trap 'kill -9 0' SIGINT
 
-  export PORT=3000
   export _PORT=60141
 
   export MDX=docs
@@ -126,7 +125,7 @@ $ (
   export MDX_BASEURL=http://localhost:$_PORT
   export SOURCECODE_BASEURL="vscode://file$(pwd)"
   export EDIT_BASEURL="vscode://file$(pwd)/docs"
-  export NEXT_PUBLIC_URL=http://localhost:$PORT
+  export NEXT_PUBLIC_URL=
   export ICON=
   export LOGO=gutenberg.jpg
   export GITHUB=https://github.com/pmndrs/docs
