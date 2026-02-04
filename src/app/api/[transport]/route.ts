@@ -2,6 +2,7 @@ import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
 import type { Entries } from 'type-fest'
+import { headers } from 'next/headers'
 import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 
 // Extract entries and library names as constants for efficiency
@@ -11,15 +12,15 @@ const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
   ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/'),
 )
 
-function toAbsoluteUrl(url: string) {
-  // Use Vercel URL in production, fallback to NEXT_PUBLIC_URL otherwise
-  console.log('VERCEL_URL:', process.env.VERCEL_URL)
-  console.log('NEXT_PUBLIC_URL:', process.env.NEXT_PUBLIC_URL)
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : (process.env.NEXT_PUBLIC_URL ?? '')
-  console.log('baseUrl:', baseUrl, 'url:', url)
-  return `${baseUrl}${url}`
+async function toAbsoluteUrl(url: string) {
+  // Try VERCEL_URL env var first, then get from request headers
+  const host = process.env.VERCEL_URL || (await headers()).get('host')
+  if (!host) throw new Error('Unable to determine host')
+  const protocol = host.includes('localhost') ? 'http' : 'https'
+
+  console.log('protocol:', protocol)
+  console.log('host:', host)
+  return `${protocol}://${host}${url}`
 }
 
 const handler = createMcpHandler(
@@ -34,7 +35,8 @@ const handler = createMcpHandler(
       },
       async () => {
         // Fetch the skill.md file hosted on docs.pmnd.rs
-        const content = await fetch('https://docs.pmnd.rs/skill.md').then((r) => r.text())
+        const url = await toAbsoluteUrl('/skill.md')
+        const content = await fetch(url).then((r) => r.text())
         return {
           contents: [
             {
@@ -59,7 +61,7 @@ const handler = createMcpHandler(
           let url: string = lib.docs_url
 
           if (url.startsWith('/')) {
-            url = toAbsoluteUrl(url)
+            url = await toAbsoluteUrl(url)
           }
 
           // Fetch the remote file
@@ -102,7 +104,7 @@ const handler = createMcpHandler(
         let url: string = libs[lib].docs_url
 
         if (url.startsWith('/')) {
-          url = toAbsoluteUrl(url)
+          url = await toAbsoluteUrl(url)
         }
 
         try {
