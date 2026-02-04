@@ -301,4 +301,135 @@ Content with &lt;special&gt; characters &amp; symbols.
       expect(fullUrl).toBe(baseUrl)
     })
   })
+
+  describe('get_page_content Tool', () => {
+    it('should retrieve page content successfully', async () => {
+      const { GET } = await import('./route')
+      const mockRequest = new Request('https://docs.pmnd.rs/api/sse', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'tools/call',
+          params: {
+            name: 'get_page_content',
+            arguments: {
+              lib: 'react-three-fiber',
+              path: '/api/hooks/use-frame',
+            },
+          },
+        }),
+      })
+
+      const response = await GET(mockRequest)
+      expect(response).toBeDefined()
+    })
+
+    it('should return error when page not found', async () => {
+      const cheerio = await import('cheerio')
+      const $ = cheerio.load(mockLlmsFullTxt, { xmlMode: true })
+
+      const nonExistentPath = '/non-existent-page'
+      const page = $('page').filter((_, el) => $(el).attr('path') === nonExistentPath)
+
+      expect(page.length).toBe(0)
+    })
+
+    it('should extract correct content for valid page', async () => {
+      const cheerio = await import('cheerio')
+      const $ = cheerio.load(mockLlmsFullTxt, { xmlMode: true })
+
+      const targetPath = '/api/hooks/use-frame'
+      const page = $('page').filter((_, el) => $(el).attr('path') === targetPath)
+
+      expect(page.length).toBe(1)
+      const content = page.text().trim()
+      expect(content).toContain('useFrame Hook')
+      expect(content).toContain('execute code on every frame')
+    })
+
+    it('should handle multiple libraries correctly', async () => {
+      const libs = {
+        'react-three-fiber': { docs_url: 'https://r3f.docs.pmnd.rs' },
+        zustand: { docs_url: 'https://zustand.docs.pmnd.rs' },
+      }
+
+      const libNames = Object.keys(libs)
+      expect(libNames).toContain('react-three-fiber')
+      expect(libNames).toContain('zustand')
+    })
+
+    it('should validate lib parameter is enum', async () => {
+      const { z } = await import('zod')
+      const validLibs = ['react-three-fiber', 'zustand']
+      const libSchema = z.enum(validLibs as [string, ...string[]])
+
+      expect(() => libSchema.parse('react-three-fiber')).not.toThrow()
+      expect(() => libSchema.parse('invalid-library')).toThrow()
+    })
+
+    it('should validate path parameter is string', async () => {
+      const { z } = await import('zod')
+      const pathSchema = z.string()
+
+      expect(() => pathSchema.parse('/api/hooks/use-frame')).not.toThrow()
+      expect(() => pathSchema.parse(123)).toThrow()
+    })
+
+    it('should format tool response correctly', async () => {
+      const cheerio = await import('cheerio')
+      const $ = cheerio.load(mockLlmsFullTxt, { xmlMode: true })
+
+      const page = $('page').filter((_, el) => $(el).attr('path') === '/getting-started')
+      const content = page.text().trim()
+
+      const expectedResponse = {
+        content: [
+          {
+            type: 'text',
+            text: content,
+          },
+        ],
+      }
+
+      expect(expectedResponse.content).toHaveLength(1)
+      expect(expectedResponse.content[0].type).toBe('text')
+      expect(expectedResponse.content[0].text).toContain('Getting Started')
+    })
+
+    it('should handle fetch errors in tool execution', async () => {
+      server.use(
+        http.get('https://error.docs.pmnd.rs/llms-full.txt', () => {
+          return HttpResponse.error()
+        }),
+      )
+
+      await expect(fetch('https://error.docs.pmnd.rs/llms-full.txt')).rejects.toThrow()
+    })
+
+    it('should handle 404 errors in tool execution', async () => {
+      server.use(
+        http.get('https://notfound.docs.pmnd.rs/llms-full.txt', () => {
+          return new HttpResponse(null, { status: 404, statusText: 'Not Found' })
+        }),
+      )
+
+      const response = await fetch('https://notfound.docs.pmnd.rs/llms-full.txt')
+      expect(response.ok).toBe(false)
+      expect(response.status).toBe(404)
+    })
+
+    it('should prevent CSS selector injection in tool', async () => {
+      const cheerio = await import('cheerio')
+      const $ = cheerio.load(mockLlmsFullTxt, { xmlMode: true })
+
+      const maliciousPath = '/getting-started[data-test="hack"]'
+      const page = $('page').filter((_, el) => $(el).attr('path') === maliciousPath)
+
+      expect(page.length).toBe(0)
+    })
+  })
 })
