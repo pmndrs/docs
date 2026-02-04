@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.4.0
+
+### Minor Changes
+
+- [#531](https://github.com/pmndrs/docs/pull/531) [`619559b`](https://github.com/pmndrs/docs/commit/619559b2bdb012d7401159a9df4d86de8ec1e7a1) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - mcp support
+
 ## 3.3.2
 
 ### Patch Changes
