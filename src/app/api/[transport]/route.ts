@@ -1,14 +1,13 @@
 import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
-import type { Entries } from 'type-fest'
 import { headers } from 'next/headers'
-import { libs, SUPPORTED_LIBRARY_NAMES } from '@/app/page'
+import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
 // Also support libraries with local paths starting with / (served from current server)
-const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
+const libsEntries = Object.entries(libs).filter(
   ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/'),
 )
 
