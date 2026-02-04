@@ -299,44 +299,6 @@ These URLs are linked in the HTML header as:
 
 ## MCP Server
 
-The documentation is also accessible via a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server. This enables AI agents to surgically query specific documentation pages without downloading entire sites.
-
-### Usage
-
-Connect to the MCP server at `https://docs.pmnd.rs/api/sse`:
-
-```bash
-# Direct connection (returns server info via SSE)
-curl -N https://docs.pmnd.rs/api/sse
-
-# For stdio-only clients, use mcp-remote
-npx -y mcp-remote https://docs.pmnd.rs/api/sse
+```sh
+$ npx -y @modelcontextprotocol/inspector
 ```
-
-### AI Agent Configuration
-
-Configure AI agents to use the MCP server:
-
-```json
-{
-  "mcpServers": {
-    "pmndrs": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/client-sse", "https://docs.pmnd.rs/api/sse"]
-    }
-  }
-}
-```
-
-### Available Resources
-
-The server provides MCP resources for discovering content:
-
-- **`docs://pmndrs/manifest`** - Server description, capabilities, and usage guidelines
-- **`docs://{lib}/index`** - List of available pages for each library (e.g., `docs://zustand/index`, `docs://jotai/index`)
-
-### Available Tools
-
-The server exposes tools for retrieving content:
-
-- **`get_page_content(lib, path)`** - Retrieves the full content of a specific documentation page
