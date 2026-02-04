@@ -57,7 +57,7 @@ const handler = createMcpHandler(
           let url: string = lib.docs_url
 
           if (url.startsWith('/')) {
-            url = `${await baseUrl()}${url}`
+            url = `${await baseUrl()}`
           }
 
           // Fetch the remote file
@@ -100,7 +100,7 @@ const handler = createMcpHandler(
         let url: string = libs[lib].docs_url
 
         if (url.startsWith('/')) {
-          url = `${await baseUrl()}${url}`
+          url = `${await baseUrl()}`
         }
 
         try {

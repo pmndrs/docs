@@ -113,7 +113,7 @@ export const libs = {
   },
   docs: {
     title: 'Docs',
-    docs_url: '/',
+    docs_url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
     icon: docsIcon.src,
