@@ -13,15 +13,6 @@ vi.mock('next/headers', () => ({
 }))
 
 // Sample test data
-const mockSkillMd = `# PMNDRS Docs MCP Server
-
-This is the skill manifest for the PMNDRS documentation server.
-
-## Supported Libraries
-- react-three-fiber
-- zustand
-- docs
-`
 
 const mockLlmsFullTxt = `
 <page path="/getting-started" title="Getting Started">
@@ -40,11 +31,6 @@ Optimize your React Three Fiber applications.
 
 // Setup MSW server
 const server = setupServer(
-  // Mock /skill.md endpoint
-  http.get('https://docs.pmnd.rs/skill.md', () => {
-    return HttpResponse.text(mockSkillMd)
-  }),
-
   // Mock llms-full.txt for external libraries
   http.get('https://r3f.docs.pmnd.rs/llms-full.txt', () => {
     return HttpResponse.text(mockLlmsFullTxt)
@@ -66,12 +52,6 @@ afterAll(() => server.close())
 
 describe('MCP Route Handler', () => {
   describe('Mock Endpoints', () => {
-    it('should have msw setup correctly', async () => {
-      const response = await fetch('https://docs.pmnd.rs/skill.md')
-      const text = await response.text()
-      expect(text).toContain('PMNDRS Docs MCP Server')
-    })
-
     it('should mock llms-full.txt endpoint', async () => {
       const response = await fetch('https://r3f.docs.pmnd.rs/llms-full.txt')
       const text = await response.text()
@@ -301,15 +281,6 @@ Content with &lt;special&gt; characters &amp; symbols.
   })
 
   describe('Integration Tests', () => {
-    it('should fetch and parse skill.md', async () => {
-      const response = await fetch('https://docs.pmnd.rs/skill.md')
-      const content = await response.text()
-
-      expect(content).toContain('PMNDRS Docs MCP Server')
-      expect(content).toContain('react-three-fiber')
-      expect(content).toContain('zustand')
-    })
-
     it('should fetch and parse llms-full.txt', async () => {
       const cheerio = await import('cheerio')
 
