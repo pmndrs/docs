@@ -2,6 +2,7 @@ import { createMcpHandler } from 'mcp-handler'
 import * as cheerio from 'cheerio'
 import { z } from 'zod'
 import { headers } from 'next/headers'
+import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
 
@@ -138,6 +139,8 @@ Resources use the \`docs://\` URI scheme:
 - 60-second timeout for tool executions
 - Minimal payload - only requested pages are transferred
 - XML parsing with Cheerio for efficient text extraction
+- **5-minute fetch cache** for documentation content (revalidated every 5 minutes)
+- Cache tags for granular invalidation per library
 
 ## Getting Started
 
@@ -164,8 +167,9 @@ Resources use the \`docs://\` URI scheme:
 
 ## Notes
 
-- Documentation is always current (fetched in real-time)
-- No local caching - always retrieves fresh content
+- Documentation is cached for 5 minutes to improve performance
+- Cache can be invalidated per library using Next.js cache tags
+- Always retrieves fresh content after cache expiration
 - Suitable for both simple queries and comprehensive research
 `,
             },
@@ -193,8 +197,13 @@ Resources use the \`docs://\` URI scheme:
             url = `${await baseUrl()}`
           }
 
-          // Fetch the remote file
-          const response = await fetch(`${url}/llms-full.txt`)
+          // Fetch the remote file with caching
+          const response = await fetch(`${url}/llms-full.txt`, {
+            next: {
+              revalidate: 300, // Cache for 5 minutes
+              tags: [`llms-full-${libname}`],
+            },
+          })
           const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
 
@@ -240,7 +249,12 @@ Resources use the \`docs://\` URI scheme:
         }
 
         try {
-          const response = await fetch(`${url}/llms-full.txt`)
+          const response = await fetch(`${url}/llms-full.txt`, {
+            next: {
+              revalidate: 300, // Cache for 5 minutes
+              tags: [`llms-full-${lib}`],
+            },
+          })
           if (!response.ok) {
             throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
           }
