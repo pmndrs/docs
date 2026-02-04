@@ -9,8 +9,6 @@ export async function GET() {
 
   const docs = await parseDocsMetadata(MDX)
 
-  const baseUrl = NEXT_PUBLIC_URL || ''
-
   // Generate llms.txt content following standard format
   const content = `# ${NEXT_PUBLIC_LIBNAME}
 
@@ -18,14 +16,29 @@ export async function GET() {
 
 ${docs
   .map((doc) => {
-    const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
-    return `- [${doc.title}](${url})${doc.description ? `: ${doc.description}` : ''}`
+    return `- [${doc.title}](${doc.url})${doc.description ? `: ${doc.description}` : ''}`
   })
   .join('\n')}
 
+## MCP Server
+
+This documentation is available via Model Context Protocol (MCP) server at https://docs.pmnd.rs/api/sse
+
+Configure in your MCP client:
+\`\`\`json
+{
+  "mcpServers": {
+    "pmndrs": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/client-sse", "https://docs.pmnd.rs/api/sse"]
+    }
+  }
+}
+\`\`\`
+
 ---
 
-For full documentation content, see ${baseUrl}/llms-full.txt
+For full documentation content, see llms-full.txt
 `
 
   return new Response(content, {
