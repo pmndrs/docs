@@ -12,15 +12,12 @@ const libsEntries = (Object.entries(libs) as Entries<typeof libs>).filter(
   ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/'),
 )
 
-async function toAbsoluteUrl(url: string) {
-  // Try VERCEL_URL env var first, then get from request headers
-  const host = process.env.VERCEL_URL || (await headers()).get('host')
+async function baseUrl() {
+  const host = (await headers()).get('host')
   if (!host) throw new Error('Unable to determine host')
-  const protocol = host.includes('localhost') ? 'http' : 'https'
 
-  console.log('protocol:', protocol)
-  console.log('host:', host)
-  return `${protocol}://${host}${url}`
+  const protocol = host.includes('localhost') ? 'http' : 'https'
+  return `${protocol}://${host}`
 }
 
 const handler = createMcpHandler(
@@ -35,8 +32,7 @@ const handler = createMcpHandler(
       },
       async () => {
         // Fetch the skill.md file hosted on docs.pmnd.rs
-        const url = await toAbsoluteUrl('/skill.md')
-        const content = await fetch(url).then((r) => r.text())
+        const content = await fetch(`${await baseUrl()}/skill.md`).then((r) => r.text())
         return {
           contents: [
             {
@@ -61,7 +57,7 @@ const handler = createMcpHandler(
           let url: string = lib.docs_url
 
           if (url.startsWith('/')) {
-            url = await toAbsoluteUrl(url)
+            url = `${await baseUrl()}${url}`
           }
 
           // Fetch the remote file
@@ -104,7 +100,7 @@ const handler = createMcpHandler(
         let url: string = libs[lib].docs_url
 
         if (url.startsWith('/')) {
-          url = await toAbsoluteUrl(url)
+          url = `${await baseUrl()}${url}`
         }
 
         try {
