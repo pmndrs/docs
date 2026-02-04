@@ -5,6 +5,7 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './src/app',
+  testIgnore: '**/route.test.ts',
   use: {
     baseURL: 'http://localhost:3000',
   },
