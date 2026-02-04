@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import { z } from 'zod'
 import { headers } from 'next/headers'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
-import packageJson from '../../../../package.json' with { type: 'json' }
+import packageJson from '@/package.json' with { type: 'json' }
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
