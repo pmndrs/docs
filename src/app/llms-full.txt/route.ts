@@ -7,10 +7,7 @@ export const dynamic = 'force-static'
  * Basic cleanup of markdown content
  */
 function cleanMarkdown(content: string): string {
-  // Just do basic cleanup - keep JSX tags as-is
-  return content
-    .replace(/\n{3,}/g, '\n\n') // Clean up multiple empty lines
-    .trim()
+  return content.replace(/]]>/g, ']] >') // Escape CDATA end sequence to prevent breaking XML
 }
 
 export async function GET() {
@@ -42,7 +39,7 @@ ${cleanMarkdown(doc.content)}`
         path: doc.url,
         title: doc.title,
       })
-      .txt(pageContent)
+      .dat(pageContent) // Use .dat() instead of .txt() to avoid HTML entity escaping
       .up()
 
     // Return the XML string
