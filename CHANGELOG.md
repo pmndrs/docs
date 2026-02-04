@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.4.1
+
+### Patch Changes
+
+- [#539](https://github.com/pmndrs/docs/pull/539) [`98ee42e`](https://github.com/pmndrs/docs/commit/98ee42e3cd52bc5ff769675decc2ef966965c6d3) Thanks [@abernier](https://github.com/abernier)! - escaping issue fixed
+
 ## 3.4.0
 
 ### Minor Changes
