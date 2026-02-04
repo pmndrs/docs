@@ -87,9 +87,9 @@ export async function generateStaticParams() {
 
   // Also generate .md versions of all pages for static generation
   const mdPaths = docs.map(({ slug }) => {
-    const mdSlug = [...slug]
-    mdSlug[mdSlug.length - 1] = `${mdSlug[mdSlug.length - 1]}.md`
-    return { slug: mdSlug }
+    const slugWithMd = [...slug]
+    slugWithMd[slugWithMd.length - 1] = `${slugWithMd[slugWithMd.length - 1]}.md`
+    return { slug: slugWithMd }
   })
 
   // console.log('paths', paths)

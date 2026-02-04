@@ -17,7 +17,10 @@ export default async function proxy(request: NextRequest) {
   // Get MDX root directory
   const MDX = process.env.MDX
   if (!MDX) {
-    return new NextResponse('MDX env var not set', { status: 500 })
+    return new NextResponse(
+      'MDX environment variable is not configured. Please set MDX to the path of your documentation root directory.',
+      { status: 500 },
+    )
   }
 
   try {
@@ -39,7 +42,7 @@ export default async function proxy(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error fetching MDX source:', error)
+    console.error('Error processing MDX source:', error)
     return new NextResponse('Internal Server Error', { status: 500 })
   }
 }
