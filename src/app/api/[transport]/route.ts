@@ -5,6 +5,7 @@ import { headers } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
@@ -73,29 +74,27 @@ Each line contains: \`{page_path} - {page_title}\`
 /docs/guides/auto-generating-selectors - Auto-generating Selectors
 \`\`\`
 
-## Available Tools
+### 3. \`docs://{lib}/{path}\`
+Individual documentation pages for each library. Each page is exposed as a separate resource.
 
-### 1. \`get_page_content\`
-Retrieves the full content of a specific documentation page.
-
-**Input:**
-- \`lib\` (string): The library name
-- \`path\` (string): The page path (e.g., "/docs/guides/typescript")
+**URI format:** \`docs://{lib}/{path}\` where:
+- \`{lib}\` is the library name (e.g., "zustand", "jotai", "valtio")
+- \`{path}\` is the page path without leading slash (e.g., "docs/guides/typescript")
 
 **Output:**
 - The full markdown content of the requested page
 
-**Example usage:**
-\`\`\`
-Use get_page_content with lib="zustand" and path="/docs/guides/typescript" to get the TypeScript guide
-\`\`\`
+**Examples:**
+- \`docs://zustand/docs/guides/typescript\` - TypeScript Guide for Zustand
+- \`docs://jotai/docs/api/create\` - create API documentation for Jotai
+- \`docs://react-three-fiber/docs/api/hooks/use-frame\` - useFrame Hook for React Three Fiber
 
 ## Best Practices
 
 ### Efficient Querying
 1. **Always start with library index resources** (e.g., \`docs://zustand/index\`) to discover available documentation before requesting specific pages
-2. **Use resource URIs** to access page indexes - they're more efficient than tool calls for listing content
-3. **Use specific page paths** rather than trying to guess URLs
+2. **Use resource URIs directly** - all documentation is now available as resources
+3. **Reference specific pages** by constructing URIs like \`docs://{lib}/{path}\` where path is without the leading slash
 
 ### Understanding the Content
 1. Documentation is returned as **raw markdown text**
@@ -121,6 +120,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
 Resources use the \`docs://\` URI scheme:
 - \`docs://pmndrs/manifest\` - This manifest document
 - \`docs://{lib}/index\` - Page index for each library (e.g., \`docs://zustand/index\`)
+- \`docs://{lib}/{path}\` - Individual documentation pages (e.g., \`docs://zustand/docs/guides/typescript\`)
 
 ## Technical Notes
 
@@ -147,7 +147,7 @@ Resources use the \`docs://\` URI scheme:
 1. Connect to the server at \`https://docs.pmnd.rs/api/sse\`
 2. Read \`docs://pmndrs/manifest\` to understand server capabilities
 3. Access \`docs://{lib}/index\` to discover available documentation for a library
-4. Request specific pages with \`get_page_content\` tool
+4. Read specific pages using \`docs://{lib}/{path}\` resources (path without leading slash)
 5. Combine information from multiple pages to provide comprehensive answers
 
 ## Example Workflow
@@ -160,7 +160,7 @@ Resources use the \`docs://\` URI scheme:
    → Discover there's a "/docs/guides/typescript - TypeScript Guide" page
 
 3. Agent retrieves content:
-   → Call tool get_page_content(lib="zustand", path="/docs/guides/typescript")
+   → Read resource docs://zustand/docs/guides/typescript (note: path without leading slash)
    
 4. Agent synthesizes answer from the documentation content
 \`\`\`
@@ -225,62 +225,108 @@ Resources use the \`docs://\` URI scheme:
     }
 
     //
-    // Register get_page_content tool
+    // Register resource templates for each library's pages
     //
 
-    const LIBNAMES = libsEntries.map(([libname]) => libname)
-    server.registerTool(
-      'get_page_content',
-      {
-        title: 'Get Page Content',
-        description: 'Get surgical content of a specific page.',
-        inputSchema: {
-          lib: z
-            .enum(LIBNAMES as [SUPPORTED_LIBRARY_NAMES, ...SUPPORTED_LIBRARY_NAMES[]])
-            .describe('The library name'),
-          path: z.string().describe('The page path (e.g., /docs/api/hooks/use-frame)'),
-        },
-      },
-      async ({ lib, path }) => {
-        let url: string = libs[lib].docs_url
+    for (const [libname, lib] of libsEntries) {
+      const template = new ResourceTemplate(`docs://${libname}/{path}`, {
+        // List all resources matching this template
+        list: async () => {
+          let url: string = lib.docs_url
 
-        if (url.startsWith('/')) {
-          url = `${await baseUrl()}`
-        }
-
-        try {
-          const response = await fetch(`${url}/llms-full.txt`, {
-            next: {
-              revalidate: 300, // Cache for 5 minutes
-              tags: [`llms-full-${lib}`],
-            },
-          })
-          if (!response.ok) {
-            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
-          }
-          const fullText = await response.text()
-          const $ = cheerio.load(fullText, { xmlMode: true })
-
-          // Use .filter() to avoid CSS selector injection
-          const page = $('page').filter((_, el) => $(el).attr('path') === path)
-          if (page.length === 0) {
-            throw new Error(`Page not found: ${path}`)
+          if (url.startsWith('/')) {
+            url = `${await baseUrl()}`
           }
 
-          return {
-            content: [
-              {
-                type: 'text',
-                text: page.text().trim(),
+          try {
+            const response = await fetch(`${url}/llms-full.txt`, {
+              next: {
+                revalidate: 300, // Cache for 5 minutes
+                tags: [`llms-full-${libname}`],
               },
-            ],
+            })
+            const fullText = await response.text()
+            const $ = cheerio.load(fullText, { xmlMode: true })
+
+            // Return list of resources in the correct format
+            const resources = $('page')
+              .map((_, el) => {
+                const pagePath = $(el).attr('path')
+                if (!pagePath) return null
+
+                // Remove leading slash from path for URI
+                const uriPath = pagePath.startsWith('/') ? pagePath.slice(1) : pagePath
+                const pageTitle = $(el).attr('title') || 'Untitled'
+
+                return {
+                  uri: `docs://${libname}/${uriPath}`,
+                  name: pageTitle,
+                  description: `${pageTitle} page for ${libname}`,
+                  mimeType: 'text/markdown' as const,
+                }
+              })
+              .get()
+              .filter((item): item is NonNullable<typeof item> => item !== null)
+
+            return { resources }
+          } catch (error) {
+            console.error(`Failed to list pages for ${libname}:`, error)
+            return { resources: [] }
           }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error)
-          throw new Error(`MCP server error: ${errorMessage}`)
-        }
-      },
-    )
+        },
+      })
+
+      server.registerResource(
+        `${libname} pages`,
+        template,
+        {
+          description: `Documentation pages for ${libname}. Use the index resource (docs://${libname}/index) to discover available paths.`,
+          mimeType: 'text/markdown',
+        },
+        async (uri, variables) => {
+          const { path } = variables
+          let url: string = lib.docs_url
+
+          if (url.startsWith('/')) {
+            url = `${await baseUrl()}`
+          }
+
+          try {
+            const response = await fetch(`${url}/llms-full.txt`, {
+              next: {
+                revalidate: 300, // Cache for 5 minutes
+                tags: [`llms-full-${libname}`],
+              },
+            })
+            if (!response.ok) {
+              throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
+            }
+            const fullText = await response.text()
+            const $ = cheerio.load(fullText, { xmlMode: true })
+
+            // Use .filter() to avoid CSS selector injection
+            // Add leading slash to match the path format in XML
+            const searchPath = `/${path}`
+            const page = $('page').filter((_, el) => $(el).attr('path') === searchPath)
+            if (page.length === 0) {
+              throw new Error(`Page not found: ${searchPath}`)
+            }
+
+            return {
+              contents: [
+                {
+                  uri: uri.toString(),
+                  text: page.text().trim(),
+                },
+              ],
+            }
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            throw new Error(`MCP server error: ${errorMessage}`)
+          }
+        },
+      )
+    }
   },
   {
     serverInfo: {
