@@ -5,6 +5,7 @@ import { headers } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
+// Note: The .js extension is required for ESM imports, but TypeScript still uses mcp.d.ts for type checking
 import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
 
 // Extract entries and library names as constants for efficiency
