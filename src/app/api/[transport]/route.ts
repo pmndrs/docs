@@ -293,6 +293,10 @@ Resources use the \`docs://\` URI scheme:
           }
 
           try {
+            // Debug logging to understand what we're receiving
+            console.log('[MCP Resource Read] Raw path from variables:', path)
+            console.log('[MCP Resource Read] URI:', uri.toString())
+
             const response = await fetch(`${url}/llms-full.txt`, {
               next: {
                 revalidate: 300, // Cache for 5 minutes
@@ -309,8 +313,11 @@ Resources use the \`docs://\` URI scheme:
             // Decode the path in case it's URL-encoded, then add leading slash to match XML format
             // Handle both string and string[] cases from URI template variables
             const pathString = Array.isArray(path) ? path[0] : path
+            console.log('[MCP Resource Read] Path string:', pathString)
             const decodedPath = decodeURIComponent(pathString)
+            console.log('[MCP Resource Read] Decoded path:', decodedPath)
             const searchPath = `/${decodedPath}`
+            console.log('[MCP Resource Read] Search path:', searchPath)
             const page = $('page').filter((_, el) => $(el).attr('path') === searchPath)
             if (page.length === 0) {
               throw new Error(`Page not found: ${searchPath}`)
