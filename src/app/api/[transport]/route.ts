@@ -310,13 +310,14 @@ Resources use the \`docs://\` URI scheme:
             const $ = cheerio.load(fullText, { xmlMode: true })
 
             // Use .filter() to avoid CSS selector injection
-            // Decode the path in case it's URL-encoded, then add leading slash to match XML format
+            // Decode the path in case it's URL-encoded
             // Handle both string and string[] cases from URI template variables
             const pathString = Array.isArray(path) ? path[0] : path
             console.log('[MCP Resource Read] Path string:', pathString)
             const decodedPath = decodeURIComponent(pathString)
             console.log('[MCP Resource Read] Decoded path:', decodedPath)
-            const searchPath = `/${decodedPath}`
+            // The decoded path may already have a leading slash, only add one if it doesn't
+            const searchPath = decodedPath.startsWith('/') ? decodedPath : `/${decodedPath}`
             console.log('[MCP Resource Read] Search path:', searchPath)
             const page = $('page').filter((_, el) => $(el).attr('path') === searchPath)
             if (page.length === 0) {
