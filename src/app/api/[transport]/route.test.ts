@@ -363,6 +363,25 @@ Content with &lt;special&gt; characters &amp; symbols.
       expect(page.length).toBe(1)
     })
 
+    it('should decode URL-encoded paths correctly', async () => {
+      const cheerio = await import('cheerio')
+      const $ = cheerio.load(mockLlmsFullTxt, { xmlMode: true })
+
+      // Simulate URL-encoded path as it comes from MCP SDK
+      // Path /api/hooks/use-frame is encoded as %2Fapi%2Fhooks%2Fuse-frame
+      const urlEncodedPath = '%2Fapi%2Fhooks%2Fuse-frame'
+      const decodedPath = decodeURIComponent(urlEncodedPath)
+
+      // After decoding, path already has leading slash, don't add another
+      const searchPath = decodedPath.startsWith('/') ? decodedPath : `/${decodedPath}`
+
+      expect(searchPath).toBe('/api/hooks/use-frame') // Should NOT be //api/hooks/use-frame
+
+      const page = $('page').filter((_, el) => $(el).attr('path') === searchPath)
+      expect(page.length).toBe(1)
+      expect(page.attr('title')).toBe('useFrame Hook')
+    })
+
     it('should format resource response correctly', async () => {
       const cheerio = await import('cheerio')
       const $ = cheerio.load(mockLlmsFullTxt, { xmlMode: true })
