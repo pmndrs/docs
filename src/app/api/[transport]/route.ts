@@ -306,8 +306,11 @@ Resources use the \`docs://\` URI scheme:
             const $ = cheerio.load(fullText, { xmlMode: true })
 
             // Use .filter() to avoid CSS selector injection
-            // Add leading slash to match the path format in XML
-            const searchPath = `/${path}`
+            // Decode the path in case it's URL-encoded, then add leading slash to match XML format
+            // Handle both string and string[] cases from URI template variables
+            const pathString = Array.isArray(path) ? path[0] : path
+            const decodedPath = decodeURIComponent(pathString)
+            const searchPath = `/${decodedPath}`
             const page = $('page').filter((_, el) => $(el).attr('path') === searchPath)
             if (page.length === 0) {
               throw new Error(`Page not found: ${searchPath}`)
