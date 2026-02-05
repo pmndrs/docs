@@ -5,6 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@/package.json': path.resolve(__dirname, './package.json'),
     },
   },
   test: {
