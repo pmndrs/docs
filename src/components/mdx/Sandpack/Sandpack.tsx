@@ -1,20 +1,17 @@
-import cn from '@/lib/cn'
 import { crawl } from '@/utils/docs'
 import {
   SandpackCodeEditor,
   SandpackFileExplorer,
-  SandpackLayout,
   SandpackPreview,
-  SandpackProvider,
   type SandpackFiles,
   type SandpackProviderProps,
 } from '@codesandbox/sandpack-react'
 import fs from 'node:fs'
 import path from 'node:path'
-
-import { SandpackCodeViewer } from './SandpackCodeViewer'
-
 import { ComponentProps } from 'react'
+
+import { SandpackClient } from './SandpackClient'
+import { SandpackCodeViewer } from './SandpackCodeViewer'
 
 function getSandpackDependencies(folder: string) {
   const pkgPath = `${folder}/package.json`
@@ -34,7 +31,6 @@ async function getSandpackFiles(
     (dir) =>
       !dir.includes('node_modules') && extensions.map((ext) => dir.endsWith(ext)).some(Boolean),
   )
-  // console.log('filepaths', filepaths)
 
   return filepaths.reduce((acc, filepath) => {
     const relativeFilepath = path.relative(folder, filepath)
@@ -68,8 +64,6 @@ export const Sandpack = async ({
   preview?: ComponentProps<typeof SandpackPreview>
   fileExplorer?: boolean | ComponentProps<typeof SandpackFileExplorer>
 }) => {
-  // console.log('folder', folder)
-
   const _files = folder ? await getSandpackFiles(folder, props.files) : props.files
 
   const pkgDeps = folder ? getSandpackDependencies(folder) : null
@@ -78,7 +72,6 @@ export const Sandpack = async ({
     ...props.customSetup,
     dependencies,
   }
-  // console.log('customSetup', customSetup)
 
   const options = {
     ...props.options,
@@ -86,40 +79,16 @@ export const Sandpack = async ({
   }
 
   return (
-    <div className={cn(className, 'sandpack')}>
-      <SandpackProvider
-        {...props}
-        theme={{
-          colors: {
-            surface1: 'var(--mcu-surface-container-low)',
-            surface2: 'var(--mcu-surface-container)',
-            surface3: 'var(--mcu-surface-container-high)',
-          },
-          font: {
-            mono: 'var(--font-mono)',
-          },
-        }}
-        files={_files}
-        customSetup={customSetup}
-        options={options}
-        // @ts-ignore
-        style={{ '--sp-border-radius': '0.5rem' }}
-      >
-        <SandpackLayout>
-          {fileExplorer && (
-            <SandpackFileExplorer
-              {...(typeof fileExplorer !== 'boolean' ? fileExplorer : undefined)}
-            />
-          )}
-          {codeViewer ? (
-            <SandpackCodeViewer {...(typeof codeViewer !== 'boolean' ? codeViewer : undefined)} />
-          ) : (
-            <SandpackCodeEditor showTabs={fileExplorer ? false : undefined} {...codeEditor} />
-          )}
-
-          <SandpackPreview {...preview} />
-        </SandpackLayout>
-      </SandpackProvider>
-    </div>
+    <SandpackClient
+      className={className}
+      files={_files}
+      customSetup={customSetup}
+      options={options}
+      fileExplorer={fileExplorer}
+      codeEditor={codeEditor}
+      codeViewer={codeViewer}
+      preview={preview}
+      {...props}
+    />
   )
 }
