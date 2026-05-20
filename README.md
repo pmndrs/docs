@@ -18,6 +18,26 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 - you can pass any option from [configuration](docs/getting-started/introduction.mdx#Configuration)
 - in `DOCKER_IMAGE`, you can specify any `:tag` value from [docs packages](https://github.com/pmndrs/docs/pkgs/container/docs) container registry
 
+# Releasing
+
+Every push to `main` auto-deploys [docs.pmnd.rs](https://docs.pmnd.rs) (Vercel). **No changeset needed** for the site to refresh.
+
+A changeset is needed when downstream consumers of this package should pull the change too — i.e. projects using:
+
+```yaml
+uses: pmndrs/docs/.github/workflows/build.yml@v3
+# or
+DOCKER_IMAGE: ghcr.io/pmndrs/docs:v3
+```
+
+They follow the `@vX` major tag, which only moves when a new version is published. Adding a changeset triggers the release flow: version bump in `package.json`, `vX.Y.Z` + `vX` git tags, and a matching Docker image — so `@v3` resolves to the latest.
+
+```sh
+$ pnpm changeset    # creates .changeset/<slug>.md, pick `patch` / `minor` / `major`
+```
+
+TL;DR — add a changeset if your PR changes anything that consumers should see (templates, workflow, build behavior). Skip it for site-only tweaks.
+
 # Test
 
 Visual tests are performed in the cloud, through [chromatic.yml](.github/workflows/chromatic.yml).
