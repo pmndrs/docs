@@ -18,6 +18,14 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 - you can pass any option from [configuration](docs/getting-started/introduction.mdx#Configuration)
 - in `DOCKER_IMAGE`, you can specify any `:tag` value from [docs packages](https://github.com/pmndrs/docs/pkgs/container/docs) container registry
 
+# Releasing
+
+Every push to `main` redeploys [docs.pmnd.rs](https://docs.pmnd.rs) via [ci.yml](.github/workflows/ci.yml) — no [changeset](.changeset/) needed for that.
+
+Add one (`pnpm changeset`) only when downstream consumers pinning `pmndrs/docs/.github/workflows/build.yml@v3` or `ghcr.io/pmndrs/docs:v3` should pull the change. It bumps [`package.json`](package.json), tags `vX.Y.Z` + `vX`, and publishes a matching Docker image — so `@v3` resolves to the latest.
+
+TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavior, templates): add one.
+
 # Test
 
 Visual tests are performed in the cloud, through [chromatic.yml](.github/workflows/chromatic.yml).

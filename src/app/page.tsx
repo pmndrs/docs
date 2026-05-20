@@ -7,6 +7,8 @@ import reactSpringIcon from '@/assets/react-spring-icon.svg'
 import uiKitIcon from '@/assets/uikit-icon.svg'
 import zustandIcon from '@/assets/zustand-icon.svg'
 import Icon from '@/components/Icon'
+import { Code } from '@/components/mdx/Code/Code'
+import { Gha } from '@/components/mdx/Gha/Gha'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
 import Image from 'next/image'
@@ -179,6 +181,63 @@ export default function Page() {
             </Link>
             .<Link href="https://pmnd.rs">pmnd.rs</Link>
           </header>
+
+          <section className="mt-8 lg:mt-10">
+            <Gha keyword="TIP" title="MCP-server">
+              <div className="text-sm leading-relaxed!">
+                Browse these docs from your{' '}
+                <a
+                  href="https://modelcontextprotocol.io/docs/develop/connect-remote-servers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  MCP-compatible client
+                </a>
+                , e.g. claude-code :
+              </div>
+              <Code className="language-bash">
+                <code className="language-bash">{`claude mcp add --transport http pmndrs https://docs.pmnd.rs/api/mcp`}</code>
+              </Code>
+              <details className="text-sm">
+                <summary className="cursor-pointer">Other clients (JSON config)</summary>
+                <Code className="language-json">
+                  <code className="language-json">{`{
+  "mcpServers": {
+    "pmndrs": {
+      "type": "http",
+      "url": "https://docs.pmnd.rs/api/mcp"
+    }
+  }
+}`}</code>
+                </Code>
+              </details>
+              <p className="mt-4 text-sm leading-relaxed!">
+                Each lib also exposes its{' '}
+                <code>
+                  <a
+                    href="https://pmndrs.github.io/react-three-fiber/llms.txt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    llms.txt
+                  </a>
+                </code>{' '}
+                /{' '}
+                <code>
+                  <a
+                    href="https://pmndrs.github.io/react-three-fiber/llms-full.txt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    llms-full.txt
+                  </a>
+                </code>{' '}
+              </p>
+            </Gha>
+          </section>
 
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
             {Object.entries(libs).map(([id, data]) => (

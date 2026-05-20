@@ -41,10 +41,19 @@ const styles: Record<string, Style> = {
   },
 }
 
-export function Gha({ children, keyword }: { children: ReactNode; keyword?: string }) {
+export function Gha({
+  children,
+  keyword,
+  title,
+}: {
+  children: ReactNode
+  keyword?: string
+  title?: string
+}) {
   if (!keyword || !(keyword in styles)) keyword = 'NOTE' // default to "NOTE"
 
-  const { icon, label, bg } = styles[keyword]
+  const { icon, label: defaultLabel, bg } = styles[keyword]
+  const label = title ?? defaultLabel
   const Icon = icon
 
   // test if children is a string
