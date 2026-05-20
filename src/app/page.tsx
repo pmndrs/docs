@@ -180,6 +180,38 @@ export default function Page() {
             .<Link href="https://pmnd.rs">pmnd.rs</Link>
           </header>
 
+          <section className="mt-8 lg:mt-10">
+            <div className="bg-surface-container relative overflow-hidden rounded-md border border-outline-variant">
+              <div className="flex flex-col gap-4 px-6 py-6">
+                <div>
+                  <div className="text-lg font-bold">MCP server</div>
+                  <div className="text-sm leading-relaxed! text-on-surface-variant/50">
+                    Browse these docs from your AI coding assistant — Claude Code, Cursor, Windsurf,
+                    VS Code, and any MCP-compatible client.
+                  </div>
+                </div>
+                <pre className="overflow-x-auto rounded border border-outline-variant px-4 py-3 text-sm">
+                  <code>{`claude mcp add --transport http pmndrs https://docs.pmnd.rs/api/mcp`}</code>
+                </pre>
+                <details className="text-sm">
+                  <summary className="text-on-surface-variant/70 cursor-pointer">
+                    Other clients (JSON config)
+                  </summary>
+                  <pre className="mt-2 overflow-x-auto rounded border border-outline-variant px-4 py-3">
+                    {`{
+  "mcpServers": {
+    "pmndrs": {
+      "type": "http",
+      "url": "https://docs.pmnd.rs/api/mcp"
+    }
+  }
+}`}
+                  </pre>
+                </details>
+              </div>
+            </div>
+          </section>
+
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
             {Object.entries(libs).map(([id, data]) => (
               <div
