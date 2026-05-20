@@ -183,7 +183,7 @@ export default function Page() {
           </header>
 
           <section className="mt-8 lg:mt-10">
-            <Gha keyword="TIP">
+            <Gha keyword="TIP" title="MCP-server">
               <div className="text-sm leading-relaxed!">
                 Browse these docs from your{' '}
                 <a

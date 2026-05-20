@@ -44,3 +44,15 @@ result:
 
 > [!CAUTION]
 > Negative potential consequences of an action.
+
+---
+
+The `title` prop overrides the label derived from `keyword` (icon and background still follow the keyword). Only available via the JSX form:
+
+```md
+<Gha keyword="TIP" title="MCP-server">Browse these docs from your MCP-compatible client.</Gha>
+```
+
+result:
+
+<Gha keyword="TIP" title="MCP-server">Browse these docs from your MCP-compatible client.</Gha>
