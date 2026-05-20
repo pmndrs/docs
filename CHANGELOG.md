@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.4.2
+
+### Patch Changes
+
+- [#551](https://github.com/pmndrs/docs/pull/551) [`2f35751`](https://github.com/pmndrs/docs/commit/2f357512cc318727d2a081810031d6a1a0f24cbc) Thanks [@abernier](https://github.com/abernier)! - Add an MCP server install section on the home page (Claude Code shortcut + JSON config for other clients, link to the MCP remote-servers spec, mention of per-lib `llms.txt`). Also bundles the earlier MCP server URL / client configuration fix.
+
 ## 3.4.1
 
 ### Patch Changes
