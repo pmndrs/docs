@@ -20,23 +20,11 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 
 # Releasing
 
-Every push to `main` auto-deploys [docs.pmnd.rs](https://docs.pmnd.rs) (Vercel). **No changeset needed** for the site to refresh.
+Every push to `main` redeploys [docs.pmnd.rs](https://docs.pmnd.rs) via [ci.yml](.github/workflows/ci.yml) — no [changeset](.changeset/) needed for that.
 
-A changeset is needed when downstream consumers of this package should pull the change too — i.e. projects using:
+Add one (`pnpm changeset`) only when downstream consumers pinning `pmndrs/docs/.github/workflows/build.yml@v3` or `ghcr.io/pmndrs/docs:v3` should pull the change. It bumps [`package.json`](package.json), tags `vX.Y.Z` + `vX`, and publishes a matching Docker image — so `@v3` resolves to the latest.
 
-```yaml
-uses: pmndrs/docs/.github/workflows/build.yml@v3
-# or
-DOCKER_IMAGE: ghcr.io/pmndrs/docs:v3
-```
-
-They follow the `@vX` major tag, which only moves when a new version is published. Adding a changeset triggers the release flow: version bump in `package.json`, `vX.Y.Z` + `vX` git tags, and a matching Docker image — so `@v3` resolves to the latest.
-
-```sh
-$ pnpm changeset    # creates .changeset/<slug>.md, pick `patch` / `minor` / `major`
-```
-
-TL;DR — add a changeset if your PR changes anything that consumers should see (templates, workflow, build behavior). Skip it for site-only tweaks.
+TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavior, templates): add one.
 
 # Test
 
