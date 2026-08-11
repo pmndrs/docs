@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.4.4
+
+### Patch Changes
+
+- [`6eb0168`](https://github.com/pmndrs/docs/commit/6eb0168a0ffea3240fc8a10b6263a2c84e082162) Thanks [@abernier](https://github.com/abernier)! - Cut a GitHub release alongside the version tags, and drop `[skip ci]` from the version commit
+
 ## 3.4.3
 
 ### Patch Changes
