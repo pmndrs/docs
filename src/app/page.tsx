@@ -148,7 +148,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/leva',
     description: 'React-first components GUI',
   },
-} as const
+} as const satisfies Record<string, Library>
 
 export type SUPPORTED_LIBRARY_NAMES = keyof typeof libs
 

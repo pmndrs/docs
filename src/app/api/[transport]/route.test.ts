@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach, vi, beforeEach } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
+import { libs } from '@/app/page'
 
 // Mock Next.js headers before importing the route
 vi.mock('next/headers', () => ({
@@ -29,9 +30,22 @@ Optimize your React Three Fiber applications.
 </page>
 `
 
+// Every URL the route can reach, derived from `libs` so the mocks cannot drift away
+// from the real docs_urls. The previous handlers pointed at r3f.docs.pmnd.rs and
+// zustand.docs.pmnd.rs, which the route never requests.
+const llmsFullHandlers = Object.values(libs)
+  .filter((lib) => 'llms_full' in lib && lib.llms_full)
+  .map((lib) => {
+    // A local docs_url is served from the current host, mocked as docs.pmnd.rs below
+    const origin = lib.docs_url.startsWith('/') ? 'https://docs.pmnd.rs' : lib.docs_url
+    return http.get(`${origin}/llms-full.txt`, () => HttpResponse.text(mockLlmsFullTxt))
+  })
+
 // Setup MSW server
 const server = setupServer(
-  // Mock llms-full.txt for external libraries
+  ...llmsFullHandlers,
+
+  // Hosts the standalone fetch-and-parse tests below call directly
   http.get('https://r3f.docs.pmnd.rs/llms-full.txt', () => {
     return HttpResponse.text(mockLlmsFullTxt)
   }),
@@ -41,7 +55,10 @@ const server = setupServer(
   }),
 )
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }))
+// 'error', not 'warn': a unit test that quietly reaches the network is not isolated,
+// and it was doing exactly that -- the one test importing ./route was dead (see the
+// @/package.json alias in vitest.config.ts), so nobody noticed it had no mock
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
@@ -333,11 +350,12 @@ Content with &lt;special&gt; characters &amp; symbols.
 
   describe('get_page_content Tool', () => {
     it('should retrieve page content successfully', async () => {
-      const { GET } = await import('./route')
-      const mockRequest = new Request('https://docs.pmnd.rs/api/sse', {
+      const { POST } = await import('./route')
+      const mockRequest = new Request('https://docs.pmnd.rs/api/mcp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json, text/event-stream',
         },
         body: JSON.stringify({
           jsonrpc: '2.0',
@@ -353,8 +371,14 @@ Content with &lt;special&gt; characters &amp; symbols.
         }),
       })
 
-      const response = await GET(mockRequest)
-      expect(response).toBeDefined()
+      const response = await POST(mockRequest)
+      const body = await response.text()
+
+      // Assert on the content, not merely that something came back: this test used to
+      // check toBeDefined(), which an error response satisfies just as well -- so it
+      // passed while the module failed to import, and would pass again unmocked
+      expect(body).toContain('This hook allows you to execute code on every frame')
+      expect(body).not.toContain('MCP server error')
     })
 
     it('should return error when page not found', async () => {
