@@ -147,46 +147,43 @@ describe('MCP Route Handler', () => {
   })
 
   describe('Library Filtering', () => {
-    it('should include libraries with pmndrs.github.io URLs', async () => {
-      const mockLibs = {
-        'react-three-fiber': { docs_url: 'https://r3f.docs.pmnd.rs' },
-        zustand: { docs_url: 'https://zustand.docs.pmnd.rs' },
-      }
+    it('should expose exactly the libraries flagged with llms_full', async () => {
+      const { libs } = await import('@/app/page')
 
-      const filtered = Object.entries(mockLibs).filter(([, lib]) =>
-        lib.docs_url.includes('pmndrs.github.io'),
-      )
+      const exposed = Object.entries(libs)
+        .filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
+        .map(([libname]) => libname)
 
-      // Note: Our test URLs don't have pmndrs.github.io, so this would be 0
-      // In real implementation, r3f.docs.pmnd.rs redirects to pmndrs.github.io
-      expect(filtered.length).toBeGreaterThanOrEqual(0)
+      expect(exposed).toEqual(['react-three-fiber', 'drei', 'zustand', 'docs'])
     })
 
-    it('should include libraries with local paths', async () => {
-      const mockLibs = {
-        docs: { docs_url: '/docs' },
-        external: { docs_url: 'https://external.com' },
+    it('should exclude pmndrs.github.io libraries that publish no llms-full.txt', async () => {
+      const { libs } = await import('@/app/page')
+
+      // Regression: these are hosted on pmndrs.github.io but are not built with this
+      // generator, so `${docs_url}/llms-full.txt` 404s. Selecting on the host alone
+      // used to expose them with a silently empty index.
+      for (const libname of [
+        'a11y',
+        'react-postprocessing',
+        'uikit',
+        'xr',
+        'prai',
+        'viverse',
+        'leva',
+      ] as const) {
+        const lib = libs[libname]
+        expect(lib.docs_url).toContain('pmndrs.github.io')
+        expect('llms_full' in lib && lib.llms_full).toBeFalsy()
       }
-
-      const filtered = Object.entries(mockLibs).filter(([, lib]) => lib.docs_url.startsWith('/'))
-
-      expect(filtered.length).toBe(1)
-      expect(filtered[0][0]).toBe('docs')
     })
 
-    it('should filter out libraries without pmndrs.github.io or local paths', async () => {
-      const mockLibs = {
-        valid1: { docs_url: 'https://pmndrs.github.io/lib1' },
-        valid2: { docs_url: '/local-lib' },
-        invalid: { docs_url: 'https://other-site.com' },
+    it('should exclude libraries documented outside pmndrs', async () => {
+      const { libs } = await import('@/app/page')
+
+      for (const libname of ['react-spring', 'jotai', 'valtio'] as const) {
+        expect('llms_full' in libs[libname] && libs[libname].llms_full).toBeFalsy()
       }
-
-      const filtered = Object.entries(mockLibs).filter(
-        ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/'),
-      )
-
-      expect(filtered.length).toBe(2)
-      expect(filtered.find(([name]) => name === 'invalid')).toBeUndefined()
     })
   })
 
@@ -299,6 +296,38 @@ Content with &lt;special&gt; characters &amp; symbols.
       const fullUrl = localPath.startsWith('/') ? baseUrl : localPath
 
       expect(fullUrl).toBe(baseUrl)
+    })
+
+    it('should error, not return an empty index, when llms-full.txt is missing', async () => {
+      // Regression: the index resource used to skip the response.ok check, so a 404
+      // parsed as zero <page> elements and shipped an empty index. A client reads that
+      // as "this library has no pages" and starts guessing paths.
+      server.use(
+        http.get('https://pmndrs.github.io/react-three-fiber/llms-full.txt', () => {
+          return new HttpResponse('Not Found', { status: 404 })
+        }),
+      )
+
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'resources/read',
+            params: { uri: 'docs://react-three-fiber/index' },
+          }),
+        }),
+      )
+
+      const body = await response.text()
+      expect(body).toContain('Failed to fetch')
+      expect(body).not.toContain('"text":""')
     })
   })
 

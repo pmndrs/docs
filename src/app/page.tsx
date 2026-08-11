@@ -26,6 +26,10 @@ export interface Library {
   icon?: string
   iconWidth?: number
   iconHeight?: number
+  // Whether `${docs_url}/llms-full.txt` exists, i.e. the site is built with this
+  // generator. Only these libraries can be served over MCP -- see
+  // `src/app/api/[transport]/route.ts`. Flip it on once a site ships its dump.
+  llms_full?: boolean
 }
 
 export const libs = {
@@ -34,6 +38,7 @@ export const libs = {
     docs_url: 'https://pmndrs.github.io/react-three-fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
+    llms_full: true,
     icon: r3fIcon.src,
     iconWidth: r3fIcon.width,
     iconHeight: r3fIcon.height,
@@ -53,6 +58,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
+    llms_full: true,
     icon: dreiIcon.src,
     iconWidth: dreiIcon.width,
     iconHeight: dreiIcon.height,
@@ -63,6 +69,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
+    llms_full: true,
     icon: zustandIcon.src,
     iconWidth: zustandIcon.width,
     iconHeight: zustandIcon.height,
@@ -118,6 +125,7 @@ export const libs = {
     docs_url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
+    llms_full: true,
     icon: docsIcon.src,
     iconWidth: docsIcon.width,
     iconHeight: docsIcon.height,
