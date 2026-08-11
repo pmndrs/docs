@@ -34,11 +34,14 @@ One endpoint for all libraries, over streamable HTTP: `https://docs.pmnd.rs/api/
 
 A typical round-trip — *"how do I use TypeScript with Zustand?"*:
 
-```
-read  docs://zustand/index
-      → /learn/guides/beginner-typescript - Beginner TypeScript Guide
-call  get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
-      → the page, as markdown
+```mermaid
+sequenceDiagram
+    participant Agent
+    participant MCP as docs.pmnd.rs/api/mcp
+    Agent->>MCP: read docs://zustand/index
+    MCP-->>Agent: …<br/>/learn/guides/beginner-typescript - Beginner TypeScript Guide<br/>…
+    Agent->>MCP: get_page_content(lib="zustand",<br/>path="/learn/guides/beginner-typescript")
+    MCP-->>Agent: the page, as markdown
 ```
 
 Two pages transferred instead of the whole site.
