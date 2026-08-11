@@ -194,13 +194,30 @@ export default function Page() {
                 >
                   MCP-compatible client
                 </a>
-                , e.g. claude-code :
+                .
               </div>
+              <p className="mt-4 text-sm leading-relaxed!">
+                In claude-code, the{' '}
+                <a
+                  href="https://github.com/pmndrs/claude-code-plugin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  pmndrs plugin
+                </a>{' '}
+                installs this server together with a skill telling Claude to look the docs up rather
+                than recall an API from memory :
+              </p>
               <Code className="language-bash">
-                <code className="language-bash">{`claude mcp add --transport http pmndrs https://docs.pmnd.rs/api/mcp`}</code>
+                <code className="language-bash">{`/plugin marketplace add pmndrs/claude-code-plugin
+/plugin install pmndrs@pmndrs`}</code>
               </Code>
               <details className="text-sm">
-                <summary className="cursor-pointer">Other clients (JSON config)</summary>
+                <summary className="cursor-pointer">Server on its own, for any client</summary>
+                <Code className="language-bash">
+                  <code className="language-bash">{`claude mcp add --transport http pmndrs https://docs.pmnd.rs/api/mcp`}</code>
+                </Code>
                 <Code className="language-json">
                   <code className="language-json">{`{
   "mcpServers": {
