@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 3.4.3
+
+### Patch Changes
+
+- [`71835e7`](https://github.com/pmndrs/docs/commit/71835e7dba09715ba75359058d2a718f28a820b4) Thanks [@abernier](https://github.com/abernier)! - Bump GitHub Pages actions to Node.js 24 runtimes
+
 ## 3.4.2
 
 ### Patch Changes
