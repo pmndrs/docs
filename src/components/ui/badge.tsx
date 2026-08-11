@@ -8,11 +8,14 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+        // [a&]: so the hover state only exists when the badge is rendered as a link.
+        // A plain badge is a label, not a control, and must not react to the pointer.
+        default:
+          'border-transparent bg-primary text-primary-foreground shadow [a&]:hover:bg-primary/90',
         secondary:
-          'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
         destructive:
-          'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+          'border-transparent bg-destructive text-destructive-foreground shadow [a&]:hover:bg-destructive/90',
         outline: 'text-foreground',
       },
     },
