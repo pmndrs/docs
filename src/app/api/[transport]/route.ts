@@ -7,11 +7,11 @@ import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
 
 // Extract entries and library names as constants for efficiency
-// Only support libraries with pmndrs.github.io in their docs_url (which have <page> tags in /llms-full.txt)
-// Also support libraries with local paths starting with / (served from current server)
-const libsEntries = Object.entries(libs).filter(
-  ([, lib]) => lib.docs_url.includes('pmndrs.github.io') || lib.docs_url.startsWith('/'),
-)
+// Only support libraries whose site actually publishes a /llms-full.txt dump -- see
+// the `llms_full` flag in `src/app/page.tsx`. Being hosted on pmndrs.github.io is not
+// enough: most of those sites are not built with this generator and 404 on that file,
+// which used to leave their index resource silently empty.
+const libsEntries = Object.entries(libs).filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
 const libraryList = libsEntries.map(([libname]) => `- ${libname}`).join('\n')
 
 async function baseUrl() {
@@ -48,7 +48,9 @@ This MCP (Model Context Protocol) server provides programmatic access to documen
 
 ## Supported Libraries
 
-The server supports all pmndrs ecosystem libraries including:
+The server supports the pmndrs libraries whose documentation site publishes a
+full-text dump. That is these, and only these -- any other pmndrs library is out of
+scope here, however well known:
 ${libraryList}
 
 ## Available Resources
@@ -57,21 +59,19 @@ ${libraryList}
 This manifest - provides an overview of the server, its capabilities, and usage guidelines.
 
 ### 2. \`docs://{lib}/index\`
-Index of available documentation pages for each library. Each library has its own index resource:
-- \`docs://zustand/index\` - Zustand documentation index
-- \`docs://jotai/index\` - Jotai documentation index
-- \`docs://valtio/index\` - Valtio documentation index
-- And similarly for all other supported libraries
+Index of available documentation pages for each library -- one resource per supported library, e.g. \`docs://zustand/index\` or \`docs://drei/index\`.
 
 **Output format:**
 Each line contains: \`{page_path} - {page_title}\`
 
-**Example:**
+**Example** (from \`docs://zustand/index\`):
 \`\`\`
-/docs/guides/typescript - TypeScript Guide
-/docs/api/create - create API
-/docs/guides/auto-generating-selectors - Auto-generating Selectors
+/learn/getting-started/introduction - Introduction
+/learn/guides/beginner-typescript - Beginner TypeScript Guide
+/reference/apis/create - create
 \`\`\`
+
+Path shapes differ per library -- zustand nests under \`/learn\` and \`/reference\`, react-three-fiber under \`/api\` and \`/tutorials\`, drei under \`/abstractions\` and \`/staging\`. Read the index, never extrapolate a path from another library.
 
 ## Available Tools
 
@@ -80,15 +80,17 @@ Retrieves the full content of a specific documentation page.
 
 **Input:**
 - \`lib\` (string): The library name
-- \`path\` (string): The page path (e.g., "/docs/guides/typescript")
+- \`path\` (string): A page path taken verbatim from that library's index (e.g., "/learn/guides/beginner-typescript")
 
 **Output:**
 - The full markdown content of the requested page
 
 **Example usage:**
 \`\`\`
-Use get_page_content with lib="zustand" and path="/docs/guides/typescript" to get the TypeScript guide
+Use get_page_content with lib="zustand" and path="/learn/guides/beginner-typescript" to get the beginner TypeScript guide
 \`\`\`
+
+Paths are matched exactly -- no trailing-slash or extension normalization. A path that is not in the index returns \`Page not found\`; re-read the index rather than retrying variants.
 
 ## Best Practices
 
@@ -104,7 +106,7 @@ Use get_page_content with lib="zustand" and path="/docs/guides/typescript" to ge
 
 ### Working with Libraries
 1. Library names are **case-sensitive** (use exact names as listed above)
-2. Internal routes (like \`/zustand\`) are automatically resolved to \`https://docs.pmnd.rs/zustand\`
+2. A library configured with a local \`docs_url\` is served from this host
 3. External library documentation is fetched from their respective domains
 
 ## Error Handling
@@ -144,7 +146,7 @@ Resources use the \`docs://\` URI scheme:
 
 ## Getting Started
 
-1. Connect to the server at \`https://docs.pmnd.rs/api/sse\`
+1. Connect to the server at \`https://docs.pmnd.rs/api/mcp\` (or \`/api/sse\` for the legacy SSE transport)
 2. Read \`docs://pmndrs/manifest\` to understand server capabilities
 3. Access \`docs://{lib}/index\` to discover available documentation for a library
 4. Request specific pages with \`get_page_content\` tool
@@ -157,11 +159,11 @@ Resources use the \`docs://\` URI scheme:
 
 2. Agent thinks: I should check what Zustand documentation is available
    → Read resource docs://zustand/index
-   → Discover there's a "/docs/guides/typescript - TypeScript Guide" page
+   → Discover there's a "/learn/guides/beginner-typescript - Beginner TypeScript Guide" page
 
 3. Agent retrieves content:
-   → Call tool get_page_content(lib="zustand", path="/docs/guides/typescript")
-   
+   → Call tool get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
+
 4. Agent synthesizes answer from the documentation content
 \`\`\`
 
@@ -204,6 +206,13 @@ Resources use the \`docs://\` URI scheme:
               tags: [`llms-full-${libname}`],
             },
           })
+          // Fail loudly: an unchecked 404 yields an empty index, which reads to a
+          // client as "this library has no pages" and invites it to guess paths
+          if (!response.ok) {
+            throw new Error(
+              `MCP server error: Failed to fetch ${url}/llms-full.txt: ${response.statusText}`,
+            )
+          }
           const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
 

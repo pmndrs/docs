@@ -9,6 +9,7 @@ import zustandIcon from '@/assets/zustand-icon.svg'
 import Icon from '@/components/Icon'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
+import { Badge } from '@/components/ui/badge'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
 import Image from 'next/image'
@@ -26,6 +27,10 @@ export interface Library {
   icon?: string
   iconWidth?: number
   iconHeight?: number
+  // Whether `${docs_url}/llms-full.txt` exists, i.e. the site is built with this
+  // generator. Only these libraries can be served over MCP -- see
+  // `src/app/api/[transport]/route.ts`. Flip it on once a site ships its dump.
+  llms_full?: boolean
 }
 
 export const libs = {
@@ -34,6 +39,7 @@ export const libs = {
     docs_url: 'https://pmndrs.github.io/react-three-fiber',
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
+    llms_full: true,
     icon: r3fIcon.src,
     iconWidth: r3fIcon.width,
     iconHeight: r3fIcon.height,
@@ -53,6 +59,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/drei',
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
+    llms_full: true,
     icon: dreiIcon.src,
     iconWidth: dreiIcon.width,
     iconHeight: dreiIcon.height,
@@ -63,6 +70,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/zustand',
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
+    llms_full: true,
     icon: zustandIcon.src,
     iconWidth: zustandIcon.width,
     iconHeight: zustandIcon.height,
@@ -118,6 +126,7 @@ export const libs = {
     docs_url: '/getting-started/introduction',
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
+    llms_full: true,
     icon: docsIcon.src,
     iconWidth: docsIcon.width,
     iconHeight: docsIcon.height,
@@ -140,7 +149,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/leva',
     description: 'React-first components GUI',
   },
-} as const
+} as const satisfies Record<string, Library>
 
 export type SUPPORTED_LIBRARY_NAMES = keyof typeof libs
 
@@ -246,9 +255,19 @@ export default function Page() {
                 className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
               >
                 <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="flex items-center justify-between gap-6 px-6 py-6">
+                  <div className="flex items-start justify-between gap-6 px-6 py-6">
                     <div className="max-w-md">
-                      <div className="text-lg font-bold">{data.title}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-lg font-bold">{data.title}</div>
+                        {'llms_full' in data && data.llms_full && (
+                          <Badge
+                            variant="secondary"
+                            title={`Reachable from an MCP client as lib="${id}"`}
+                          >
+                            MCP
+                          </Badge>
+                        )}
+                      </div>
                       <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
                         {data.description}
                       </div>
