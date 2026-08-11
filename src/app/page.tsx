@@ -9,6 +9,7 @@ import zustandIcon from '@/assets/zustand-icon.svg'
 import Icon from '@/components/Icon'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
+import { Badge } from '@/components/ui/badge'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
 import Image from 'next/image'
@@ -256,7 +257,17 @@ export default function Page() {
                 <div className="relative z-10 flex h-full flex-col justify-between">
                   <div className="flex items-center justify-between gap-6 px-6 py-6">
                     <div className="max-w-md">
-                      <div className="text-lg font-bold">{data.title}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-lg font-bold">{data.title}</div>
+                        {'llms_full' in data && data.llms_full && (
+                          <Badge
+                            variant="secondary"
+                            title={`Reachable from an MCP client as lib="${id}"`}
+                          >
+                            MCP
+                          </Badge>
+                        )}
+                      </div>
                       <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
                         {data.description}
                       </div>
