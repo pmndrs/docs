@@ -128,8 +128,9 @@ Resources use the \`docs://\` URI scheme:
 
 ### Architecture
 - Built with \`mcp-handler\` for Vercel deployment
-- Uses Server-Sent Events (SSE) transport at \`/api/sse\`
-- HTTP streamable transport available at \`/api/mcp\`
+- HTTP streamable transport at \`/api/mcp\` -- the only transport served. The legacy
+  SSE transport would need a Redis instance to relay messages, which this deployment
+  does not have, so \`/api/sse\` is not usable.
 - Documentation is parsed from XML-tagged full-text dumps (\`/llms-full.txt\`)
 
 ### Security
@@ -146,7 +147,7 @@ Resources use the \`docs://\` URI scheme:
 
 ## Getting Started
 
-1. Connect to the server at \`https://docs.pmnd.rs/api/mcp\` (or \`/api/sse\` for the legacy SSE transport)
+1. Connect to the server at \`https://docs.pmnd.rs/api/mcp\`
 2. Read \`docs://pmndrs/manifest\` to understand server capabilities
 3. Access \`docs://{lib}/index\` to discover available documentation for a library
 4. Request specific pages with \`get_page_content\` tool
