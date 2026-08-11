@@ -68,6 +68,16 @@ In the web UI it opens: **Add Servers** › **Add manually**, transport `streama
 Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). To join them:
 
 1. **Publish the dump.** If your site is already built with this generator, bump it to a version shipping `/llms-full.txt` and redeploy. Otherwise, either migrate to this generator, or emit that file yourself with the same XML shape (`<page path="…" title="…">…</page>`).
+
+   > [!TIP]
+   >
+   > With the [reusable workflow](/github-actions/introduction), pin the major tag — it always resolves to the latest `v3.x`:
+   >
+   > ```yml
+   > uses: pmndrs/docs/.github/workflows/build.yml@v3
+   > ```
+   >
+   > `/llms-full.txt` ships since [`v3.2.0`](https://github.com/pmndrs/docs/releases/tag/v3.2.0), in its MCP-ready shape since [`v3.4.1`](https://github.com/pmndrs/docs/releases/tag/v3.4.1).
 2. **Check it.** `curl -sI <NEXT_PUBLIC_URL>/llms-full.txt` must return `200`, and the body must contain `<page …>` entries. A missing dump makes the library's index resource fail loudly, on purpose.
 3. **Flip the flag.** Open a PR on [pmndrs/docs](https://github.com/pmndrs/docs) setting `llms_full: true` on your entry in `libs` ([`src/app/page.tsx`](https://github.com/pmndrs/docs/blob/main/src/app/page.tsx)). That single flag drives the `MCP` badge, the `docs://{lib}/index` resource and the `get_page_content` enum. It takes effect once [docs.pmnd.rs](https://docs.pmnd.rs) is redeployed — every push to `main` does that.
 
