@@ -206,7 +206,8 @@ export default function Page() {
                 , e.g. claude-code :
               </div>
               <Code className="language-bash">
-                <code className="language-bash">{`claude mcp add --transport http pmndrs https://docs.pmnd.rs/api/mcp`}</code>
+                <code className="language-bash">{`/plugin marketplace add pmndrs/claude-code-plugin
+/plugin install pmndrs@pmndrs`}</code>
               </Code>
               <details className="text-sm">
                 <summary className="cursor-pointer">Other clients (JSON config)</summary>
