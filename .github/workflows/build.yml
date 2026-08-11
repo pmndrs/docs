@@ -70,7 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - id: configurepages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
         with:
           enablement: true
       # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-of-setting-an-output-parameter
@@ -136,6 +136,6 @@ jobs:
           THEME_CAUTION: '${{ inputs.theme_caution }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}
