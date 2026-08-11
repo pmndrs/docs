@@ -189,3 +189,20 @@ jobs:
           git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
 
           git push origin v$MAJOR_VERSION v$VERSION --force
+
+      - name: github release
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          NOTES="$RUNNER_TEMP/release-notes.md"
+
+          # Extract this version's section from CHANGELOG.md (changesets format)
+          awk -v v="## $VERSION" '$0 == v { f=1; next } f && /^## / { exit } f' CHANGELOG.md > "$NOTES"
+
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            gh release edit "v$VERSION" --notes-file "$NOTES"
+          else
+            gh release create "v$VERSION" --title "v$VERSION" --notes-file "$NOTES"
+          fi
