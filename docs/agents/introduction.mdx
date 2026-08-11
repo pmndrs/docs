@@ -1,0 +1,75 @@
+---
+title: Agents
+description: llms.txt dumps, and the pmndrs MCP server
+sourcecode: docs/agents/introduction.mdx
+nav: 16
+---
+
+<Intro>
+  Every site built with this generator also publishes machine-readable dumps of its content — and [docs.pmnd.rs](https://docs.pmnd.rs) serves them to agents over MCP.
+</Intro>
+
+## llms.txt
+
+As alternate content, we provide you [llms.txt](/llms.txt) and [llms-full.txt](/llms-full.txt).
+
+These URLs are linked in the HTML header as:
+
+```html
+<link rel="alternate" type="text/plain" href="/llms.txt" />
+<link rel="alternate" type="text/plain" href="/llms-full.txt" />
+```
+
+## MCP Server
+
+`llms-full.txt` is a whole documentation site in one file — too big to paste into an agent for a one-line question. So [docs.pmnd.rs](https://docs.pmnd.rs) also exposes it as an [MCP](https://modelcontextprotocol.io) server, which lets an agent read a table of contents first, then fetch the one page it needs.
+
+One endpoint for all libraries, over streamable HTTP: `https://docs.pmnd.rs/api/mcp`. It exposes:
+
+| kind     | name                     | what it gives                                                      |
+| -------- | ------------------------ | ------------------------------------------------------------------ |
+| resource | `docs://pmndrs/manifest` | which libraries are served, and how to query them                  |
+| resource | `docs://{lib}/index`     | that library's pages, one `{path} - {title}` per line              |
+| tool     | `get_page_content`       | the markdown of a single page, given a `lib` + a `path` from the index |
+
+A typical round-trip — *"how do I use TypeScript with Zustand?"*:
+
+```
+read  docs://zustand/index
+      → /learn/guides/beginner-typescript - Beginner TypeScript Guide
+call  get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
+      → the page, as markdown
+```
+
+Two pages transferred instead of the whole site.
+
+> [!TIP]
+>
+> [`pmndrs/claude-code-plugin`](https://github.com/pmndrs/claude-code-plugin) supports it natively
+>
+> ```sh
+> /plugin marketplace add pmndrs/claude-code-plugin
+> /plugin install pmndrs@pmndrs
+> ```
+
+For other clients, see the JSON config in the [MCP-server](https://docs.pmnd.rs) box on the home page. To poke at it by hand — see the resources, call the tool, read the raw JSON-RPC — run the official inspector:
+
+```sh
+$ HOST=127.0.0.1 npx -y @modelcontextprotocol/inspector
+```
+
+In the web UI it opens: **Add Servers** › **Add manually**, transport `streamable-http`, URL `https://docs.pmnd.rs/api/mcp` (or your own `http://localhost:3000/api/mcp`), and flip the server's toggle to connect.
+
+![MCP Inspector connected to docs.pmnd.rs, previewing the react-three-fiber index resource](mcp-inspector.png)
+
+### Getting your library served
+
+Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). To join them:
+
+1. **Publish the dump.** If your site is already built with this generator, bump it to a version shipping `/llms-full.txt` and redeploy. Otherwise, either migrate to this generator, or emit that file yourself with the same XML shape (`<page path="…" title="…">…</page>`).
+2. **Check it.** `curl -sI <NEXT_PUBLIC_URL>/llms-full.txt` must return `200`, and the body must contain `<page …>` entries. A missing dump makes the library's index resource fail loudly, on purpose.
+3. **Flip the flag.** Open a PR on [pmndrs/docs](https://github.com/pmndrs/docs) setting `llms_full: true` on your entry in `libs` ([`src/app/page.tsx`](https://github.com/pmndrs/docs/blob/main/src/app/page.tsx)). That single flag drives the `MCP` badge, the `docs://{lib}/index` resource and the `get_page_content` enum. It takes effect once [docs.pmnd.rs](https://docs.pmnd.rs) is redeployed — every push to `main` does that.
+
+> [!NOTE]
+>
+> This is a one-off. Once served, **content** updates need no redeploy on either side: pages are fetched at request time and revalidated every 5 minutes.
