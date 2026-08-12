@@ -64,7 +64,7 @@
     "cmdk": "^1.1.1",
     "gray-matter": "^4.0.3",
     "image-size": "^1.1.1",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "lucide-react": "^0.563.0",
     "match-sorter": "^6.3.4",
     "mcp-handler": "^1.0.7",
