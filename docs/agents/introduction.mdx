@@ -46,7 +46,7 @@ call  get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
 
 ### Examples
 
-The [gallery](https://pmndrs.github.io/examples)'s 167 demos are served the same way — read the index, then fetch one demo:
+The [gallery](https://pmndrs.github.io/examples)'s demos are served the same way:
 
 ```txt
 read  examples://index
@@ -63,7 +63,7 @@ In an index line:
 - `+` lists dependencies on top of `@react-three/fiber` and `@react-three/drei`, which all demos use
 - a trailing `~23k` is the token cost of `get_example` — only large demos carry one
 
-Examples pin their own dependency versions (`get_example` reports them) — for current API signatures, prefer the docs above.
+Demos pin their dependency versions — for current API signatures, prefer the docs above.
 
 > [!NOTE]
 >
@@ -75,15 +75,9 @@ Examples pin their own dependency versions (`get_example` reports them) — for 
 > | `/examples/caustics.md` | the same example, as `get_example` returns it |
 > | `/llms.txt` | the whole gallery, as `examples://index` returns it |
 >
-> Each page links its own:
+> Each page links its own via `<link rel="alternate">`, and the demos themselves (eg. `/caustics`) carry the same links, plus a `canonical` back to the page.
 >
-> ```html
-> <link rel="alternate" type="text/markdown" href="/examples/caustics.md" />
-> ```
->
-> The demos themselves (eg. `/caustics`) carry the same links, plus a `canonical` back to the page.
->
-> There is no `llms-full.txt`: the whole gallery is ~378k tokens.
+> There is no `llms-full.txt` — concatenated, the gallery would be too big.
 
 > [!TIP]
 >
@@ -108,7 +102,7 @@ In the web UI it opens: **Add Servers** › **Add manually**, transport `streama
 
 Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). To join them:
 
-1. **Publish the dump.** If your site is already built with this generator, bump it to a version shipping `/llms-full.txt` and redeploy. Otherwise, either migrate to this generator, or emit that file yourself with the same XML shape (`<page path="…" title="…">…</page>`).
+1. **Publish the dump.** If your site is built with this generator, bump it to a version shipping `/llms-full.txt` and redeploy. Otherwise, emit that file yourself with the same XML shape (`<page path="…" title="…">…</page>`).
 
    > [!TIP]
    >
@@ -120,8 +114,8 @@ Only libraries publishing a `/llms-full.txt` dump are served — the ones badged
    >
    > `/llms-full.txt` ships since [`v3.2.0`](https://github.com/pmndrs/docs/releases/tag/v3.2.0), in its MCP-ready shape since [`v3.4.1`](https://github.com/pmndrs/docs/releases/tag/v3.4.1).
 2. **Check it.** `curl -sI <NEXT_PUBLIC_URL>/llms-full.txt` must return `200`, and the body must contain `<page …>` entries.
-3. **Flip the flag.** Open a PR on [pmndrs/docs](https://github.com/pmndrs/docs) setting `llms_full: true` on your entry in `libs` ([`src/app/page.tsx`](https://github.com/pmndrs/docs/blob/main/src/app/page.tsx)). This drives the `MCP` badge, the `docs://{lib}/index` resource and the `get_page_content` enum. It takes effect once [docs.pmnd.rs](https://docs.pmnd.rs) is redeployed — every push to `main` does that.
+3. **Flip the flag.** Open a PR on [pmndrs/docs](https://github.com/pmndrs/docs) setting `llms_full: true` on your entry in `libs` ([`src/app/page.tsx`](https://github.com/pmndrs/docs/blob/main/src/app/page.tsx)). This drives the `MCP` badge, the `docs://{lib}/index` resource and the `get_page_content` enum — effective on the next deploy.
 
 > [!NOTE]
 >
-> This is a one-off: content updates need no redeploy — pages are fetched at request time and revalidated every 5 minutes.
+> This is a one-off: content updates need no redeploy — pages are fetched at request time and revalidated regularly.
