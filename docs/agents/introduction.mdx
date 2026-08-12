@@ -66,13 +66,23 @@ An example is a snapshot, not a spec: it pins its own versions, `get_example` re
 
 > [!NOTE]
 >
-> These documents are published, not rendered here — `pmndrs/examples` writes them at build time and every example page links its own:
+> These documents are published, not rendered here — `pmndrs/examples` writes them at build time, at the page URL with an extension on the end:
+>
+> | | |
+> | --- | --- |
+> | `/examples/caustics` | the page |
+> | `/examples/caustics.md` | the same example, as `get_example` returns it |
+> | `/llms.txt` | the whole gallery, as `examples://index` returns it |
+>
+> Each page links its own, so it is found either by looking or by guessing:
 >
 > ```html
-> <link rel="alternate" type="text/markdown" href="/examples/catalog/caustics.md" />
+> <link rel="alternate" type="text/markdown" href="/examples/caustics.md" />
 > ```
 >
-> So an agent that lands on an example page, or is handed its URL, reads the same text without going through MCP at all.
+> The demos themselves — `/caustics`, which is what the READMEs' badges point at — carry the same links plus a `canonical` back to the page.
+>
+> There is no `llms-full.txt`: concatenated, the gallery is ~378k tokens, against ~50k for a documentation site. The index and one example is the whole point.
 
 > [!TIP]
 >
