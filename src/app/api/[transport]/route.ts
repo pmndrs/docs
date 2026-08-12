@@ -5,6 +5,14 @@ import { headers } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
+import {
+  assertExampleName,
+  catalogUrl,
+  renderExample,
+  renderIndex,
+  type Example,
+  type ExampleIndex,
+} from '@/utils/examples'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see
@@ -20,6 +28,23 @@ async function baseUrl() {
 
   const protocol = host.includes('localhost') ? 'http' : 'https'
   return `${protocol}://${host}`
+}
+
+/**
+ * One file out of the examples catalog. Cached and tagged like the docs dumps,
+ * except the catalog is already split per example, so a request pulls the ~20 kB
+ * that was asked for rather than slicing it out of a bundle.
+ */
+async function fetchCatalog<T>(file: string): Promise<T> {
+  const response = await fetch(catalogUrl(file), {
+    next: { revalidate: 300, tags: ['examples-catalog'] },
+  })
+  // Same reason the library indexes fail loudly: a swallowed 404 reads to a
+  // client as "no such example", and it will go on to invent one.
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${catalogUrl(file)}: ${response.statusText}`)
+  }
+  return response.json() as Promise<T>
 }
 
 const handler = createMcpHandler(
@@ -45,6 +70,8 @@ const handler = createMcpHandler(
 ## Overview
 
 This MCP (Model Context Protocol) server provides programmatic access to documentation for all pmndrs libraries through surgical queries. It enables AI agents to efficiently retrieve specific documentation pages without downloading entire sites.
+
+It serves two bodies of material, and they answer different questions. The **docs** say what an API is -- signatures, props, options; the **examples** show a working scene that already does the thing, in full, with the versions it was written against. Reach for an example when the question is "how is this put together", for the docs when it is "what does this take".
 
 ## Supported Libraries
 
@@ -73,6 +100,26 @@ Each line contains: \`{page_path} - {page_title}\`
 
 Path shapes differ per library -- zustand nests under \`/learn\` and \`/reference\`, react-three-fiber under \`/api\` and \`/tutorials\`, drei under \`/abstractions\` and \`/staging\`. Read the index, never extrapolate a path from another library.
 
+### 3. \`examples://index\`
+The whole pmndrs example gallery (https://pmndrs.github.io/examples), one line per demo. About 4k tokens for all of them, so read it once and pick from it -- there is no per-library or per-tag variant.
+
+**Output format:**
+\`\`\`
+{name} [({title}, when it is not just the name)] · {description} · +{libraries} · #{tags} · ~{size}
+\`\`\`
+
+Every part after the name is dropped when the example does not carry it:
+\`\`\`
+aquarium · #transmission
+arkanoid · Simple arkanoid implementation using cannon physics. · +cannon,zustand · #physics,game,audio
+bounds-and-makedefault (Bounds and makeDefault) · #bounds
+flow-shield · Interactive energy shield. · +postprocessing,leva · #shader · ~23k
+\`\`\`
+
+\`+\` lists only what an example uses *on top of* \`@react-three/fiber\` and \`@react-three/drei\`, which all of them use. Tags are freeform and unvalidated -- expect typos (\`gtlf\`) and both spellings of an idea (\`contact shadows\` / \`contact-shadows\`) -- so match on names and descriptions too, never on tags alone.
+
+The trailing \`~23k\` is what \`get_example\` will cost in tokens, and only eight lines carry one. Its absence means the example is small: the median is ~1.4k tokens, so reading two or three of them costs less than this index did. Read the marked ones deliberately, one at a time.
+
 ## Available Tools
 
 ### 1. \`get_page_content\`
@@ -92,12 +139,29 @@ Use get_page_content with lib="zustand" and path="/learn/guides/beginner-typescr
 
 Paths are matched exactly -- no trailing-slash or extension normalization. A path that is not in the index returns \`Page not found\`; re-read the index rather than retrying variants.
 
+### 2. \`get_example\`
+Retrieves one example in full: description, demo URL, authors, asset attribution, the exact dependency versions it is written against, and every source file it has.
+
+**Input:**
+- \`name\` (string): An example name taken verbatim from \`examples://index\` (e.g., "caustics")
+
+**Output:**
+- Markdown: a fact block, then one fenced section per source file
+
+**Example usage:**
+\`\`\`
+Use get_example with name="caustics" to read the caustics demo end to end
+\`\`\`
+
+Typically 300-2k tokens, up to ~23k for the largest multi-file example. Two kinds of file are named rather than inlined: binary companions (.glb models, textures, audio), and text that is generated or vendored past the point of being readable (bundles, font atlases). Both are in the repository the response links to.
+
 ## Best Practices
 
 ### Efficient Querying
 1. **Always start with library index resources** (e.g., \`docs://zustand/index\`) to discover available documentation before requesting specific pages
 2. **Use resource URIs** to access page indexes - they're more efficient than tool calls for listing content
 3. **Use specific page paths** rather than trying to guess URLs
+4. **Let the index line say how many examples to open.** Unmarked ones are ~1.4k tokens, so reading the two that both look right beats fetching one and coming back; a \`~23k\` marker is the one case where it pays to narrow first
 
 ### Understanding the Content
 1. Documentation is returned as **raw markdown text**
@@ -114,15 +178,16 @@ Paths are matched exactly -- no trailing-slash or extension normalization. A pat
 The server provides clear error messages for common issues:
 - **Unknown library**: The specified library name doesn't exist
 - **Page not found**: The requested path doesn't exist for that library
+- **Not an example name**: \`get_example\` was given something that is not a published example; re-read \`examples://index\`
 - **Network errors**: Connectivity issues fetching documentation
 
 Always handle errors gracefully and consider alternative approaches when a specific page isn't available.
 
 ## Resource URI Scheme
 
-Resources use the \`docs://\` URI scheme:
 - \`docs://pmndrs/manifest\` - This manifest document
 - \`docs://{lib}/index\` - Page index for each library (e.g., \`docs://zustand/index\`)
+- \`examples://index\` - The example gallery, all of it
 
 ## Technical Notes
 
@@ -132,6 +197,8 @@ Resources use the \`docs://\` URI scheme:
   SSE transport would need a Redis instance to relay messages, which this deployment
   does not have, so \`/api/sse\` is not usable.
 - Documentation is parsed from XML-tagged full-text dumps (\`/llms-full.txt\`)
+- Examples come from the JSON catalog the gallery publishes at
+  \`https://pmndrs.github.io/examples/catalog/\`, already split one file per example
 
 ### Security
 - CSS selector injection protection via \`.filter()\` instead of direct selectors
@@ -166,6 +233,21 @@ Resources use the \`docs://\` URI scheme:
    → Call tool get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
 
 4. Agent synthesizes answer from the documentation content
+\`\`\`
+
+\`\`\`
+1. User asks: "How do I make glass refract in r3f?"
+
+2. Agent thinks: someone has almost certainly built this already
+   → Read resource examples://index
+   → Several lines carry #transmission; "aquarium" and "caustics" look closest
+
+3. Agent retrieves one of them:
+   → Call tool get_example(name="caustics")
+
+4. Agent has a working scene, and the drei version it was written against. If the
+   answer turns on an API's current shape, it checks that against docs://drei/index
+   rather than assuming the example is up to date.
 \`\`\`
 
 ## Notes
@@ -235,6 +317,32 @@ Resources use the \`docs://\` URI scheme:
     }
 
     //
+    // Register the examples index
+    //
+
+    server.registerResource(
+      'pmndrs examples index',
+      'examples://index',
+      {
+        description:
+          'The pmndrs example gallery: every published demo, one per line, with what it shows and what it is built with.',
+        mimeType: 'text/plain',
+      },
+      async () => {
+        const index = await fetchCatalog<ExampleIndex>('index')
+
+        return {
+          contents: [
+            {
+              uri: 'examples://index',
+              text: renderIndex(index),
+            },
+          ],
+        }
+      },
+    )
+
+    //
     // Register get_page_content tool
     //
 
@@ -282,6 +390,43 @@ Resources use the \`docs://\` URI scheme:
               {
                 type: 'text',
                 text: page.text().trim(),
+              },
+            ],
+          }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          throw new Error(`MCP server error: ${errorMessage}`)
+        }
+      },
+    )
+
+    //
+    // Register get_example tool
+    //
+
+    server.registerTool(
+      'get_example',
+      {
+        title: 'Get Example',
+        description:
+          'Get a pmndrs example in full: what it demonstrates, the versions it is written against, and every source file.',
+        inputSchema: {
+          name: z
+            .string()
+            .describe('An example name taken verbatim from the examples://index resource'),
+        },
+      },
+      async ({ name }) => {
+        try {
+          // The catalog is one file per example, so `name` reaches a URL. Keep it
+          // to the shape every published example has rather than trusting it.
+          const example = await fetchCatalog<Example>(assertExampleName(name))
+
+          return {
+            content: [
+              {
+                type: 'text',
+                text: renderExample(example),
               },
             ],
           }
