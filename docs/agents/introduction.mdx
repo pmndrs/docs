@@ -31,6 +31,8 @@ One endpoint for all libraries, over streamable HTTP: `https://docs.pmnd.rs/api/
 | resource | `docs://pmndrs/manifest` | which libraries are served, and how to query them                  |
 | resource | `docs://{lib}/index`     | that library's pages, one `{path} - {title}` per line              |
 | tool     | `get_page_content`       | the markdown of a single page, given a `lib` + a `path` from the index |
+| resource | `examples://index`       | the [example gallery](https://pmndrs.github.io/examples), one line per demo |
+| tool     | `get_example`            | one demo in full, given a `name` from that index                   |
 
 A typical round-trip — *"how do I use TypeScript with Zustand?"*:
 
@@ -43,6 +45,34 @@ call  get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
 ```
 
 Two pages transferred instead of the whole site.
+
+### Examples
+
+The docs say what an API takes. Most three.js questions are *how is this put together*, and the [gallery](https://pmndrs.github.io/examples) has 167 demos that answer it — so the same endpoint serves them, on the same read-the-index-then-fetch shape.
+
+```txt
+read  examples://index
+      → [...] caustics · #transmission [...]
+        diamond-refraction · Diamon refraction material · +postprocessing,leva · #refraction,bvh
+
+call  get_example(name="caustics")
+      → the demo: its source, its live URL, its asset attribution, and the exact
+        dependency versions the code is written against
+```
+
+An index line drops whatever the demo does not carry, so it costs what it is worth. `+` lists only what a demo uses on top of `@react-three/fiber` and `@react-three/drei`, which all of them use. A trailing `~23k` is what `get_example` will cost in tokens — only eight demos carry one, and its absence means the demo is small enough to open without weighing it.
+
+An example is a snapshot, not a spec: it pins its own versions, `get_example` reports them, and an answer that turns on a current signature still belongs in the docs above.
+
+> [!NOTE]
+>
+> These documents are published, not rendered here — `pmndrs/examples` writes them at build time and every example page links its own:
+>
+> ```html
+> <link rel="alternate" type="text/markdown" href="/examples/catalog/caustics.md" />
+> ```
+>
+> So an agent that lands on an example page, or is handed its URL, reads the same text without going through MCP at all.
 
 > [!TIP]
 >
@@ -65,7 +95,7 @@ In the web UI it opens: **Add Servers** › **Add manually**, transport `streama
 
 ### Getting your library served
 
-Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). To join them:
+Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). The examples gallery is not one of them; it publishes its own catalog, and the two resources above are wired to it directly. To join the libraries:
 
 1. **Publish the dump.** If your site is already built with this generator, bump it to a version shipping `/llms-full.txt` and redeploy. Otherwise, either migrate to this generator, or emit that file yourself with the same XML shape (`<page path="…" title="…">…</page>`).
 

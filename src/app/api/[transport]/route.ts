@@ -5,14 +5,7 @@ import { headers } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
-import {
-  assertExampleName,
-  catalogUrl,
-  renderExample,
-  renderIndex,
-  type Example,
-  type ExampleIndex,
-} from '@/utils/examples'
+import { assertExampleName, catalogUrl } from '@/utils/examples'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see
@@ -31,11 +24,12 @@ async function baseUrl() {
 }
 
 /**
- * One file out of the examples catalog. Cached and tagged like the docs dumps,
- * except the catalog is already split per example, so a request pulls the ~20 kB
- * that was asked for rather than slicing it out of a bundle.
+ * One document out of the examples catalog, as pmndrs/examples published it.
+ * Cached and tagged like the docs dumps, except the catalog is already split per
+ * example and already rendered, so a request pulls the few kB that was asked for
+ * and passes it straight on.
  */
-async function fetchCatalog<T>(file: string): Promise<T> {
+async function fetchCatalog(file: string): Promise<string> {
   const response = await fetch(catalogUrl(file), {
     next: { revalidate: 300, tags: ['examples-catalog'] },
   })
@@ -44,7 +38,7 @@ async function fetchCatalog<T>(file: string): Promise<T> {
   if (!response.ok) {
     throw new Error(`Failed to fetch ${catalogUrl(file)}: ${response.statusText}`)
   }
-  return response.json() as Promise<T>
+  return response.text()
 }
 
 const handler = createMcpHandler(
@@ -197,8 +191,10 @@ Always handle errors gracefully and consider alternative approaches when a speci
   SSE transport would need a Redis instance to relay messages, which this deployment
   does not have, so \`/api/sse\` is not usable.
 - Documentation is parsed from XML-tagged full-text dumps (\`/llms-full.txt\`)
-- Examples come from the JSON catalog the gallery publishes at
-  \`https://pmndrs.github.io/examples/catalog/\`, already split one file per example
+- Examples are passed through from the catalog the gallery publishes at
+  \`https://pmndrs.github.io/examples/catalog/\`, one already-rendered document per
+  example. They are public: every example page links its own with
+  \`rel="alternate"\`, so the same text is reachable without this server
 
 ### Security
 - CSS selector injection protection via \`.filter()\` instead of direct selectors
@@ -329,13 +325,11 @@ Always handle errors gracefully and consider alternative approaches when a speci
         mimeType: 'text/plain',
       },
       async () => {
-        const index = await fetchCatalog<ExampleIndex>('index')
-
         return {
           contents: [
             {
               uri: 'examples://index',
-              text: renderIndex(index),
+              text: await fetchCatalog('index'),
             },
           ],
         }
@@ -420,13 +414,11 @@ Always handle errors gracefully and consider alternative approaches when a speci
         try {
           // The catalog is one file per example, so `name` reaches a URL. Keep it
           // to the shape every published example has rather than trusting it.
-          const example = await fetchCatalog<Example>(assertExampleName(name))
-
           return {
             content: [
               {
                 type: 'text',
-                text: renderExample(example),
+                text: await fetchCatalog(assertExampleName(name)),
               },
             ],
           }
