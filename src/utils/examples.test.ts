@@ -19,6 +19,7 @@ const summary = (over: Partial<ExampleSummary> = {}): ExampleSummary => ({
   source: 'https://codesandbox.io/s/szj6p7',
   demo: 'https://pmndrs.github.io/examples/examples/caustics',
   thumbnail: 'https://pmndrs.github.io/examples/caustics/thumbnail.webp',
+  bytes: 4_000,
   ...over,
 })
 
@@ -83,6 +84,22 @@ describe('summaryLine', () => {
     const line = summaryLine(summary({ description: 'One idea,\n  spread over lines.' }))
 
     expect(line).toBe('caustics · One idea, spread over lines.')
+  })
+
+  it('says nothing about size for an example that is cheap to open', () => {
+    // The marker has to stay rare to mean anything: its absence is the signal
+    // that a reader can open two of these without thinking about the budget.
+    expect(summaryLine(summary({ bytes: 24 * 1024 }))).toBe('caustics')
+  })
+
+  it('marks an example large enough that opening it is a decision', () => {
+    expect(summaryLine(summary({ bytes: 90_048 }))).toBe('caustics · ~23k')
+  })
+
+  it('puts the size last, after everything that helps choose', () => {
+    const line = summaryLine(summary({ description: 'A shield.', tags: ['shader'], bytes: 90_048 }))
+
+    expect(line).toBe('caustics · A shield. · #shader · ~23k')
   })
 })
 

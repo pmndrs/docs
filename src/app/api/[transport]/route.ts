@@ -105,7 +105,7 @@ The whole pmndrs example gallery (https://pmndrs.github.io/examples), one line p
 
 **Output format:**
 \`\`\`
-{name} [({title}, when it is not just the name)] · {description} · +{libraries} · #{tags}
+{name} [({title}, when it is not just the name)] · {description} · +{libraries} · #{tags} · ~{size}
 \`\`\`
 
 Every part after the name is dropped when the example does not carry it:
@@ -113,9 +113,12 @@ Every part after the name is dropped when the example does not carry it:
 aquarium · #transmission
 arkanoid · Simple arkanoid implementation using cannon physics. · +cannon,zustand · #physics,game,audio
 bounds-and-makedefault (Bounds and makeDefault) · #bounds
+flow-shield · Interactive energy shield. · +postprocessing,leva · #shader · ~23k
 \`\`\`
 
 \`+\` lists only what an example uses *on top of* \`@react-three/fiber\` and \`@react-three/drei\`, which all of them use. Tags are freeform and unvalidated -- expect typos (\`gtlf\`) and both spellings of an idea (\`contact shadows\` / \`contact-shadows\`) -- so match on names and descriptions too, never on tags alone.
+
+The trailing \`~23k\` is what \`get_example\` will cost in tokens, and only eight lines carry one. Its absence means the example is small: the median is ~1.4k tokens, so reading two or three of them costs less than this index did. Read the marked ones deliberately, one at a time.
 
 ## Available Tools
 
@@ -158,7 +161,7 @@ Typically 300-2k tokens, up to ~23k for the largest multi-file example. Two kind
 1. **Always start with library index resources** (e.g., \`docs://zustand/index\`) to discover available documentation before requesting specific pages
 2. **Use resource URIs** to access page indexes - they're more efficient than tool calls for listing content
 3. **Use specific page paths** rather than trying to guess URLs
-4. **Read one example, not five.** Narrow on the index first; \`get_example\` is the expensive call
+4. **Let the index line say how many examples to open.** Unmarked ones are ~1.4k tokens, so reading the two that both look right beats fetching one and coming back; a \`~23k\` marker is the one case where it pays to narrow first
 
 ### Understanding the Content
 1. Documentation is returned as **raw markdown text**

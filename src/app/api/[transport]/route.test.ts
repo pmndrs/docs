@@ -58,6 +58,7 @@ const mockExampleIndex = {
       source: 'https://codesandbox.io/s/szj6p7',
       demo: 'https://pmndrs.github.io/examples/examples/caustics',
       thumbnail: 'https://pmndrs.github.io/examples/caustics/thumbnail.webp',
+      bytes: 4_000,
     },
     {
       name: 'arkanoid',
@@ -69,6 +70,7 @@ const mockExampleIndex = {
       source: 'https://codesandbox.io/s/arkanoid',
       demo: 'https://pmndrs.github.io/examples/examples/arkanoid',
       thumbnail: 'https://pmndrs.github.io/examples/arkanoid/thumbnail.webp',
+      bytes: 90_000,
     },
   ],
 }
@@ -556,9 +558,10 @@ Content with &lt;special&gt; characters &amp; symbols.
     it('serves the whole gallery as one line per example', async () => {
       const body = await call('resources/read', { uri: 'examples://index' })
 
+      // caustics' fixture is under the size threshold and arkanoid's is over it
       expect(body).toContain('caustics · #transmission')
       expect(body).toContain(
-        'arkanoid · Simple arkanoid implementation using cannon physics. · +cannon · #physics,game',
+        'arkanoid · Simple arkanoid implementation using cannon physics. · +cannon · #physics,game · ~23k',
       )
       expect(body).not.toContain('MCP server error')
     })

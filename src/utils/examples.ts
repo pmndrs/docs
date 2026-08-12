@@ -38,6 +38,7 @@ export interface ExampleSummary {
   source: string
   demo: string
   thumbnail: string
+  bytes: number
 }
 
 export interface ExampleIndex {
@@ -99,14 +100,24 @@ export function assertExampleName(name: string) {
 }
 
 /**
+ * Where an example stops being cheap. The median is 5 kB and nine tenths are
+ * under 15 kB, so reading three of them costs less than this index does -- the
+ * size is worth saying only for the handful where it changes the decision.
+ * Eight examples are over this line; two of them are most of the distance.
+ */
+const LARGE_BYTES = 24 * 1024
+
+/**
  * One index line. Everything past the name is optional and omitted when the
- * example does not carry it, so an entry costs what it is worth:
+ * example does not carry it, so an entry costs what it is worth -- and a line
+ * with no size marker is one you can open without thinking about it:
  *
  *     aquarium · #transmission
  *     arkanoid · Simple arkanoid implementation using cannon physics. · +cannon,zustand · #physics,game
  *     bounds-and-makedefault (Bounds and makeDefault) · #bounds
+ *     flow-shield · Interactive energy shield. · +postprocessing,leva · #shader · ~23k
  */
-export function summaryLine({ name, title, description, libraries, tags }: ExampleSummary) {
+export function summaryLine({ name, title, description, libraries, tags, bytes }: ExampleSummary) {
   // A title that is just the prettified directory name is noise -- but not
   // always: `makeDefault`, `GLTF`, `Bruno Simon's` only exist in the title.
   const head = title && title !== titleCase(name) ? `${name} (${title})` : name
@@ -120,6 +131,7 @@ export function summaryLine({ name, title, description, libraries, tags }: Examp
     description.trim().replace(/\s+/g, ' '),
     extras.length ? `+${extras.join(',')}` : '',
     tags.length ? `#${tags.join(',')}` : '',
+    bytes > LARGE_BYTES ? `~${Math.round(bytes / 4000)}k` : '',
   ]
     .filter(Boolean)
     .join(' · ')
