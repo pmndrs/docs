@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { assertExampleName, catalogUrl } from './examples'
+import { assertExampleName, exampleUrl, indexUrl } from './examples'
 
 /**
  * The rendering these used to cover now lives in pmndrs/examples, which
@@ -25,21 +25,29 @@ describe('assertExampleName', () => {
     expect(() => assertExampleName(name)).toThrow(/Not an example name/)
   })
 
-  it('rejects "index", which is the one name that collides with the catalog itself', () => {
-    // Legal kebab-case, same directory: it would serve the index of the whole
-    // gallery under the guise of a single example.
-    expect(() => assertExampleName('index')).toThrow(/Not an example name/)
+  it('no longer has to reserve "index"', () => {
+    // It used to collide with the catalog's own index, which sat in the same
+    // directory. The index is `/llms.txt` now, so this is just a name with no
+    // example behind it -- and 404 says that better than a special case.
+    expect(assertExampleName('index')).toBe('index')
+    expect(exampleUrl('index')).toBe('https://pmndrs.github.io/examples/examples/index.md')
   })
 })
 
-describe('catalogUrl', () => {
-  it('points at the markdown the gallery publishes, not the JSON beside it', () => {
-    expect(catalogUrl('caustics')).toBe('https://pmndrs.github.io/examples/catalog/caustics.md')
+describe('exampleUrl', () => {
+  it("is the example page's URL with .md on the end", () => {
+    expect(exampleUrl('caustics')).toBe('https://pmndrs.github.io/examples/examples/caustics.md')
   })
 
   it('follows a local build when one is given', () => {
-    expect(catalogUrl('index', 'http://localhost:3001')).toBe(
-      'http://localhost:3001/catalog/index.md',
+    expect(exampleUrl('caustics', 'http://localhost:3001')).toBe(
+      'http://localhost:3001/examples/caustics.md',
     )
+  })
+})
+
+describe('indexUrl', () => {
+  it('is the root convention, not a page sibling', () => {
+    expect(indexUrl()).toBe('https://pmndrs.github.io/examples/llms.txt')
   })
 })

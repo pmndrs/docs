@@ -65,11 +65,9 @@ const caustics = true
 const server = setupServer(
   ...llmsFullHandlers,
 
-  http.get('https://pmndrs.github.io/examples/catalog/index.md', () =>
-    HttpResponse.text(mockExampleIndex),
-  ),
+  http.get('https://pmndrs.github.io/examples/llms.txt', () => HttpResponse.text(mockExampleIndex)),
 
-  http.get('https://pmndrs.github.io/examples/catalog/caustics.md', () =>
+  http.get('https://pmndrs.github.io/examples/examples/caustics.md', () =>
     HttpResponse.text(mockExample),
   ),
 
@@ -552,7 +550,7 @@ Content with &lt;special&gt; characters &amp; symbols.
       expect(body).not.toContain('MCP server error')
     })
 
-    it.each(['../../../etc/passwd', 'index'])(
+    it.each(['../../../etc/passwd', 'Caustics'])(
       'refuses %j without reaching for a URL',
       async (name) => {
         // No msw handler exists for whatever this would resolve to, and the server
@@ -566,7 +564,7 @@ Content with &lt;special&gt; characters &amp; symbols.
 
     it('errors, rather than serving an empty gallery, when the catalog is missing', async () => {
       server.use(
-        http.get('https://pmndrs.github.io/examples/catalog/index.md', () => {
+        http.get('https://pmndrs.github.io/examples/llms.txt', () => {
           return new HttpResponse('Not Found', { status: 404 })
         }),
       )

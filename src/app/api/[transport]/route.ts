@@ -5,7 +5,7 @@ import { headers } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
 import packageJson from '@/package.json' with { type: 'json' }
-import { assertExampleName, catalogUrl } from '@/utils/examples'
+import { assertExampleName, exampleUrl, indexUrl } from '@/utils/examples'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see
@@ -24,19 +24,18 @@ async function baseUrl() {
 }
 
 /**
- * One document out of the examples catalog, as pmndrs/examples published it.
- * Cached and tagged like the docs dumps, except the catalog is already split per
- * example and already rendered, so a request pulls the few kB that was asked for
- * and passes it straight on.
+ * One document as pmndrs/examples published it. Cached and tagged like the docs
+ * dumps, except the gallery is already split per example and already rendered,
+ * so a request pulls the few kB that was asked for and passes it straight on.
  */
-async function fetchCatalog(file: string): Promise<string> {
-  const response = await fetch(catalogUrl(file), {
+async function fetchDocument(url: string): Promise<string> {
+  const response = await fetch(url, {
     next: { revalidate: 300, tags: ['examples-catalog'] },
   })
   // Same reason the library indexes fail loudly: a swallowed 404 reads to a
   // client as "no such example", and it will go on to invent one.
   if (!response.ok) {
-    throw new Error(`Failed to fetch ${catalogUrl(file)}: ${response.statusText}`)
+    throw new Error(`Failed to fetch ${url}: ${response.statusText}`)
   }
   return response.text()
 }
@@ -191,10 +190,10 @@ Always handle errors gracefully and consider alternative approaches when a speci
   SSE transport would need a Redis instance to relay messages, which this deployment
   does not have, so \`/api/sse\` is not usable.
 - Documentation is parsed from XML-tagged full-text dumps (\`/llms-full.txt\`)
-- Examples are passed through from the catalog the gallery publishes at
-  \`https://pmndrs.github.io/examples/catalog/\`, one already-rendered document per
-  example. They are public: every example page links its own with
-  \`rel="alternate"\`, so the same text is reachable without this server
+- Examples are passed through from what the gallery publishes: \`/llms.txt\` for the
+  index, and each example's page URL with \`.md\` on the end for the document. They
+  are public -- every example page links its own with \`rel="alternate"\` -- so the
+  same text is reachable without this server
 
 ### Security
 - CSS selector injection protection via \`.filter()\` instead of direct selectors
@@ -329,7 +328,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
           contents: [
             {
               uri: 'examples://index',
-              text: await fetchCatalog('index'),
+              text: await fetchDocument(indexUrl()),
             },
           ],
         }
@@ -418,7 +417,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
             content: [
               {
                 type: 'text',
-                text: await fetchCatalog(assertExampleName(name)),
+                text: await fetchDocument(exampleUrl(assertExampleName(name))),
               },
             ],
           }
