@@ -22,7 +22,7 @@ These URLs are linked in the HTML header as:
 
 ## MCP Server
 
-`llms-full.txt` is a whole documentation site in one file — too big to paste into an agent for a one-line question. So [docs.pmnd.rs](https://docs.pmnd.rs) also exposes it as an [MCP](https://modelcontextprotocol.io) server, which lets an agent read a table of contents first, then fetch the one page it needs.
+`llms-full.txt` is the whole site in one file — often too big for an agent's context. [docs.pmnd.rs](https://docs.pmnd.rs) also exposes an [MCP](https://modelcontextprotocol.io) server, so an agent can read an index first, then fetch only the page it needs.
 
 One endpoint for all libraries, over streamable HTTP: `https://docs.pmnd.rs/api/mcp`. It exposes:
 
@@ -34,7 +34,7 @@ One endpoint for all libraries, over streamable HTTP: `https://docs.pmnd.rs/api/
 | resource | `examples://index`       | the [example gallery](https://pmndrs.github.io/examples), one line per demo |
 | tool     | `get_example`            | one demo in full, given a `name` from that index                   |
 
-A typical round-trip — *"how do I use TypeScript with Zustand?"*:
+Example — *"how do I use TypeScript with Zustand?"*:
 
 ```txt
 read  docs://zustand/index
@@ -44,11 +44,9 @@ call  get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
       → the page, as markdown
 ```
 
-Two pages transferred instead of the whole site.
-
 ### Examples
 
-The docs say what an API takes. Most three.js questions are *how is this put together*, and the [gallery](https://pmndrs.github.io/examples) has 167 demos that answer it — so the same endpoint serves them, on the same read-the-index-then-fetch shape.
+The [gallery](https://pmndrs.github.io/examples)'s 167 demos are served the same way — read the index, then fetch one demo:
 
 ```txt
 read  examples://index
@@ -56,17 +54,20 @@ read  examples://index
         diamond-refraction · Diamon refraction material · +postprocessing,leva · #refraction,bvh
 
 call  get_example(name="caustics")
-      → the demo: its source, its live URL, its asset attribution, and the exact
-        dependency versions the code is written against
+      → the demo: its source, its live URL, its asset attribution, and its
+        pinned dependency versions
 ```
 
-An index line drops whatever the demo does not carry, so it costs what it is worth. `+` lists only what a demo uses on top of `@react-three/fiber` and `@react-three/drei`, which all of them use. A trailing `~23k` is what `get_example` will cost in tokens — only eight demos carry one, and its absence means the demo is small enough to open without weighing it.
+In an index line:
 
-An example is a snapshot, not a spec: it pins its own versions, `get_example` reports them, and an answer that turns on a current signature still belongs in the docs above.
+- `+` lists dependencies on top of `@react-three/fiber` and `@react-three/drei`, which all demos use
+- a trailing `~23k` is the token cost of `get_example` — only large demos carry one
+
+Examples pin their own dependency versions (`get_example` reports them) — for current API signatures, prefer the docs above.
 
 > [!NOTE]
 >
-> These documents are published, not rendered here — `pmndrs/examples` writes them at build time, at the page URL with an extension on the end:
+> These documents are published by `pmndrs/examples` at build time, at the page URL with an extension on the end:
 >
 > | | |
 > | --- | --- |
@@ -74,15 +75,15 @@ An example is a snapshot, not a spec: it pins its own versions, `get_example` re
 > | `/examples/caustics.md` | the same example, as `get_example` returns it |
 > | `/llms.txt` | the whole gallery, as `examples://index` returns it |
 >
-> Each page links its own, so it is found either by looking or by guessing:
+> Each page links its own:
 >
 > ```html
 > <link rel="alternate" type="text/markdown" href="/examples/caustics.md" />
 > ```
 >
-> The demos themselves — `/caustics`, which is what the READMEs' badges point at — carry the same links plus a `canonical` back to the page.
+> The demos themselves (eg. `/caustics`) carry the same links, plus a `canonical` back to the page.
 >
-> There is no `llms-full.txt`: concatenated, the gallery is ~378k tokens, against ~50k for a documentation site. The index and one example is the whole point.
+> There is no `llms-full.txt`: the whole gallery is ~378k tokens.
 
 > [!TIP]
 >
@@ -93,7 +94,7 @@ An example is a snapshot, not a spec: it pins its own versions, `get_example` re
 > /plugin install pmndrs@pmndrs
 > ```
 
-For other clients, see the JSON config in the [MCP-server](https://docs.pmnd.rs) box on the home page. To poke at it by hand — see the resources, call the tool, read the raw JSON-RPC — run the official inspector:
+For other clients, see the JSON config in the [MCP-server](https://docs.pmnd.rs) box on the home page. To inspect it manually, run the official inspector:
 
 ```sh
 $ HOST=127.0.0.1 npx -y @modelcontextprotocol/inspector
@@ -105,7 +106,7 @@ In the web UI it opens: **Add Servers** › **Add manually**, transport `streama
 
 ### Getting your library served
 
-Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). The examples gallery is not one of them; it publishes its own catalog, and the two resources above are wired to it directly. To join the libraries:
+Only libraries publishing a `/llms-full.txt` dump are served — the ones badged `MCP` on [docs.pmnd.rs](https://docs.pmnd.rs). To join them:
 
 1. **Publish the dump.** If your site is already built with this generator, bump it to a version shipping `/llms-full.txt` and redeploy. Otherwise, either migrate to this generator, or emit that file yourself with the same XML shape (`<page path="…" title="…">…</page>`).
 
@@ -118,9 +119,9 @@ Only libraries publishing a `/llms-full.txt` dump are served — the ones badged
    > ```
    >
    > `/llms-full.txt` ships since [`v3.2.0`](https://github.com/pmndrs/docs/releases/tag/v3.2.0), in its MCP-ready shape since [`v3.4.1`](https://github.com/pmndrs/docs/releases/tag/v3.4.1).
-2. **Check it.** `curl -sI <NEXT_PUBLIC_URL>/llms-full.txt` must return `200`, and the body must contain `<page …>` entries. A missing dump makes the library's index resource fail loudly, on purpose.
-3. **Flip the flag.** Open a PR on [pmndrs/docs](https://github.com/pmndrs/docs) setting `llms_full: true` on your entry in `libs` ([`src/app/page.tsx`](https://github.com/pmndrs/docs/blob/main/src/app/page.tsx)). That single flag drives the `MCP` badge, the `docs://{lib}/index` resource and the `get_page_content` enum. It takes effect once [docs.pmnd.rs](https://docs.pmnd.rs) is redeployed — every push to `main` does that.
+2. **Check it.** `curl -sI <NEXT_PUBLIC_URL>/llms-full.txt` must return `200`, and the body must contain `<page …>` entries.
+3. **Flip the flag.** Open a PR on [pmndrs/docs](https://github.com/pmndrs/docs) setting `llms_full: true` on your entry in `libs` ([`src/app/page.tsx`](https://github.com/pmndrs/docs/blob/main/src/app/page.tsx)). This drives the `MCP` badge, the `docs://{lib}/index` resource and the `get_page_content` enum. It takes effect once [docs.pmnd.rs](https://docs.pmnd.rs) is redeployed — every push to `main` does that.
 
 > [!NOTE]
 >
-> This is a one-off. Once served, **content** updates need no redeploy on either side: pages are fetched at request time and revalidated every 5 minutes.
+> This is a one-off: content updates need no redeploy — pages are fetched at request time and revalidated every 5 minutes.
