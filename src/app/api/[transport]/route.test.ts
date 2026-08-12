@@ -41,9 +41,60 @@ const llmsFullHandlers = Object.values(libs)
     return http.get(`${origin}/llms-full.txt`, () => HttpResponse.text(mockLlmsFullTxt))
   })
 
+// The examples catalog, as pmndrs/examples publishes it -- an index to pick from
+// and one file per example. Two entries is enough to tell "served the index" from
+// "served an example"; `src/utils/examples.test.ts` covers the rendering itself.
+const mockExampleIndex = {
+  site: 'https://pmndrs.github.io/examples',
+  count: 2,
+  examples: [
+    {
+      name: 'caustics',
+      title: 'Caustics',
+      description: '',
+      tags: ['transmission'],
+      authors: ['Paul Henschel'],
+      libraries: ['@react-three/drei', '@react-three/fiber'],
+      source: 'https://codesandbox.io/s/szj6p7',
+      demo: 'https://pmndrs.github.io/examples/examples/caustics',
+      thumbnail: 'https://pmndrs.github.io/examples/caustics/thumbnail.webp',
+    },
+    {
+      name: 'arkanoid',
+      title: 'Arkanoid',
+      description: 'Simple arkanoid implementation using cannon physics.',
+      tags: ['physics', 'game'],
+      authors: ['Paul Henschel'],
+      libraries: ['@react-three/fiber', '@react-three/cannon'],
+      source: 'https://codesandbox.io/s/arkanoid',
+      demo: 'https://pmndrs.github.io/examples/examples/arkanoid',
+      thumbnail: 'https://pmndrs.github.io/examples/arkanoid/thumbnail.webp',
+    },
+  ],
+}
+
+const mockExample = {
+  ...mockExampleIndex.examples[0],
+  repository: 'https://github.com/pmndrs/examples/tree/main/examples/caustics',
+  install: 'npx degit pmndrs/examples/examples/caustics',
+  dependencies: { '@react-three/drei': '10.7.8' },
+  files: [{ path: 'src/App.tsx', content: 'const caustics = true' }],
+  binaries: ['src/glass-transformed.glb'],
+  oversized: [],
+  assets: [],
+}
+
 // Setup MSW server
 const server = setupServer(
   ...llmsFullHandlers,
+
+  http.get('https://pmndrs.github.io/examples/catalog/index.json', () =>
+    HttpResponse.json(mockExampleIndex),
+  ),
+
+  http.get('https://pmndrs.github.io/examples/catalog/caustics.json', () =>
+    HttpResponse.json(mockExample),
+  ),
 
   // Hosts the standalone fetch-and-parse tests below call directly
   http.get('https://r3f.docs.pmnd.rs/llms-full.txt', () => {
@@ -483,6 +534,72 @@ Content with &lt;special&gt; characters &amp; symbols.
       const page = $('page').filter((_, el) => $(el).attr('path') === maliciousPath)
 
       expect(page.length).toBe(0)
+    })
+  })
+
+  describe('Examples', () => {
+    async function call(method: string, params: unknown) {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+        }),
+      )
+      return response.text()
+    }
+
+    it('serves the whole gallery as one line per example', async () => {
+      const body = await call('resources/read', { uri: 'examples://index' })
+
+      expect(body).toContain('caustics · #transmission')
+      expect(body).toContain(
+        'arkanoid · Simple arkanoid implementation using cannon physics. · +cannon · #physics,game',
+      )
+      expect(body).not.toContain('MCP server error')
+    })
+
+    it('serves one example with its source', async () => {
+      const body = await call('tools/call', {
+        name: 'get_example',
+        arguments: { name: 'caustics' },
+      })
+
+      expect(body).toContain('# Caustics')
+      expect(body).toContain('const caustics = true')
+      expect(body).toContain('Dependencies: @react-three/drei@10.7.8')
+      // Named, not inlined -- a reader that needs the model knows where it is
+      expect(body).toContain('src/glass-transformed.glb')
+      expect(body).not.toContain('MCP server error')
+    })
+
+    it.each(['../../../etc/passwd', 'index'])(
+      'refuses %j without reaching for a URL',
+      async (name) => {
+        // No msw handler exists for whatever this would resolve to, and the server
+        // runs with onUnhandledRequest: 'error' -- so a fetch here fails the test on
+        // its own, and the assertion below is about the message a client gets.
+        const body = await call('tools/call', { name: 'get_example', arguments: { name } })
+
+        expect(body).toContain('Not an example name')
+      },
+    )
+
+    it('errors, rather than serving an empty gallery, when the catalog is missing', async () => {
+      server.use(
+        http.get('https://pmndrs.github.io/examples/catalog/index.json', () => {
+          return new HttpResponse('Not Found', { status: 404 })
+        }),
+      )
+
+      const body = await call('resources/read', { uri: 'examples://index' })
+
+      expect(body).toContain('Failed to fetch')
+      expect(body).not.toContain('"text":""')
     })
   })
 })
