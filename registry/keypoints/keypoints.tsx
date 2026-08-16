@@ -1,26 +1,26 @@
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
-import { ul as Ul, li as Li } from '../index'
-
 export function Keypoints({
   title = 'Keypoints',
   children,
   className,
   ...props
-}: { title: string } & ComponentProps<'section'>) {
+}: { title?: string } & ComponentProps<'section'>) {
   return (
     <section
       {...props}
-      className={cn(className, 'bg-surface-dim my-8 rounded-xl border border-outline-variant p-6')}
+      className={cn('bg-surface-dim my-8 rounded-xl border border-border p-6', className)}
     >
       <h2 className="mb-6 text-2xl font-bold">{title}</h2>
 
-      <Ul className="mb-0 text-sm">{children}</Ul>
+      <div className="mt-4 mb-0 text-sm">
+        <ul className="ms-6 list-disc">{children}</ul>
+      </div>
     </section>
   )
 }
 
 export function KeypointsItem(props: ComponentProps<'li'>) {
-  return <Li {...props} />
+  return <li className="my-1" {...props} />
 }

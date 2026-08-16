@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 
-import { Keypoints, KeypointsItem } from './Keypoints'
-import { allModes } from '../../../../.storybook/modes'
+import { allModes } from '../../.storybook/modes'
+import { Keypoints, KeypointsItem } from './keypoints'
 
 const meta = {
   component: Keypoints,
