@@ -1,4 +1,4 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { type ComponentProps } from 'react'
 
 export function Details({ className, ...props }: ComponentProps<'details'>) {

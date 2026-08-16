@@ -1,6 +1,6 @@
 'use client'
 
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
 import { TbClipboard, TbClipboardCheck } from 'react-icons/tb'
 

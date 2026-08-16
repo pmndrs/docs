@@ -4,7 +4,7 @@ import { Layout, LayoutAside, LayoutContent, LayoutHeader, LayoutNav } from '@/c
 import { Nav } from '@/components/Nav'
 import Search from '@/components/Search'
 import { Toc } from '@/components/mdx/Toc'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { getData } from '@/utils/docs'
 import Link from 'next/link'
 import { PiDiscordLogoLight } from 'react-icons/pi'

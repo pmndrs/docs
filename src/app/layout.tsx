@@ -1,4 +1,4 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { docsMtb } from '@/lib/mtb'
 import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'

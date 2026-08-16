@@ -1,4 +1,4 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { crawl } from '@/utils/docs'
 import {
   SandpackCodeEditor,
