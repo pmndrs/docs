@@ -1,5 +1,5 @@
 import cn from '@/lib/cn'
-import { pmndrsMtb } from '@/lib/md3'
+import { docsMtb } from '@/lib/mtb'
 import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import { Mtb } from 'material-theme-builder/react'
@@ -117,7 +117,7 @@ export default function RootLayout({
         <SandpackCSS />
       </head>
       <body className="wrap-break-word bg-surface text-on-surface">
-        <Mtb {...pmndrsMtb}>
+        <Mtb {...docsMtb}>
           <ThemeProvider attribute="class">{children}</ThemeProvider>
         </Mtb>
       </body>
