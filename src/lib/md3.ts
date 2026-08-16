@@ -32,8 +32,8 @@ import type { MtbConfig } from 'material-theme-builder'
  * rule at all for `bg-note-container`, with no error.
  */
 export const pmndrsMtb = {
-  /** poimandres mint. */
-  source: process.env.THEME_PRIMARY || '#5de4c7',
+  /** poimandres slate. */
+  source: process.env.THEME_PRIMARY || '#323e48',
   scheme: (process.env.THEME_SCHEME || 'tonalSpot') as MtbConfig['scheme'],
   contrast: Number(process.env.THEME_CONTRAST) || 0,
 } satisfies MtbConfig
