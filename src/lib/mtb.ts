@@ -5,8 +5,8 @@ import type { MtbConfig } from 'material-theme-builder'
  * GitHub's alert palette, the colours `rehype-github-alerts` renders.
  *
  * These are ours, not the design system's: nothing outside this generator draws
- * markdown alerts, and the hexes are GitHub's rather than poimandres'. Tier 1
- * owns the seed; this owns what the seed has no M3 role for.
+ * markdown alerts, and the hexes are GitHub's rather than poimandres'. The design
+ * system owns the seed; this owns what the seed has no M3 role for.
  *
  * `blend: true` harmonizes each one against that seed, so they shift with the
  * theme instead of sitting on top of it.
@@ -29,7 +29,7 @@ const alertColors = [
  * The theme this site mounts: the pmndrs seed, plus our alert colours.
  *
  * Spread rather than edited, so `src/lib/md3.ts` stays a verbatim copy of the
- * Tier 1 item and re-installing it is a clean overwrite.
+ * installed item and re-installing it is a clean overwrite.
  */
 export const docsMtb = {
   ...pmndrsMtb,
