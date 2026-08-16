@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'material-theme-builder/tailwind.css';
 
 @theme {
   --font-sans: var(--font-inter), sans-serif;
@@ -8,77 +9,6 @@
   /* Keyframes */
   --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
   --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;
-
-  /* Material Design colors from react-mcu */
-  --color-background: var(--mcu-background);
-  --color-on-background: var(--mcu-on-background);
-  --color-surface: var(--mcu-surface);
-  --color-surface-dim: var(--mcu-surface-dim);
-  --color-surface-bright: var(--mcu-surface-bright);
-  --color-surface-container-lowest: var(--mcu-surface-container-lowest);
-  --color-surface-container-low: var(--mcu-surface-container-low);
-  --color-surface-container: var(--mcu-surface-container);
-  --color-surface-container-high: var(--mcu-surface-container-high);
-  --color-surface-container-highest: var(--mcu-surface-container-highest);
-  --color-on-surface: var(--mcu-on-surface);
-  --color-on-surface-variant: var(--mcu-on-surface-variant);
-  --color-outline: var(--mcu-outline);
-  --color-outline-variant: var(--mcu-outline-variant);
-  --color-inverse-surface: var(--mcu-inverse-surface);
-  --color-inverse-on-surface: var(--mcu-inverse-on-surface);
-  --color-primary: var(--mcu-primary);
-  --color-on-primary: var(--mcu-on-primary);
-  --color-primary-container: var(--mcu-primary-container);
-  --color-on-primary-container: var(--mcu-on-primary-container);
-  --color-primary-fixed: var(--mcu-primary-fixed);
-  --color-primary-fixed-dim: var(--mcu-primary-fixed-dim);
-  --color-on-primary-fixed: var(--mcu-on-primary-fixed);
-  --color-on-primary-fixed-variant: var(--mcu-on-primary-fixed-variant);
-  --color-inverse-primary: var(--mcu-inverse-primary);
-  --color-secondary: var(--mcu-secondary);
-  --color-on-secondary: var(--mcu-on-secondary);
-  --color-secondary-container: var(--mcu-secondary-container);
-  --color-on-secondary-container: var(--mcu-on-secondary-container);
-  --color-secondary-fixed: var(--mcu-secondary-fixed);
-  --color-secondary-fixed-dim: var(--mcu-secondary-fixed-dim);
-  --color-on-secondary-fixed: var(--mcu-on-secondary-fixed);
-  --color-on-secondary-fixed-variant: var(--mcu-on-secondary-fixed-variant);
-  --color-tertiary: var(--mcu-tertiary);
-  --color-on-tertiary: var(--mcu-on-tertiary);
-  --color-tertiary-container: var(--mcu-tertiary-container);
-  --color-on-tertiary-container: var(--mcu-on-tertiary-container);
-  --color-tertiary-fixed: var(--mcu-tertiary-fixed);
-  --color-tertiary-fixed-dim: var(--mcu-tertiary-fixed-dim);
-  --color-on-tertiary-fixed: var(--mcu-on-tertiary-fixed);
-  --color-on-tertiary-fixed-variant: var(--mcu-on-tertiary-fixed-variant);
-  --color-error: var(--mcu-error);
-  --color-on-error: var(--mcu-on-error);
-  --color-error-container: var(--mcu-error-container);
-  --color-on-error-container: var(--mcu-on-error-container);
-  --color-scrim: var(--mcu-scrim);
-  --color-shadow: var(--mcu-shadow);
-
-  /* Custom alert colors */
-  --color-note: var(--mcu-note);
-  --color-on-note: var(--mcu-on-note);
-  --color-note-container: var(--mcu-note-container);
-  --color-on-note-container: var(--mcu-on-note-container);
-  --color-tip: var(--mcu-tip);
-  --color-on-tip: var(--mcu-on-tip);
-  --color-tip-container: var(--mcu-tip-container);
-  --color-on-tip-container: var(--mcu-on-tip-container);
-  --color-important: var(--mcu-important);
-  --color-on-important: var(--mcu-on-important);
-  --color-important-container: var(--mcu-important-container);
-  --color-on-important-container: var(--mcu-on-important-container);
-  --color-warning: var(--mcu-warning);
-  --color-on-warning: var(--mcu-on-warning);
-  --color-warning-container: var(--mcu-warning-container);
-  --color-on-warning-container: var(--mcu-on-warning-container);
-  --color-caution: var(--mcu-caution);
-  --color-on-caution: var(--mcu-on-caution);
-  --color-caution-container: var(--mcu-caution-container);
-  --color-on-caution-container: var(--mcu-on-caution-container);
 }
 
 @keyframes collapsible-down {
@@ -335,17 +265,16 @@ pre[class*='language-'] {
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.511 0.096 186.391);
+  --primary-foreground: oklch(0.984 0.014 180.72);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
@@ -354,19 +283,20 @@ pre[class*='language-'] {
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --chart-1: oklch(0.855 0.138 181.071);
+  --chart-2: oklch(0.704 0.14 182.503);
+  --chart-3: oklch(0.6 0.118 184.704);
+  --chart-4: oklch(0.511 0.096 186.391);
+  --chart-5: oklch(0.437 0.078 188.216);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.6 0.118 184.704);
+  --sidebar-primary-foreground: oklch(0.984 0.014 180.72);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 @theme inline {
@@ -408,6 +338,26 @@ pre[class*='language-'] {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-note: var(--md-sys-color-note);
+  --color-on-note: var(--md-sys-color-on-note);
+  --color-note-container: var(--md-sys-color-note-container);
+  --color-on-note-container: var(--md-sys-color-on-note-container);
+  --color-tip: var(--md-sys-color-tip);
+  --color-on-tip: var(--md-sys-color-on-tip);
+  --color-tip-container: var(--md-sys-color-tip-container);
+  --color-on-tip-container: var(--md-sys-color-on-tip-container);
+  --color-important: var(--md-sys-color-important);
+  --color-on-important: var(--md-sys-color-on-important);
+  --color-important-container: var(--md-sys-color-important-container);
+  --color-on-important-container: var(--md-sys-color-on-important-container);
+  --color-warning: var(--md-sys-color-warning);
+  --color-on-warning: var(--md-sys-color-on-warning);
+  --color-warning-container: var(--md-sys-color-warning-container);
+  --color-on-warning-container: var(--md-sys-color-on-warning-container);
+  --color-caution: var(--md-sys-color-caution);
+  --color-on-caution: var(--md-sys-color-on-caution);
+  --color-caution-container: var(--md-sys-color-caution-container);
+  --color-on-caution-container: var(--md-sys-color-on-caution-container);
 }
 
 .dark {
@@ -417,9 +367,9 @@ pre[class*='language-'] {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary: oklch(0.437 0.078 188.216);
+  --primary-foreground: oklch(0.984 0.014 180.72);
+  --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
@@ -429,19 +379,19 @@ pre[class*='language-'] {
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --chart-1: oklch(0.855 0.138 181.071);
+  --chart-2: oklch(0.704 0.14 182.503);
+  --chart-3: oklch(0.6 0.118 184.704);
+  --chart-4: oklch(0.511 0.096 186.391);
+  --chart-5: oklch(0.437 0.078 188.216);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.704 0.14 182.503);
+  --sidebar-primary-foreground: oklch(0.277 0.046 192.524);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -455,35 +405,35 @@ pre[class*='language-'] {
 
 :root,
 .dark {
-  --background: var(--mcu-surface);
-  --foreground: var(--mcu-on-surface);
-  --card: var(--mcu-surface-container-low);
-  --card-foreground: var(--mcu-on-surface);
-  --popover: var(--mcu-surface-container-high);
-  --popover-foreground: var(--mcu-on-surface);
-  --primary: var(--mcu-primary);
-  --primary-foreground: var(--mcu-on-primary);
-  --secondary: var(--mcu-secondary-container);
-  --secondary-foreground: var(--mcu-on-secondary-container);
-  --muted: var(--mcu-surface-container-highest);
-  --muted-foreground: var(--mcu-on-surface-variant);
-  --accent: var(--mcu-secondary-container);
-  --accent-foreground: var(--mcu-on-secondary-container);
-  --destructive: var(--mcu-error);
-  --border: var(--mcu-outline-variant);
-  --input: var(--mcu-outline);
-  --ring: var(--mcu-primary);
-  --chart-1: var(--mcu-primary-fixed);
-  --chart-2: var(--mcu-secondary-fixed);
-  --chart-3: var(--mcu-tertiary-fixed);
-  --chart-4: var(--mcu-primary-fixed-dim);
-  --chart-5: var(--mcu-secondary-fixed-dim);
-  --sidebar: var(--mcu-surface-container-low);
-  --sidebar-foreground: var(--mcu-on-surface);
-  --sidebar-primary: var(--mcu-primary);
-  --sidebar-primary-foreground: var(--mcu-on-primary);
-  --sidebar-accent: var(--mcu-secondary-container);
-  --sidebar-accent-foreground: var(--mcu-on-secondary-container);
-  --sidebar-border: var(--mcu-outline-variant);
-  --sidebar-ring: var(--mcu-primary);
+  --background: var(--md-sys-color-surface);
+  --foreground: var(--md-sys-color-on-surface);
+  --card: var(--md-sys-color-surface-container-low);
+  --card-foreground: var(--md-sys-color-on-surface);
+  --popover: var(--md-sys-color-surface-container-high);
+  --popover-foreground: var(--md-sys-color-on-surface);
+  --primary: var(--md-sys-color-primary);
+  --primary-foreground: var(--md-sys-color-on-primary);
+  --secondary: var(--md-sys-color-secondary-container);
+  --secondary-foreground: var(--md-sys-color-on-secondary-container);
+  --muted: var(--md-sys-color-surface-container-highest);
+  --muted-foreground: var(--md-sys-color-on-surface-variant);
+  --accent: var(--md-sys-color-secondary-container);
+  --accent-foreground: var(--md-sys-color-on-secondary-container);
+  --destructive: var(--md-sys-color-error);
+  --border: var(--md-sys-color-outline-variant);
+  --input: var(--md-sys-color-outline);
+  --ring: var(--md-sys-color-primary);
+  --chart-1: var(--md-sys-color-primary-fixed);
+  --chart-2: var(--md-sys-color-secondary-fixed);
+  --chart-3: var(--md-sys-color-tertiary-fixed);
+  --chart-4: var(--md-sys-color-primary-fixed-dim);
+  --chart-5: var(--md-sys-color-secondary-fixed-dim);
+  --sidebar: var(--md-sys-color-surface-container-low);
+  --sidebar-foreground: var(--md-sys-color-on-surface);
+  --sidebar-primary: var(--md-sys-color-primary);
+  --sidebar-primary-foreground: var(--md-sys-color-on-primary);
+  --sidebar-accent: var(--md-sys-color-secondary-container);
+  --sidebar-accent-foreground: var(--md-sys-color-on-secondary-container);
+  --sidebar-border: var(--md-sys-color-outline-variant);
+  --sidebar-ring: var(--md-sys-color-primary);
 }

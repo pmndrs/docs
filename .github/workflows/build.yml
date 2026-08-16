@@ -34,30 +34,33 @@ on:
         type: string
       discord:
         type: string
+      # Left empty on purpose: the pmndrs defaults live in src/lib/md3.ts, installed
+      # from pmndrs/design-system. Set one of these only to override the seed for a
+      # site — an empty value falls through to the shared default.
       theme_primary:
         type: string
-        default: '#323e48'
+        default: ''
       theme_scheme:
         type: string
-        default: 'tonalSpot'
+        default: ''
       theme_contrast:
         type: string
-        default: '0'
+        default: ''
       theme_note:
         type: string
-        default: '#1f6feb'
+        default: ''
       theme_tip:
         type: string
-        default: '#238636'
+        default: ''
       theme_important:
         type: string
-        default: '#8957e5'
+        default: ''
       theme_warning:
         type: string
-        default: '#d29922'
+        default: ''
       theme_caution:
         type: string
-        default: '#da3633'
+        default: ''
       docker_tag:
         type: string
         default: '3'
