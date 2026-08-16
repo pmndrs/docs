@@ -3,9 +3,9 @@ import type { MtbConfig } from 'material-theme-builder'
 /**
  * The pmndrs Material Design 3 seed.
  *
- * This is Tier 1: the colours every pmndrs site derives from. The shadcn preset
- * carries radius and typography, not colour — moving `source` here is what
- * actually moves the rendered palette.
+ * The colours every pmndrs site derives from. The shadcn preset carries radius
+ * and typography, not colour — moving `source` here is what actually moves the
+ * rendered palette.
  *
  * Every value is overridable per deployment through a `THEME_*` env var, so a
  * site can reseed without forking the file.
