@@ -67,7 +67,7 @@
     "lodash-es": "^4.17.21",
     "lucide-react": "^0.563.0",
     "match-sorter": "^6.3.4",
-    "material-theme-builder": "^5.0.0",
+    "material-theme-builder": "^3.2.0",
     "mcp-handler": "^1.0.7",
     "mermaid": "^11.12.2",
     "next": "^16.1.3",
