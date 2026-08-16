@@ -3,7 +3,7 @@ import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { escape } from '@/utils/text'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'

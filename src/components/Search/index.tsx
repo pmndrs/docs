@@ -1,7 +1,7 @@
 'use client'
 
 import Icon from '@/components/Icon'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { ComponentProps, useEffect, useState } from 'react'

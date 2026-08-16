@@ -1,7 +1,7 @@
 'use client'
 
 import { Doc } from '@/app/[...slug]/DocsContext'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { ComponentProps, useEffect, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
