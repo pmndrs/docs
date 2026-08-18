@@ -1,5 +1,14 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+/* shadcn's variables, pointed at the M3 roles. Selectors are doubled, so it
+ * outranks the `:root` and `.dark` blocks below wherever it lands. */
+@import 'material-theme-builder/shadcn.css';
+
+/* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
+ * roles of each custom colour named here. */
+@plugin 'material-theme-builder/tailwind' {
+  custom-colors: note, tip, important, warning, caution;
+}
 
 @theme {
   --font-sans: var(--font-inter), sans-serif;
@@ -8,77 +17,6 @@
   /* Keyframes */
   --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
   --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;
-
-  /* Material Design colors from react-mcu */
-  --color-background: var(--mcu-background);
-  --color-on-background: var(--mcu-on-background);
-  --color-surface: var(--mcu-surface);
-  --color-surface-dim: var(--mcu-surface-dim);
-  --color-surface-bright: var(--mcu-surface-bright);
-  --color-surface-container-lowest: var(--mcu-surface-container-lowest);
-  --color-surface-container-low: var(--mcu-surface-container-low);
-  --color-surface-container: var(--mcu-surface-container);
-  --color-surface-container-high: var(--mcu-surface-container-high);
-  --color-surface-container-highest: var(--mcu-surface-container-highest);
-  --color-on-surface: var(--mcu-on-surface);
-  --color-on-surface-variant: var(--mcu-on-surface-variant);
-  --color-outline: var(--mcu-outline);
-  --color-outline-variant: var(--mcu-outline-variant);
-  --color-inverse-surface: var(--mcu-inverse-surface);
-  --color-inverse-on-surface: var(--mcu-inverse-on-surface);
-  --color-primary: var(--mcu-primary);
-  --color-on-primary: var(--mcu-on-primary);
-  --color-primary-container: var(--mcu-primary-container);
-  --color-on-primary-container: var(--mcu-on-primary-container);
-  --color-primary-fixed: var(--mcu-primary-fixed);
-  --color-primary-fixed-dim: var(--mcu-primary-fixed-dim);
-  --color-on-primary-fixed: var(--mcu-on-primary-fixed);
-  --color-on-primary-fixed-variant: var(--mcu-on-primary-fixed-variant);
-  --color-inverse-primary: var(--mcu-inverse-primary);
-  --color-secondary: var(--mcu-secondary);
-  --color-on-secondary: var(--mcu-on-secondary);
-  --color-secondary-container: var(--mcu-secondary-container);
-  --color-on-secondary-container: var(--mcu-on-secondary-container);
-  --color-secondary-fixed: var(--mcu-secondary-fixed);
-  --color-secondary-fixed-dim: var(--mcu-secondary-fixed-dim);
-  --color-on-secondary-fixed: var(--mcu-on-secondary-fixed);
-  --color-on-secondary-fixed-variant: var(--mcu-on-secondary-fixed-variant);
-  --color-tertiary: var(--mcu-tertiary);
-  --color-on-tertiary: var(--mcu-on-tertiary);
-  --color-tertiary-container: var(--mcu-tertiary-container);
-  --color-on-tertiary-container: var(--mcu-on-tertiary-container);
-  --color-tertiary-fixed: var(--mcu-tertiary-fixed);
-  --color-tertiary-fixed-dim: var(--mcu-tertiary-fixed-dim);
-  --color-on-tertiary-fixed: var(--mcu-on-tertiary-fixed);
-  --color-on-tertiary-fixed-variant: var(--mcu-on-tertiary-fixed-variant);
-  --color-error: var(--mcu-error);
-  --color-on-error: var(--mcu-on-error);
-  --color-error-container: var(--mcu-error-container);
-  --color-on-error-container: var(--mcu-on-error-container);
-  --color-scrim: var(--mcu-scrim);
-  --color-shadow: var(--mcu-shadow);
-
-  /* Custom alert colors */
-  --color-note: var(--mcu-note);
-  --color-on-note: var(--mcu-on-note);
-  --color-note-container: var(--mcu-note-container);
-  --color-on-note-container: var(--mcu-on-note-container);
-  --color-tip: var(--mcu-tip);
-  --color-on-tip: var(--mcu-on-tip);
-  --color-tip-container: var(--mcu-tip-container);
-  --color-on-tip-container: var(--mcu-on-tip-container);
-  --color-important: var(--mcu-important);
-  --color-on-important: var(--mcu-on-important);
-  --color-important-container: var(--mcu-important-container);
-  --color-on-important-container: var(--mcu-on-important-container);
-  --color-warning: var(--mcu-warning);
-  --color-on-warning: var(--mcu-on-warning);
-  --color-warning-container: var(--mcu-warning-container);
-  --color-on-warning-container: var(--mcu-on-warning-container);
-  --color-caution: var(--mcu-caution);
-  --color-on-caution: var(--mcu-on-caution);
-  --color-caution-container: var(--mcu-caution-container);
-  --color-on-caution-container: var(--mcu-on-caution-container);
 }
 
 @keyframes collapsible-down {
@@ -328,6 +266,16 @@ pre[class*='language-'] {
 
 /*
  * ShadCN (see: https://ui.shadcn.com/docs/installation/manual#configure-styles)
+ *
+ * The colour values in the `:root` and `.dark` blocks below are dead. The
+ * `material-theme-builder/shadcn.css` import at the top redeclares all of them
+ * against the M3 roles, and its selectors are doubled, so it wins on
+ * specificity from wherever it sits. `--radius` is the one live value here:
+ * that import defines no non-colour.
+ *
+ * They are kept verbatim anyway — this is what `shadcn` writes, and editing it
+ * by hand would come back on every future CLI run. Change colours through the
+ * theme, not here.
  */
 
 @plugin 'tailwindcss-animate';
@@ -451,39 +399,4 @@ pre[class*='language-'] {
   body {
     @apply bg-background text-foreground;
   }
-}
-
-:root,
-.dark {
-  --background: var(--mcu-surface);
-  --foreground: var(--mcu-on-surface);
-  --card: var(--mcu-surface-container-low);
-  --card-foreground: var(--mcu-on-surface);
-  --popover: var(--mcu-surface-container-high);
-  --popover-foreground: var(--mcu-on-surface);
-  --primary: var(--mcu-primary);
-  --primary-foreground: var(--mcu-on-primary);
-  --secondary: var(--mcu-secondary-container);
-  --secondary-foreground: var(--mcu-on-secondary-container);
-  --muted: var(--mcu-surface-container-highest);
-  --muted-foreground: var(--mcu-on-surface-variant);
-  --accent: var(--mcu-secondary-container);
-  --accent-foreground: var(--mcu-on-secondary-container);
-  --destructive: var(--mcu-error);
-  --border: var(--mcu-outline-variant);
-  --input: var(--mcu-outline);
-  --ring: var(--mcu-primary);
-  --chart-1: var(--mcu-primary-fixed);
-  --chart-2: var(--mcu-secondary-fixed);
-  --chart-3: var(--mcu-tertiary-fixed);
-  --chart-4: var(--mcu-primary-fixed-dim);
-  --chart-5: var(--mcu-secondary-fixed-dim);
-  --sidebar: var(--mcu-surface-container-low);
-  --sidebar-foreground: var(--mcu-on-surface);
-  --sidebar-primary: var(--mcu-primary);
-  --sidebar-primary-foreground: var(--mcu-on-primary);
-  --sidebar-accent: var(--mcu-secondary-container);
-  --sidebar-accent-foreground: var(--mcu-on-secondary-container);
-  --sidebar-border: var(--mcu-outline-variant);
-  --sidebar-ring: var(--mcu-primary);
 }
