@@ -19,37 +19,6 @@
   --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;
 }
 
-/*
- * Alert colours — GitHub's palette, harmonized against the pmndrs seed.
- *
- * One entry here per `customColors` name in src/lib/mtb.ts, four lines each.
- * material-theme-builder maps the standard M3 roles only, so these are ours to
- * keep in step: drop one and Tailwind emits no rule for `bg-note-container` at
- * all — no error, no warning, the element just renders unstyled.
- */
-@theme inline {
-  --color-note: var(--md-sys-color-note);
-  --color-on-note: var(--md-sys-color-on-note);
-  --color-note-container: var(--md-sys-color-note-container);
-  --color-on-note-container: var(--md-sys-color-on-note-container);
-  --color-tip: var(--md-sys-color-tip);
-  --color-on-tip: var(--md-sys-color-on-tip);
-  --color-tip-container: var(--md-sys-color-tip-container);
-  --color-on-tip-container: var(--md-sys-color-on-tip-container);
-  --color-important: var(--md-sys-color-important);
-  --color-on-important: var(--md-sys-color-on-important);
-  --color-important-container: var(--md-sys-color-important-container);
-  --color-on-important-container: var(--md-sys-color-on-important-container);
-  --color-warning: var(--md-sys-color-warning);
-  --color-on-warning: var(--md-sys-color-on-warning);
-  --color-warning-container: var(--md-sys-color-warning-container);
-  --color-on-warning-container: var(--md-sys-color-on-warning-container);
-  --color-caution: var(--md-sys-color-caution);
-  --color-on-caution: var(--md-sys-color-on-caution);
-  --color-caution-container: var(--md-sys-color-caution-container);
-  --color-on-caution-container: var(--md-sys-color-on-caution-container);
-}
-
 @keyframes collapsible-down {
   from {
     height: 0;

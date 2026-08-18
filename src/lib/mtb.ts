@@ -11,11 +11,8 @@ import type { MtbConfig } from 'material-theme-builder'
  * `blend: true` harmonizes each one against that seed, so they shift with the
  * theme instead of sitting on top of it.
  *
- * Each name here needs four `@theme` lines in globals.css — `--color-note`,
- * `--color-on-note`, `--color-note-container`, `--color-on-note-container`.
- * material-theme-builder maps standard M3 roles only, and a name declared here
- * but unmapped there fails silently: Tailwind emits no rule for
- * `bg-note-container` at all, no error, no warning.
+ * Name each one in the `@plugin 'material-theme-builder/tailwind'` block in
+ * globals.css, and the package emits the Tailwind utilities for it.
  */
 const alertColors = [
   { name: 'note', hex: process.env.THEME_NOTE || '#1f6feb', blend: true },

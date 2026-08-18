@@ -9,7 +9,7 @@
       "title": "Keypoints",
       "description": "A titled panel listing the main points an article covers — one bullet per `KeypointsItem`. Usually sits right after the intro.",
       "author": "pmndrs",
-      "registryDependencies": ["pmndrs/design-system/md3#v0.3.0"],
+      "registryDependencies": ["pmndrs/design-system/md3#v0.4.0"],
       "files": [
         {
           "path": "registry/keypoints/keypoints.tsx",
