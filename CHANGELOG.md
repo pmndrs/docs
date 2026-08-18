@@ -1,5 +1,25 @@
 # @pmndrs/docs
 
+## 3.5.0
+
+### Minor Changes
+
+- [#562](https://github.com/pmndrs/docs/pull/562) [`8415ecf`](https://github.com/pmndrs/docs/commit/8415ecfb9de76e7b5f64583c83fb60ba3cb97f54) Thanks [@abernier](https://github.com/abernier)! - Serve the pmndrs example gallery over MCP, next to the docs: an `examples://index` resource listing every published demo with its description, libraries and tags, and a `get_example` tool returning one demo in full -- source files, the dependency versions it is written against, and asset attribution. Reads the JSON catalog pmndrs/examples publishes at `/catalog/`; override the origin with `EXAMPLES_URL` to develop against a local build.
+
+### Patch Changes
+
+- [#565](https://github.com/pmndrs/docs/pull/565) [`3272ad5`](https://github.com/pmndrs/docs/commit/3272ad5596bf84a511b855585395a2cca9b5a950) Thanks [@abernier](https://github.com/abernier)! - Follow the examples gallery to guessable URLs: an example's document is now its page URL with `.md` on the end (`/examples/caustics.md`), and the gallery index is `/llms.txt` — the same root convention every site built with this generator already publishes. `index` no longer needs reserving as a name, since it no longer collides with anything.
+
+- [#564](https://github.com/pmndrs/docs/pull/564) [`2318b88`](https://github.com/pmndrs/docs/commit/2318b8815791d942e67b3adf3bf8daa339ece7d7) Thanks [@abernier](https://github.com/abernier)! - Pass the example gallery through as published rather than rendering it here. `pmndrs/examples` now writes the documents at build time and links each one from its page with `rel="alternate"`, so `examples://index` and `get_example` hand on the same text an agent would get from the open web — one rendering instead of two that could drift. The agents page documents both tools.
+
+- [#572](https://github.com/pmndrs/docs/pull/572) [`96c442f`](https://github.com/pmndrs/docs/commit/96c442fdc30a29fc6222199096d0cc13a1d64e86) Thanks [@abernier](https://github.com/abernier)! - `globals.css` stops restating the colour layer by hand. The ~60-line `@theme` mapping is now `@plugin 'material-theme-builder/tailwind'`, which declares the same names and takes the five alert colours as an option; the 31-line shadcn remap is now `@import 'material-theme-builder/shadcn.css'`, which is where those exact 31 declarations came from. 95 lines removed, nothing to keep in sync.
+
+- [#572](https://github.com/pmndrs/docs/pull/572) [`96c442f`](https://github.com/pmndrs/docs/commit/96c442fdc30a29fc6222199096d0cc13a1d64e86) Thanks [@abernier](https://github.com/abernier)! - Move the colour engine from `react-mcu` to [`material-theme-builder`](https://github.com/abernier/material-theme-builder), its successor. At the API level it is a rename: `--mcu-*` becomes `--md-sys-color-*`, the standard MD3 system-token name. The `--color-*` names the `@theme` mapping declares are unchanged, so every `bg-surface`, `bg-primary-container` and `text-on-surface-variant` keeps working untouched, and the `THEME_*` env vars behave exactly as before.
+
+  The palette is not quite identical, though. 57 of the 67 roles match exactly, including all 49 standard M3 ones; the 10 that differ all belong to the five `blend: true` custom colours, which the two packages harmonize differently. In practice the markdown alerts get more muted backgrounds — most visibly **Important** and **Caution**, whose hues sit furthest from the seed. **Tip** and **Warning** are unchanged.
+
+  Two components name the raw variables rather than a Tailwind utility — `Code` for its fixed prism colour, `Sandpack` for its three surface levels — and are the only component edits.
+
 ## 3.4.4
 
 ### Patch Changes
