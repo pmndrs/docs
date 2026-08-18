@@ -27,7 +27,7 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
         className={cn(
           className,
           'my-5 overflow-auto rounded-lg p-(--pad) font-mono text-sm',
-          'bg-[oklch(from_var(--mcu-on-primary-fixed)_l_calc(c*0.2)_h)] text-primary-fixed', // using a fixed color to only have 1 theme for prism
+          'bg-[oklch(from_var(--md-sys-color-on-primary-fixed)_l_calc(c*0.2)_h)] text-primary-fixed', // using a fixed color to only have 1 theme for prism
         )}
       >
         {children}

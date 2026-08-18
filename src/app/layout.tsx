@@ -4,7 +4,7 @@ import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
-import { Mcu } from 'react-mcu'
+import { Mtb } from 'material-theme-builder/react'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
 
@@ -131,7 +131,7 @@ export default function RootLayout({
         <SandpackCSS />
       </head>
       <body className="wrap-break-word bg-surface text-on-surface">
-        <Mcu
+        <Mtb
           source={primary}
           scheme={scheme}
           contrast={contrast}
@@ -144,7 +144,7 @@ export default function RootLayout({
           ]}
         >
           <ThemeProvider attribute="class">{children}</ThemeProvider>
-        </Mcu>
+        </Mtb>
       </body>
     </html>
   )

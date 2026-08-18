@@ -91,9 +91,9 @@ export const Sandpack = async ({
         {...props}
         theme={{
           colors: {
-            surface1: 'var(--mcu-surface-container-low)',
-            surface2: 'var(--mcu-surface-container)',
-            surface3: 'var(--mcu-surface-container-high)',
+            surface1: 'var(--md-sys-color-surface-container-low)',
+            surface2: 'var(--md-sys-color-surface-container)',
+            surface3: 'var(--md-sys-color-surface-container-high)',
           },
           font: {
             mono: 'var(--font-mono)',
