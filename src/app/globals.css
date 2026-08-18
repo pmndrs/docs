@@ -266,6 +266,16 @@ pre[class*='language-'] {
 
 /*
  * ShadCN (see: https://ui.shadcn.com/docs/installation/manual#configure-styles)
+ *
+ * The colour values in the `:root` and `.dark` blocks below are dead. The
+ * `material-theme-builder/shadcn.css` import at the top redeclares all of them
+ * against the M3 roles, and its selectors are doubled, so it wins on
+ * specificity from wherever it sits. `--radius` is the one live value here:
+ * that import defines no non-colour.
+ *
+ * They are kept verbatim anyway — this is what `shadcn` writes, and editing it
+ * by hand would come back on every future CLI run. Change colours through the
+ * theme, not here.
  */
 
 @plugin 'tailwindcss-animate';
