@@ -67,21 +67,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check version bump
-        id: check
-        uses: EndBug/version-check@v2
-        with:
-          diff-search: true
-      - id: get-version
-        if: steps.check.outputs.changed == 'true'
+      # `changesets/action` pushes `vX.Y.Z` and opens the GitHub release itself. The floating
+      # major alias is the one thing it does not do, and it is what consumers pinning
+      # `build.yml@v4` resolve through — so it is all that is left here.
+      #
+      # Gated on the release having happened, which is what keeps it off `pull_request` runs.
+      # It used to key off a version-diff instead, and on the Release PR that diff is true: the
+      # tags landed on the pull request's ephemeral merge commit, which is not on `main`.
+      - name: Move the major version tag
+        if: steps.changesets.outputs.published == 'true'
         run: |
-          VERSION="${{ steps.check.outputs.version }}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          MAJOR="v$(node -p "require('./package.json').version.split('.')[0]")"
 
-          MAJOR_VERSION=$(echo "$VERSION" | cut -d. -f1)
-          echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
 
-          echo "Using version: $VERSION (major: $MAJOR_VERSION)"
+          git tag -fa "$MAJOR" -m "Update major version tag to $MAJOR"
+          git push origin "$MAJOR" --force
 
       #
       # ██    ██ ███████ ██████   ██████ ███████ ██
@@ -129,38 +131,3 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: git tags
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
-
-          # Set version variables
-          VERSION=${{ steps.get-version.outputs.version }}
-          MAJOR_VERSION=${{ steps.get-version.outputs.major_version }}
-
-          # vX.Y.Z tag
-          git tag -fa v$VERSION -m "Update version tag to v$VERSION"
-
-          # vX tag
-          git tag -fa v$MAJOR_VERSION -m "Update major version tag to v$MAJOR_VERSION"
-
-          git push origin v$MAJOR_VERSION v$VERSION --force
-
-      - name: github release
-        if: steps.check.outputs.changed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=${{ steps.get-version.outputs.version }}
-          NOTES="$RUNNER_TEMP/release-notes.md"
-
-          # Extract this version's section from CHANGELOG.md (changesets format)
-          awk -v v="## $VERSION" '$0 == v { f=1; next } f && /^## / { exit } f' CHANGELOG.md > "$NOTES"
-
-          if gh release view "v$VERSION" >/dev/null 2>&1; then
-            gh release edit "v$VERSION" --notes-file "$NOTES"
-          else
-            gh release create "v$VERSION" --title "v$VERSION" --notes-file "$NOTES"
-          fi
