@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "pmndrs-docs",
+  "homepage": "https://github.com/pmndrs/docs",
+  "items": [
+    {
+      "name": "keypoints",
+      "type": "registry:block",
+      "title": "Keypoints",
+      "description": "A titled panel listing the main points an article covers — one bullet per `KeypointsItem`. Usually sits right after the intro.",
+      "author": "pmndrs",
+      "registryDependencies": ["pmndrs/design-system/md3#v0.4.0"],
+      "files": [
+        {
+          "path": "registry/keypoints/keypoints.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "docs": "Renders on stock shadcn tokens apart from `bg-surface-dim`, which is why it depends on `pmndrs/design-system/md3` — MD3 has a surface role shadcn has no equivalent for. Installing it without that dependency resolved leaves the panel with no background at all, and Tailwind reports nothing."
+    }
+  ]
+}

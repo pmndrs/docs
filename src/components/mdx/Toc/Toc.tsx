@@ -1,7 +1,7 @@
 'use client'
 
 import type { DocToC } from '@/app/[...slug]/DocsContext'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps, useCallback, useEffect, useState } from 'react'
 
 export function Toc({ className, toc }: ComponentProps<'div'> & { toc: DocToC[] }) {

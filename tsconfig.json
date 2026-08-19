@@ -22,7 +22,9 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@/package.json": ["../package.json"]
+      "@/package.json": ["../package.json"],
+      // Registry items sit at the repo root, outside `src`, where `shadcn` looks for them.
+      "@/registry/*": ["../registry/*"]
     }
   },
   "include": [

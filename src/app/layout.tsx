@@ -1,10 +1,11 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
+import { docsMtb } from '@/lib/mtb'
 import { svg } from '@/utils/icon'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
+import { builder } from 'material-theme-builder'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
-import { Mtb } from 'material-theme-builder/react'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
 
@@ -97,26 +98,29 @@ export const metadata: Metadata = {
   },
 }
 
+/**
+ * The rendered palette, computed on the server.
+ *
+ * This site installs `md3-base` rather than `md3` — the design system without its baked
+ * palette — because it supplies its own: `docsMtb` adds the five alert colours,
+ * and `blend: true` derives them from whatever `THEME_PRIMARY` the deployment
+ * set, which an upstream bake cannot know. So this `<style>` is the only place
+ * `--md-sys-color-*` is defined; nothing overrides anything.
+ *
+ * `builder` is the package's root export and carries no `'use client'` — only
+ * `material-theme-builder/react` does. Calling it here keeps the palette code
+ * off the client entirely. It costs ~2 kB brotli of repeated `<style>` per
+ * document, which is cheaper than the build step it would take to hoist it into
+ * the stylesheet.
+ */
+const { source, ...mtbOptions } = docsMtb
+const md3Css = builder(source, mtbOptions).toCss()
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const primary = process.env.THEME_PRIMARY || '#323e48'
-  const note = process.env.THEME_NOTE || '#1f6feb'
-  const tip = process.env.THEME_TIP || '#238636'
-  const important = process.env.THEME_IMPORTANT || '#8957e5'
-  const warning = process.env.THEME_WARNING || '#d29922'
-  const caution = process.env.THEME_CAUTION || '#da3633'
-  const scheme = (process.env.THEME_SCHEME || 'tonalSpot') as
-    | 'content'
-    | 'expressive'
-    | 'fidelity'
-    | 'monochrome'
-    | 'neutral'
-    | 'tonalSpot'
-    | 'vibrant'
-  const contrast = Number(process.env.THEME_CONTRAST) || 0
   const basePath = process.env.BASE_PATH || ''
 
   return (
@@ -129,22 +133,10 @@ export default function RootLayout({
         <link rel="alternate" type="text/plain" href={`${basePath}/llms.txt`} />
         <link rel="alternate" type="text/plain" href={`${basePath}/llms-full.txt`} />
         <SandpackCSS />
+        <style dangerouslySetInnerHTML={{ __html: md3Css }} />
       </head>
       <body className="wrap-break-word bg-surface text-on-surface">
-        <Mtb
-          source={primary}
-          scheme={scheme}
-          contrast={contrast}
-          customColors={[
-            { name: 'note', hex: note, blend: true },
-            { name: 'tip', hex: tip, blend: true },
-            { name: 'important', hex: important, blend: true },
-            { name: 'warning', hex: warning, blend: true },
-            { name: 'caution', hex: caution, blend: true },
-          ]}
-        >
-          <ThemeProvider attribute="class">{children}</ThemeProvider>
-        </Mtb>
+        <ThemeProvider attribute="class">{children}</ThemeProvider>
       </body>
     </html>
   )
