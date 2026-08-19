@@ -5,7 +5,7 @@ import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
-import { cache } from 'react'
+import { cache, type ComponentType } from 'react'
 
 /**
  * Checks for .md(x) file extension
@@ -77,14 +77,17 @@ export async function parseDocsMetadata(root: string) {
  * @param root - absolute or relative (to cwd) path to docs folder
  */
 
-const MDX_BASEURL = process.env.MDX_BASEURL
-// console.log('MDX_BASEURL', MDX_BASEURL)
-
 async function _getDocs(
   root: string,
   slugOfInterest: string[] | null,
   slugOnly = false,
+  /** Components overriding the defaults, for consumers rendering docs outside the website */
+  components?: Record<string, ComponentType<any>>,
 ): Promise<Doc[]> {
+  // Read at call time, not at module scope: consumers embedding this (the CLI) set their
+  // environment after the module is loaded.
+  const MDX_BASEURL = process.env.MDX_BASEURL
+
   //
   // 1st pass for `entries` - using shared parseDocsMetadata
   //
@@ -215,16 +218,16 @@ async function _getDocs(
 
         const tableOfContents: DocToC[] = []
 
-        const compiledContent = await compileMdxContent(
-          `# ${titleRaw}\n ${content}`,
+        const compiledContent = await compileMdxContent(`# ${titleRaw}\n ${content}`, {
           relFilePath,
-          file,
-          MDX_BASEURL,
-          titleRaw,
+          absoluteFilePath: file,
+          baseUrl: MDX_BASEURL,
+          title: titleRaw,
           url,
           tableOfContents,
           entries,
-        )
+          components,
+        })
         const contentJsx = compiledContent.content
 
         return {

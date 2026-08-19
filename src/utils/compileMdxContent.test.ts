@@ -45,8 +45,7 @@ describe('compileMdxContent', () => {
   const entries: any[] = []
 
   it('compiles full MDX content with text', async () => {
-    const result = await compileMdxContent(
-      'This is **bold** text with *italic* formatting.',
+    const result = await compileMdxContent('This is **bold** text with *italic* formatting.', {
       relFilePath,
       absoluteFilePath,
       baseUrl,
@@ -54,7 +53,7 @@ describe('compileMdxContent', () => {
       url,
       tableOfContents,
       entries,
-    )
+    })
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
     expect(html).toMatch(
@@ -63,8 +62,7 @@ describe('compileMdxContent', () => {
   })
 
   it('compiles MDX with code blocks', async () => {
-    const result = await compileMdxContent(
-      '```js\nconst x = 1;\n```',
+    const result = await compileMdxContent('```js\nconst x = 1;\n```', {
       relFilePath,
       absoluteFilePath,
       baseUrl,
@@ -72,7 +70,7 @@ describe('compileMdxContent', () => {
       url,
       tableOfContents,
       entries,
-    )
+    })
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
     // Code blocks have complex HTML structure with syntax highlighting
@@ -85,8 +83,7 @@ describe('compileMdxContent', () => {
   })
 
   it('compiles MDX with links', async () => {
-    const result = await compileMdxContent(
-      'Check [this link](#section)',
+    const result = await compileMdxContent('Check [this link](#section)', {
       relFilePath,
       absoluteFilePath,
       baseUrl,
@@ -94,7 +91,7 @@ describe('compileMdxContent', () => {
       url,
       tableOfContents,
       entries,
-    )
+    })
     expect(result.content).toBeDefined()
     const html = renderToString(result.content)
     expect(html).toMatch(/<p[^>]*>Check <a[^>]*href="#section"[^>]*>this link<\/a><\/p>/)

@@ -56,7 +56,6 @@ function SearchItem({
           </div>
         </div>
         {result.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
         ) : (
           <Icon icon="enter" />
