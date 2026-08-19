@@ -10,7 +10,6 @@ import { Box, render, Text, useInput, useWindowSize, type Instance } from 'ink'
 import { spawn } from 'node:child_process'
 import { useEffect, useMemo, useState } from 'react'
 import { libs, pagesOf, webUrl, type Page } from './browse.prototype.corpus'
-import { useLatest } from './browse.prototype.latest'
 import { Lines } from './browse.prototype.lines'
 import { List, moveCursor } from './browse.prototype.list'
 import { renderMarkdown } from './browse.prototype.markdown'
@@ -61,24 +60,21 @@ function App() {
     [page, columns],
   )
 
-  const state = useLatest({ pane, pages, page, body, inner })
-
   useInput((input, key) => {
-    const now = state.current
-    if (key.tab) return setPane(panes[moveCursor(panes.indexOf(now.pane), key.shift ? -1 : 1, 3)])
+    if (key.tab) return setPane(panes[moveCursor(panes.indexOf(pane), key.shift ? -1 : 1, 3)])
     if (input === '<') return leaveWith(app, PREV)
     if (input === '>') return leaveWith(app, NEXT)
     if (input === 'q' || (key.ctrl && input === 'c')) return leaveWith(app, 0)
-    if (input === 'o' && now.page) {
-      return void spawn('open', [webUrl(now.page)], { stdio: 'ignore' }).unref()
+    if (input === 'o' && page) {
+      return void spawn('open', [webUrl(page)], { stdio: 'ignore' }).unref()
     }
 
     const step = key.upArrow || input === 'k' ? -1 : key.downArrow || input === 'j' ? 1 : 0
     if (!step) return
-    if (now.pane === 'libs') setLibIndex((i) => moveCursor(i, step, libs.length))
-    else if (now.pane === 'pages') setPageIndex((i) => moveCursor(i, step, now.pages.length))
+    if (pane === 'libs') setLibIndex((i) => moveCursor(i, step, libs.length))
+    else if (pane === 'pages') setPageIndex((i) => moveCursor(i, step, pages.length))
     else {
-      const max = Math.max(0, now.body.length - now.inner + 2)
+      const max = Math.max(0, body.length - inner + 2)
       setScroll((s) => Math.max(0, Math.min(s + step * 3, max)))
     }
   })

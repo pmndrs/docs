@@ -28,9 +28,6 @@
 //   * Ink has no <select> and no scroll container: `browse.prototype.list.tsx`
 //     is a windowed list, and each content pane slices its own lines. That is
 //     ~60 lines, and it is the whole difference in practice.
-//   * Ink 7.1.1's `useInput` handler is stale — it keeps the first render's
-//     values forever. Every key handler here reads through `useLatest`; see
-//     `browse.prototype.latest.ts` for the twenty-line repro.
 //   * The registry in `src/app/page.tsx` cannot be read from a plain process:
 //     it imports Next assets. `browse.prototype.corpus.ts` duplicates it.
 //     A real `browse` needs it extracted to an asset-free module first.

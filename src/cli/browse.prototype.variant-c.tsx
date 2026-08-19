@@ -11,7 +11,6 @@ import { Box, render, Text, useInput, useWindowSize, type Instance } from 'ink'
 import { spawn } from 'node:child_process'
 import { useEffect, useMemo, useState } from 'react'
 import { corpus, libs, webUrl, type Page } from './browse.prototype.corpus'
-import { useLatest } from './browse.prototype.latest'
 import { Lines } from './browse.prototype.lines'
 import { List, moveCursor } from './browse.prototype.list'
 import { renderMarkdown } from './browse.prototype.markdown'
@@ -78,10 +77,7 @@ function App() {
     [reading, columns],
   )
 
-  const state = useLatest({ reading, results, hit, body, rows })
-
   useInput((input, key) => {
-    const now = state.current
     // The query field is not a text input: typing is routed here by hand so ↑↓⏎
     // always drive the list. `<` and `>` are query text while searching, so
     // ctrl+←/→ is the switcher in this variant.
@@ -89,15 +85,14 @@ function App() {
     if (key.ctrl && key.rightArrow) return leaveWith(app, NEXT)
     if (key.ctrl && input === 'c') return leaveWith(app, 0)
 
-    if (now.reading) {
+    if (reading) {
       if (input === '<') return leaveWith(app, PREV)
       if (input === '>') return leaveWith(app, NEXT)
       if (key.escape || input === 'q') return setReading(undefined)
-      if (input === 'o')
-        return void spawn('open', [webUrl(now.reading)], { stdio: 'ignore' }).unref()
+      if (input === 'o') return void spawn('open', [webUrl(reading)], { stdio: 'ignore' }).unref()
       const step = key.upArrow || input === 'k' ? -1 : key.downArrow || input === 'j' ? 1 : 0
       if (step) {
-        const max = Math.max(0, now.body.length - now.rows + 3)
+        const max = Math.max(0, body.length - rows + 3)
         setScroll((s) => Math.max(0, Math.min(s + step * 3, max)))
       }
       return
@@ -105,12 +100,12 @@ function App() {
 
     if (key.escape) return leaveWith(app, 0)
     if (key.return) {
-      if (!now.results[now.hit]) return
+      if (!results[hit]) return
       setScroll(0)
-      return setReading(now.results[now.hit])
+      return setReading(results[hit])
     }
-    if (key.upArrow) return setHit((i) => moveCursor(i, -1, now.results.length))
-    if (key.downArrow) return setHit((i) => moveCursor(i, 1, now.results.length))
+    if (key.upArrow) return setHit((i) => moveCursor(i, -1, results.length))
+    if (key.downArrow) return setHit((i) => moveCursor(i, 1, results.length))
     if (key.delete || key.backspace) return setQuery((q) => q.slice(0, -1))
     if (input && !key.ctrl && !key.meta && input >= ' ') {
       setQuery((q) => q + input)
