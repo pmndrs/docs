@@ -10,8 +10,6 @@
     "@changesets/cli": "^2.29.8",
     "@chromatic-com/playwright": "^0.12.8",
     "@eslint/eslintrc": "^3.3.3",
-    "@opentui/core": "0.5.4",
-    "@opentui/react": "0.5.4",
     "@playwright/test": "^1.57.0",
     "@storybook/addon-docs": "^10.2.0",
     "@storybook/addon-themes": "^10.2.0",
@@ -23,6 +21,7 @@
     "eslint-config-next": "^16.0.0",
     "eslint-plugin-storybook": "^10.2.0",
     "husky": "^9.1.7",
+    "ink": "^7.1.1",
     "lint-staged": "^15.2.10",
     "msw": "^2.12.8",
     "prettier": "^3.3.3",
@@ -101,7 +100,7 @@
     "build-storybook": "storybook build",
     "build:cli": "node scripts/build-cli.mjs",
     "prepack": "node scripts/build-cli.mjs",
-    "browse": "bun src/cli/browse.prototype.tsx"
+    "browse": "esbuild src/cli/browse.prototype.tsx --bundle --platform=node --format=esm --packages=external --jsx=automatic --outfile=.prototype/browse.mjs --log-level=warning && node .prototype/browse.mjs"
   },
   "engines": {
     "node": ">=20.9.0"

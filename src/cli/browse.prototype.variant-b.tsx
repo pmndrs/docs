@@ -6,33 +6,35 @@
 //
 // The bet: what a reader wants is context, not a sequence of decisions.
 
-import { createCliRenderer, type CliRenderer, type SelectOption } from '@opentui/core'
-import { createRoot, useKeyboard, useTerminalDimensions } from '@opentui/react'
+import { Box, render, Text, useInput, useWindowSize, type Instance } from 'ink'
 import { spawn } from 'node:child_process'
 import { useEffect, useMemo, useState } from 'react'
-import { NEXT, PREV, snapshotIfAsked, variants } from './browse.prototype.switcher'
 import { libs, pagesOf, webUrl, type Page } from './browse.prototype.corpus'
+import { useLatest } from './browse.prototype.latest'
 import { Lines } from './browse.prototype.lines'
+import { List, moveCursor } from './browse.prototype.list'
 import { renderMarkdown } from './browse.prototype.markdown'
+import {
+  leaveWith,
+  NEXT,
+  PREV,
+  renderOptions,
+  snapshotIfAsked,
+  variants,
+} from './browse.prototype.switcher'
 
-let renderer: CliRenderer
-
-function leave(code: number) {
-  // Exiting straight out of a key handler cuts OpenTUI's pending write and
-  // leaves the terminal mid-frame. Tear down, then exit on the next tick.
-  renderer.destroy()
-  setTimeout(() => process.exit(code), 50)
-}
+let app: Instance
 
 type Pane = 'libs' | 'pages' | 'content'
 const panes: Pane[] = ['libs', 'pages', 'content']
 
 function App() {
-  const { width, height } = useTerminalDimensions()
+  const { columns, rows } = useWindowSize()
   const [libIndex, setLibIndex] = useState(0)
   const [pages, setPages] = useState<Page[]>([])
   const [pageIndex, setPageIndex] = useState(0)
   const [pane, setPane] = useState<Pane>('pages')
+  const [scroll, setScroll] = useState(0)
 
   const lib = libs[libIndex]
   const page = pages[pageIndex]
@@ -49,94 +51,102 @@ function App() {
     }
   }, [lib])
 
-  // <select> is not sized by flex — every one of them needs an explicit height.
+  useEffect(() => setScroll(0), [page])
+
   const sidebar = 30
   const footer = 1
-  const libsBox = libs.length + 2
-  const pagesBox = height - footer - libsBox
+  const inner = rows - footer - 2 // minus the two horizontal border rows
   const body = useMemo(
-    () => (page ? renderMarkdown(page.body, width - sidebar - 6) : []),
-    [page, width, sidebar],
+    () => (page ? renderMarkdown(page.body, columns - sidebar - 6) : []),
+    [page, columns],
   )
 
-  useKeyboard((key) => {
-    if (key.name === 'tab') setPane(panes[(panes.indexOf(pane) + (key.shift ? -1 : 1) + 3) % 3])
-    else if (key.sequence === '<') leave(PREV)
-    else if (key.sequence === '>') leave(NEXT)
-    else if (key.name === 'q' || (key.ctrl && key.name === 'c')) leave(0)
-    else if (key.name === 'o' && page) spawn('open', [webUrl(page)], { stdio: 'ignore' }).unref()
+  const state = useLatest({ pane, pages, page, body, inner })
+
+  useInput((input, key) => {
+    const now = state.current
+    if (key.tab) return setPane(panes[moveCursor(panes.indexOf(now.pane), key.shift ? -1 : 1, 3)])
+    if (input === '<') return leaveWith(app, PREV)
+    if (input === '>') return leaveWith(app, NEXT)
+    if (input === 'q' || (key.ctrl && input === 'c')) return leaveWith(app, 0)
+    if (input === 'o' && now.page) {
+      return void spawn('open', [webUrl(now.page)], { stdio: 'ignore' }).unref()
+    }
+
+    const step = key.upArrow || input === 'k' ? -1 : key.downArrow || input === 'j' ? 1 : 0
+    if (!step) return
+    if (now.pane === 'libs') setLibIndex((i) => moveCursor(i, step, libs.length))
+    else if (now.pane === 'pages') setPageIndex((i) => moveCursor(i, step, now.pages.length))
+    else {
+      const max = Math.max(0, now.body.length - now.inner + 2)
+      setScroll((s) => Math.max(0, Math.min(s + step * 3, max)))
+    }
   })
 
-  const libOptions: SelectOption[] = libs.map((l) => ({
-    name: l.title,
-    description: l.description,
-    value: l.name,
-  }))
-  const pageOptions: SelectOption[] = pages.map((p) => ({
-    name: p.title,
-    description: p.path,
-    value: p.path,
-  }))
+  const active = (which: Pane) => (pane === which ? 'cyan' : 'gray')
 
   return (
-    <box style={{ flexDirection: 'column', width, height }}>
-      <box style={{ flexDirection: 'row', flexGrow: 1 }}>
-        <box style={{ flexDirection: 'column', width: sidebar }}>
-          <box
-            title="Libraries"
-            titleColor={pane === 'libs' ? '#89ddff' : '#5a5a5a'}
-            style={{ border: true, height: libsBox }}
+    <Box flexDirection="column" width={columns} height={rows}>
+      <Box flexDirection="row" flexGrow={1}>
+        <Box flexDirection="column" width={sidebar} flexShrink={0}>
+          <Box
+            flexDirection="column"
+            borderStyle="round"
+            borderColor={active('libs')}
+            height={libs.length + 2}
+            flexShrink={0}
           >
-            <select
-              style={{ height: libs.length }}
-              showDescription={false}
-              options={libOptions}
+            <List
+              rows={libs.map((l) => ({ label: l.title }))}
+              cursor={libIndex}
+              height={libs.length}
               focused={pane === 'libs'}
-              onChange={(index) => setLibIndex(index)}
             />
-          </box>
-          <box
-            title={`${lib.title} · ${pages.length || '…'}`}
-            titleColor={pane === 'pages' ? '#89ddff' : '#5a5a5a'}
-            style={{ border: true, height: pagesBox }}
+          </Box>
+          <Box
+            flexDirection="column"
+            borderStyle="round"
+            borderColor={active('pages')}
+            flexGrow={1}
           >
-            <select
-              style={{ height: pagesBox - 2 }}
-              showDescription={false}
-              options={pageOptions}
+            <Text wrap="truncate" color={active('pages')}>
+              {` ${lib.title} · ${pages.length || '…'}`}
+            </Text>
+            <List
+              rows={pages.map((p) => ({ label: p.title }))}
+              cursor={pageIndex}
+              height={inner - libs.length - 3}
               focused={pane === 'pages'}
-              onChange={(index) => setPageIndex(index)}
             />
-          </box>
-        </box>
+          </Box>
+        </Box>
 
-        <box
-          title={page ? `${page.title}  ${page.path}` : 'loading…'}
-          titleColor={pane === 'content' ? '#89ddff' : '#5a5a5a'}
-          style={{ border: true, flexGrow: 1 }}
+        <Box
+          flexDirection="column"
+          borderStyle="round"
+          borderColor={active('content')}
+          flexGrow={1}
+          paddingLeft={1}
+          paddingRight={1}
         >
-          <scrollbox focused={pane === 'content'} style={{ paddingLeft: 1, paddingRight: 1 }}>
-            <Lines lines={body} />
-          </scrollbox>
-        </box>
-      </box>
+          <Text wrap="truncate" color={active('content')}>
+            {page ? `${page.title}  ${page.path}` : 'loading…'}
+          </Text>
+          <Lines lines={body.slice(scroll, scroll + inner - 1)} />
+        </Box>
+      </Box>
 
-      <box style={{ height: 1, paddingLeft: 1 }}>
-        <text>
-          <span fg="#1a1b26" bg="#89ddff">
-            {` B — ${variants.b} `}
-          </span>
-          <span fg="#5a5a5a">
-            {'  tab pane · ↑↓ move · o open in browser · < > variant · q quit'}
-          </span>
-        </text>
-      </box>
-    </box>
+      <Box height={1} flexShrink={0}>
+        <Text>
+          <Text backgroundColor="cyan" color="black">{` B — ${variants.b} `}</Text>
+          <Text dimColor>{'  tab pane · ↑↓ move · o open in browser · < > variant · q quit'}</Text>
+        </Text>
+      </Box>
+    </Box>
   )
 }
 
-export async function run() {
-  renderer = await createCliRenderer({ exitOnCtrlC: false })
-  createRoot(renderer).render(<App />)
-  snapshotIfAsked(renderer)
+export function run() {
+  app = render(<App />, renderOptions())
+  snapshotIfAsked(app)
 }

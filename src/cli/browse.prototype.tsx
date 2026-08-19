@@ -20,16 +20,17 @@
 //
 // What running this already settled
 // ---------------------------------
-//   * It needs **bun**, not node. @opentui/core 0.5.4 ships an `index.node.js`
-//     and per-platform native packages, but its FFI refuses to load outside
-//     bun: "OpenTUI native FFI is not available for this runtime yet". So B and
-//     C — and therefore this whole entry point — run under bun. An npm-shipped
-//     `npx @pmndrs/docs browse` cannot use OpenTUI today without a bundled
-//     standalone binary. Variant A, which needs no TUI toolkit, runs anywhere.
-//   * `<select>` is never sized by flex — every one of them needs an explicit
-//     `style={{ height }}`, or it renders as an empty box.
-//   * Exiting straight out of a key handler drops OpenTUI's pending frame; tear
-//     the renderer down and exit on a later tick (see `leave` in B and C).
+//   * B and C are built on **Ink**, on plain node. They started on OpenTUI,
+//     which renders beautifully but whose native FFI refuses to load outside
+//     bun ("OpenTUI native FFI is not available for this runtime yet"), so it
+//     cannot ship inside `npx @pmndrs/docs`. The OpenTUI versions are in this
+//     branch's history if the comparison is ever worth re-reading.
+//   * Ink has no <select> and no scroll container: `browse.prototype.list.tsx`
+//     is a windowed list, and each content pane slices its own lines. That is
+//     ~60 lines, and it is the whole difference in practice.
+//   * Ink 7.1.1's `useInput` handler is stale — it keeps the first render's
+//     values forever. Every key handler here reads through `useLatest`; see
+//     `browse.prototype.latest.ts` for the twenty-line repro.
 //   * The registry in `src/app/page.tsx` cannot be read from a plain process:
 //     it imports Next assets. `browse.prototype.corpus.ts` duplicates it.
 //     A real `browse` needs it extracted to an asset-free module first.
