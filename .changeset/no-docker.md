@@ -13,5 +13,8 @@ keeps building through the image until its repository moves to `@v4`.
 `build.yml` itself keeps every input, every environment variable and the same Pages artifact.
 Only the build step changes, and `docker_tag` gives way to `version` — an npm version or range.
 
+The job keeps `id-token: write` — no longer to attest a Docker image, now to sign the npm
+publish with trusted publishing.
+
 `preview.sh` builds through the CLI too, and reads its options straight from the environment
 rather than forwarding each one into a container.

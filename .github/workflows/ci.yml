@@ -17,6 +17,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # npm trusted publishing signs the release with an OIDC token
+      id-token: write
 
     # Update the Production/Preview environment with the Vercel deployed URL
     environment:
