@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach, vi, beforeEach } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
-import { libs } from '@/app/page'
+import { libs } from '@/libs'
 
 // Mock Next.js headers before importing the route
 vi.mock('next/headers', () => ({
@@ -191,7 +191,7 @@ describe('MCP Route Handler', () => {
 
   describe('Library Filtering', () => {
     it('should expose exactly the libraries flagged with llms_full', async () => {
-      const { libs } = await import('@/app/page')
+      const { libs } = await import('@/libs')
 
       const exposed = Object.entries(libs)
         .filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
@@ -201,7 +201,7 @@ describe('MCP Route Handler', () => {
     })
 
     it('should exclude pmndrs.github.io libraries that publish no llms-full.txt', async () => {
-      const { libs } = await import('@/app/page')
+      const { libs } = await import('@/libs')
 
       // Regression: these are hosted on pmndrs.github.io but are not built with this
       // generator, so `${docs_url}/llms-full.txt` 404s. Selecting on the host alone
@@ -222,7 +222,7 @@ describe('MCP Route Handler', () => {
     })
 
     it('should exclude libraries documented outside pmndrs', async () => {
-      const { libs } = await import('@/app/page')
+      const { libs } = await import('@/libs')
 
       for (const libname of ['react-spring', 'jotai', 'valtio'] as const) {
         expect('llms_full' in libs[libname] && libs[libname].llms_full).toBeFalsy()

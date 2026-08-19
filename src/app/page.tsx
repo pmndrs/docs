@@ -10,148 +10,24 @@ import Icon from '@/components/Icon'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
 import { Badge } from '@/components/ui/badge'
+import { libs } from '@/libs'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
-import Image from 'next/image'
+import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-export interface Library {
-  title: string
-  docs_url: string
-  github: string
-  description: string
-  // Optional banner image
-  image?: string
-  // Optional project icon
-  icon?: string
-  iconWidth?: number
-  iconHeight?: number
-  // Whether `${docs_url}/llms-full.txt` exists, i.e. the site is built with this
-  // generator. Only these libraries can be served over MCP -- see
-  // `src/app/api/[transport]/route.ts`. Flip it on once a site ships its dump.
-  llms_full?: boolean
+/** The icons, kept here because they are assets: `@/libs` stays readable outside Next. */
+const icons: Partial<Record<keyof typeof libs, StaticImageData>> = {
+  'react-three-fiber': r3fIcon,
+  'react-spring': reactSpringIcon,
+  drei: dreiIcon,
+  zustand: zustandIcon,
+  jotai: jotaiIcon,
+  'react-postprocessing': ppIcon,
+  uikit: uiKitIcon,
+  docs: docsIcon,
 }
-
-export const libs = {
-  'react-three-fiber': {
-    title: 'React Three Fiber',
-    docs_url: 'https://pmndrs.github.io/react-three-fiber',
-    github: 'https://github.com/pmndrs/react-three-fiber',
-    description: 'React-three-fiber is a React renderer for three.js',
-    llms_full: true,
-    icon: r3fIcon.src,
-    iconWidth: r3fIcon.width,
-    iconHeight: r3fIcon.height,
-  },
-  'react-spring': {
-    title: 'React Spring',
-    docs_url: 'https://react-spring.io',
-    github: 'https://github.com/pmndrs/react-spring',
-    description: 'Bring your components to life with simple spring animation primitives for React',
-    icon: reactSpringIcon.src,
-    iconWidth: reactSpringIcon.width,
-    iconHeight: reactSpringIcon.height,
-  },
-  drei: {
-    title: 'Drei',
-    docs_url: 'https://pmndrs.github.io/drei',
-    github: 'https://github.com/pmndrs/drei',
-    description:
-      'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
-    llms_full: true,
-    icon: dreiIcon.src,
-    iconWidth: dreiIcon.width,
-    iconHeight: dreiIcon.height,
-  },
-  zustand: {
-    title: 'Zustand',
-    docs_url: 'https://pmndrs.github.io/zustand',
-    github: 'https://github.com/pmndrs/zustand',
-    description:
-      'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
-    llms_full: true,
-    icon: zustandIcon.src,
-    iconWidth: zustandIcon.width,
-    iconHeight: zustandIcon.height,
-  },
-  jotai: {
-    title: 'Jotai',
-    docs_url: 'https://jotai.org/docs/introduction',
-    github: 'https://github.com/pmndrs/jotai',
-    description: 'Jotai is a primitive and flexible state management library for React',
-    icon: jotaiIcon.src,
-    iconWidth: jotaiIcon.width,
-    iconHeight: jotaiIcon.height,
-  },
-  valtio: {
-    title: 'Valtio',
-    docs_url: 'https://valtio.pmnd.rs',
-    github: 'https://github.com/pmndrs/valtio',
-    description: 'Valtio makes proxy-state simple for React and Vanilla',
-  },
-  a11y: {
-    title: 'A11y',
-    docs_url: 'https://pmndrs.github.io/react-three-a11y',
-    github: 'https://github.com/pmndrs/react-three-a11y',
-    description:
-      '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
-  },
-  'react-postprocessing': {
-    title: 'React Postprocessing',
-    docs_url: 'https://pmndrs.github.io/react-postprocessing',
-    github: 'https://github.com/pmndrs/react-postprocessing',
-    description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
-    icon: ppIcon.src,
-    iconWidth: ppIcon.width,
-    iconHeight: ppIcon.height,
-  },
-  uikit: {
-    title: 'uikit',
-    docs_url: 'https://pmndrs.github.io/uikit/docs',
-    github: 'https://github.com/pmndrs/uikit',
-    description: 'uikit brings user interfaces to @react-three/fiber',
-    icon: uiKitIcon.src,
-    iconWidth: uiKitIcon.width,
-    iconHeight: uiKitIcon.height,
-  },
-  xr: {
-    title: 'xr',
-    docs_url: 'https://pmndrs.github.io/xr/docs',
-    github: 'https://github.com/pmndrs/xr',
-    description: 'VR/AR for @react-three/fiber',
-  },
-  docs: {
-    title: 'Docs',
-    docs_url: '/getting-started/introduction',
-    github: 'https://github.com/pmndrs/docs',
-    description: 'Documentation generator for `pmndrs/*`',
-    llms_full: true,
-    icon: docsIcon.src,
-    iconWidth: docsIcon.width,
-    iconHeight: docsIcon.height,
-  },
-  prai: {
-    title: 'prai',
-    docs_url: 'https://pmndrs.github.io/prai',
-    github: 'https://github.com/pmndrs/prai',
-    description: 'JS Framework for building step-by-step LLM instructions`',
-  },
-  viverse: {
-    title: 'viverse',
-    docs_url: 'https://pmndrs.github.io/viverse',
-    github: 'https://github.com/pmndrs/viverse',
-    description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE and beyond.',
-  },
-  leva: {
-    title: 'leva',
-    docs_url: 'https://pmndrs.github.io/leva',
-    github: 'https://github.com/pmndrs/leva',
-    description: 'React-first components GUI',
-  },
-} as const satisfies Record<string, Library>
-
-export type SUPPORTED_LIBRARY_NAMES = keyof typeof libs
 
 const title = 'Poimandres documentation'
 const description = `Index of documentation for pmndrs/* libraries`
@@ -250,69 +126,71 @@ export default function Page() {
           </section>
 
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
-            {Object.entries(libs).map(([id, data]) => (
-              <div
-                key={id}
-                className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
-              >
-                <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="flex items-start justify-between gap-6 px-6 py-6">
-                    <div className="max-w-md">
-                      <div className="flex items-center gap-2">
-                        <div className="text-lg font-bold">{data.title}</div>
-                        {'llms_full' in data && data.llms_full && (
-                          <Badge
-                            variant="secondary"
-                            title={`Reachable from an MCP client as lib="${id}"`}
-                          >
-                            MCP
-                          </Badge>
-                        )}
+            {Object.entries(libs).map(([id, data]) => {
+              const icon = icons[id as keyof typeof libs]
+
+              return (
+                <div
+                  key={id}
+                  className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
+                >
+                  <div className="relative z-10 flex h-full flex-col justify-between">
+                    <div className="flex items-start justify-between gap-6 px-6 py-6">
+                      <div className="max-w-md">
+                        <div className="flex items-center gap-2">
+                          <div className="text-lg font-bold">{data.title}</div>
+                          {'llms_full' in data && data.llms_full && (
+                            <Badge
+                              variant="secondary"
+                              title={`Reachable from an MCP client as lib="${id}"`}
+                            >
+                              MCP
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
+                          {data.description}
+                        </div>
                       </div>
-                      <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
-                        {data.description}
-                      </div>
+                      {icon && (
+                        <a
+                          href={data.github}
+                          target="_blank"
+                          rel="noopener"
+                          className="relative block h-20 w-20 shrink-0"
+                        >
+                          <Image
+                            src={icon}
+                            className="absolute inset-0 h-full w-full object-contain grayscale transition group-hover/card:grayscale-0"
+                            alt={data.title}
+                            aria-hidden
+                          />
+                        </a>
+                      )}
                     </div>
-                    {'icon' in data && data.icon && (
+                    <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
+                      <Link
+                        href={data.docs_url}
+                        className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
+                      >
+                        <Icon icon="docs" />
+                        <span className="sm:hidden">Docs</span>
+                        <span className="hidden sm:inline">Documentation</span>
+                      </Link>
                       <a
                         href={data.github}
                         target="_blank"
-                        rel="noopener"
-                        className="relative block h-20 w-20 shrink-0"
+                        rel="noopener noreferrer"
+                        className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                       >
-                        <Image
-                          src={data.icon}
-                          className="absolute inset-0 h-full w-full object-contain grayscale transition group-hover/card:grayscale-0"
-                          alt={data.title}
-                          aria-hidden
-                          width={data.iconWidth}
-                          height={data.iconHeight}
-                        />
+                        <Icon icon="github" />
+                        <span>GitHub</span>
                       </a>
-                    )}
-                  </div>
-                  <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
-                    <Link
-                      href={data.docs_url}
-                      className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
-                    >
-                      <Icon icon="docs" />
-                      <span className="sm:hidden">Docs</span>
-                      <span className="hidden sm:inline">Documentation</span>
-                    </Link>
-                    <a
-                      href={data.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
-                    >
-                      <Icon icon="github" />
-                      <span>GitHub</span>
-                    </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </main>
         </div>
       </div>
