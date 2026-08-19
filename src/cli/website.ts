@@ -19,6 +19,9 @@ const APP_FILES = [
   'src',
 ]
 
+/** Where the docs are staged inside the copy. `src/app/globals.css` names it too. */
+const MDX_DIR = 'docs'
+
 /**
  * What the copy leaves behind, mirroring the `!` entries of `files`: Route Handlers cannot be
  * statically exported, and tests and stories are not part of the app — they reach for
@@ -78,6 +81,17 @@ export async function buildWebsite({
       }),
     ),
   )
+
+  // The docs move in with the app, at the path `globals.css` names in its `@source`. That
+  // declaration has to be static — Tailwind resolves it at build time, against the
+  // stylesheet — so the folder comes to the path rather than the path to the folder.
+  if (environment.MDX) {
+    const staged = join(workDir, MDX_DIR)
+    await cp(environment.MDX, staged, { recursive: true })
+    // Absolute: the app resolves a relative one against the working directory, which is the
+    // caller's, not this copy.
+    process.env.MDX = staged
+  }
 
   try {
     // `next` has no public build API. `nextBuild` takes an options object, where the `build`

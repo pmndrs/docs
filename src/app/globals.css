@@ -4,6 +4,12 @@
  * outranks the `:root` and `.dark` blocks below wherever it lands. */
 @import 'material-theme-builder/shadcn.css';
 
+/* The docs are scanned for utility classes too: `className=` in an `.mdx` file is ordinary
+ * authoring. Tailwind would otherwise only find them when the folder happens to sit inside
+ * the project root — true of a build run from this repo, not of one run from the CLI, which
+ * is handed a folder from anywhere and stages it here. */
+@source '../../docs/**/*.{md,mdx}';
+
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
  * roles of each custom colour named here. */
 @plugin 'material-theme-builder/tailwind' {
