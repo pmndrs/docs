@@ -1,5 +1,13 @@
 # @pmndrs/docs
 
+## 4.0.1
+
+### Patch Changes
+
+- [#583](https://github.com/pmndrs/docs/pull/583) [`24741a2`](https://github.com/pmndrs/docs/commit/24741a254bb08f2d85d247cc9a6dca058824be5a) Thanks [@abernier](https://github.com/abernier)! - Document `npx @pmndrs/docs@latest` rather than `npx @pmndrs/docs`. Without a version, `npx`
+  reuses whatever it already has in its cache, so a copy from weeks ago wins silently and the
+  command appears not to have changed.
+
 ## 4.0.0
 
 ### Major Changes
