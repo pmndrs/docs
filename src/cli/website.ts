@@ -12,7 +12,6 @@ const APP_FILES = [
   'next.config.mjs',
   'next-env.d.ts',
   'postcss.config.mjs',
-  'tailwind.config.ts',
   'tsconfig.json',
   'public',
   'registry',
