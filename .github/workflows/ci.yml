@@ -57,6 +57,11 @@ jobs:
       #  ██████ ██   ██ ██   ██ ██   ████  ██████  ███████ ███████ ███████    ██
       #
 
+      # npm auth is trusted publishing (OIDC), so there is no `NPM_TOKEN` — the `id-token:
+      # write` permission above is what signs the publish. The trusted publisher declared on
+      # npmjs.com names *this* workflow file, so renaming or moving it breaks publishing with
+      # ENEEDAUTH. Setting an `NPM_TOKEN` secret would break it too: `changesets/action` then
+      # writes an `.npmrc` and skips OIDC entirely.
       - name: Create Release Pull Request or Publish
         id: changesets
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -66,8 +71,6 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Since the package stopped being private, `changeset publish` really publishes
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Check version bump
         id: check
