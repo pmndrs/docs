@@ -9,6 +9,7 @@ import { webUrl, type Lib, type Page } from './browse.corpus'
 import { Lines } from './browse.lines'
 import { List, moveCursor } from './browse.list'
 import { renderMarkdown } from './browse.markdown'
+import { WHEEL_OFF, WHEEL_ON, wheelOf } from './browse.mouse'
 import { search } from './browse.search'
 import type { Target } from './browse.target'
 
@@ -102,6 +103,14 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
   useInput((input, key) => {
     if (key.ctrl && input === 'c') return exit()
+
+    // The wheel answers to the pointer, not to the focus: what sits under it is what moves.
+    const wheel = wheelOf(input)
+    if (wheel) {
+      if (sidebar && wheel.column <= SIDEBAR_WIDTH)
+        return show(moveCursor(at, wheel.direction, listed.length))
+      return scrollBy(wheel.direction * 3)
+    }
 
     if (searching) {
       if (key.escape) {
@@ -232,10 +241,10 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
 /** Runs the reader on the alternate screen, so the terminal comes back as it was. */
 export async function browse(pages: Page[], target?: Target) {
-  process.stdout.write('\x1b[?1049h')
+  process.stdout.write(`\x1b[?1049h${WHEEL_ON}`)
   try {
     await render(<Browse pages={pages} target={target} />).waitUntilExit()
   } finally {
-    process.stdout.write('\x1b[?1049l')
+    process.stdout.write(`${WHEEL_OFF}\x1b[?1049l`)
   }
 }

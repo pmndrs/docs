@@ -36,6 +36,9 @@ const long = page(
 
 const RIGHT_ARROW = `${String.fromCharCode(27)}[C`
 
+/** A wheel turn down, as a terminal reports it: button 65, then the column it happened in. */
+const wheelDown = (column: number) => `${String.fromCharCode(27)}[<65;${column};5M`
+
 /** Ink paints on a tick of its own; give it one. */
 const painted = () => new Promise((resolve) => setTimeout(resolve, 20))
 
@@ -146,4 +149,27 @@ test('a query named on the command line is already typed', async () => {
   const { lastFrame } = await open('create')
 
   expect(lastFrame()).toContain('Makes a store.')
+})
+
+test('the wheel scrolls the page it points at, whatever has the focus', async () => {
+  const app = render(<Browse pages={[long, pages[0]]} />)
+  await painted()
+
+  // The list has the focus, yet a turn over the page moves the page rather than the list
+  app.stdin.write(wheelDown(80))
+  await painted()
+  expect(app.lastFrame()).not.toContain('alpha-001')
+  expect(app.lastFrame()).toContain('Long')
+})
+
+test('the wheel over the list moves through the pages', async () => {
+  const app = render(<Browse pages={[long, pages[0]]} />)
+  await painted()
+
+  // Hand the focus to the page, so only the pointer can be moving the list
+  app.stdin.write(String.fromCharCode(13))
+  await painted()
+  app.stdin.write(wheelDown(10))
+  await painted()
+  expect(app.lastFrame()).toContain('Draw thousands at once.')
 })
