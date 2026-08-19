@@ -1,5 +1,20 @@
 # @pmndrs/docs
 
+## 4.1.1
+
+### Patch Changes
+
+- [#588](https://github.com/pmndrs/docs/pull/588) [`b6081cc`](https://github.com/pmndrs/docs/commit/b6081cce0614c858691aa8590b99ef8ddd696ae0) Thanks [@abernier](https://github.com/abernier)! - Stop publishing `src/app/api`. A Route Handler cannot be statically exported, and the CLI
+  already leaves it behind when it copies the app, so it only ever travelled as dead weight —
+  37 kB of it, once its test is counted.
+
+  One test file still ships, `src/app/[...slug]/page.test.ts`. Nothing under a bracketed
+  directory can be excluded through `files` under `pnpm`, whatever the pattern: `npm pack` honours
+  `!**/*.test.*` there, `pnpm pack` does not, and neither a directory negation nor an escaped
+  bracket reaches it.
+
+- [#590](https://github.com/pmndrs/docs/pull/590) [`a9f0ed8`](https://github.com/pmndrs/docs/commit/a9f0ed8f91757d49a321522bb689663b46c47665) Thanks [@abernier](https://github.com/abernier)! - `browse`: render markdown tables as aligned columns instead of wrapped pipes
+
 ## 4.1.0
 
 ### Minor Changes
