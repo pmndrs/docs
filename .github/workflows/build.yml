@@ -58,10 +58,10 @@ on:
       theme_caution:
         type: string
         default: '#da3633'
-      docker_tag:
+      version:
         type: string
-        default: '3'
-        description: 'Docker image tag for ghcr.io/pmndrs/docs'
+        default: '4'
+        description: 'npm version or range of @pmndrs/docs to build with'
 
 jobs:
   build-job:
@@ -76,47 +76,16 @@ jobs:
       # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-of-setting-an-output-parameter
       - id: set-base-path
         run: echo "BASE_PATH=${{ inputs.base_path || steps.configurepages.outputs.base_path }}" >> "$GITHUB_OUTPUT"
-      - run: |
-          set -ex
-
-          docker run --rm --init \
-            -v "./$MDX":/app/docs \
-            -e MDX \
-            -e NEXT_PUBLIC_LIBNAME \
-            -e NEXT_PUBLIC_LIBNAME_SHORT \
-            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
-            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
-            -e BASE_PATH \
-            -e DIST_DIR \
-            -e OUTPUT \
-            -e HOME_REDIRECT \
-            -e MDX_BASEURL \
-            -e SOURCECODE_BASEURL \
-            -e EDIT_BASEURL \
-            -e NEXT_PUBLIC_URL \
-            -e ICON \
-            -e LOGO \
-            -e GITHUB \
-            -e DISCORD \
-            -e THEME_PRIMARY \
-            -e THEME_SCHEME \
-            -e THEME_CONTRAST \
-            -e THEME_NOTE \
-            -e THEME_TIP \
-            -e THEME_IMPORTANT \
-            -e THEME_WARNING \
-            -e THEME_CAUTION \
-            -e CONTRIBUTORS_PAT \
-            ghcr.io/pmndrs/docs:${{ inputs.docker_tag }} pnpm run build
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npx -y @pmndrs/docs@${{ inputs.version }} build "${{ inputs.mdx }}" out --format website
         env:
-          MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
           NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
           NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
-          DIST_DIR: '${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}'
-          OUTPUT: 'export'
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
           SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}'
@@ -138,4 +107,4 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}
+          path: out

@@ -11,8 +11,7 @@ import { buildWebsite } from './website'
  *
  * Each carries the environment variable the app reads it as, so that a flag and its variable
  * are declared in one place, and `--help` says which is which. `Option.env()` then does the
- * fallback itself, which is what keeps the Docker image and the reusable workflow working
- * with no flags at all.
+ * fallback itself, which is what keeps the reusable workflow working with no flags at all.
  */
 const websiteOptions = [
   new Option('--libname <name>', 'Library name, e.g. "React Three Fiber"').env(
