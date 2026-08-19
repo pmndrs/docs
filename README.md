@@ -17,9 +17,10 @@ $ npx @pmndrs/docs search instanced mesh           # one result per line, on std
 ```
 
 `↑↓` drives whichever pane has the focus — the list of pages, or the page itself. `⏎` or `⇥`
-hands the focus over, `esc` or `⇥` hands it back, and the lit border says where it is. `←→`
-changes library, `b` folds the sidebar away, `/` searches every library at once, `o` opens the
-page in a browser, `q` quits.
+hands the focus over, `esc` or `⇥` hands it back, and the lit border says where it is — the
+wheel moves whichever pane it points at, focus or no focus. `←→` changes library, `b` folds the sidebar away, `/` searches every library at once, `o` opens the
+page in a browser, `q` quits. Links inside a page are clickable wherever the terminal honours
+OSC 8 hyperlinks — iTerm2, Ghostty, WezTerm, Kitty, Windows Terminal.
 
 `search` is the half a pipe or an agent can use: results read `{lib} {path} - {title}`, the
 shape the [MCP server](https://docs.pmnd.rs) publishes its index in, and nothing found exits 1.

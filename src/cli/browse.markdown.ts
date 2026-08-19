@@ -9,6 +9,8 @@
 
 export interface Span {
   text: string
+  /** Where the span points, when it came from a link. */
+  href?: string
   fg?: string
   bold?: boolean
   dim?: boolean
@@ -46,7 +48,8 @@ function inline(text: string): Span[] {
     if (match[1]) spans.push({ text: match[1].slice(1, -1), fg: theme.code })
     // A link keeps its label, or its href when it has no label. The URL itself is not
     // clickable in a pager, and spelling it out costs more width than it is worth.
-    else if (match[2]) spans.push({ text: match[3] || match[4], fg: theme.link, underline: true })
+    else if (match[2])
+      spans.push({ text: match[3] || match[4], href: match[4], fg: theme.link, underline: true })
     else if (match[5]) spans.push({ text: match[5].slice(2, -2), bold: true })
     else if (match[6]) spans.push({ text: match[6].slice(1, -1), italic: true })
 
@@ -248,9 +251,23 @@ export function renderMarkdown(body: string, width: number): Line[] {
 }
 
 const RESET = '\x1b[0m'
+const OSC = '\x1b]8;;'
+const BEL = '\x07'
+
+/**
+ * An OSC 8 hyperlink: the label as it was, and the URL for the terminal to open.
+ *
+ * The terminal does the clicking -- iTerm2, Ghostty, WezTerm, Kitty and Windows Terminal all
+ * honour it, and one that does not shows the label alone. It measures zero either way, so it
+ * cannot move the layout.
+ */
+export function link(href: string, label: string): string {
+  return `${OSC}${href}${BEL}${label}${OSC}${BEL}`
+}
 const HEX = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i
 
 function ansi(span: Span): string {
+  const text = span.href ? link(span.href, span.text) : span.text
   let codes = ''
 
   const rgb = span.fg?.match(HEX)
@@ -263,7 +280,7 @@ function ansi(span: Span): string {
   if (span.italic) codes += '\x1b[3m'
   if (span.underline) codes += '\x1b[4m'
 
-  return codes ? codes + span.text + RESET : span.text
+  return codes ? codes + text + RESET : text
 }
 
 /** Serializes lines to one ANSI string, for a pager or a plain `stdout` write. */

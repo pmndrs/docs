@@ -116,6 +116,24 @@ test('renders CRLF input without carrying the carriage returns through', () => {
   expect(lines.some((line) => line.includes('\r'))).toBe(false)
 })
 
+test('a link carries its URL, so the terminal can open it', () => {
+  const [line] = renderMarkdown('See [the docs](https://example.com/x).', 60)
+  const anchor = line.find((span) => span.href)
+
+  expect(anchor).toMatchObject({ text: 'the docs', href: 'https://example.com/x' })
+  // The label is what is read; the URL costs no width
+  expect(plain(renderMarkdown('See [the docs](https://example.com/x).', 60))[0]).toBe(
+    'See the docs.',
+  )
+})
+
+test('toAnsi emits a link as an OSC 8 hyperlink', () => {
+  const ansi = toAnsi(renderMarkdown('[the docs](https://example.com/x)', 60))
+
+  expect(ansi).toContain(`${String.fromCharCode(27)}]8;;https://example.com/x`)
+  expect(ansi).toContain('the docs')
+})
+
 test('toAnsi wraps styled spans in escape codes and leaves plain ones alone', () => {
   const lines: Line[] = [[{ text: 'plain ' }, { text: 'loud', bold: true, fg: '#ff0000' }], []]
 

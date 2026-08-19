@@ -285,7 +285,7 @@ Examples:
 the focus over, esc or tab hands it back, and the lit border says where it is; space scrolls
 the page by the screen, and the wheel moves whichever pane it points at. ←→ changes library,
 b folds the sidebar away, / searches every library at once, o opens the page in a browser,
-q quits.
+q quits. Links inside a page are clickable wherever the terminal honours OSC 8 hyperlinks.
 
 Outside a terminal, a page target is written to stdout.
 `,
