@@ -20,7 +20,7 @@ import { ComponentProps } from 'react'
 // </Layout>
 //
 
-// see: tailwind.config.ts for grid-areas-* values
+// see: src/app/globals.css for the grid-areas-* utilities
 
 export function Layout({ className, ...props }: ComponentProps<'div'>) {
   return (

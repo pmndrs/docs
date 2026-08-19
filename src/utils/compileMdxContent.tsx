@@ -41,10 +41,10 @@ import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
-import { Toc } from '@/components/mdx/Toc'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
+import type { ComponentType } from 'react'
 import { dirname } from 'node:path'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
@@ -54,29 +54,42 @@ import remarkGFM from 'remark-gfm'
  * This ensures consistent MDX rendering everywhere.
  */
 
+export type CompileMdxContentOptions = {
+  /** Relative file path, e.g. "/getting-started/tutorials/store.mdx" */
+  relFilePath: string
+  /** Absolute file path, against which `Sandpack folder=` is resolved */
+  absoluteFilePath: string
+  /** Base URL for resolving MDX URLs */
+  baseUrl?: string
+  /** Document title, for the ToC */
+  title: string
+  /** Document URL, for the ToC */
+  url: string
+  /** Populated with the ToC entries found while compiling */
+  tableOfContents: DocToC[]
+  /** All doc entries, for the `Entries` component */
+  entries: Entry[]
+  /** Components overriding the defaults, e.g. a visible `h1` outside the website */
+  components?: Record<string, ComponentType<any>>
+}
+
 /**
  * Compiles MDX content with full options (2nd pass).
  *
- * @param source - The MDX source content to compile
- * @param relFilePath - Relative file path (e.g., "/getting-started/tutorials/store.mdx")
- * @param absoluteFilePath - Absolute file path for Sandpack resolution
- * @param baseUrl - Base URL for resolving MDX URLs
- * @param title - Document title for ToC
- * @param url - Document URL for ToC
- * @param tableOfContents - Array to populate with ToC entries
- * @param entries - All doc entries for the Entries component
  * @returns Compiled MDX result with content JSX
  */
-export async function compileMdxContent(
-  source: string,
-  relFilePath: string,
-  absoluteFilePath: string,
-  baseUrl: string | undefined,
-  title: string,
-  url: string,
-  tableOfContents: DocToC[],
-  entries: Entry[],
-) {
+export async function compileMdxContent(source: string, options: CompileMdxContentOptions) {
+  const {
+    relFilePath,
+    absoluteFilePath,
+    baseUrl,
+    title,
+    url,
+    tableOfContents,
+    entries,
+    components,
+  } = options
+
   return await compileMDX({
     source,
     options: {
@@ -113,7 +126,6 @@ export async function compileMdxContent(
         Mermaid,
         Sandpack,
         Summary,
-        Toc,
         h1,
         h2,
         h3,
@@ -137,6 +149,7 @@ export async function compileMdxContent(
       },
       Codesandbox: (props) => <Codesandbox {...props} />,
       Entries: () => <Entries items={entries} />,
+      ...components,
     },
   })
 }

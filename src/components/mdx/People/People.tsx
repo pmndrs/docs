@@ -1,7 +1,6 @@
 import cn from '@/lib/cn'
 import { initials } from '@/utils/text'
 import { Octokit } from '@octokit/core'
-import Image from 'next/image'
 import { cache, ComponentProps } from 'react'
 import backerBadge from './backer-badge.svg'
 
@@ -89,7 +88,12 @@ export async function Backers({
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image src={backerBadge} alt="Backer" />
+          <img
+            src={backerBadge.src}
+            width={backerBadge.width}
+            height={backerBadge.height}
+            alt="Backer"
+          />
         </a>
       </p>
     </div>
@@ -142,7 +146,7 @@ function Avatar({
       {...props}
     >
       {imageUrl ? (
-        <Image width="48" height="48" src={imageUrl} alt={name} className="size-full" />
+        <img width="48" height="48" src={imageUrl} alt={name} className="size-full" />
       ) : (
         initials(name)
       )}

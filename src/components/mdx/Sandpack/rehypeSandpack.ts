@@ -1,5 +1,5 @@
 import type { Root } from 'hast'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { visit } from 'unist-util-visit'
 
 //
