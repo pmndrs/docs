@@ -7,8 +7,9 @@ import { spawn } from 'node:child_process'
 import { useMemo, useState } from 'react'
 import { webUrl, type Lib, type Page } from './browse.corpus'
 import { Lines } from './browse.lines'
-import { List, moveCursor } from './browse.list'
-import { renderMarkdown } from './browse.markdown'
+import { List, listWindowStart, moveCursor } from './browse.list'
+import { renderMarkdown, spanAt } from './browse.markdown'
+import { MOUSE_OFF, MOUSE_ON, parseMouse, type Mouse } from './browse.mouse'
 import { search } from './browse.search'
 import type { Target } from './browse.target'
 
@@ -81,7 +82,10 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
   const contentWidth = (sidebar ? columns - SIDEBAR_WIDTH : columns) - 4
   const body = useMemo(
-    () => (current ? renderMarkdown(current.body, Math.max(1, Math.min(contentWidth, 100))) : []),
+    () =>
+      current
+        ? renderMarkdown(current.body, Math.max(1, Math.min(contentWidth, 100)), webUrl(current))
+        : [],
     [current, contentWidth],
   )
 
@@ -100,8 +104,57 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
   const scrollBy = (delta: number) =>
     setScroll((was) => Math.max(0, Math.min(was + delta, maxScroll)))
 
+  /** Leaves the search on `page`, in its own library, so ↑↓ carries on from there. */
+  const openHit = (page: Page | undefined) => {
+    if (!page) return
+    setSearching(false)
+    setScope(undefined)
+    const index = libs.findIndex((lib) => lib.name === page.lib.name)
+    const inLib = pages.filter((other) => other.lib.name === page.lib.name)
+    setLibIndex(index < 0 ? 0 : index)
+    // Someone who searched wants to read what they found
+    setFocus('page')
+    show(inLib.findIndex((other) => other.path === page.path))
+  }
+
+  // Both panes open under a border and a title, and the page starts after the sidebar, its
+  // own border and its padding. That is the whole of the geometry a pointer needs.
+  const PANE_TOP = 2
+  const pageLeft = (sidebar ? SIDEBAR_WIDTH : 0) + 2
+
+  /** What the pointer landed on, and what that means for the pane it landed in. */
+  const onMouse = ({ kind, column, row }: Mouse) => {
+    const onSidebar = sidebar && column < SIDEBAR_WIDTH
+    const line = row - PANE_TOP
+
+    // The wheel answers to the pointer rather than to the focus: what sits under it moves.
+    if (kind !== 'click') {
+      const step = kind === 'wheel-up' ? -1 : 1
+      if (onSidebar) return show(moveCursor(at, step, listed.length))
+      return scrollBy(step * 3)
+    }
+
+    if (onSidebar) {
+      const index = listWindowStart(at, listed.length, rows - 4) + line
+      if (line < 0 || index >= listed.length) return
+      if (searching) return openHit(listed[index])
+      setFocus('pages')
+      return show(index)
+    }
+
+    if (line < 0) return
+    // A link under the pointer is what the click was for; the page itself otherwise. This is
+    // the one way to follow a link in a terminal that does not speak OSC 8.
+    const href = spanAt(body[scroll + line] ?? [], column - pageLeft)?.href
+    if (href) return openInBrowser(href)
+    setFocus('page')
+  }
+
   useInput((input, key) => {
     if (key.ctrl && input === 'c') return exit()
+
+    const mouse = parseMouse(input)
+    if (mouse) return onMouse(mouse)
 
     if (searching) {
       if (key.escape) {
@@ -109,18 +162,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
         setScope(undefined)
         return show(0)
       }
-      if (key.return) {
-        // Land on the hit in its own library, so ↑↓ carries on from there
-        if (!current) return
-        setSearching(false)
-        setScope(undefined)
-        const index = libs.findIndex((lib) => lib.name === current.lib.name)
-        const inLib = pages.filter((page) => page.lib.name === current.lib.name)
-        setLibIndex(index < 0 ? 0 : index)
-        // Someone who searched wants to read what they found
-        setFocus('page')
-        return show(inLib.findIndex((page) => page.path === current.path))
-      }
+      if (key.return) return openHit(current)
       if (key.upArrow) return show(moveCursor(at, -1, listed.length))
       if (key.downArrow) return show(moveCursor(at, 1, listed.length))
       if (key.backspace || key.delete) {
@@ -232,10 +274,10 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
 /** Runs the reader on the alternate screen, so the terminal comes back as it was. */
 export async function browse(pages: Page[], target?: Target) {
-  process.stdout.write('\x1b[?1049h')
+  process.stdout.write(`\x1b[?1049h${MOUSE_ON}`)
   try {
     await render(<Browse pages={pages} target={target} />).waitUntilExit()
   } finally {
-    process.stdout.write('\x1b[?1049l')
+    process.stdout.write(`${MOUSE_OFF}\x1b[?1049l`)
   }
 }

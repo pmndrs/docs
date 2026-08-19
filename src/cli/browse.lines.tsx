@@ -1,7 +1,7 @@
 // The styled-line model, as Ink. `toAnsi` is the same lines for a pager.
 
 import { Text } from 'ink'
-import type { Line } from './browse.markdown'
+import { hyperlink, type Line } from './browse.markdown'
 
 export function Lines({ lines }: { lines: Line[] }) {
   return (
@@ -20,7 +20,7 @@ export function Lines({ lines }: { lines: Line[] }) {
                   italic={span.italic}
                   underline={span.underline}
                 >
-                  {span.text}
+                  {span.href ? hyperlink(span.text, span.href) : span.text}
                 </Text>
               ))}
         </Text>

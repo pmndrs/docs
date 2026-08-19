@@ -9,6 +9,8 @@
 
 export interface Span {
   text: string
+  /** Where the span points, absolute. A link, and nothing else, has one. */
+  href?: string
   fg?: string
   bold?: boolean
   dim?: boolean
@@ -35,7 +37,23 @@ const BADGE_ROW = /^\s*(\[!\[[^\]]*\]\([^)]*\)\]\([^)]*\)\s*)+$/
 /** Inline `code`, [label](href), **bold** and _emphasis_, in one left-to-right pass. */
 const INLINE_TOKEN = /(`[^`]+`)|(\[([^\]]*)\]\(([^)]+)\))|(\*\*[^*]+\*\*)|(_[^_]+_)/g
 
-function inline(text: string): Span[] {
+/**
+ * A link's target as a browser can follow it.
+ *
+ * Docs link to each other with a path (`/getting-started/introduction`), which only means
+ * something next to the page it was written on -- so a link is worth keeping only when there
+ * is a page to resolve it against.
+ */
+function resolve(href: string, base: string | undefined): string | undefined {
+  if (!base) return /^[a-z][\w+.-]*:/i.test(href) ? href : undefined
+  try {
+    return new URL(href, base).href
+  } catch {
+    return undefined
+  }
+}
+
+function inline(text: string, base?: string): Span[] {
   const spans: Span[] = []
   let last = 0
 
@@ -44,9 +62,15 @@ function inline(text: string): Span[] {
     if (at > last) spans.push({ text: text.slice(last, at) })
 
     if (match[1]) spans.push({ text: match[1].slice(1, -1), fg: theme.code })
-    // A link keeps its label, or its href when it has no label. The URL itself is not
-    // clickable in a pager, and spelling it out costs more width than it is worth.
-    else if (match[2]) spans.push({ text: match[3] || match[4], fg: theme.link, underline: true })
+    // A link keeps its label, or its href when it has no label: spelling the URL out next to
+    // the label costs more width than it is worth, and the href travels with the span anyway
+    else if (match[2])
+      spans.push({
+        text: match[3] || match[4],
+        href: resolve(match[4], base),
+        fg: theme.link,
+        underline: true,
+      })
     else if (match[5]) spans.push({ text: match[5].slice(2, -2), bold: true })
     else if (match[6]) spans.push({ text: match[6].slice(1, -1), italic: true })
 
@@ -58,6 +82,7 @@ function inline(text: string): Span[] {
 }
 
 const sameStyle = (a: Span, b: Span) =>
+  a.href === b.href &&
   a.fg === b.fg &&
   !!a.bold === !!b.bold &&
   !!a.dim === !!b.dim &&
@@ -135,7 +160,7 @@ function demoMarker(folder: string | undefined): Line {
   return line
 }
 
-function renderBlocks(source: string[], width: number): Line[] {
+function renderBlocks(source: string[], width: number, base?: string): Line[] {
   const out: Line[] = []
   let i = 0
 
@@ -197,7 +222,7 @@ function renderBlocks(source: string[], width: number): Line[] {
 
     const bullet = line.match(/^(\s*)[-*]\s+(.*)$/)
     if (bullet) {
-      out.push(...wrap(inline(bullet[2]), width, `${bullet[1]}  • `))
+      out.push(...wrap(inline(bullet[2], base), width, `${bullet[1]}  • `))
       i++
       continue
     }
@@ -216,7 +241,7 @@ function renderBlocks(source: string[], width: number): Line[] {
       continue
     }
 
-    out.push(...wrap(inline(line), width))
+    out.push(...wrap(inline(line, base), width))
     i++
   }
 
@@ -226,10 +251,14 @@ function renderBlocks(source: string[], width: number): Line[] {
 /**
  * Renders one markdown body to styled lines, wrapped to `width` columns.
  *
+ * `base` is the URL the body was published at, and it is what turns the relative links a page
+ * makes to its neighbours into links something can follow. Without it, only the absolute ones
+ * survive as links.
+ *
  * Never throws: any input renders, and anything malformed degrades to the plain text it was
  * written as. A reader is not allowed to die on a page.
  */
-export function renderMarkdown(body: string, width: number): Line[] {
+export function renderMarkdown(body: string, width: number, base?: string): Line[] {
   const source = String(body ?? '')
     .replace(/\r\n?/g, '\n')
     // Pages come out of the corpus behind their own `URL:`/`Description:` header.
@@ -241,14 +270,44 @@ export function renderMarkdown(body: string, width: number): Line[] {
   const columns = Number.isFinite(width) && width >= 1 ? Math.floor(width) : 1
 
   try {
-    return renderBlocks(source, columns)
+    return renderBlocks(source, columns, base)
   } catch {
     return source.map((line) => [{ text: line }])
   }
 }
 
+/**
+ * The span covering `column`, counting from the start of the line, or nothing past its end.
+ *
+ * This is how a pointer lands on a word: the reader knows where a line starts on screen, and
+ * the line knows what sits at each of its columns.
+ */
+export function spanAt(line: Line, column: number): Span | undefined {
+  let at = 0
+  for (const span of line) {
+    at += span.text.length
+    if (column < at) return span
+  }
+  return undefined
+}
+
 const RESET = '\x1b[0m'
 const HEX = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i
+
+const OSC = '\x1b]8;;'
+const BEL = '\x07'
+
+/**
+ * Marks `text` as a link to `href`, the way OSC 8 does.
+ *
+ * The terminal is what makes it clickable, so this costs no width, no key and no code: a
+ * terminal that speaks OSC 8 underlines the label and opens the URL on a click, and one that
+ * does not prints the label alone. Ink passes the sequence through untouched, and measures
+ * the text as if it were not there.
+ */
+export function hyperlink(text: string, href: string): string {
+  return `${OSC}${href}${BEL}${text}${OSC}${BEL}`
+}
 
 function ansi(span: Span): string {
   let codes = ''
@@ -263,7 +322,8 @@ function ansi(span: Span): string {
   if (span.italic) codes += '\x1b[3m'
   if (span.underline) codes += '\x1b[4m'
 
-  return codes ? codes + span.text + RESET : span.text
+  const text = span.href ? hyperlink(span.text, span.href) : span.text
+  return codes ? codes + text + RESET : text
 }
 
 /** Serializes lines to one ANSI string, for a pager or a plain `stdout` write. */

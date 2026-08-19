@@ -136,6 +136,63 @@ test('tab moves the focus either way', async () => {
   expect(app.lastFrame()).toContain('Draw thousands at once.')
 })
 
+/** Where the pointer is, as the terminal reports it: SGR, and counting from 1. */
+const click = (column: number, row: number) =>
+  `${String.fromCharCode(27)}[<0;${column + 1};${row + 1}M`
+const wheel = (direction: 'up' | 'down', column: number) =>
+  `${String.fromCharCode(27)}[<${direction === 'up' ? 64 : 65};${column + 1};3M`
+
+test('clicking a page in the list reads it', async () => {
+  const { lastFrame, stdin } = await open()
+
+  // The list opens under the sidebar's border and its title, so its first row is the third
+  stdin.write(click(4, 3))
+  await painted()
+  expect(lastFrame()).toContain('A scroll rig.')
+})
+
+test('clicking past the last page changes nothing', async () => {
+  const { lastFrame, stdin } = await open()
+
+  stdin.write(click(4, 20))
+  await painted()
+  expect(lastFrame()).toContain('Draw thousands at once.')
+})
+
+test('the wheel turns whichever pane it sits over', async () => {
+  const app = render(<Browse pages={[long, pages[0]]} />)
+  await painted()
+
+  // Over the page: it scrolls, whatever the focus is
+  app.stdin.write(wheel('down', 60))
+  await painted()
+  expect(app.lastFrame()).not.toContain('alpha-001')
+
+  app.stdin.write(wheel('up', 60))
+  await painted()
+  expect(app.lastFrame()).toContain('alpha-001')
+
+  // Over the list: it moves down it
+  app.stdin.write(wheel('down', 4))
+  await painted()
+  expect(app.lastFrame()).toContain('Draw thousands at once.')
+})
+
+test('clicking a hit leaves the search on it, in its own library', async () => {
+  const { lastFrame, stdin } = await open()
+
+  stdin.write('/')
+  await painted()
+  stdin.write('create')
+  await painted()
+  stdin.write(click(4, 2))
+  await painted()
+
+  expect(lastFrame()).toContain('Makes a store.')
+  // The search is over: the sidebar is back to the library the hit lives in
+  expect(lastFrame()).toContain('Zustand')
+})
+
 test('a page named on the command line is the one it opens', async () => {
   const { lastFrame } = await open('drei/controls/scroll-controls')
 

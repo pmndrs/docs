@@ -21,6 +21,11 @@ hands the focus over, `esc` or `⇥` hands it back, and the lit border says wher
 changes library, `b` folds the sidebar away, `/` searches every library at once, `o` opens the
 page in a browser, `q` quits.
 
+The mouse works too: click a page to read it, click a link in one to open it, and the wheel
+turns whichever pane it sits over. Links are terminal hyperlinks as well, so a terminal that
+speaks OSC 8 opens them on its own. Selecting text needs the usual modifier held down (⌥ in
+iTerm2, ⇧ elsewhere) while the reader is asking for the pointer.
+
 `search` is the half a pipe or an agent can use: results read `{lib} {path} - {title}`, the
 shape the [MCP server](https://docs.pmnd.rs) publishes its index in, and nothing found exits 1.
 `--in drei` narrows to one library, `--in drei/performances/instances` to the matching lines of

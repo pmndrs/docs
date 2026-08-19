@@ -8,6 +8,18 @@ export interface Row {
   hint?: string
 }
 
+/**
+ * The first row a list of `length` shows, given where its cursor is.
+ *
+ * The window is the whole of the list's scrolling: what it shows follows the cursor rather
+ * than a scroll of its own. A pointer needs it too -- it is what turns a screen row back into
+ * the row of the list that was clicked.
+ */
+export function listWindowStart(cursor: number, length: number, height: number) {
+  const window = Math.max(1, height)
+  return Math.max(0, Math.min(cursor - Math.floor(window / 2), length - window))
+}
+
 /** A list of `height` rows that keeps the cursor in view, centred when it can be. */
 export function List({
   rows,
@@ -21,7 +33,7 @@ export function List({
   focused?: boolean
 }) {
   const window = Math.max(1, height)
-  const start = Math.max(0, Math.min(cursor - Math.floor(window / 2), rows.length - window))
+  const start = listWindowStart(cursor, rows.length, height)
 
   return (
     <Box flexDirection="column" height={window} flexShrink={0}>

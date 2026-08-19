@@ -286,6 +286,9 @@ the focus over, esc or tab hands it back, and the lit border says where it is; s
 the page by the screen. ←→ changes library, b folds the sidebar away, / searches every library
 at once, o opens the page in a browser, q quits.
 
+The mouse works too: click a page to read it, click a link in one to open it, and the wheel
+turns whichever pane it sits over.
+
 Outside a terminal, a page target is written to stdout.
 `,
   )

@@ -1,7 +1,12 @@
 import { expect, test } from 'vitest'
-import { plain, renderMarkdown, toAnsi, type Line } from './browse.markdown'
+import { plain, renderMarkdown, spanAt, toAnsi, type Line } from './browse.markdown'
 
 const WIDTH = 80
+
+const ESC = String.fromCharCode(27)
+const BEL = String.fromCharCode(7)
+const HYPERLINK = new RegExp(`${ESC}\\]8;;[^${BEL}]*${BEL}`, 'g')
+const SGR = new RegExp(`${ESC}\\[[\\d;]*m`, 'g')
 
 test('renders a heading in its own colour, over a rule', () => {
   const lines = renderMarkdown('## Getting started', WIDTH)
@@ -40,6 +45,56 @@ test('renders a link as its underlined label, without the URL', () => {
 
   expect(plain(lines)).toEqual(['see the docs for more'])
   expect(lines.flat().find((span) => span.underline)?.text).toBe('the docs')
+})
+
+test('a link keeps its target, resolved against the page it was written on', () => {
+  const base = 'https://pmndrs.github.io/drei/performances/instances'
+  const lines = renderMarkdown(
+    'see [the docs](/getting-started) and [three](https://threejs.org)',
+    80,
+    base,
+  )
+  const links = lines.flat().filter((span) => span.href)
+
+  expect(links.map((span) => span.href)).toEqual([
+    'https://pmndrs.github.io/getting-started',
+    'https://threejs.org/',
+  ])
+})
+
+test('with no page to resolve against, only an absolute link keeps its target', () => {
+  const lines = renderMarkdown('[near](/getting-started) and [far](https://threejs.org)', WIDTH)
+  const spans = lines.flat()
+
+  expect(plain(lines)).toEqual(['near and far'])
+  expect(spans.find((span) => span.text === 'near')?.href).toBeUndefined()
+  expect(spans.find((span) => span.text === 'far')?.href).toBe('https://threejs.org')
+})
+
+test('two links side by side stay two links', () => {
+  const lines = renderMarkdown('[one](https://a.example) [two](https://b.example)', WIDTH)
+
+  expect(lines.flat().filter((span) => span.href).length).toBe(2)
+})
+
+test('a linked span is a terminal hyperlink, printing the label alone', () => {
+  const lines = renderMarkdown('see [the docs](https://docs.pmnd.rs) for more', WIDTH)
+  const ansi = toAnsi(lines)
+
+  // ESC ] 8 ; ; URL BEL label ESC ] 8 ; ; BEL -- the URL travels inside the sequence, so what
+  // the terminal shows is the label, and the label is what a click follows
+  expect(ansi).toContain(`${ESC}]8;;https://docs.pmnd.rs${BEL}the docs${ESC}]8;;${BEL}`)
+  expect(ansi.replace(HYPERLINK, '').replace(SGR, '')).toBe('see the docs for more')
+})
+
+test('spanAt finds what sits at a column, and nothing past the end of the line', () => {
+  const [line] = renderMarkdown('see [the docs](https://docs.pmnd.rs) here', WIDTH)
+
+  expect(spanAt(line, 0)?.text).toBe('see ')
+  expect(spanAt(line, 5)?.href).toBe('https://docs.pmnd.rs')
+  expect(spanAt(line, 11)?.href).toBe('https://docs.pmnd.rs')
+  expect(spanAt(line, 12)?.href).toBeUndefined()
+  expect(spanAt(line, 999)).toBeUndefined()
 })
 
 test('renders a blockquote behind a gutter', () => {

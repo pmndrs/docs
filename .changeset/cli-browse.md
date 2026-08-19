@@ -6,7 +6,7 @@ Read the published pmndrs documentation from the terminal: `npx @pmndrs/docs`.
 
 Two new commands, both reading each library's published `llms-full.txt` — one GET per library, cached for an hour under `~/.cache/pmndrs-docs`, `--refresh` to fetch again:
 
-- `browse [target]`, the default command, is a reader: pages on the left, the page on the right, `b` folds the sidebar away, `/` searches every library at once, `o` opens the page in a browser. A target lands straight where it points — `drei`, `drei/performances/instances`, or a query.
+- `browse [target]`, the default command, is a reader: pages on the left, the page on the right, `b` folds the sidebar away, `/` searches every library at once, `o` opens the page in a browser. A target lands straight where it points — `drei`, `drei/performances/instances`, or a query. The mouse works too: click a page to read it, click a link in one to open it, and the wheel turns whichever pane it sits over — and links are terminal hyperlinks, so a terminal that speaks OSC 8 opens them on its own.
 - `search <query>` is the same search with no screen: one result per line on stdout, in the `{lib} {path} - {title}` shape the MCP server publishes its index in, so a pipe or an agent can read it. `--in` narrows to a library, or to the matching lines of a single page.
 
 Outside a terminal `browse` writes the page it was pointed at to stdout, rather than opening anything.
