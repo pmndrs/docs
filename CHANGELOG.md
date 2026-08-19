@@ -1,5 +1,50 @@
 # @pmndrs/docs
 
+## 4.0.0
+
+### Major Changes
+
+- [#577](https://github.com/pmndrs/docs/pull/577) [`3e23829`](https://github.com/pmndrs/docs/commit/3e238294a73e617b1dca7361d45bfc8a8bb221fa) Thanks [@abernier](https://github.com/abernier)! - Drop Docker. `npx @pmndrs/docs build` does the same build, so the image, the `Dockerfile` and
+  the publish steps that maintained them are gone. `ghcr.io/pmndrs/docs` stops being pushed —
+  its existing tags stay in the registry, frozen.
+
+  Major because of the git tag, not the inputs: releases force-move `vX`, so anything short of a
+  major would slide every caller pinning `build.yml@v3` onto the Docker-free workflow. `@v3`
+  keeps building through the image until its repository moves to `@v4`.
+
+  `build.yml` itself keeps every input, every environment variable and the same Pages artifact.
+  Only the build step changes, and `docker_tag` gives way to `version` — an npm version or range.
+
+  The job keeps `id-token: write` — no longer to attest a Docker image, now to sign the npm
+  publish with trusted publishing.
+
+  `preview.sh` builds through the CLI too, and reads its options straight from the environment
+  rather than forwarding each one into a container.
+
+### Minor Changes
+
+- [#574](https://github.com/pmndrs/docs/pull/574) [`e70f51e`](https://github.com/pmndrs/docs/commit/e70f51e30cc36024987d57e13c14064cfd6d8071) Thanks [@abernier](https://github.com/abernier)! - Publish the generator to npm, as `npx @pmndrs/docs build`.
+
+  `--format website` statically exports the documentation site.
+  `--format fragment` — the default — compiles MDX to plain HTML with no layout, stylesheet or
+  script, either from a folder or from stdin, and needs nothing but node.
+
+  `bin/build.mjs` is gone: it was never published, and built a server bundle rather than a
+  static export.
+
+### Patch Changes
+
+- [#575](https://github.com/pmndrs/docs/pull/575) [`4a68fbd`](https://github.com/pmndrs/docs/commit/4a68fbd50b0151b55009b483961780f29ef7c565) Thanks [@abernier](https://github.com/abernier)! - Stop repeating the Sandpack stylesheet on every streamed chunk
+
+  `useServerInsertedHTML` is called back on each flush of the response and expects what is new
+  since the last one, but the callback returned the whole Sandpack stylesheet every time. Pages
+  carried one full copy per chunk — 145 identical copies of the same 8.9 kB on the worst of
+  them, three quarters of the page weight.
+
+  Which pages were hit moved from build to build: the stylesheet is a module-level singleton,
+  so it depended on whether a page using Sandpack had been rendered earlier in the same build
+  process. Pages with no Sandpack of their own paid for their neighbours.
+
 ## 3.5.0
 
 ### Minor Changes
