@@ -39,4 +39,6 @@ chromatic-archives/
 *storybook.log
 *archive.log
 storybook-static
-src/stories
+src/stories.prototype/
+
+.prototype/

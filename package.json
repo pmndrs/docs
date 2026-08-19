@@ -10,6 +10,8 @@
     "@changesets/cli": "^2.29.8",
     "@chromatic-com/playwright": "^0.12.8",
     "@eslint/eslintrc": "^3.3.3",
+    "@opentui/core": "0.5.4",
+    "@opentui/react": "0.5.4",
     "@playwright/test": "^1.57.0",
     "@storybook/addon-docs": "^10.2.0",
     "@storybook/addon-themes": "^10.2.0",
@@ -98,7 +100,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build:cli": "node scripts/build-cli.mjs",
-    "prepack": "node scripts/build-cli.mjs"
+    "prepack": "node scripts/build-cli.mjs",
+    "browse": "bun src/cli/browse.prototype.tsx"
   },
   "engines": {
     "node": ">=20.9.0"
