@@ -27,6 +27,13 @@ const pages = [
   page(zustand, '/reference/apis/create', 'create', '# create\n\nMakes a store.'),
 ]
 
+const long = page(
+  drei,
+  '/misc/long',
+  'Long',
+  Array.from({ length: 60 }, (_, at) => `alpha-${String(at + 1).padStart(3, '0')}`).join('\n\n'),
+)
+
 const RIGHT_ARROW = `${String.fromCharCode(27)}[C`
 
 /** Ink paints on a tick of its own; give it one. */
@@ -88,6 +95,21 @@ test('/ searches every library at once', async () => {
 
   expect(lastFrame()).toContain('zustand')
   expect(lastFrame()).toContain('Makes a store.')
+})
+
+test('J and K scroll the page being read, with the list still in hand', async () => {
+  const app = render(<Browse pages={[long]} />)
+  await painted()
+
+  expect(app.lastFrame()).toContain('alpha-001')
+
+  app.stdin.write('J')
+  await painted()
+  expect(app.lastFrame()).not.toContain('alpha-001')
+
+  app.stdin.write('K')
+  await painted()
+  expect(app.lastFrame()).toContain('alpha-001')
 })
 
 test('a page named on the command line is the one it opens', async () => {
