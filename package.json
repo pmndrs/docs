@@ -129,6 +129,7 @@
     "postcss.config.mjs",
     "tsconfig.json",
     "!src/stories",
+    "!src/app/api",
     "!**/*.test.*",
     "!**/*.stories.*"
   ]
