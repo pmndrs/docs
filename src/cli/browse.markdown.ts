@@ -138,6 +138,130 @@ function demoMarker(folder: string | undefined): Line {
   return line
 }
 
+/** The cells of one table row, with the outer pipes dropped and `\|` unescaped. */
+function cells(row: string): string[] {
+  return row
+    .trim()
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split(/(?<!\\)\|/)
+    .map((cell) => cell.replace(/\\\|/g, '|').trim())
+}
+
+/** The `|---|:--:|` row that turns the line above it into a table header. */
+function isTableRule(line: string): boolean {
+  if (!line.includes('|') || !line.includes('-')) return false
+  const parts = cells(line)
+  return parts.length > 1 && parts.every((cell) => /^:?-+:?$/.test(cell))
+}
+
+/** Index just past the last row of the table whose body starts at `start`. */
+function endOfTable(source: string[], start: number): number {
+  let i = start
+  while (i < source.length && source[i].includes('|') && source[i].trim()) i++
+  return i
+}
+
+const plainText = (cell: string) => inline(cell).reduce((all, span) => all + span.text, '')
+
+const plainWidth = (cell: string) => plainText(cell).length
+
+/** The longest word in a cell — the width below which shrinking its column buys nothing. */
+const longestWord = (cell: string) =>
+  plainText(cell)
+    .split(/\s+/)
+    .reduce((longest, word) => Math.max(longest, word.length), 0)
+
+const TABLE_INDENT = '  '
+const TABLE_GAP = '  '
+const MIN_COLUMN = 4
+
+/**
+ * Column widths that fit `available` columns, shrinking the widest one first.
+ *
+ * The widest column is the one whose text wraps most cheaply — a description reads fine over
+ * two lines, where a squeezed `Type` column would only break every identifier in it. A column
+ * never shrinks below its longest word: that width is spent whether it is allotted or not.
+ */
+function fitColumns(natural: number[], floors: number[], available: number): number[] {
+  const widths = natural.map((width) => Math.max(1, width))
+  let total = widths.reduce((sum, width) => sum + width, 0)
+
+  while (total > available) {
+    let widest = -1
+    for (let c = 0; c < widths.length; c++) {
+      const floor = Math.max(MIN_COLUMN, Math.min(floors[c], widths[c]))
+      if (widths[c] > floor && (widest < 0 || widths[c] > widths[widest])) widest = c
+    }
+    if (widest < 0) break
+    widths[widest]--
+    total--
+  }
+
+  return widths
+}
+
+/**
+ * Renders a GFM table as aligned columns.
+ *
+ * Cells wrap inside their own column, so a row can be several lines tall and still read
+ * across. Pipes are dropped: the alignment is what carries the table, and vertical rules cost
+ * width a terminal does not have to spare.
+ */
+function renderTable(header: string[], rows: string[][], width: number): Line[] {
+  const columns = header.length
+  const grid = [header, ...rows].map((row) =>
+    Array.from({ length: columns }, (_, c) => row[c] ?? ''),
+  )
+
+  const natural = Array.from({ length: columns }, (_, c) =>
+    Math.max(...grid.map((row) => plainWidth(row[c]))),
+  )
+  const floors = Array.from({ length: columns }, (_, c) =>
+    Math.max(...grid.map((row) => longestWord(row[c]))),
+  )
+  const available = width - TABLE_INDENT.length - TABLE_GAP.length * (columns - 1)
+  const widths = fitColumns(natural, floors, available)
+
+  const out: Line[] = []
+
+  const pushRow = (row: string[], bold: boolean) => {
+    const wrapped = row.map((cell, c) => wrap(inline(cell), widths[c]))
+    const height = Math.max(...wrapped.map((lines) => lines.length))
+
+    for (let at = 0; at < height; at++) {
+      const line: Line = [{ text: TABLE_INDENT }]
+      for (let c = 0; c < columns; c++) {
+        if (c > 0) line.push({ text: TABLE_GAP })
+        const spans = wrapped[c][at] ?? []
+        let used = 0
+        for (const span of spans) {
+          line.push(bold ? { ...span, bold: true } : span)
+          used += span.text.length
+        }
+        if (c < columns - 1 && used < widths[c]) line.push({ text: ' '.repeat(widths[c] - used) })
+      }
+      // Padding past the last cell that has text is invisible, and only widens the line.
+      while (line.length > 1 && !line[line.length - 1].text.trim()) line.pop()
+      const last = line[line.length - 1]
+      if (last) line[line.length - 1] = { ...last, text: last.text.replace(/\s+$/, '') }
+      out.push(line)
+    }
+  }
+
+  pushRow(grid[0], true)
+  out.push([
+    { text: TABLE_INDENT },
+    ...widths.flatMap((column, c) => {
+      const rule = { text: '─'.repeat(column), fg: theme.marker }
+      return c > 0 ? [{ text: TABLE_GAP }, rule] : [rule]
+    }),
+  ])
+  for (const row of grid.slice(1)) pushRow(row, false)
+
+  return out
+}
+
 function renderBlocks(source: string[], width: number): Line[] {
   const out: Line[] = []
   let i = 0
@@ -189,6 +313,13 @@ function renderBlocks(source: string[], width: number): Line[] {
 
     if (BADGE_ROW.test(line)) {
       i++
+      continue
+    }
+
+    if (line.includes('|') && !isTableRule(line) && isTableRule(source[i + 1] ?? '')) {
+      const end = endOfTable(source, i + 2)
+      out.push(...renderTable(cells(line), source.slice(i + 2, end).map(cells), width))
+      i = end
       continue
     }
 

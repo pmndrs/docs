@@ -143,3 +143,24 @@ test('toAnsi wraps styled spans in escape codes and leaves plain ones alone', ()
 test('toAnsi keeps the text of a colour it cannot parse', () => {
   expect(toAnsi([[{ text: 'hi', fg: 'rebeccapurple' }]])).toBe('hi')
 })
+
+test('renders a table as aligned columns, wrapping inside a column', () => {
+  const table = [
+    '| Prop | Description | Type |',
+    '| ---- | ----------- | ---- |',
+    '| gl | The renderer, shared by every hook | THREE.WebGLRenderer |',
+  ].join('\n')
+  const lines = plain(renderMarkdown(table, 46))
+
+  expect(lines).toEqual([
+    '  Prop  Description        Type',
+    '  ────  ─────────────────  ───────────────────',
+    '  gl    The renderer,      THREE.WebGLRenderer',
+    '        shared by every',
+    '        hook',
+  ])
+})
+
+test('keeps a line of pipes that is not a table as the text it was', () => {
+  expect(plain(renderMarkdown('a | b | c', WIDTH))).toEqual(['a | b | c'])
+})
