@@ -281,8 +281,11 @@ Examples:
   $ pmndrs-docs browse drei/performances/instances    straight to the page
   $ pmndrs-docs browse instanced mesh                 the search, already typed
 
-↑↓ moves, ←→ changes library, b folds the sidebar away, / searches every library at once,
-o opens the page in a browser, q quits. Outside a terminal, a page target is written to stdout.
+↑↓ moves through the pages and J/K scrolls the one being read, space by the whole screen (the
+page keys do the same). ←→ changes library, b folds the sidebar away and gives ↑↓ to the page,
+/ searches every library at once, o opens it in a browser, q quits.
+
+Outside a terminal, a page target is written to stdout.
 `,
   )
   .action(runBrowse)

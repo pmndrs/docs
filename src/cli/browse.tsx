@@ -136,7 +136,13 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
     if (input === 'b') return setSidebar((was) => !was)
     if (input === 'o') return current && openInBrowser(webUrl(current))
 
-    if (key.pageDown) return scrollBy(viewport - 1)
+    // The right pane scrolls whatever the left one is doing: shifted J/K by the line, space by
+    // the screen. Without them, reading past the fold means folding the sidebar away first,
+    // which is a thing to discover rather than a thing to do. The page keys do the same, and
+    // are not advertised: a laptop keyboard reaches them through a modifier anyway.
+    if (input === 'J') return scrollBy(3)
+    if (input === 'K') return scrollBy(-3)
+    if (key.pageDown || input === ' ') return scrollBy(viewport - 1)
     if (key.pageUp) return scrollBy(-(viewport - 1))
 
     if (key.leftArrow || input === 'h') {
@@ -158,7 +164,9 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
   const hints = searching
     ? '⏎ open · ↑↓ hits · esc back'
-    : `↑↓ ${sidebar ? 'pages' : 'scroll'} · ←→ library · b ${sidebar ? 'hide' : 'show'} sidebar · / search · o browser · q quit`
+    : sidebar
+      ? '↑↓ pages · J/K scroll · ←→ library · b hide sidebar · / search · o browser · q quit'
+      : '↑↓ scroll · b show sidebar · / search · o browser · q quit'
 
   return (
     <Box flexDirection="column" width={columns} height={rows}>

@@ -16,8 +16,9 @@ $ npx @pmndrs/docs drei/performances/instances     # straight to a page
 $ npx @pmndrs/docs search instanced mesh           # one result per line, on stdout
 ```
 
-`↑↓` pages, `←→` library, `b` folds the sidebar away, `/` searches every library at once, `o`
-opens the page in a browser, `q` quits.
+`↑↓` moves through the pages and `J`/`K` scrolls the one being read, space by the whole screen.
+`←→` changes library, `b` folds the sidebar away and gives `↑↓` to the page, `/` searches every
+library at once, `o` opens it in a browser, `q` quits.
 
 `search` is the half a pipe or an agent can use: results read `{lib} {path} - {title}`, the
 shape the [MCP server](https://docs.pmnd.rs) publishes its index in, and nothing found exits 1.
