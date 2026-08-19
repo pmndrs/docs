@@ -164,8 +164,6 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   await buildWebsite({
     packageRoot: resolve(dirname(new URL(import.meta.url).pathname), '..'),
     outDir,
-    // Next builds where it is told to, and this must sit outside `node_modules`
-    workDir: resolve(process.cwd(), '.pmndrs-docs'),
     env,
   })
   console.error(`Preview: npx -y serve ${display(outDir)}`)

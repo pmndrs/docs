@@ -48,7 +48,7 @@ test('compiles a folder to one HTML file per doc, assets alongside', async () =>
   await writeFile(join(from, 'guide/start.mdx'), '# Start\n\n> [!TIP]\n> go')
   await writeFile(join(from, 'guide/dog.png'), 'not really a png')
 
-  await main([from, to])
+  await main(['build', from, to])
 
   expect((await readdir(to)).sort()).toEqual(['guide', 'index.html'])
   expect((await readdir(join(to, 'guide'))).sort()).toEqual(['dog.png', 'start.html'])

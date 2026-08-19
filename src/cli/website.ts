@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { cp, mkdir, rm } from 'node:fs/promises'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 
 /**
  * What the Next app is made of — the `files` this package publishes, minus the ones a static
@@ -20,6 +20,26 @@ const APP_FILES = [
 
 /** Where the docs are staged inside the copy. `src/app/globals.css` names it too. */
 const MDX_DIR = 'docs'
+
+/** The folder the app is copied to and built in, removed once the export is out. */
+const WORK_DIR = '.pmndrs-docs'
+
+/**
+ * Where to build the copy: beside the `node_modules` holding this package's own dependencies.
+ *
+ * Next has to be resolvable from wherever it is built, and Node finds it by walking up — so
+ * building in the caller's folder only works when the caller happens to have Next installed
+ * too, which `npx` does not. Symlinking the dependencies in instead is not an option either:
+ * Turbopack rejects a link that leaves its project root. So the copy goes where the
+ * dependencies already are, whether a package manager nested them beside this package or
+ * hoisted them above it.
+ */
+function findWorkDir(packageRoot: string) {
+  for (let dir = packageRoot; ; dir = dirname(dir)) {
+    if (existsSync(join(dir, 'node_modules', 'next'))) return join(dir, WORK_DIR)
+    if (dirname(dir) === dir) return null
+  }
+}
 
 /**
  * What the copy leaves behind, mirroring the `!` entries of `files`: Route Handlers cannot be
@@ -45,14 +65,15 @@ const isExcluded = (path: string) =>
 export async function buildWebsite({
   packageRoot,
   outDir,
-  workDir,
   env,
 }: {
   packageRoot: string
   outDir: string
-  workDir: string
   env: Record<string, string | undefined>
 }) {
+  const workDir = findWorkDir(packageRoot)
+  if (!workDir) throw new Error('Cannot find the `next` package to build the website with')
+
   const basePath = env.BASE_PATH ?? ''
   const distDir = `out${basePath}`
 
