@@ -223,7 +223,7 @@ $ (
   export ICON=🇨🇭
   export GITHUB=https://github.com/pmndrs/react-three-fiber
 
-  npx -y @pmndrs/docs build docs docs/out --format website
+  npx -y @pmndrs/docs@latest build docs docs/out --format website
 
   kill $(lsof -ti:"$_PORT")
   npx serve docs -p $_PORT --no-port-switching --no-clipboard &
@@ -236,7 +236,7 @@ $ (
 
 Then go to: http://localhost:3000
 
-Every option above has a flag too — `npx @pmndrs/docs build --help` lists them.
+Every option above has a flag too — `npx @pmndrs/docs@latest build --help` lists them.
 
 ## Agents
 

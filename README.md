@@ -8,9 +8,9 @@
 # Usage
 
 ```sh
-$ cat foo.mdx | npx @pmndrs/docs build               # one HTML fragment, on stdout
-$ npx @pmndrs/docs build docs out                    # one .html per .mdx, assets alongside
-$ npx @pmndrs/docs build docs out --format website   # the whole website, statically exported
+$ cat foo.mdx | npx @pmndrs/docs@latest build               # one HTML fragment, on stdout
+$ npx @pmndrs/docs@latest build docs out                    # one .html per .mdx, assets alongside
+$ npx @pmndrs/docs@latest build docs out --format website   # the whole website, statically exported
 ```
 
 `--format fragment` (the default) needs nothing but node — no `next build`, no bundler. A
