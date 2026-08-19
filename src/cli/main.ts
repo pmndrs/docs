@@ -1,4 +1,5 @@
 import { version } from '@/package.json'
+import { WEBSITE_OPTIONS } from '@/website.options'
 import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
 import { Command, Option, type OptionValues } from 'commander'
 import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises'
@@ -8,58 +9,22 @@ import { formatHits, formatMatches } from './browse.print'
 import { matchingLines, search } from './browse.search'
 import { resolveTarget } from './browse.target'
 import { fragmentComponents, renderFragment, renderToHtml } from './render'
-import { buildWebsite } from './website'
+import { buildWebsite, devWebsite } from './website'
 
-/**
- * The website options — the ones that describe *a site* rather than what to compile.
- *
- * Each carries the environment variable the app reads it as, so that a flag and its variable
- * are declared in one place, and `--help` says which is which. `Option.env()` then does the
- * fallback itself, which is what keeps the reusable workflow working with no flags at all.
- */
-const websiteOptions = [
-  new Option('--libname <name>', 'Library name, e.g. "React Three Fiber"').env(
-    'NEXT_PUBLIC_LIBNAME',
-  ),
-  new Option('--libname-short <name>', 'Short library name, for narrow screens').env(
-    'NEXT_PUBLIC_LIBNAME_SHORT',
-  ),
-  new Option('--libname-dotsuffix-label <label>', 'Suffix label, e.g. "docs"').env(
-    'NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL',
-  ),
-  new Option('--libname-dotsuffix-href <url>', 'Suffix link').env(
-    'NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF',
-  ),
-  new Option('--base-path <path>', 'Base path of the final URL, e.g. "/react-three-fiber"').env(
-    'BASE_PATH',
-  ),
-  new Option(
-    '--home-redirect <url>',
-    'Where "/" redirects to, e.g. "/getting-started/introduction"',
-  ).env('HOME_REDIRECT'),
-  new Option('--url <url>', 'Public URL the website is served from').env('NEXT_PUBLIC_URL'),
-  new Option('--mdx-baseurl <url>', 'Base URL relative assets are resolved against').env(
-    'MDX_BASEURL',
-  ),
-  new Option('--sourcecode-baseurl <url>', 'Base URL of the "source code" links').env(
-    'SOURCECODE_BASEURL',
-  ),
-  new Option('--edit-baseurl <url>', 'Base URL of the "edit this page" links').env('EDIT_BASEURL'),
-  new Option('--icon <emoji>', 'Favicon emoji, e.g. "🥑"').env('ICON'),
-  new Option('--logo <path>', 'Logo path or URL').env('LOGO'),
-  new Option('--github <url>', 'GitHub URL').env('GITHUB'),
-  new Option('--discord <url>', 'Discord URL').env('DISCORD'),
-  new Option('--theme-primary <color>', 'Seed color of the palette, e.g. "#323e48"').env(
-    'THEME_PRIMARY',
-  ),
-  new Option('--theme-scheme <scheme>', 'Palette scheme, e.g. "tonalSpot"').env('THEME_SCHEME'),
-  new Option('--theme-contrast <contrast>', 'Palette contrast, e.g. "0"').env('THEME_CONTRAST'),
-  new Option('--theme-note <color>', 'Color of the NOTE alerts').env('THEME_NOTE'),
-  new Option('--theme-tip <color>', 'Color of the TIP alerts').env('THEME_TIP'),
-  new Option('--theme-important <color>', 'Color of the IMPORTANT alerts').env('THEME_IMPORTANT'),
-  new Option('--theme-warning <color>', 'Color of the WARNING alerts').env('THEME_WARNING'),
-  new Option('--theme-caution <color>', 'Color of the CAUTION alerts').env('THEME_CAUTION'),
-]
+/** This package, wherever it was installed: `dist/cli.mjs` is one folder down from its root. */
+const packageRoot = resolve(dirname(new URL(import.meta.url).pathname), '..')
+
+/** Every website option, as commander declares it: a flag, falling back to its variable. */
+const websiteOptions = WEBSITE_OPTIONS.map(([variable, flag, description]) =>
+  new Option(flag, description).env(variable),
+)
+
+/** The website options someone gave, as the environment variables the app reads them as. */
+function websiteEnv(opts: OptionValues) {
+  const env: Record<string, string | undefined> = {}
+  for (const option of websiteOptions) env[option.envVar!] = opts[option.attributeName()]
+  return env
+}
 
 /**
  * Reads the whole of stdin.
@@ -159,16 +124,7 @@ async function run(input: string | undefined, output: string | undefined, opts: 
     return
   }
 
-  const env: Record<string, string | undefined> = { MDX: from }
-  for (const option of websiteOptions) {
-    env[option.envVar!] = opts[option.attributeName()]
-  }
-
-  await buildWebsite({
-    packageRoot: resolve(dirname(new URL(import.meta.url).pathname), '..'),
-    outDir,
-    env,
-  })
+  await buildWebsite({ packageRoot, outDir, env: { ...websiteEnv(opts), MDX: from } })
   console.error(`Preview: npx -y serve ${display(outDir)}`)
 }
 
@@ -198,6 +154,41 @@ A fragment is the compiled MDX and nothing else: no layout, no stylesheet, no sc
   .action(run)
 
 for (const option of websiteOptions) build.addOption(option)
+
+//
+// dev -- the same website, served from the MDX folder as it is being written
+//
+
+async function runDev(input: string | undefined, opts: OptionValues) {
+  const from = resolve(process.cwd(), input ?? process.env.MDX ?? 'docs')
+  if (!(await stat(from)).isDirectory()) throw new Error(`${display(from)} is not a folder`)
+
+  await devWebsite({
+    packageRoot,
+    port: Number(opts.port),
+    env: { ...websiteEnv(opts), MDX: from },
+  })
+}
+
+const dev = new Command('dev')
+  .description('Serve the website from a folder of MDX, reloading as it changes')
+  .argument('[in]', 'MDX folder (default: $MDX, or "docs")')
+  .addOption(new Option('--port <port>', 'Port to serve on').env('PORT').default(3000))
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ pmndrs-docs dev                                       the "docs" folder, on port 3000
+  $ pmndrs-docs dev docs --libname "React Three Fiber"    named, as the header shows it
+  $ pmndrs-docs dev ~/code/pmndrs/uikit/docs --port 4000  any folder, anywhere
+
+Pages are read on every request — edit one, reload. The MDX folder is served alongside, so
+relative assets resolve with no second server to start; --mdx-baseurl takes that over.
+`,
+  )
+  .action(runDev)
+
+for (const option of websiteOptions) dev.addOption(option)
 
 //
 // browse & search -- the published documentation, rather than a folder of MDX
@@ -319,8 +310,18 @@ const program = new Command()
   // them is what CI is after, and CI spells out what it wants.
   .addCommand(browse, { isDefault: true })
   .addCommand(searchCommand)
+  .addCommand(dev)
   .addCommand(build)
 
 export async function main(argv: string[]) {
+  // Before anything is parsed: every website option falls back to an environment variable, and
+  // `.env` is where a documentation folder writes those down. What the environment already
+  // carries wins, so a checked-in file never decides what CI builds.
+  try {
+    process.loadEnvFile(join(process.cwd(), '.env'))
+  } catch {
+    // No file, nothing to read
+  }
+
   await program.parseAsync(argv, { from: 'user' })
 }

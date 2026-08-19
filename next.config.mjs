@@ -5,6 +5,8 @@ const output = process.env.OUTPUT || undefined
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: true,
+  // The floating dev badge is in front of the page Playwright screenshots
+  devIndicators: false,
   images: {
     // domains: ['codesandbox.io'],
     unoptimized: true,

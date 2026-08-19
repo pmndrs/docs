@@ -17,7 +17,6 @@ node_modules/
 .next/
 .DS_Store
 .secrets
-tmp/api-backup
 
 build/
 dist/
@@ -41,5 +40,9 @@ chromatic-archives/
 storybook-static
 src/stories
 
-# the CLI's scratch copy of the app, removed after a build unless one crashes
+# the CLI's scratch copy of the app, and the docs it links in to serve them
 .pmndrs-docs/
+/public/mdx
+
+# Playwright screenshots, regenerated on every run
+*-snapshots/

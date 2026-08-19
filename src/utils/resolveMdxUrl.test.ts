@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest'
 import resolveMdxUrl from './resolveMdxUrl'
 
 describe('resolveMdxUrl', () => {
+  it('resolves against a base that is a path, as `dev` serves the MDX folder', () => {
+    expect(resolveMdxUrl('dog.png', '/getting-started/store.mdx', '/mdx')).toBe(
+      '/mdx/getting-started/dog.png',
+    )
+  })
+
   const baseUrl = 'http://localhost:8080/foo/bar'
 
   describe('with absolute mdFile path (/getting-started/tutorials/store.mdx)', () => {

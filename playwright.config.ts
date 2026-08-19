@@ -3,11 +3,17 @@ import { defineConfig, devices } from '@playwright/test'
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+// The website is served on 3000 unless `PORT` says otherwise, which `pnpm dev` reads too
+const url = `http://localhost:${process.env.PORT ?? 3000}`
+
 export default defineConfig({
   testDir: './src/app',
   testIgnore: '**/route.test.ts',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: url,
+  },
+  expect: {
+    toHaveScreenshot: { stylePath: './playwright.screenshot.css' },
   },
   projects: [
     {
@@ -26,7 +32,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: './start.sh',
-    url: 'http://localhost:3000',
+    command: 'pnpm dev',
+    url,
   },
 })

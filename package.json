@@ -85,9 +85,9 @@
     "zod": "^3.24.1"
   },
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next",
+    "dev": "pnpm build:cli && NODE_OPTIONS='--inspect' node bin/pmndrs-docs.mjs dev --sourcecode-baseurl \"vscode://file$PWD\" --edit-baseurl \"vscode://file$PWD/docs\"",
     "start": "next start",
-    "build": "./next-build.sh",
+    "build": "next build",
     "format": "prettier -w src/",
     "lint": "eslint src/**/*.{ts,tsx} && prettier . --check",
     "prepare": "husky && (test -f scripts/copy-fonts.sh && sh scripts/copy-fonts.sh || true)",
@@ -101,7 +101,7 @@
     "prepack": "node scripts/build-cli.mjs"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20.12.0"
   },
   "packageManager": "pnpm@10.28.1",
   "description": "Generate pmndrs-standardized documentation — HTML fragments, or the whole website — from a folder of MDX.",

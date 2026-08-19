@@ -31,6 +31,21 @@ Both read the published `llms-full.txt` of each library, cached for an hour unde
 `~/.cache/pmndrs-docs` — `--refresh` fetches again. Outside a terminal, a page target is
 written to stdout, so `npx @pmndrs/docs drei/performances/instances | glow` works.
 
+## Write
+
+```sh
+$ npx @pmndrs/docs@latest dev docs --libname "React Three Fiber" --icon 🥑
+```
+
+Serves the website on http://localhost:3000, reading the MDX folder on every request — edit a
+page, reload. The folder is served alongside, so relative assets resolve while you write, and
+`--port` moves the server. Every website option `build` takes, `dev` takes too.
+
+Each of them falls back to the environment variable it maps to — the ones
+[`build.yml`](.github/workflows/build.yml) sets — and a `.env` in the folder you run from is
+read into the environment, so `npx @pmndrs/docs@latest dev` alone is enough once written down.
+[`.env`](.env) is this repository's own website.
+
 ## Build
 
 ```sh
@@ -43,26 +58,9 @@ $ npx @pmndrs/docs@latest build docs out --format website   # the whole website,
 fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
 diagrams stay fenced blocks, and Sandpack shows its code without the editor.
 
-`build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
+`dev --help` and `build --help` list every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
 one falls back to the environment variable it maps to, the same ones
 [configuration](docs/getting-started/introduction.mdx#Configuration) documents.
-
-<details>
-<summary>Preview a folder of MDX, served</summary>
-
-```sh
-$ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
-  MDX="docs" \
-  ICON="🥑" \
-  sh
-```
-
-Builds the website, then serves it — alongside the MDX folder itself, so relative assets
-resolve while you edit. Any option from
-[configuration](docs/getting-started/introduction.mdx#Configuration) goes in the same way, and
-`VERSION` picks a published version of the CLI.
-
-</details>
 
 # Releasing
 

@@ -120,13 +120,9 @@ jobs:
 
       - id: vercel-deploy
         run: |
+          # Whatever is not passed here comes from `.env`, the website's own configuration
           npx -y vercel deploy --token=${{ secrets.VERCEL_TOKEN }} \
             --target=${{ github.event_name == 'push' && 'production' || 'preview' }} \
-            --build-env MDX=docs \
-            --build-env NEXT_PUBLIC_LIBNAME="Poimandres" \
-            --build-env NEXT_PUBLIC_LIBNAME_SHORT="pmndrs" \
-            --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs" \
-            --build-env NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://pmnd.rs" \
             --build-env BASE_PATH= \
             --build-env DIST_DIR= \
             --build-env OUTPUT= \
@@ -136,17 +132,7 @@ jobs:
             --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}" \
             --build-env NEXT_PUBLIC_URL= \
             --build-env ICON= \
-            --build-env LOGO=gutenberg.jpg \
-            --build-env GITHUB="https://github.com/${{ github.repository }}" \
             --build-env DISCORD="${{ secrets.DISCORD }}" \
-            --build-env THEME_PRIMARY="#323e48" \
-            --build-env THEME_SCHEME="tonalSpot" \
-            --build-env THEME_CONTRAST="0" \
-            --build-env THEME_NOTE="#1f6feb" \
-            --build-env THEME_TIP="#238636" \
-            --build-env THEME_IMPORTANT="#8957e5" \
-            --build-env THEME_WARNING="#d29922" \
-            --build-env THEME_CAUTION="#da3633" \
             --build-env CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
             > deployment-url.txt
 

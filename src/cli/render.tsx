@@ -1,6 +1,7 @@
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMdxContent } from '@/utils/compileMdxContent'
 import matter from 'gray-matter'
+import WebsiteOptions from '@/components/mdx/WebsiteOptions'
 import type { ComponentProps, ReactNode } from 'react'
 import { renderToReadableStream } from 'react-dom/server'
 
@@ -9,6 +10,7 @@ import { renderToReadableStream } from 'react-dom/server'
  * its `h1` renders nothing. A fragment has no layout, so it must keep the title it is given.
  */
 export const fragmentComponents = {
+  WebsiteOptions,
   h1: (props: ComponentProps<'h1'>) => (
     <h1 className="mb-2 text-5xl font-bold tracking-tighter" {...props} />
   ),
