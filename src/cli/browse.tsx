@@ -61,6 +61,9 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
   // Only a query typed on the command line keeps its library scope; `/` searches everything.
   const [scope, setScope] = useState(start.query !== undefined ? start.lib : undefined)
   const [sidebar, setSidebar] = useState(true)
+  // Which pane the arrows drive. A page named on the command line is one to read, not to
+  // pick again, so it starts on the right.
+  const [focus, setFocus] = useState<'pages' | 'page'>(start.page ? 'page' : 'pages')
   const [cursor, setCursor] = useState(0)
   const [scroll, setScroll] = useState(0)
 
@@ -84,6 +87,9 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
   const viewport = Math.max(1, rows - 4)
   const maxScroll = Math.max(0, body.length - viewport)
+
+  // With no sidebar there is no list to drive, whatever the focus was before it was folded
+  const reading = focus === 'page' || !sidebar
 
   const show = (index: number) => {
     setPinned(-1)
@@ -111,6 +117,8 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
         const index = libs.findIndex((lib) => lib.name === current.lib.name)
         const inLib = pages.filter((page) => page.lib.name === current.lib.name)
         setLibIndex(index < 0 ? 0 : index)
+        // Someone who searched wants to read what they found
+        setFocus('page')
         return show(inLib.findIndex((page) => page.path === current.path))
       }
       if (key.upArrow) return show(moveCursor(at, -1, listed.length))
@@ -126,47 +134,52 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
       return
     }
 
-    if (input === 'q' || key.escape) return exit()
+    if (input === 'q') return exit()
     if (input === '/') {
       setSearching(true)
       setQuery('')
       setScope(undefined)
+      setFocus('pages')
       return show(0)
     }
-    if (input === 'b') return setSidebar((was) => !was)
+    if (input === 'b') {
+      setSidebar((was) => !was)
+      return setFocus('pages')
+    }
     if (input === 'o') return current && openInBrowser(webUrl(current))
 
-    // The right pane scrolls whatever the left one is doing: shifted J/K by the line, space by
-    // the screen. Without them, reading past the fold means folding the sidebar away first,
-    // which is a thing to discover rather than a thing to do. The page keys do the same, and
-    // are not advertised: a laptop keyboard reaches them through a modifier anyway.
-    if (input === 'J') return scrollBy(3)
-    if (input === 'K') return scrollBy(-3)
+    // Picking a page and reading it are two jobs for one pair of arrow keys, so the arrows
+    // belong to whichever pane has the focus. ⏎ hands it over, esc hands it back, tab does
+    // either -- and the borders say where it is.
+    if (key.tab) return setFocus(reading ? 'pages' : 'page')
+    if (key.return) return setFocus('page')
+    if (key.escape) return setFocus('pages')
+
     if (key.pageDown || input === ' ') return scrollBy(viewport - 1)
     if (key.pageUp) return scrollBy(-(viewport - 1))
 
     if (key.leftArrow || input === 'h') {
       setLibIndex((was) => moveCursor(was, -1, libs.length))
+      setFocus('pages')
       return show(0)
     }
     if (key.rightArrow || input === 'l') {
       setLibIndex((was) => moveCursor(was, 1, libs.length))
+      setFocus('pages')
       return show(0)
     }
 
-    // With the sidebar folded away there is no list to move through, so the arrows are
-    // the only thing that could still mean "further down the page"
     const step = key.upArrow || input === 'k' ? -1 : key.downArrow || input === 'j' ? 1 : 0
     if (!step) return
-    if (!sidebar) return scrollBy(step * 3)
+    if (reading) return scrollBy(step * 3)
     show(moveCursor(at, step, listed.length))
   })
 
   const hints = searching
     ? '⏎ open · ↑↓ hits · esc back'
-    : sidebar
-      ? '↑↓ pages · J/K scroll · ←→ library · b hide sidebar · / search · o browser · q quit'
-      : '↑↓ scroll · b show sidebar · / search · o browser · q quit'
+    : reading
+      ? `↑↓ scroll${sidebar ? ' · esc/⇥ pages' : ''} · ←→ library · b ${sidebar ? 'hide' : 'show'} sidebar · / search · o browser · q quit`
+      : '↑↓ pages · ⏎/⇥ read · ←→ library · b hide sidebar · / search · o browser · q quit'
 
   return (
     <Box flexDirection="column" width={columns} height={rows}>
@@ -177,7 +190,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
             width={SIDEBAR_WIDTH}
             flexShrink={0}
             borderStyle="round"
-            borderColor={searching ? 'green' : 'gray'}
+            borderColor={searching ? 'green' : reading ? 'gray' : 'cyan'}
             paddingX={1}
           >
             <Text wrap="truncate" color={searching ? 'green' : 'cyan'} bold>
@@ -189,6 +202,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
               }))}
               cursor={at}
               height={rows - 4}
+              focused={!reading}
             />
           </Box>
         )}
@@ -197,7 +211,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
           flexDirection="column"
           flexGrow={1}
           borderStyle="round"
-          borderColor="gray"
+          borderColor={reading ? 'cyan' : 'gray'}
           paddingX={1}
         >
           <Text wrap="truncate" color="cyan">
