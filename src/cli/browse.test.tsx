@@ -97,19 +97,43 @@ test('/ searches every library at once', async () => {
   expect(lastFrame()).toContain('Makes a store.')
 })
 
-test('J and K scroll the page being read, with the list still in hand', async () => {
-  const app = render(<Browse pages={[long]} />)
+test('⏎ hands the arrows to the page, esc hands them back', async () => {
+  const app = render(<Browse pages={[long, pages[0]]} />)
   await painted()
 
   expect(app.lastFrame()).toContain('alpha-001')
 
-  app.stdin.write('J')
+  // Reading: the arrows scroll rather than move down the list
+  app.stdin.write(String.fromCharCode(13))
+  await painted()
+  app.stdin.write('j')
+  await painted()
+  expect(app.lastFrame()).not.toContain('alpha-001')
+  expect(app.lastFrame()).toContain('Long')
+
+  // Picking again: the same arrow changes page
+  app.stdin.write(String.fromCharCode(27))
+  await painted()
+  app.stdin.write('j')
+  await painted()
+  expect(app.lastFrame()).toContain('Draw thousands at once.')
+})
+
+test('tab moves the focus either way', async () => {
+  const app = render(<Browse pages={[long, pages[0]]} />)
+  await painted()
+
+  app.stdin.write(String.fromCharCode(9))
+  await painted()
+  app.stdin.write('j')
   await painted()
   expect(app.lastFrame()).not.toContain('alpha-001')
 
-  app.stdin.write('K')
+  app.stdin.write(String.fromCharCode(9))
   await painted()
-  expect(app.lastFrame()).toContain('alpha-001')
+  app.stdin.write('j')
+  await painted()
+  expect(app.lastFrame()).toContain('Draw thousands at once.')
 })
 
 test('a page named on the command line is the one it opens', async () => {
