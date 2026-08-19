@@ -3,13 +3,13 @@ import * as cheerio from 'cheerio'
 import { z } from 'zod'
 import { headers } from 'next/headers'
 import { revalidateTag } from 'next/cache'
-import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/app/page'
+import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/libs'
 import packageJson from '@/package.json' with { type: 'json' }
 import { assertExampleName, exampleUrl, indexUrl } from '@/utils/examples'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see
-// the `llms_full` flag in `src/app/page.tsx`. Being hosted on pmndrs.github.io is not
+// the `llms_full` flag in `src/libs.ts`. Being hosted on pmndrs.github.io is not
 // enough: most of those sites are not built with this generator and 404 on that file,
 // which used to leave their index resource silently empty.
 const libsEntries = Object.entries(libs).filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
