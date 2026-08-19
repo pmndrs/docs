@@ -2,7 +2,7 @@
 '@pmndrs/docs': minor
 ---
 
-Publish the generator to npm, as `npx @pmndrs/docs`.
+Publish the generator to npm, as `npx @pmndrs/docs build`.
 
 `--format website` statically exports the documentation site, as the Docker image does.
 `--format fragment` — the default — compiles MDX to plain HTML with no layout, stylesheet or

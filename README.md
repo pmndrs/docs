@@ -8,16 +8,16 @@
 # Usage
 
 ```sh
-$ cat foo.mdx | npx @pmndrs/docs                     # one HTML fragment, on stdout
-$ npx @pmndrs/docs docs out                          # one .html per .mdx, assets alongside
-$ npx @pmndrs/docs docs out --format website         # the whole website, statically exported
+$ cat foo.mdx | npx @pmndrs/docs build               # one HTML fragment, on stdout
+$ npx @pmndrs/docs build docs out                    # one .html per .mdx, assets alongside
+$ npx @pmndrs/docs build docs out --format website   # the whole website, statically exported
 ```
 
 `--format fragment` (the default) needs nothing but node — no Docker, no `next build`. A
 fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
 diagrams stay fenced blocks, and Sandpack shows its code without the editor.
 
-`--help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
+`build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
 one falls back to the environment variable it maps to, the same ones
 [configuration](docs/getting-started/introduction.mdx#Configuration) documents.
 

@@ -171,10 +171,12 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   console.error(`Preview: npx -y serve ${display(outDir)}`)
 }
 
-const program = new Command()
-  .name('pmndrs-docs')
-  .description('Compile pmndrs-flavored MDX — Gha, Code, Sandpack, Mermaid, Keypoints…')
-  .version(version)
+/**
+ * The one command so far. Named rather than default, so that the ones to come — `dev`, `serve` —
+ * sit next to it rather than behind it.
+ */
+const build = new Command('build')
+  .description('Compile MDX to HTML')
   .argument('[in]', 'MDX file or folder. Reads stdin when omitted.')
   // No default: whether OUT was given is what tells a single file to write to stdout
   .argument('[out]', 'Output folder (default: "out"). Writes to stdout when IN is a file.')
@@ -187,17 +189,23 @@ const program = new Command()
     'after',
     `
 Examples:
-  $ cat foo.mdx | pmndrs-docs               an HTML fragment, on stdout
-  $ pmndrs-docs foo.mdx                     same, from a file
-  $ pmndrs-docs docs out                    a folder of MDX, compiled to HTML fragments
-  $ pmndrs-docs docs out --format website   the whole website, statically exported
+  $ cat foo.mdx | pmndrs-docs build               an HTML fragment, on stdout
+  $ pmndrs-docs build foo.mdx                     same, from a file
+  $ pmndrs-docs build docs out                    a folder of MDX, compiled to HTML fragments
+  $ pmndrs-docs build docs out --format website   the whole website, statically exported
 
 A fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script.
 `,
   )
   .action(run)
 
-for (const option of websiteOptions) program.addOption(option)
+for (const option of websiteOptions) build.addOption(option)
+
+const program = new Command()
+  .name('pmndrs-docs')
+  .description('Compile pmndrs-flavored MDX — Gha, Code, Sandpack, Mermaid, Keypoints…')
+  .version(version)
+  .addCommand(build)
 
 export async function main(argv: string[]) {
   await program.parseAsync(argv, { from: 'user' })
