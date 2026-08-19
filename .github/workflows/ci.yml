@@ -34,9 +34,32 @@ jobs:
       # ███████ ███████    ██     ██████  ██
       #
 
+      # The Release PR is pushed and opened by this App, not by `github-actions[bot]`. Since
+      # June 2026 GitHub holds every `pull_request` run on a bot-authored PR at
+      # `action_required` when the default token is what touched it — one manual "Approve and
+      # run" per push to the Release PR, so on every merge to main. An App installation token
+      # is a trusted identity, so those runs start on their own.
+      #
+      # Minted before the checkout rather than beside the step that needs it: `actions/checkout`
+      # persists its own token in the remote URL, and that is the credential `changesets/action`
+      # pushes the branch with. Pass it here or the push carries `github-actions[bot]` whatever
+      # the API calls use.
+      #
+      # `continue-on-error` so this degrades instead of breaking: wherever the App is not
+      # installed, every use below falls back to the default token.
+      - name: Mint an App token
+        id: app-token
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        continue-on-error: true
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token || github.token }}
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
@@ -65,7 +88,7 @@ jobs:
           publish: pnpm run release
           createGithubReleases: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
 
       # `changesets/action` pushes `vX.Y.Z` and opens the GitHub release itself. The floating
       # major alias is the one thing it does not do, and it is what consumers pinning
