@@ -13,7 +13,7 @@ $ npx @pmndrs/docs build docs out                    # one .html per .mdx, asset
 $ npx @pmndrs/docs build docs out --format website   # the whole website, statically exported
 ```
 
-`--format fragment` (the default) needs nothing but node — no Docker, no `next build`. A
+`--format fragment` (the default) needs nothing but node — no `next build`, no bundler. A
 fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
 diagrams stay fenced blocks, and Sandpack shows its code without the editor.
 
@@ -22,18 +22,19 @@ one falls back to the environment variable it maps to, the same ones
 [configuration](docs/getting-started/introduction.mdx#Configuration) documents.
 
 <details>
-<summary>Docker</summary>
+<summary>Preview a folder of MDX, served</summary>
 
 ```sh
 $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
   MDX="docs" \
   ICON="🥑" \
-  DOCKER_IMAGE="ghcr.io/pmndrs/docs:latest" \
   sh
 ```
 
-- you can pass any option from [configuration](docs/getting-started/introduction.mdx#Configuration)
-- in `DOCKER_IMAGE`, you can specify any `:tag` value from [docs packages](https://github.com/pmndrs/docs/pkgs/container/docs) container registry
+Builds the website, then serves it — alongside the MDX folder itself, so relative assets
+resolve while you edit. Any option from
+[configuration](docs/getting-started/introduction.mdx#Configuration) goes in the same way, and
+`VERSION` picks a published version of the CLI.
 
 </details>
 
@@ -41,7 +42,7 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 
 Every push to `main` redeploys [docs.pmnd.rs](https://docs.pmnd.rs) via [ci.yml](.github/workflows/ci.yml) — no [changeset](.changeset/) needed for that.
 
-Add one (`pnpm changeset`) only when downstream consumers pinning `pmndrs/docs/.github/workflows/build.yml@v3` or `ghcr.io/pmndrs/docs:v3` should pull the change. It bumps [`package.json`](package.json), tags `vX.Y.Z` + `vX`, and publishes a matching Docker image — so `@v3` resolves to the latest.
+Add one (`pnpm changeset`) only when downstream consumers pinning `pmndrs/docs/.github/workflows/build.yml@v4` or `@pmndrs/docs@4` should pull the change. It bumps [`package.json`](package.json), publishes to npm, and tags `vX.Y.Z` + `vX` — so `@v4` resolves to the latest.
 
 TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavior, templates): add one.
 

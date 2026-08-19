@@ -17,6 +17,10 @@ jobs:
       id-token: write
     uses: pmndrs/docs/.github/workflows/build.yml@main
     with:
+      # Whatever is published, rather than a version number this repository would have to keep
+      # in step with itself. Our own site is then built by exactly what consumers install —
+      # a broken release shows up here before anyone downstream moves to it.
+      version: 'latest'
       mdx: 'docs'
       libname: 'Poimandres'
       libname_short: 'pmndrs'
