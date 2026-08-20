@@ -197,7 +197,14 @@ describe('MCP Route Handler', () => {
         .filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
         .map(([libname]) => libname)
 
-      expect(exposed).toEqual(['react-three-fiber', 'drei', 'zustand', 'docs'])
+      expect(exposed).toEqual([
+        'react-three-fiber',
+        'drei',
+        'zustand',
+        'a11y',
+        'react-postprocessing',
+        'docs',
+      ])
     })
 
     it('should exclude pmndrs.github.io libraries that publish no llms-full.txt', async () => {
@@ -206,15 +213,7 @@ describe('MCP Route Handler', () => {
       // Regression: these are hosted on pmndrs.github.io but are not built with this
       // generator, so `${docs_url}/llms-full.txt` 404s. Selecting on the host alone
       // used to expose them with a silently empty index.
-      for (const libname of [
-        'a11y',
-        'react-postprocessing',
-        'uikit',
-        'xr',
-        'prai',
-        'viverse',
-        'leva',
-      ] as const) {
+      for (const libname of ['uikit', 'xr', 'prai', 'viverse', 'leva'] as const) {
         const lib = libs[libname]
         expect(lib.docs_url).toContain('pmndrs.github.io')
         expect('llms_full' in lib && lib.llms_full).toBeFalsy()
