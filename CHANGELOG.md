@@ -1,5 +1,13 @@
 # @pmndrs/docs
 
+## 4.1.2
+
+### Patch Changes
+
+- [#593](https://github.com/pmndrs/docs/pull/593) [`c1ae5d3`](https://github.com/pmndrs/docs/commit/c1ae5d3acd507997586a10e08cf58665637bec41) Thanks [@abernier](https://github.com/abernier)! - Read `react-postprocessing` and `a11y` in `browse` and over MCP. Both sites publish a
+  `llms-full.txt` now — react-postprocessing has for a while, a11y since its build moved to v4 —
+  so the flag was simply behind the world.
+
 ## 4.1.1
 
 ### Patch Changes
