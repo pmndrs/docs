@@ -67,12 +67,14 @@ export const libs = {
     github: 'https://github.com/pmndrs/react-three-a11y',
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
+    llms_full: true,
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
     docs_url: 'https://pmndrs.github.io/react-postprocessing',
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
+    llms_full: true,
   },
   uikit: {
     title: 'uikit',
