@@ -91,6 +91,11 @@ const nextConfig = {
         destination: 'https://pmndrs.github.io/xr/docs/:slug*',
         permanent: true,
       },
+      {
+        source: '/denoiser/:slug*',
+        destination: 'https://pmndrs.github.io/denoiser/docs/:slug*',
+        permanent: true,
+      },
     ]
   },
 }
