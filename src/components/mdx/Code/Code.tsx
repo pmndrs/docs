@@ -1,16 +1,15 @@
 'use client'
 
 import cn from '@/lib/cn'
-import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, useEffect, useRef, useState } from 'react'
 import { TbClipboard, TbClipboardCheck } from 'react-icons/tb'
 
 export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) => {
   const [copied, setCopied] = useState(false)
+  const ref = useRef<HTMLPreElement>(null)
 
   const handleClick = async () => {
-    const textToCopy = extractTextFromChildren(children)
-
-    await navigator.clipboard.writeText(textToCopy)
+    await navigator.clipboard.writeText(ref.current?.textContent ?? '')
     setCopied(true)
   }
 
@@ -23,6 +22,7 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
   return (
     <div className={cn('relative')}>
       <pre
+        ref={ref}
         {...props}
         className={cn(
           className,
@@ -41,24 +41,4 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
       </button>
     </div>
   )
-}
-
-// Recursive function to extract text content from React nodes
-const extractTextFromChildren = (children: ReactNode): string => {
-  if (typeof children === 'string') {
-    return children
-  }
-
-  if (Array.isArray(children)) {
-    return children.map(extractTextFromChildren).join('')
-  }
-
-  if (isValidElement(children)) {
-    const props = children.props as Record<string, unknown>
-    if ('children' in props) {
-      return extractTextFromChildren(props.children as ReactNode)
-    }
-  }
-
-  return ''
 }
