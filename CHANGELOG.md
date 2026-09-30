@@ -1,5 +1,15 @@
 # @pmndrs/docs
 
+## 4.1.3
+
+### Patch Changes
+
+- [#596](https://github.com/pmndrs/docs/pull/596) [`7f1acae`](https://github.com/pmndrs/docs/commit/7f1acaefb42922cc070efe4c7ae7fc71d9427b45) Thanks [@abernier](https://github.com/abernier)! - Keep MDX expressions again. next-mdx-remote 6 compiles with `blockJS: true` by default, which
+  silently stripped every `{...}` — `<Grid cols={2}>`, `<Sandpack files={{...}}>`,
+  `<Codesandbox tags={[...]}>` — since 3.4.2, and crashed builds whose Sandpack lost its `files`.
+  The MDX is the consuming repo's own docs, read at build time, so `blockJS` is turned off;
+  `blockDangerousJS` stays on.
+
 ## 4.1.2
 
 ### Patch Changes
