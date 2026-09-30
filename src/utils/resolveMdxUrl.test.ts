@@ -130,5 +130,19 @@ describe('resolveMdxUrl', () => {
         'https://example.com/image.png',
       )
     })
+
+    it('returns a URL of any scheme unchanged', () => {
+      const dataUrl = 'data:image/png;base64,iVBORw0KGgo='
+      expect(resolveMdxUrl(dataUrl, '/path/to/file.mdx', baseUrl)).toBe(dataUrl)
+      expect(resolveMdxUrl('blob:https://example.com/1234', '/path/to/file.mdx', baseUrl)).toBe(
+        'blob:https://example.com/1234',
+      )
+    })
+
+    it('returns a protocol-relative URL unchanged', () => {
+      expect(resolveMdxUrl('//example.com/image.png', '/path/to/file.mdx', baseUrl)).toBe(
+        '//example.com/image.png',
+      )
+    })
   })
 })

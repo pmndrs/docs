@@ -132,6 +132,7 @@ async function _getDocs(
         boxes,
         //
         file,
+        relFilePath,
         content: sanitizedContent,
         frontmatter,
       }
@@ -153,11 +154,10 @@ async function _getDocs(
         boxes,
         // Passed from the 1st pass
         file,
+        relFilePath,
         content,
         frontmatter,
       }) => {
-        const relFilePath = file.substring(root.length) // "/getting-started/tutorials/store.mdx"
-
         //
         // "Lightest" version of the doc (for `generateStaticParams`)
         //

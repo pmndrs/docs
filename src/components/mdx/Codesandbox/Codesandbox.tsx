@@ -20,9 +20,7 @@ export type CSB = {
 
 type CodesandboxProps = CSB & {
   embed?: boolean
-} & ComponentProps<'a'> & {
-    imgProps?: ComponentProps<'img'>
-  }
+} & ComponentProps<'a'>
 
 export function sandboxUrl(id: string) {
   return `https://codesandbox.io/s/${id}`
@@ -38,7 +36,6 @@ export function Codesandbox({
   //
   embed = false,
   className,
-  imgProps: { className: imgClassName } = {},
 }: CodesandboxProps) {
   const src = img ?? screenshot_url
 
@@ -61,18 +58,9 @@ export function Codesandbox({
           className={cn('mb-2 block', className)}
         >
           {src ? (
-            <Img
-              src={src}
-              alt={title || ''}
-              className={cn('aspect-video w-full object-cover', imgClassName)}
-            />
+            <Img src={src} alt={title || ''} className="aspect-video w-full object-cover" />
           ) : (
-            <span
-              className={cn(
-                'flex aspect-video w-full items-center justify-center rounded-lg bg-surface-container text-on-surface-variant',
-                imgClassName,
-              )}
-            >
+            <span className="flex aspect-video w-full items-center justify-center rounded-lg bg-surface-container text-on-surface-variant">
               <CodesandboxIcon className="size-12" aria-hidden />
             </span>
           )}

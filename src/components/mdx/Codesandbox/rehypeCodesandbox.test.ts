@@ -1,5 +1,10 @@
+import type { Root } from 'hast'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import { describe, expect, it } from 'vitest'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { visit } from 'unist-util-visit'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { rehypeCodesandbox, type Box } from './rehypeCodesandbox'
 
 const baseUrl = 'http://localhost:60141'
@@ -19,6 +24,29 @@ async function boxesOf(source: string, { MDX_BASEURL = baseUrl }: { MDX_BASEURL?
     components: { Codesandbox: () => null },
   })
   return boxes
+}
+
+/**
+ * Runs the plugin, and returns the attributes each `<Codesandbox>` is left with, by name.
+ */
+async function attributesOf(source: string) {
+  const sandboxes: Record<string, unknown>[] = []
+  const collect = () => (tree: Root) => {
+    visit(tree, null, function (node) {
+      if (!('name' in node) || node.name !== 'Codesandbox') return
+      const attributes = node.attributes.filter((attribute) => 'name' in attribute)
+      sandboxes.push(Object.fromEntries(attributes.map(({ name, value }) => [name, value])))
+    })
+  }
+  await compileMDX({
+    source,
+    options: {
+      blockJS: false,
+      mdxOptions: { rehypePlugins: [rehypeCodesandbox(relFilePath, baseUrl), collect] },
+    },
+    components: { Codesandbox: () => null },
+  })
+  return sandboxes
 }
 
 describe('rehypeCodesandbox', () => {
@@ -75,5 +103,71 @@ describe('rehypeCodesandbox', () => {
       { id: 'one', img: `${baseUrl}/authoring/one.png` },
       { id: 'two' },
     ])
+  })
+
+  it('treats an empty `img` as no image, and removes it', async () => {
+    for (const img of ['', '   ']) {
+      const source = `<Codesandbox id="3rjsl" img="${img}" />`
+      expect(await boxesOf(source)).toEqual([{ id: '3rjsl' }])
+      expect(await attributesOf(source)).toEqual([{ id: '3rjsl' }])
+    }
+  })
+
+  it('leaves a URL of any scheme, or protocol-relative, as is', async () => {
+    for (const img of ['data:image/png;base64,iVBORw0KGgo=', '//example.com/a.png']) {
+      expect(await boxesOf(`<Codesandbox id="3rjsl" img="${img}" />`)).toEqual([
+        { id: '3rjsl', img },
+      ])
+    }
+  })
+
+  it('reads `img` and `id` written as a string literal expression', async () => {
+    const source = `<Codesandbox id={"3rjsl"} img={'a.png'} />`
+    expect(await boxesOf(source)).toEqual([{ id: '3rjsl', img: `${baseUrl}/authoring/a.png` }])
+    expect(await attributesOf(source)).toEqual([
+      { id: expect.anything(), img: `${baseUrl}/authoring/a.png` },
+    ])
+  })
+
+  it('skips an `img` written as another expression', async () => {
+    expect(await boxesOf('<Codesandbox id="3rjsl" img={"a" + ".png"} />')).toEqual([
+      { id: '3rjsl' },
+    ])
+  })
+
+  describe('with the MDX folder on disk', () => {
+    let MDX: string
+
+    beforeEach(() => {
+      MDX = fs.mkdtempSync(path.join(os.tmpdir(), 'rehypeCodesandbox-'))
+      fs.mkdirSync(path.join(MDX, 'authoring'))
+      fs.writeFileSync(path.join(MDX, 'authoring', 'a.png'), '')
+      vi.stubEnv('MDX', MDX)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+      vi.restoreAllMocks()
+      fs.rmSync(MDX, { recursive: true })
+    })
+
+    it('keeps an `img` found in the MDX folder', async () => {
+      expect(await boxesOf('<Codesandbox id="3rjsl" img="a.png" />')).toEqual([
+        { id: '3rjsl', img: `${baseUrl}/authoring/a.png` },
+      ])
+    })
+
+    it('warns about an `img` missing from the MDX folder, and removes it', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const source = '<Codesandbox id="3rjsl" img="missing.png" />'
+
+      expect(await boxesOf(source)).toEqual([{ id: '3rjsl' }])
+      expect(await attributesOf(source)).toEqual([{ id: '3rjsl' }])
+
+      const message = warn.mock.calls[0][0]
+      expect(message).toContain(relFilePath)
+      expect(message).toContain('3rjsl')
+      expect(message).toContain(path.join(MDX, 'authoring', 'missing.png'))
+    })
   })
 })
