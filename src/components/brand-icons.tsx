@@ -30,3 +30,20 @@ export const DiscordIcon = createLucideIcon('discord', [
   ],
   ['path', { d: 'M7 16.5c3.5 1 6.5 1 10 0', key: 'discord-mouth' }],
 ])
+
+// Lucide's own `codesandbox` mark, as it shipped up to v0 (ISC, https://lucide.dev), before v1
+// dropped it with the other brand logos.
+export const CodesandboxIcon = createLucideIcon('codesandbox', [
+  [
+    'path',
+    {
+      d: 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z',
+      key: 'codesandbox-box',
+    },
+  ],
+  ['polyline', { points: '7.5 4.21 12 6.81 16.5 4.21', key: 'codesandbox-top' }],
+  ['polyline', { points: '7.5 19.79 7.5 14.6 3 12', key: 'codesandbox-left' }],
+  ['polyline', { points: '21 12 16.5 14.6 16.5 19.79', key: 'codesandbox-right' }],
+  ['polyline', { points: '3.27 6.96 12 12.01 20.73 6.96', key: 'codesandbox-middle' }],
+  ['line', { x1: '12', x2: '12', y1: '22.08', y2: '12', key: 'codesandbox-axis' }],
+])

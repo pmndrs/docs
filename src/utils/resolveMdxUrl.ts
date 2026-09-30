@@ -1,8 +1,8 @@
 import path from 'node:path'
 
 export default function resolveMdxUrl(src: string, mdFile: string, baseUrl?: string) {
-  // 1. Fully qualified URL or no baseUrl provided
-  if (!baseUrl || src.includes('://')) {
+  // 1. Absolute URL (with a scheme, like `https:` or `data:`, or `//host/...`) or no baseUrl provided
+  if (!baseUrl || /^([a-z][a-z\d+.-]*:|\/\/)/i.test(src)) {
     return src
   }
 

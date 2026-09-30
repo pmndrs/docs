@@ -22,6 +22,7 @@ import {
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
+import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { Entries, type Entry } from '@/components/mdx/Entries'
@@ -100,6 +101,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
           rehypeImg(relFilePath, baseUrl),
+          rehypeCodesandbox(relFilePath, baseUrl),
           rehypeDetails,
           rehypeSummary,
           rehypeGha,

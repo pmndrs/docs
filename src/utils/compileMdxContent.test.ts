@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest'
-import { compileMdxFrontmatter, compileMdxContent } from './compileMdxContent'
+import { renderToHtml } from '@/cli/render'
+import { join } from 'node:path'
 import { renderToString } from 'react-dom/server'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { compileMdxContent, compileMdxFrontmatter } from './compileMdxContent'
 
 describe('compileMdxFrontmatter', () => {
   const relFilePath = '/test/file.mdx'
@@ -135,5 +137,61 @@ describe('MDX expressions', () => {
   it('evaluates expressions in frontmatter values', async () => {
     const result = await compileMdxFrontmatter('sum: {1+1}')
     expect(renderToString(result.content)).toMatch(/sum: (<!-- -->)?2/)
+  })
+})
+
+/**
+ * CodeSandbox no longer serves sandbox screenshots, so the preview is the author's `img`, or a
+ * placeholder.
+ */
+describe('Codesandbox', () => {
+  const baseUrl = 'http://localhost:60141'
+
+  const render = async (source: string) => {
+    const result = await compileMdxContent(source, {
+      relFilePath: '/authoring/codesandbox.mdx',
+      absoluteFilePath: join(process.cwd(), 'docs/authoring/codesandbox.mdx'),
+      baseUrl,
+      title: 'Test Title',
+      url: '/authoring/codesandbox',
+      tableOfContents: [],
+      entries: [],
+    })
+    // `Img` is async, which only the streaming renderer waits for
+    return renderToHtml(result.content)
+  }
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('resolves a relative `img` like an `<img src>`, and reads its dimensions', async () => {
+    vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+    vi.stubEnv('MDX_BASEURL', baseUrl)
+
+    const html = await render('<Codesandbox id="3rjsl" img="cell-fracture.webp" />')
+    expect(html).toContain(`src="${baseUrl}/authoring/cell-fracture.webp"`)
+    expect(html).toContain('width="1200"')
+    expect(html).toContain('height="630"')
+    expect(html).toContain('href="https://codesandbox.io/s/3rjsl"')
+  })
+
+  it('leaves a full URL `img` as is', async () => {
+    const html = await render('<Codesandbox id="3rjsl" img="https://example.com/a.png" />')
+    expect(html).toContain('src="https://example.com/a.png"')
+  })
+
+  it('still takes the deprecated `screenshot_url`', async () => {
+    const html = await render('<Codesandbox id="3rjsl" screenshot_url="a.png" />')
+    expect(html).toContain(`src="${baseUrl}/authoring/a.png"`)
+  })
+
+  it('renders a placeholder linking to the sandbox without `img`', async () => {
+    const html = await render('<Codesandbox id="3rjsl" title="Cell fracture" />')
+    expect(html).not.toContain('<img')
+    expect(html).not.toContain('codesandbox.io/api')
+    expect(html).toContain('href="https://codesandbox.io/s/3rjsl"')
+    expect(html).toContain('lucide-codesandbox')
+    expect(html).toContain('bg-surface-container')
   })
 })

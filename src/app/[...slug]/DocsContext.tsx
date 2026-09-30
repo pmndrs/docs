@@ -1,5 +1,6 @@
 'use client'
 
+import type { Box } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { createRequiredContext } from '@/lib/createRequiredContext'
 import { ReactNode } from 'react'
 
@@ -30,7 +31,7 @@ export type Doc = {
   metadata: DocMetadata
   image: string
   content: ReactNode
-  boxes: string[]
+  boxes: Box[]
   tableOfContents: DocToC[]
 }
 
