@@ -1,25 +1,32 @@
 'use client'
 
-import * as Dialog from '@radix-ui/react-dialog'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
-import { ComponentProps, useState } from 'react'
+import { Dialog, DialogPortal, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog as DialogPrimitive } from '@base-ui/react/dialog'
+import { useState } from 'react'
 
 import { Burger } from './Burger'
 
-export function Menu({ children, ...props }: ComponentProps<typeof Dialog.Content>) {
+/**
+ * The mobile nav: a full-width panel under the header, which stays in view.
+ *
+ * Built from the dialog's parts rather than `DialogContent`, which centres a card over a
+ * backdrop that would cover the header too. The popup is portalled to `<body>`, so it is
+ * `fixed` against the viewport rather than `absolute` against the sticky header.
+ */
+export function Menu({ children, ...props }: DialogPrimitive.Popup.Props) {
   const [opened, setOpened] = useState(false)
 
   return (
-    <Dialog.Root open={opened} onOpenChange={setOpened}>
-      <Dialog.Trigger aria-label="Menu">
+    <Dialog open={opened} onOpenChange={setOpened}>
+      <DialogTrigger aria-label="Menu">
         <Burger opened={opened} className="lg:hidden" />
-      </Dialog.Trigger>
-      <Dialog.Content {...props}>
-        <VisuallyHidden.Root>
-          <Dialog.Title>Menu</Dialog.Title>
-        </VisuallyHidden.Root>
-        {children}
-      </Dialog.Content>
-    </Dialog.Root>
+      </DialogTrigger>
+      <DialogPortal>
+        <DialogPrimitive.Popup data-slot="dialog-content" {...props}>
+          <DialogTitle className="sr-only">Menu</DialogTitle>
+          {children}
+        </DialogPrimitive.Popup>
+      </DialogPortal>
+    </Dialog>
   )
 }

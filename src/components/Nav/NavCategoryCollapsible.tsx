@@ -2,8 +2,8 @@
 
 import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
-import * as Collapsible from '@radix-ui/react-collapsible'
-import { ComponentProps, useEffect, useState } from 'react'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { ComponentProps, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 
 import Link from 'next/link'
@@ -26,16 +26,10 @@ export function NavCategoryCollapsible({
 
   const [open, setOpen] = useState(docsEntries.some(([, doc]) => doc.url === `/${asPath}`))
 
-  useEffect(() => {
-    const dur = '.2s'
-    document.documentElement.style.setProperty('--collapsible-down-duration', dur)
-    document.documentElement.style.setProperty('--collapsible-up-duration', dur)
-  }, [])
-
   const nonIndexItems = docsEntries.filter(([page]) => page !== INDEX_PAGE)
 
   return (
-    <Collapsible.Root
+    <Collapsible
       className={cn(
         'text-sm [--NavItem-pad:.75rem] [--arrow-size:--spacing(4)]',
         !docsEntries.some(([, doc]) => doc.url === `/${asPath}`) && 'opacity-50',
@@ -52,18 +46,22 @@ export function NavCategoryCollapsible({
           {category.replace(/\-/g, ' ')}
         </NavItem>
         {nonIndexItems.length > 0 && (
-          <Collapsible.Trigger
-            asChild
-            className={cn('absolute right-0 top-1/2 transition-transform', open && 'rotate-90')}
+          <CollapsibleTrigger
+            aria-label={category.replace(/\-/g, ' ')}
+            className={cn(
+              'absolute right-0 top-1/2 -translate-y-1/2 p-(--NavItem-pad) transition-transform',
+              open && 'rotate-90',
+            )}
           >
-            <div className="-translate-y-1/2 p-(--NavItem-pad)">
-              <IoIosArrowDown className="size-(--arrow-size) -rotate-90" />
-            </div>
-          </Collapsible.Trigger>
+            <IoIosArrowDown className="size-(--arrow-size) -rotate-90" />
+          </CollapsibleTrigger>
         )}
       </div>
 
-      <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+      {/* Base UI measures the panel into `--collapsible-panel-height` and flags the first and last
+       * frames of the transition, so the height eases in and out of 0. A panel open on the first
+       * render does not animate. */}
+      <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0">
         <ul>
           {nonIndexItems.map(([page, doc]) => (
             <li key={page}>
@@ -73,8 +71,8 @@ export function NavCategoryCollapsible({
             </li>
           ))}
         </ul>
-      </Collapsible.Content>
-    </Collapsible.Root>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }
 

@@ -1,16 +1,15 @@
 'use client'
 
 import Icon from '@/components/Icon'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import cn from '@/lib/cn'
-import * as Dialog from '@radix-ui/react-dialog'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { ComponentProps, useEffect, useState } from 'react'
 
 import { useKeyPress } from '@/hooks/useKeyPress'
 
 import { SearchModalContainer } from './SearchModalContainer'
 
-function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
+function Search({ className }: ComponentProps<typeof DialogTrigger>) {
   const [showSearchModal, setShowSearchModal] = useState(false)
   const slashPressed = useKeyPress('Slash')
 
@@ -21,28 +20,21 @@ function Search({ className }: ComponentProps<typeof Dialog.Trigger>) {
   }, [slashPressed, showSearchModal])
 
   return (
-    <Dialog.Root open={showSearchModal} onOpenChange={setShowSearchModal}>
-      <Dialog.Trigger className={className}>
+    <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
+      <DialogTrigger className={className}>
         <SearchButton />
-      </Dialog.Trigger>
+      </DialogTrigger>
 
-      <Dialog.Portal>
-        <Dialog.Content className="fixed inset-0 z-50">
-          <VisuallyHidden.Root>
-            <Dialog.Title>Search anything</Dialog.Title>
-          </VisuallyHidden.Root>
-
-          <Dialog.Overlay className="absolute inset-0 bg-surface-dim/95">
-            <Dialog.Close className="size-full" />
-          </Dialog.Overlay>
-
-          <SearchModalContainer
-            className="relative mx-auto max-w-3xl rounded-md px-4 shadow-sm [--Search-Input-top:--spacing(8)] lg:[--Search-Input-top:--spacing(24)]"
-            close={() => setShowSearchModal(false)}
-          />
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+      {/* A command palette, as shadcn's `CommandDialog` composes one, but opened by the trigger
+       * above and hung from the top of the viewport rather than from its first third. */}
+      <DialogContent
+        showCloseButton={false}
+        className="top-(--Search-Input-top) translate-y-0 overflow-hidden rounded-4xl! p-0 [--Search-Input-top:--spacing(8)] sm:max-w-3xl lg:[--Search-Input-top:--spacing(24)]"
+      >
+        <DialogTitle className="sr-only">Search anything</DialogTitle>
+        <SearchModalContainer close={() => setShowSearchModal(false)} />
+      </DialogContent>
+    </Dialog>
   )
 }
 

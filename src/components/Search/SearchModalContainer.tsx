@@ -3,9 +3,16 @@ import * as React from 'react'
 
 import { useDocs } from '@/app/[...slug]/DocsContext'
 
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import cn from '@/lib/cn'
 import { escape } from '@/utils/text'
-import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import { ComponentProps } from 'react'
 import type { SearchResult } from './SearchItem'
@@ -62,41 +69,46 @@ export const SearchModalContainer = ({
   }, [docs, deferredQuery])
 
   return (
-    <search
-      className={cn('[--Search-Input-height:--spacing(16)]', 'mt-(--Search-Input-top)', className)}
-    >
-      <Command shouldFilter={false} className="">
-        <Command.Input
+    <search className={cn(className)}>
+      <Command shouldFilter={false}>
+        <CommandInput
           name="search"
           id="search"
-          className="bg-surface-container block h-(--Search-Input-height) w-full rounded-md px-4 pl-10 sm:text-sm"
           placeholder="Search the docs"
           value={query}
           autoFocus
           onValueChange={(value) => setQuery(value)}
         />
 
-        <Command.List>
+        {/* Tall enough for the four results, short of the viewport: the dialog hangs
+         * `--Search-Input-top` from the top, and keeps as much below it. */}
+        <CommandList className="max-h-[calc(100dvh-2*var(--Search-Input-top))]">
+          {deferredQuery && <CommandEmpty>No results found.</CommandEmpty>}
           {results.length > 0 && (
-            <div className="bg-surface-container mt-1 flex max-h-[calc((100dvh-var(--Search-Input-top)-1.5rem)-var(--Search-Input-height))] flex-col gap-1 overflow-auto rounded-md p-1">
+            <CommandGroup>
               {results.map((result, index) => {
                 return (
-                  <Command.Item
+                  <CommandItem
                     key={`search-item-${index}`}
                     value={result.url}
                     onSelect={(value) => {
                       router.push(value)
                       close()
                     }}
-                    className="rounded-md transition-colors data-[selected=true]:bg-surface-container-high"
+                    className="p-0 font-normal"
                   >
-                    <SearchItem search={query} result={result} tabIndex={-1} />
-                  </Command.Item>
+                    <SearchItem
+                      search={query}
+                      result={result}
+                      tabIndex={-1}
+                      className="min-w-0 flex-1"
+                    />
+                  </CommandItem>
                 )
               })}
-            </div>
+            </CommandGroup>
           )}
-        </Command.List>
+        </CommandList>
       </Command>
     </search>
   )

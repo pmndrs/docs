@@ -12,3 +12,6 @@ pnpm-lock.yaml
 
 # Agent scratch space, incl. worktrees (whole checkouts of the repo)
 .claude
+
+# `shadcn/tailwind.css`, vendored verbatim so it diffs cleanly against the next release
+src/app/shadcn-tailwind.css
