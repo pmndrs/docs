@@ -112,6 +112,8 @@ async function _getDocs(
       await compileMDX({
         source: sanitizedContent,
         options: {
+          // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
+          blockJS: false,
           mdxOptions: {
             rehypePlugins: [
               rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
