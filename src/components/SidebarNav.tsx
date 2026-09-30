@@ -129,12 +129,11 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
                  * open on the first render does not animate. */}
                 <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0">
                   {/* shadcn's tree line, under the start of the category's label. It is drawn
-                   * again over the pages (`before:`), as a page's highlight reaches back over it:
-                   * a faint white in `difference`, so it inverts whatever it crosses — a subtle
-                   * grey on the sidebar, in either theme, and a contrasting line over a lit row.
-                   * `translate-none` (not shadcn's `translate-x-px`) keeps the list from being a
-                   * stacking context, which would blend the line against nothing but the rows. */}
-                  <SidebarMenuSub className="relative mr-0 ml-(--rgrid-m) translate-none gap-0 px-0 py-0 before:pointer-events-none before:absolute before:inset-y-0 before:-left-px before:z-10 before:w-px before:bg-white before:opacity-22 before:mix-blend-difference">
+                   * over the pages instead (`before:`, shadcn's own border made transparent), as a
+                   * page's highlight reaches back over it: in the page header's rule colour,
+                   * translucent, so it still shows, fainter, across a lit row. `translate-none`
+                   * (not shadcn's `translate-x-px`) keeps the list on `--NavSub-offset`. */}
+                  <SidebarMenuSub className="relative mr-0 ml-(--rgrid-m) translate-none gap-0 border-transparent px-0 py-0 before:pointer-events-none before:absolute before:inset-y-0 before:-left-px before:z-10 before:w-px before:bg-outline-variant/50">
                     {subDocs.map((doc) => {
                       const isActive = doc.url === currentUrl
 
