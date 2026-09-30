@@ -97,3 +97,43 @@ describe('compileMdxContent', () => {
     expect(html).toMatch(/<p[^>]*>Check <a[^>]*href="#section"[^>]*>this link<\/a><\/p>/)
   })
 })
+
+/**
+ * next-mdx-remote 6 strips every `{...}` expression unless `blockJS: false` is passed, which
+ * silently drops props like `cols={2}` (#595). These fail if that option goes away.
+ */
+describe('MDX expressions', () => {
+  const compile = async (source: string) => {
+    const result = await compileMdxContent(source, {
+      relFilePath: '/test/file.mdx',
+      absoluteFilePath: '/home/user/docs/test/file.mdx',
+      title: 'Test Title',
+      url: '/test/file',
+      tableOfContents: [],
+      entries: [],
+    })
+    return renderToString(result.content)
+  }
+
+  it('evaluates inline expressions', async () => {
+    expect(await compile('sum: {1+1}')).toMatch(/sum: (<!-- -->)?2/)
+  })
+
+  it('passes expression props to components', async () => {
+    expect(await compile('<Grid cols={2}>\n  <div>a</div>\n</Grid>')).toContain('md:grid-cols-2')
+  })
+
+  it('passes array props to components', async () => {
+    // `embed` skips the async `Img`, which `renderToString` cannot wait for
+    const html = await compile(
+      '<Codesandbox id="new" embed title="Demo" tags={["alpha", "beta"]} />',
+    )
+    expect(html).toMatch(/<span[^>]*>alpha<\/span>/)
+    expect(html).toMatch(/<span[^>]*>beta<\/span>/)
+  })
+
+  it('evaluates expressions in frontmatter values', async () => {
+    const result = await compileMdxFrontmatter('sum: {1+1}')
+    expect(renderToString(result.content)).toMatch(/sum: (<!-- -->)?2/)
+  })
+})
