@@ -125,8 +125,10 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
                   // button 2.25rem, inset 0.25rem on the top and right. Set on the category's row
                   // (not on the item, which holds the pages too): `!` outranks the action's own
                   // `peer-data-[size=default]/menu-button:top-2`. Hovered or focused, it takes
-                  // shadcn's secondary colours, to stand out from the row, lit in the accent.
-                  className="top-1! right-1 w-9 rounded-full hover:bg-secondary hover:text-secondary-foreground focus-visible:bg-secondary focus-visible:text-secondary-foreground data-panel-open:rotate-90"
+                  // shadcn's secondary colours, to stand out from the row, lit in the accent. No
+                  // `after:` hit-area pad below `lg`: the circle is target enough, and the pad
+                  // reached past the sheet's right edge, which then scrolled sideways.
+                  className="top-1! right-1 w-9 rounded-full after:hidden hover:bg-secondary hover:text-secondary-foreground focus-visible:bg-secondary focus-visible:text-secondary-foreground data-panel-open:rotate-90"
                 >
                   <ChevronRightIcon />
                 </CollapsibleTrigger>
