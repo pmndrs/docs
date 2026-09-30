@@ -171,8 +171,8 @@ describe('Codesandbox', () => {
 
     const html = await render('<Codesandbox id="3rjsl" img="cell-fracture.webp" />')
     expect(html).toContain(`src="${baseUrl}/authoring/cell-fracture.webp"`)
-    expect(html).toContain('width="800"')
-    expect(html).toContain('height="450"')
+    expect(html).toContain('width="1200"')
+    expect(html).toContain('height="630"')
     expect(html).toContain('href="https://codesandbox.io/s/3rjsl"')
   })
 
