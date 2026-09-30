@@ -28,6 +28,12 @@ export const SearchModalContainer = ({
   const deferredQuery = React.useDeferredValue(query)
   const [results, setResults] = React.useState<SearchResult[]>([])
 
+  // The highlighted result, held here rather than left to cmdk: results arrive a render after
+  // the query (deferred), and cmdk only picks the first item when its own selection is empty, so a
+  // selection kept from the previous results would leave the new ones with none, and Enter inert.
+  const [selected, setSelected] = React.useState('')
+  React.useEffect(() => setSelected(results[0]?.url ?? ''), [results])
+
   React.useEffect(() => {
     React.startTransition(() => {
       if (!deferredQuery) return setResults([])
@@ -70,7 +76,7 @@ export const SearchModalContainer = ({
 
   return (
     <search className={cn(className)}>
-      <Command shouldFilter={false}>
+      <Command shouldFilter={false} value={selected} onValueChange={setSelected}>
         <CommandInput
           name="search"
           id="search"
