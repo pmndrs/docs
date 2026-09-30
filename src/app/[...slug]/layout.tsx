@@ -80,7 +80,7 @@ export default async function Layoutt({ params, children }: Props) {
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
 
-        <Menu className="z-100 bg-surface absolute inset-0 top-(--header-height) h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
+        <Menu className="bg-surface fixed inset-x-0 top-(--header-height) bottom-0 z-100 overflow-auto outline-none lg:hidden">
           <Nav docs={docs} asPath={asPath} collapsible={false} />
         </Menu>
       </div>
