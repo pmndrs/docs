@@ -1,8 +1,6 @@
 //
-// Brand logos of the shields.io `logo=` slugs the docs use
-//
-// shields.io draws its logos from simple-icons (https://simpleicons.org), so a slug maps 1:1
-// to one of its icons. Only the `<path>` of the used ones is copied here, from
+// Brand logos of `<Badge logo>`, by simple-icons (https://simpleicons.org) slug — the slugs
+// shields.io's `logo=` takes too. Only the `<path>` of the ones pmndrs docs use is copied here, from
 // simple-icons@16.33.0 (CC0-1.0, `icons/<slug>.svg`, all on a 24x24 viewBox): the package
 // weighs ~20 MB for 3,000+ icons, and the website is built with this package's dependencies.
 //

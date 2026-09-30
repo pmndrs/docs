@@ -106,25 +106,8 @@ export const Colors: Story = {
 }
 
 /**
- * A storybook tag, as a shields.io image becomes — neutral: its pink is dropped, and "storybook"
- * is only text — next to the same tag declared, `<Badge color="storybook" logo="storybook">`.
- */
-export const DeclaredVsConverted: Story = {
-  args: { children: 'badge' },
-  render: () => (
-    <p className="my-4">
-      <Badge href="https://drei.pmnd.rs/">storybook</Badge>{' '}
-      <Badge href="https://drei.pmnd.rs/" color="storybook" logo="storybook">
-        storybook
-      </Badge>
-    </p>
-  ),
-}
-
-/**
- * Badges are inline, like links: in a row, as the MDX `<Badge>a</Badge>\n<Badge>b</Badge>` and
- * the shields.io images become, and within running text — in a narrow column, they wrap as
- * words do.
+ * Badges are inline, like links: in a row, as the MDX `<Badge>a</Badge>\n<Badge>b</Badge>`
+ * becomes, and within running text — in a narrow column, they wrap as words do.
  */
 export const Inline: Story = {
   args: { children: 'badge' },
@@ -148,42 +131,5 @@ export const Inline: Story = {
         badge sits in a sentence like any <a href="#">link</a> would.
       </p>
     </div>
-  ),
-}
-
-/**
- * The badge row of drei's introduction, as its shields.io images become: neutral, with the
- * logos and labels their URLs declare — and, for the live badges (npm version and downloads,
- * discord), their name only, never their value.
- */
-export const IntroRow: Story = {
-  args: { children: 'badge' },
-  render: () => (
-    <p className="my-4">
-      <Badge href="https://drei.pmnd.rs/" logo="storybook">
-        Storybook
-      </Badge>{' '}
-      <Badge
-        href="https://www.chromatic.com/library?appId=64a019f36ecd3751d0ada612&branch=master"
-        logo="chromatic"
-      >
-        chromatic
-      </Badge>{' '}
-      <Badge href="https://www.npmjs.com/package/@react-three/drei">npm</Badge>{' '}
-      <Badge href="https://www.npmjs.com/package/@react-three/drei">downloads</Badge>{' '}
-      <Badge
-        href="https://discord.com/channels/740090768164651008/741751532592038022"
-        logo="discord"
-      >
-        discord
-      </Badge>{' '}
-      <Badge
-        href="https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei"
-        label="GitHub"
-        logo="github"
-      >
-        Open in Codespaces
-      </Badge>
-    </p>
   ),
 }

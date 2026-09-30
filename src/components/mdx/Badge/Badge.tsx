@@ -40,7 +40,7 @@ function colorVars(color: BadgeColor) {
  * - `href`: links to it
  * - `color`: a color role of the theme — the `secondary` look otherwise
  * - `label`: a de-emphasized label before the message, as in "GitHub Open in Codespaces"
- * - `logo`: a brand logo before it all, by its shields.io / simple-icons slug, e.g. `github`.
+ * - `logo`: a brand logo before it all, by its simple-icons slug, e.g. `github`.
  *   An unknown slug shows no logo.
  */
 export function Badge({
