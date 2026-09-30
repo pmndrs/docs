@@ -76,7 +76,14 @@ export const SearchModalContainer = ({
 
   return (
     <search className={cn(className)}>
-      <Command shouldFilter={false} value={selected} onValueChange={setSelected}>
+      {/* The input's wrapper pads all sides but the bottom, which it leaves to the list below:
+       * with no query the list is empty, so the command pads the bottom to match. */}
+      <Command
+        shouldFilter={false}
+        value={selected}
+        onValueChange={setSelected}
+        className={cn(!deferredQuery && 'pb-2')}
+      >
         <CommandInput
           name="search"
           id="search"
