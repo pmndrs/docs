@@ -11,12 +11,11 @@ import {
 import Search from '@/components/Search'
 import { SidebarNav } from '@/components/SidebarNav'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { DiscordIcon, GitHubIcon } from '@/components/brand-icons'
 import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
 import { getData } from '@/utils/docs'
 import Link from 'next/link'
-import { PiDiscordLogoLight } from 'react-icons/pi'
-import { VscGithubAlt } from 'react-icons/vsc'
 import { DocsContext } from './DocsContext'
 
 export type Props = {
@@ -73,8 +72,8 @@ export default async function Layoutt({ params, children }: Props) {
 
       <div className="flex">
         {[
-          { href: process.env.GITHUB, icon: <VscGithubAlt /> },
-          { href: process.env.DISCORD, icon: <PiDiscordLogoLight /> },
+          { href: process.env.GITHUB, icon: <GitHubIcon size="1em" /> },
+          { href: process.env.DISCORD, icon: <DiscordIcon size="1em" /> },
         ].map(({ href, icon }, index) => (
           <React.Fragment key={index}>
             {href && (

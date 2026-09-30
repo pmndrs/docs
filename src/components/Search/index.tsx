@@ -1,8 +1,8 @@
 'use client'
 
-import Icon from '@/components/Icon'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import cn from '@/lib/cn'
+import { SearchIcon } from 'lucide-react'
 import { ComponentProps, useEffect, useState } from 'react'
 
 import { useKeyPress } from '@/hooks/useKeyPress'
@@ -49,7 +49,7 @@ export function SearchButton({ className, ...props }: ComponentProps<'span'>) {
       )}
       {...props}
     >
-      <Icon icon="search" className="size-6" />
+      <SearchIcon className="size-5 flex-none" />
       <span>
         Search
         <span className="hidden sm:inline"> for anything</span>
