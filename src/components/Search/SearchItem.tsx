@@ -1,5 +1,5 @@
 import cn from '@/lib/cn'
-import { highlight } from '@/utils/text'
+import { excerpt, highlight } from '@/utils/text'
 import { CornerDownLeftIcon } from 'lucide-react'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
@@ -47,10 +47,10 @@ function SearchItem({
               __html: highlight(sanitizeAllHtmlButMark(result.title), search),
             }}
           />
-          <div className="block pt-2 text-sm text-on-surface-variant/50">
+          <div className="mt-2 line-clamp-3 text-sm text-on-surface-variant/50">
             <span
               dangerouslySetInnerHTML={{
-                __html: highlight(sanitizeAllHtmlButMark(result.content), search),
+                __html: highlight(sanitizeAllHtmlButMark(excerpt(result.content, search)), search),
               }}
             />
           </div>

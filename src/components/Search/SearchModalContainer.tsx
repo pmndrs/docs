@@ -76,7 +76,14 @@ export const SearchModalContainer = ({
 
   return (
     <search className={cn(className)}>
-      <Command shouldFilter={false} value={selected} onValueChange={setSelected}>
+      {/* The input's wrapper pads all sides but the bottom, leaving it to the list below, which is
+       * empty until there is a query: pad the bottom too, so the input sits centred either way. */}
+      <Command
+        shouldFilter={false}
+        value={selected}
+        onValueChange={setSelected}
+        className="*:data-[slot=command-input-wrapper]:pb-1"
+      >
         <CommandInput
           name="search"
           id="search"
@@ -87,8 +94,9 @@ export const SearchModalContainer = ({
         />
 
         {/* Tall enough for the four results, short of the viewport: the dialog hangs
-         * `--Search-Input-top` from the top, and keeps as much below it. */}
-        <CommandList className="max-h-[calc(100dvh-2*var(--Search-Input-top))]">
+         * `--Search-Input-top` from the top, and keeps as much below it. Its scrolled edges fade out,
+         * rather than cutting a result's rounded corners square against the input. */}
+        <CommandList className="max-h-[calc(100dvh-2*var(--Search-Input-top))] scroll-fade">
           {deferredQuery && <CommandEmpty>No results found.</CommandEmpty>}
           {results.length > 0 && (
             <CommandGroup>
