@@ -1,8 +1,8 @@
 'use client'
 
 import cn from '@/lib/cn'
+import { ClipboardCheckIcon, ClipboardIcon } from 'lucide-react'
 import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
-import { TbClipboard, TbClipboardCheck } from 'react-icons/tb'
 
 export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) => {
   const [copied, setCopied] = useState(false)
@@ -37,7 +37,7 @@ export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) =
         onClick={handleClick}
         aria-label="Copy to clipboard"
       >
-        {copied ? <TbClipboardCheck className="size-6" /> : <TbClipboard className="size-6" />}
+        {copied ? <ClipboardCheckIcon className="size-6" /> : <ClipboardIcon className="size-6" />}
       </button>
     </div>
   )

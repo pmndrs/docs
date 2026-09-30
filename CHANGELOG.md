@@ -1,5 +1,19 @@
 # @pmndrs/docs
 
+## 4.1.4
+
+### Patch Changes
+
+- [#602](https://github.com/pmndrs/docs/pull/602) [`1574332`](https://github.com/pmndrs/docs/commit/1574332647cda41ce3342acde1664931630168af) Thanks [@abernier](https://github.com/abernier)! - The search field sits centred in its dialog again: with nothing typed, it had twice as much room
+  above it as below. Each result now shows three lines of its page instead of all of it, and the
+  list fades out at its edges while scrolled.
+
+- [#599](https://github.com/pmndrs/docs/pull/599) [`609f042`](https://github.com/pmndrs/docs/commit/609f042fcebd9ee964b346da8b0c7d7d553c97ff) Thanks [@abernier](https://github.com/abernier)! - The site's building blocks move from Radix to Base UI, on shadcn's `base-luma` style. The search
+  opens as shadcn's command palette: a rounded card hung near the top, over a blurred backdrop,
+  with a search icon in its field and a "No results found." line when nothing matches. Pressing
+  Enter on a fresh query now always opens the first result — it could do nothing before. The mobile
+  menu, the nav's folding categories and the rest look as they did.
+
 ## 4.1.3
 
 ### Patch Changes
