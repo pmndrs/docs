@@ -47,7 +47,7 @@ function SearchItem({
               __html: highlight(sanitizeAllHtmlButMark(result.title), search),
             }}
           />
-          <div className="block pt-2 text-sm text-on-surface-variant/50">
+          <div className="mt-2 line-clamp-3 text-sm text-on-surface-variant/50">
             <span
               dangerouslySetInnerHTML={{
                 __html: highlight(sanitizeAllHtmlButMark(result.content), search),
