@@ -1,5 +1,4 @@
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
-import type { Program } from 'estree'
 import type { Root } from 'hast'
 import fs from 'node:fs'
 import { resolve } from 'node:path'
@@ -17,7 +16,18 @@ export type Box = {
 /**
  * Value of a JSX attribute: a string for `id="abc"`, an expression for `id={...}`.
  */
-type AttributeValue = string | { data?: { estree?: Program | null } } | null | undefined
+type AttributeValue =
+  | string
+  | {
+      data?: {
+        // The `estree` program of the expression; typed by hand, `estree` types aren't a dependency
+        estree?: {
+          body: { type: string; expression?: { type: string; value?: unknown } }[]
+        } | null
+      }
+    }
+  | null
+  | undefined
 
 /**
  * Reads the string of an attribute written `id="abc"`, or as a string literal `id={"abc"}`.
@@ -33,7 +43,7 @@ function stringValue(value: AttributeValue) {
   if (statement.type !== 'ExpressionStatement') return undefined
 
   const { expression } = statement
-  if (expression.type !== 'Literal' || typeof expression.value !== 'string') return undefined
+  if (expression?.type !== 'Literal' || typeof expression.value !== 'string') return undefined
 
   return expression.value
 }
