@@ -18,6 +18,12 @@ const page = (owner: Lib, path: string, title: string, body: string): Page => ({
   body,
 })
 
+// ink-testing-library's stdout reports 100 columns but no rows, so ink falls back to the
+// size of the terminal running the tests (`terminal-size`, which reads process.stdout
+// first, then /dev/tty). Pin one: in a short terminal there is no room left for the pages,
+// and the frames come out empty.
+Object.assign(process.stdout, { columns: 100, rows: 24 })
+
 const drei = lib('drei', 'Drei')
 const zustand = lib('zustand', 'Zustand')
 
