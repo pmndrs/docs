@@ -35,8 +35,13 @@
   @apply [--rgrid-g:--spacing(4)] lg:[--rgrid-g:--spacing(12)];
   @apply [--header-height:--spacing(16)];
 
+  /*
+   * Smooth for in-page jumps only: Next turns it off during route transitions because <html> carries
+   * `data-scroll-behavior="smooth"`. The padding keeps scroll targets clear of the sticky header,
+   * and Next reads it too, to tell a page top hidden under the header from one in view.
+   */
   scroll-behavior: smooth;
-  scroll-margin-top: var(--header-height);
+  scroll-padding-top: var(--header-height);
   font-size: 17px;
 }
 
@@ -44,8 +49,9 @@ body {
   font-optical-sizing: auto;
 }
 
+/* On top of the root's `scroll-padding-top`, which already clears the header. */
 main :target {
-  @apply scroll-m-[calc(var(--header-height)+(--spacing(4)))];
+  @apply scroll-mt-4;
 }
 
 .post-container > * {
