@@ -65,7 +65,7 @@ export function Toc({ className, toc }: ComponentProps<'nav'> & { toc: DocToC[] 
             data-active={id === activeId}
             className={cn(
               'relative flex h-8 min-w-0 items-center py-1.5 pr-3 pl-4',
-              'text-on-surface-variant transition-colors hover:text-on-surface',
+              'text-on-surface-variant/50 transition-colors hover:text-on-surface',
               // Indent by depth among the headings present (see withDepth)
               'data-[level=2]:pl-8 data-[level=3]:pl-12 data-[level=4]:pl-16 data-[level=5]:pl-20',
               'data-[active=true]:font-medium data-[active=true]:text-on-surface',
