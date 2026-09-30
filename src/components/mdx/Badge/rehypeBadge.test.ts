@@ -36,36 +36,42 @@ describe('rehypeBadge: tags', () => {
       'https://img.shields.io/badge/-storybook-%23ff69b4',
     )
     expect(await processHtml(html)).toBe(
-      '<Badge href="https://drei.pmnd.rs/?path=/story/foo" color="storybook" logo="storybook">storybook</Badge>',
+      '<Badge href="https://drei.pmnd.rs/?path=/story/foo">storybook</Badge>',
     )
+  })
+
+  it('drops the shields.io color, and reads nothing into the message', async () => {
+    // Neither pink nor "storybook" make it a storybook badge: authors declare that, <Badge color logo>
+    const html = '<img src="https://img.shields.io/badge/-storybook-%23ff69b4" alt="">'
+    expect(await processHtml(html)).toBe('<Badge>storybook</Badge>')
   })
 
   it('turns a bare badge image into a Badge', async () => {
     const html = '<img src="https://img.shields.io/badge/-Dom%20only-red" alt="">'
-    expect(await processHtml(html)).toBe('<Badge color="caution">Dom only</Badge>')
+    expect(await processHtml(html)).toBe('<Badge>Dom only</Badge>')
   })
 
   it('reads a no-break space in the URL as a space', async () => {
     const html = '<img src="https://img.shields.io/badge/-Dom only-red" alt="">'
-    expect(await processHtml(html)).toBe('<Badge color="caution">Dom only</Badge>')
+    expect(await processHtml(html)).toBe('<Badge>Dom only</Badge>')
   })
 
   it('keeps the link around a badge image that is not its only content', async () => {
     const html =
       '<a href="https://example.com"><img src="https://img.shields.io/badge/-storybook-ff69b4"> story</a>'
     expect(await processHtml(html)).toBe(
-      '<a href="https://example.com"><Badge color="storybook" logo="storybook">storybook</Badge> story</a>',
+      '<a href="https://example.com"><Badge>storybook</Badge> story</a>',
     )
   })
 
-  it('turns a three-part badge into a Badge with its label, color and logo', async () => {
+  it('turns a three-part badge into a Badge with its label and logo', async () => {
     // As in koota's README
     const html = link(
       'https://github.com/pmndrs/koota',
       'https://img.shields.io/badge/github-repo-blue?logo=github',
     )
     expect(await processHtml(html)).toBe(
-      '<Badge href="https://github.com/pmndrs/koota" color="note" label="github" logo="github">repo</Badge>',
+      '<Badge href="https://github.com/pmndrs/koota" label="github" logo="github">repo</Badge>',
     )
   })
 })
@@ -102,11 +108,10 @@ const DREI = {
 }
 
 const DREI_BADGES = {
-  storybook:
-    '<Badge href="https://drei.pmnd.rs/" color="storybook" logo="storybook">Storybook</Badge>',
+  storybook: '<Badge href="https://drei.pmnd.rs/" logo="storybook">Storybook</Badge>',
   chromatic:
     '<Badge href="https://www.chromatic.com/library?appId=64a019f36ecd3751d0ada612&#x26;branch=master" logo="chromatic">chromatic</Badge>',
-  version: '<Badge href="https://www.npmjs.com/package/@react-three/drei" logo="npm">npm</Badge>',
+  version: '<Badge href="https://www.npmjs.com/package/@react-three/drei">npm</Badge>',
   downloads: '<Badge href="https://www.npmjs.com/package/@react-three/drei">downloads</Badge>',
   discord:
     '<Badge href="https://discord.com/channels/740090768164651008/741751532592038022" logo="discord">discord</Badge>',
@@ -207,16 +212,16 @@ describe('rehypeBadge in MDX', () => {
     ].join('\n')
 
     expect(await render(source)).toBe(
-      '<p><mark data-href="https://drei.pmnd.rs/?path=/story/foo" data-color="storybook" data-logo="storybook">storybook</mark>\n' +
-        '<mark data-href="https://r3f.docs.pmnd.rs/api/hooks#useloader" data-color="tip">suspense</mark>\n' +
-        '<mark data-color="caution">Dom only</mark></p>',
+      '<p><mark data-href="https://drei.pmnd.rs/?path=/story/foo">storybook</mark>\n' +
+        '<mark data-href="https://r3f.docs.pmnd.rs/api/hooks#useloader">suspense</mark>\n' +
+        '<mark>Dom only</mark></p>',
     )
   })
 
   it('reads the raw no-break space of drei pages', async () => {
     // As written in e.g. drei's docs/misc/html.mdx: markdown accepts a U+00A0 in a URL
     expect(await render('![](https://img.shields.io/badge/-Dom only-red)')).toBe(
-      '<p><mark data-color="caution">Dom only</mark></p>',
+      '<p><mark>Dom only</mark></p>',
     )
   })
 
@@ -228,8 +233,8 @@ describe('rehypeBadge in MDX', () => {
     ].join('\n')
 
     expect(await render(source)).toBe(
-      '<p><mark data-href="https://drei.pmnd.rs/" data-color="storybook" data-logo="storybook">Storybook</mark>\n' +
-        '<mark data-href="https://www.npmjs.com/package/@react-three/drei" data-logo="npm">npm</mark>\n' +
+      '<p><mark data-href="https://drei.pmnd.rs/" data-logo="storybook">Storybook</mark>\n' +
+        '<mark data-href="https://www.npmjs.com/package/@react-three/drei">npm</mark>\n' +
         '<mark data-href="https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei" data-label="GitHub" data-logo="github">Open in Codespaces</mark></p>',
     )
   })

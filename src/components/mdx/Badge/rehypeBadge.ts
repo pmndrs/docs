@@ -12,13 +12,14 @@ import { isShield, parseShield, type ShieldBadge } from './shields'
 //
 // are rewritten to:
 //
-// <Badge href="https://drei.pmnd.rs/?path=/story/..." color="important">storybook</Badge>
-// <Badge color="caution">Dom only</Badge>
+// <Badge href="https://drei.pmnd.rs/?path=/story/...">storybook</Badge>
+// <Badge>Dom only</Badge>
 // <Badge href="https://drei.pmnd.rs/" logo="storybook">Storybook</Badge>
-// <Badge href="https://www.npmjs.com/package/@react-three/drei" logo="npm">npm</Badge>
+// <Badge href="https://www.npmjs.com/package/@react-three/drei">npm</Badge>
 //
-// See `./shields.ts` for what is read from each URL. Live badges keep their name only, never
-// their value: nothing is fetched.
+// Only what the URL declares: label, message, the link and `logo=`. The badge is neutral, its
+// shields.io color dropped: a color is for the author to declare, `<Badge color>`. Live badges
+// keep their name only, never their value: nothing is fetched. See `./shields.ts`.
 //
 // All or nothing, per container: a Badge never sits next to a shields.io image. When one
 // shields.io image of a paragraph (or of any other parent) is not a badge `parseShield` reads,
@@ -37,11 +38,10 @@ function onlyImage(link: Element) {
   return child
 }
 
-function toBadge(node: Element, { label, message, color, logo }: ShieldBadge, href?: unknown) {
+function toBadge(node: Element, { label, message, logo }: ShieldBadge, href?: unknown) {
   node.tagName = 'Badge' // map to <Badge> React component
   node.properties = {}
   if (typeof href === 'string') node.properties.href = href
-  if (color) node.properties.color = color
   if (label) node.properties.label = label
   if (logo) node.properties.logo = logo
   node.children = [{ type: 'text', value: message }]
