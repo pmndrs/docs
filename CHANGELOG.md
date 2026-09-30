@@ -1,5 +1,35 @@
 # @pmndrs/docs
 
+## 4.2.0
+
+### Minor Changes
+
+- [#605](https://github.com/pmndrs/docs/pull/605) [`2274a4e`](https://github.com/pmndrs/docs/commit/2274a4e50559118ca9a3da76af6a723d4846aa61) Thanks [@abernier](https://github.com/abernier)! - The "On this page" table of contents now follows the scroll: the heading nearest the top of the
+  screen is highlighted, and the first one is highlighted on load — it only changed on click before.
+  It takes Vercel's docs look: a thin rail along the list, a darker segment beside the active item.
+  Items indent by their depth among the headings actually present, so an h4 right under an h2 sits
+  one step in, not two.
+
+### Patch Changes
+
+- [#601](https://github.com/pmndrs/docs/pull/601) [`0e69a2e`](https://github.com/pmndrs/docs/commit/0e69a2ef4eb04872a7b60af69b901c288de6a3e0) Thanks [@abernier](https://github.com/abernier)! - The docs navigation is now shadcn's native Sidebar. On desktop it keeps its place and look: on the
+  page's own surface, the current page in a primary-container bar flush left with a rounded end,
+  categories folding under a chevron, a tree line down each category's pages. Hover is a lighter tint
+  of the same colour, so it no longer reads like the current page. Below `lg`, the header button
+  opens the nav as a sheet from the left, which closes as soon as a page is picked.
+
+- [#603](https://github.com/pmndrs/docs/pull/603) [`26bb0f3`](https://github.com/pmndrs/docs/commit/26bb0f3c9b6a401e8ea494f23f4ad98b51f677bf) Thanks [@abernier](https://github.com/abernier)! - Every icon on the site now comes from lucide, the icon set of the shadcn components: the header's
+  GitHub and Discord links, the GitHub-style alerts, the code blocks' copy button, the nav's folding
+  arrows, the mobile menu, the search and the home page's cards. They keep their sizes; `react-icons`
+  is no longer a dependency.
+
+- [#607](https://github.com/pmndrs/docs/pull/607) [`c889597`](https://github.com/pmndrs/docs/commit/c889597274f502eeaa8736b6935fa57886f44540) Thanks [@abernier](https://github.com/abernier)! - Going to another page now lands at its top with the title in view. It could stop short with the
+  title hidden under the sticky header: Next's scroll to the top ran smoothly and was cut off by its
+  own fallback, which lined the page up with the top of the screen, behind the header.
+
+- [#606](https://github.com/pmndrs/docs/pull/606) [`5df604e`](https://github.com/pmndrs/docs/commit/5df604e5357e76e40dfea13b69c8223b6f9b5a40) Thanks [@abernier](https://github.com/abernier)! - Inactive "On this page" items now share the muted color of the "On this page" title, so the active
+  item stands out more.
+
 ## 4.1.4
 
 ### Patch Changes
