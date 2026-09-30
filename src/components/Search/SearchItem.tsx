@@ -1,6 +1,6 @@
 import Icon from '@/components/Icon'
 import cn from '@/lib/cn'
-import { highlight } from '@/utils/text'
+import { excerpt, highlight } from '@/utils/text'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
 import sanitizeHtml from 'sanitize-html'
@@ -50,7 +50,7 @@ function SearchItem({
           <div className="mt-2 line-clamp-3 text-sm text-on-surface-variant/50">
             <span
               dangerouslySetInnerHTML={{
-                __html: highlight(sanitizeAllHtmlButMark(result.content), search),
+                __html: highlight(sanitizeAllHtmlButMark(excerpt(result.content, search)), search),
               }}
             />
           </div>
