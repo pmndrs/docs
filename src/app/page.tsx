@@ -6,11 +6,12 @@ import r3fIcon from '@/assets/r3f-icon.svg'
 import reactSpringIcon from '@/assets/react-spring-icon.svg'
 import uiKitIcon from '@/assets/uikit-icon.svg'
 import zustandIcon from '@/assets/zustand-icon.svg'
-import Icon from '@/components/Icon'
+import { GitHubIcon } from '@/components/brand-icons'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
 import { Badge } from '@/components/ui/badge'
 import { libs } from '@/libs'
+import { FileTextIcon } from 'lucide-react'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
 import Image, { type StaticImageData } from 'next/image'
@@ -173,7 +174,7 @@ export default function Page() {
                         href={data.docs_url}
                         className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                       >
-                        <Icon icon="docs" />
+                        <FileTextIcon className="size-5 flex-none" />
                         <span className="sm:hidden">Docs</span>
                         <span className="hidden sm:inline">Documentation</span>
                       </Link>
@@ -183,7 +184,7 @@ export default function Page() {
                         rel="noopener noreferrer"
                         className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
                       >
-                        <Icon icon="github" />
+                        <GitHubIcon className="size-5 flex-none" />
                         <span>GitHub</span>
                       </a>
                     </div>

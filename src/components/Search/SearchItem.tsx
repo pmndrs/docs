@@ -1,6 +1,6 @@
-import Icon from '@/components/Icon'
 import cn from '@/lib/cn'
 import { excerpt, highlight } from '@/utils/text'
+import { CornerDownLeftIcon } from 'lucide-react'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
 import sanitizeHtml from 'sanitize-html'
@@ -58,7 +58,7 @@ function SearchItem({
         {result.image ? (
           <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
         ) : (
-          <Icon icon="enter" />
+          <CornerDownLeftIcon />
         )}
       </div>
     </Link>
