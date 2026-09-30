@@ -94,8 +94,9 @@ export const SearchModalContainer = ({
         />
 
         {/* Tall enough for the four results, short of the viewport: the dialog hangs
-         * `--Search-Input-top` from the top, and keeps as much below it. */}
-        <CommandList className="max-h-[calc(100dvh-2*var(--Search-Input-top))]">
+         * `--Search-Input-top` from the top, and keeps as much below it. Its scrolled edges fade out,
+         * rather than cutting a result's rounded corners square against the input. */}
+        <CommandList className="max-h-[calc(100dvh-2*var(--Search-Input-top))] scroll-fade">
           {deferredQuery && <CommandEmpty>No results found.</CommandEmpty>}
           {results.length > 0 && (
             <CommandGroup>
