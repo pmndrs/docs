@@ -31,7 +31,9 @@ const ITEM_SHAPE = 'h-auto rounded-none rounded-r-full py-(--NavItem-pad) pl-(--
  * Hovered, a row takes a fainter accent than the current page's, so the two tell apart. Only on
  * the rows that are not current: a current row keeps shadcn's full accent when hovered.
  */
-const HOVER_SOFT = 'hover:bg-sidebar-accent/40 hover:text-sidebar-foreground'
+// Pressing a row keeps its hover look: shadcn's `active:` full accent would flash on every click.
+const HOVER_SOFT =
+  'hover:bg-sidebar-accent/40 hover:text-sidebar-foreground active:bg-sidebar-accent/40 active:text-sidebar-foreground'
 
 export type SidebarNavDoc = Pick<Doc, 'slug' | 'url' | 'title'>
 
