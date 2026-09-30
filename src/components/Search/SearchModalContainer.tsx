@@ -57,7 +57,7 @@ export const SearchModalContainer = ({
       //     description: data.description ?? '',
       //     content: data.content ?? '',
       //     url: `https://codesandbox.io/s/${id}`,
-      //     image: data?.screenshot_url,
+      //     image: data?.img,
       //   }))
       // )
 

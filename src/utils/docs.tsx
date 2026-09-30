@@ -1,5 +1,5 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
-import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { rehypeCodesandbox, type Box } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { compileMdxContent, compileMdxFrontmatter } from '@/utils/compileMdxContent'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
@@ -102,7 +102,9 @@ async function _getDocs(
       const compiledTitle = await compileMdxFrontmatter(title)
       const titleJsx = compiledTitle.content
 
-      const boxes: string[] = []
+      const relFilePath = file.substring(root.length) // "/getting-started/tutorials/store.mdx"
+
+      const boxes: Box[] = []
 
       // Sanitize markdown
       const sanitizedContent = content
@@ -116,7 +118,7 @@ async function _getDocs(
           blockJS: false,
           mdxOptions: {
             rehypePlugins: [
-              rehypeCodesandbox(boxes), // 1. put all Codesandbox[id] into `boxes`
+              rehypeCodesandbox(relFilePath, MDX_BASEURL, boxes), // 1. put all Codesandbox[id][img] into `boxes`
             ],
           },
         },
