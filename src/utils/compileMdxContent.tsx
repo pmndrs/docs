@@ -19,6 +19,8 @@ import {
   tr,
   ul,
 } from '@/components/mdx'
+import { Badge } from '@/components/mdx/Badge'
+import { rehypeBadge } from '@/components/mdx/Badge/rehypeBadge'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
@@ -100,6 +102,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         remarkPlugins: [remarkGFM],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
+          rehypeBadge(), // before rehypeImg, which renames the badge images to `Img`
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),
           rehypeDetails,
@@ -115,6 +118,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
     },
     components: {
       ...{
+        Badge,
         Code,
         Details,
         Entries,
