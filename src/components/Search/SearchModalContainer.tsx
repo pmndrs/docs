@@ -76,13 +76,13 @@ export const SearchModalContainer = ({
 
   return (
     <search className={cn(className)}>
-      {/* The input's wrapper pads all sides but the bottom, which it leaves to the list below:
-       * with no query the list is empty, so the command pads the bottom to match. */}
+      {/* The input's wrapper pads all sides but the bottom, leaving it to the list below, which is
+       * empty until there is a query: pad the bottom too, so the input sits centred either way. */}
       <Command
         shouldFilter={false}
         value={selected}
         onValueChange={setSelected}
-        className={cn(!deferredQuery && 'pb-2')}
+        className="*:data-[slot=command-input-wrapper]:pb-1"
       >
         <CommandInput
           name="search"
