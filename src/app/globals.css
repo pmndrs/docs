@@ -44,41 +44,6 @@ body {
   font-optical-sizing: auto;
 }
 
-/* Custom grid utilities for layout */
-@utility grid-areas-layout-1col {
-  grid-template-areas:
-    'h h'
-    'm m';
-}
-
-@utility grid-areas-layout-2cols {
-  grid-template-areas:
-    'h h'
-    'n m';
-}
-
-@utility grid-areas-layout-3cols {
-  grid-template-areas:
-    'h h h'
-    'n m t';
-}
-
-@utility grid-in-h {
-  grid-area: h;
-}
-
-@utility grid-in-m {
-  grid-area: m;
-}
-
-@utility grid-in-n {
-  grid-area: n;
-}
-
-@utility grid-in-t {
-  grid-area: t;
-}
-
 main :target {
   @apply scroll-m-[calc(var(--header-height)+(--spacing(4)))];
 }
@@ -389,4 +354,13 @@ pre[class*='language-'] {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* The docs sidebar sits on the page's own surface, its current page in primary-container, as the
+ * nav it replaced did. On `data-sidebar="sidebar"`, which both the desktop panel and the mobile
+ * sheet carry: the sheet is portalled out of the layout, where no className of ours reaches it. */
+[data-sidebar='sidebar'] {
+  --sidebar: var(--background);
+  --sidebar-accent: var(--md-sys-color-primary-container);
+  --sidebar-accent-foreground: var(--md-sys-color-on-primary-container);
 }

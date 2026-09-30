@@ -1,8 +1,16 @@
 import * as React from 'react'
 
-import { Layout, LayoutAside, LayoutContent, LayoutHeader, LayoutNav } from '@/components/Layout'
-import { Nav } from '@/components/Nav'
+import {
+  Layout,
+  LayoutAside,
+  LayoutBody,
+  LayoutContent,
+  LayoutHeader,
+  LayoutSidebar,
+} from '@/components/Layout'
 import Search from '@/components/Search'
+import { SidebarNav } from '@/components/SidebarNav'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
 import { getData } from '@/utils/docs'
@@ -10,7 +18,6 @@ import Link from 'next/link'
 import { PiDiscordLogoLight } from 'react-icons/pi'
 import { VscGithubAlt } from 'react-icons/vsc'
 import { DocsContext } from './DocsContext'
-import { Menu } from './Menu'
 
 export type Props = {
   params: Promise<{ slug: string[] }>
@@ -33,9 +40,10 @@ export default async function Layoutt({ params, children }: Props) {
   const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL
   const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF
 
-  const nav = <Nav docs={docs} asPath={asPath} collapsible />
+  const nav = <SidebarNav docs={docs} asPath={asPath} />
   const header = (
     <div className="flex h-(--header-height) items-center gap-(--rgrid-m) px-(--rgrid-m)">
+      <SidebarTrigger className="lg:hidden" />
       <div className="flex items-center">
         <Link href="/" aria-label={`${NEXT_PUBLIC_LIBNAME} Docs`}>
           <span className="font-bold">
@@ -79,10 +87,6 @@ export default async function Layoutt({ params, children }: Props) {
           </React.Fragment>
         ))}
         {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
-
-        <Menu className="bg-surface fixed inset-x-0 top-(--header-height) bottom-0 z-100 overflow-auto outline-none lg:hidden">
-          <Nav docs={docs} asPath={asPath} collapsible={false} />
-        </Menu>
       </div>
     </div>
   )
@@ -172,17 +176,19 @@ export default async function Layoutt({ params, children }: Props) {
     <>
       <DocsContext value={{ docs, doc }}>
         <Layout className="[--side-w:--spacing(72)]">
-          <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
+          <LayoutHeader className="border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
             {header}
           </LayoutHeader>
-          <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
-            <article className="post-container">
-              {children}
-              {footer}
-            </article>
-          </LayoutContent>
-          <LayoutNav className="pt-8">{nav}</LayoutNav>
-          <LayoutAside className="pt-8">{toc}</LayoutAside>
+          <LayoutBody>
+            <LayoutSidebar>{nav}</LayoutSidebar>
+            <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
+              <article className="post-container">
+                {children}
+                {footer}
+              </article>
+            </LayoutContent>
+            <LayoutAside className="pt-8">{toc}</LayoutAside>
+          </LayoutBody>
         </Layout>
       </DocsContext>
     </>
