@@ -93,6 +93,8 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
   return await compileMDX({
     source,
     options: {
+      // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
+      blockJS: false,
       mdxOptions: {
         remarkPlugins: [remarkGFM],
         rehypePlugins: [
@@ -167,6 +169,8 @@ export async function compileMdxFrontmatter(source: string) {
   return await compileMDX({
     source: `<>${source}</>`, // hack: wrap in fragment to avoid <p> wrapping
     options: {
+      // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
+      blockJS: false,
       mdxOptions: {
         remarkPlugins: [remarkGFM],
         rehypePlugins: [rehypeLink(process.env.BASE_PATH)],
