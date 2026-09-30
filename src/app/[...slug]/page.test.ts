@@ -18,6 +18,7 @@ const pages = [
   // '/authoring/sandpack',
   '/authoring/codesandbox',
   '/authoring/gha',
+  '/authoring/badge',
   '/authoring/hint',
   '/authoring/contributors',
   '/authoring/backers',

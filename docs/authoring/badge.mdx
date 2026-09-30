@@ -1,0 +1,72 @@
+---
+title: "`Badge`"
+description: Small tags, like "storybook" or "suspense"
+sourcecode: docs/authoring/badge.mdx
+nav: 11
+---
+
+<Intro>
+  Small tags, usually right under the page title.
+</Intro>
+
+```md
+<Badge href="https://drei.pmnd.rs/?path=/story/abstractions-positionalaudio--positional-audio-scene-st">storybook</Badge>
+<Badge href="https://r3f.docs.pmnd.rs/api/hooks#useloader">suspense</Badge>
+<Badge>Dom only</Badge>
+```
+
+result:
+
+<Badge href="https://drei.pmnd.rs/?path=/story/abstractions-positionalaudio--positional-audio-scene-st">storybook</Badge>
+<Badge href="https://r3f.docs.pmnd.rs/api/hooks#useloader">suspense</Badge>
+<Badge>Dom only</Badge>
+
+A badge is inline, like a link: badges on consecutive lines make one row, and a badge sits in a sentence too, as in "works with <Badge>suspense</Badge>".
+
+---
+
+`color` takes a color role of the theme: `primary`, `secondary`, `tertiary`, `error`, or one of the custom colors `note`, `tip`, `important`, `warning`, `caution`, `storybook` (see `THEME_*` in [configuration](/getting-started/introduction#configuration)):
+
+```md
+<Badge color="primary">primary</Badge>
+<Badge color="secondary">secondary</Badge>
+<Badge color="tertiary">tertiary</Badge>
+<Badge color="error">error</Badge>
+<Badge color="note">note</Badge>
+<Badge color="tip">tip</Badge>
+<Badge color="important">important</Badge>
+<Badge color="warning">warning</Badge>
+<Badge color="caution">caution</Badge>
+<Badge color="storybook" logo="storybook">storybook</Badge>
+<Badge color="tip" href="https://r3f.docs.pmnd.rs/api/hooks#useloader">suspense</Badge>
+```
+
+result:
+
+<Badge color="primary">primary</Badge>
+<Badge color="secondary">secondary</Badge>
+<Badge color="tertiary">tertiary</Badge>
+<Badge color="error">error</Badge>
+<Badge color="note">note</Badge>
+<Badge color="tip">tip</Badge>
+<Badge color="important">important</Badge>
+<Badge color="warning">warning</Badge>
+<Badge color="caution">caution</Badge>
+<Badge color="storybook" logo="storybook">storybook</Badge>
+<Badge color="tip" href="https://r3f.docs.pmnd.rs/api/hooks#useloader">suspense</Badge>
+
+---
+
+`label` adds a de-emphasized label before the text, and `logo` a brand logo, by its [simple-icons](https://simpleicons.org) slug — for now `storybook`, `chromatic`, `discord`, `github` or `npm`; any other shows none:
+
+```md
+<Badge href="https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei" label="GitHub" logo="github">Open in Codespaces</Badge>
+```
+
+result:
+
+<Badge href="https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei" label="GitHub" logo="github">Open in Codespaces</Badge>
+
+---
+
+A [shields.io](https://shields.io) image is an image like any other: it is not turned into a `Badge`. For a badge that follows the theme, write `<Badge>`.

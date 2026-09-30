@@ -58,6 +58,9 @@ on:
       theme_caution:
         type: string
         default: '#da3633'
+      theme_storybook:
+        type: string
+        default: '#ff4785'
       version:
         type: string
         default: '4'
@@ -103,6 +106,7 @@ jobs:
           THEME_IMPORTANT: '${{ inputs.theme_important }}'
           THEME_WARNING: '${{ inputs.theme_warning }}'
           THEME_CAUTION: '${{ inputs.theme_caution }}'
+          THEME_STORYBOOK: '${{ inputs.theme_storybook }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-pages-artifact@v5

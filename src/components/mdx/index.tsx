@@ -1,7 +1,6 @@
 import cn from '@/lib/cn'
 import { ComponentProps } from 'react'
-
-const MARKDOWN_REGEX = /\.mdx?/
+import { linkProps } from './Link/linkProps'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
@@ -78,16 +77,9 @@ export const td = (props: ComponentProps<'td'>) => (
   <td className="px-6 py-4 text-sm first:font-medium" {...props} />
 )
 
-export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => {
-  const isAnchor = href?.startsWith('https://')
-  target = isAnchor ? '_blank' : target
-  rel = isAnchor ? 'noopener noreferrer' : rel
-  href = isAnchor ? href : href?.replace(MARKDOWN_REGEX, '')
-
-  return (
-    <a {...props} href={href} target={target} rel={rel} className={cn(className, 'text-primary')} />
-  )
-}
+export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => (
+  <a {...props} {...linkProps(href, target, rel)} className={cn(className, 'text-primary')} />
+)
 
 export const code = (props: ComponentProps<'code'>) => (
   <code
