@@ -28,9 +28,15 @@ import { ComponentProps, CSSProperties } from 'react'
 // the aside is hidden until `xl`. Both take `--side-w` as their width.
 //
 
+/**
+ * The desktop sidebar is pinned open: its only visible toggle, the `SidebarTrigger`, shows below
+ * `lg`, so a collapse by shadcn's Cmd/Ctrl+B shortcut would leave no control to bring it back.
+ * The mobile sheet has its own state (`openMobile`), which this does not touch.
+ */
 export function Layout({ className, style, ...props }: ComponentProps<typeof SidebarProvider>) {
   return (
     <SidebarProvider
+      open
       className={cn('flex-col', className)}
       style={{ '--sidebar-width': 'var(--side-w)', ...style } as CSSProperties}
       {...props}
@@ -51,19 +57,17 @@ export function LayoutBody({ className, ...props }: ComponentProps<'div'>) {
  * The desktop sidebar is `sticky` under the header, like the TOC, rather than shadcn's `fixed`: in
  * the flow, it follows the page when it bounces past its ends (macOS overscroll), as the header
  * does. The classes land on `sidebar-container`, which sits under a zero-height `sidebar-gap` in
- * the same block, so the two stack and the width is not counted twice. The offcanvas collapse
- * slides it out with a negative margin, which also takes its width out of the row, instead of the
- * `left` offset a `fixed` box moves by (`left` only sets a threshold on a `sticky` one). The
- * mobile sheet takes none of this: `className` only reaches the desktop container.
+ * the same block, so the two stack and the width is not counted twice. `left` is reset, as it only
+ * sets a threshold on a `sticky` box. The mobile sheet takes none of this: `className` only
+ * reaches the desktop container.
  */
 export function LayoutSidebar({ className, ...props }: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
       collapsible="offcanvas"
       className={cn(
-        'sticky top-(--header-height) bottom-auto h-[calc(100svh-var(--header-height))]',
-        'data-[side=left]:left-auto data-[side=left]:group-data-[collapsible=offcanvas]:left-auto',
-        'transition-[margin] group-data-[collapsible=offcanvas]:-ml-(--sidebar-width)',
+        'sticky top-(--header-height) bottom-auto h-[calc(100dvh-var(--header-height))]',
+        'data-[side=left]:left-auto',
         // No panel edge: the sidebar is part of the page, as the nav it replaced was.
         'group-data-[side=left]:border-r-0',
         className,

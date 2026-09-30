@@ -17,6 +17,7 @@ import {
 import cn from '@/lib/cn'
 import { ChevronRightIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 /** The page a category's own entry links to, instead of listing it under the category. */
 const INDEX_PAGE = 'introduction'
@@ -50,14 +51,19 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
 
   const currentUrl = `/${asPath}`
 
-  const categories = new Map<string, Map<string, SidebarNavDoc>>()
-  for (const doc of docs) {
-    const page = doc.slug.at(-1)
-    const category = doc.slug.at(-2) || 'root'
+  const categories = useMemo(() => {
+    const categories = new Map<string, Map<string, SidebarNavDoc>>()
+    for (const doc of docs) {
+      const page = doc.slug.at(-1)
+      // A doc with no slug has no page to list, and would leave its category empty.
+      if (!page) continue
+      const category = doc.slug.at(-2) || 'root'
 
-    if (!categories.has(category)) categories.set(category, new Map())
-    if (page) categories.get(category)!.set(page, doc)
-  }
+      if (!categories.has(category)) categories.set(category, new Map())
+      categories.get(category)!.set(page, doc)
+    }
+    return categories
+  }, [docs])
 
   // `--NavSub-offset`: how far the pages' list sits from the edge, its indent and tree line.
   return (

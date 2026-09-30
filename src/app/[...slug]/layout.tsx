@@ -40,7 +40,9 @@ export default async function Layoutt({ params, children }: Props) {
   const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL
   const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF
 
-  const nav = <SidebarNav docs={docs} asPath={asPath} />
+  // Only what the nav reads crosses to the client, not each page's rendered content.
+  const navDocs = docs.map(({ slug, url, title }) => ({ slug, url, title }))
+  const nav = <SidebarNav docs={navDocs} asPath={asPath} />
   const header = (
     <div className="flex h-(--header-height) items-center gap-(--rgrid-m) px-(--rgrid-m)">
       <SidebarTrigger className="lg:hidden" />
