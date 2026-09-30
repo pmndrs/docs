@@ -3,8 +3,8 @@
 import { Doc } from '@/app/[...slug]/DocsContext'
 import cn from '@/lib/cn'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { ChevronDownIcon } from 'lucide-react'
 import { ComponentProps, useState } from 'react'
-import { IoIosArrowDown } from 'react-icons/io'
 
 import Link from 'next/link'
 
@@ -53,7 +53,7 @@ export function NavCategoryCollapsible({
               open && 'rotate-90',
             )}
           >
-            <IoIosArrowDown className="size-(--arrow-size) -rotate-90" />
+            <ChevronDownIcon className="size-(--arrow-size) -rotate-90" />
           </CollapsibleTrigger>
         )}
       </div>
