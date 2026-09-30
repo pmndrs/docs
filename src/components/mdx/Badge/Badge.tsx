@@ -1,27 +1,87 @@
 import { Badge as UiBadge } from '@/components/ui/badge'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
+import { brandIcons } from './icons'
 
 /**
- * A tag under the page title, e.g. "storybook" or "suspense". Links to `href` when given.
+ * A color role of the theme `<Mtb>` builds (see `src/app/layout.tsx`): its system roles, or
+ * one of the custom colors the layout passes it. Any other custom color given to `<Mtb>`
+ * works too, with no change here.
  */
-export function Badge({ href, children }: { href?: string; children: ReactNode }) {
-  if (!href) {
-    return <UiBadge variant="secondary">{children}</UiBadge>
-  }
+export type BadgeColor =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'error'
+  | 'note'
+  | 'tip'
+  | 'important'
+  | 'warning'
+  | 'caution'
+  | 'storybook'
+  | (string & {})
 
-  const isExternal = href.startsWith('https://')
+/**
+ * The badge is shadcn's `secondary` variant, whose colors are the `--secondary` and
+ * `--secondary-foreground` variables — `secondary-container` and `on-secondary-container`
+ * once `material-theme-builder/shadcn.css` maps them. A color re-points them, on the badge
+ * only, at the same pair of another role: the variant's background, text and link hover
+ * follow, and a role needs no class of its own.
+ */
+function colorVars(color: BadgeColor) {
+  return {
+    '--secondary': `var(--md-sys-color-${color}-container)`,
+    '--secondary-foreground': `var(--md-sys-color-on-${color}-container)`,
+  } as CSSProperties
+}
+
+/**
+ * A tag, e.g. "storybook" or "suspense", usually under the page title. Inline, like a link.
+ *
+ * - `href`: links to it
+ * - `color`: a color role of the theme — the `secondary` look otherwise
+ * - `label`: a de-emphasized label before the message, as in "GitHub Open in Codespaces"
+ * - `logo`: a brand logo before it all, by its shields.io / simple-icons slug, e.g. `github`.
+ *   An unknown slug shows no logo.
+ */
+export function Badge({
+  href,
+  color,
+  label,
+  logo,
+  children,
+}: {
+  href?: string
+  color?: BadgeColor
+  label?: string
+  logo?: string
+  children: ReactNode
+}) {
+  const isExternal = href?.startsWith('https://')
+  const icon = logo ? brandIcons[logo] : undefined
 
   return (
     <UiBadge
       variant="secondary"
+      // Inline in a line of text: centered on it, the same with or without a logo — on its
+      // baseline, a badge starting with an svg would take the svg's bottom edge for its own
+      className="align-middle"
+      style={color ? colorVars(color) : undefined}
       render={
-        <a
-          href={href}
-          target={isExternal ? '_blank' : undefined}
-          rel={isExternal ? 'noopener noreferrer' : undefined}
-        />
+        href ? (
+          <a
+            href={href}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+          />
+        ) : undefined
       }
     >
+      {icon && (
+        <svg data-icon="inline-start" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d={icon.path} />
+        </svg>
+      )}
+      {label && <span className="opacity-70">{label}</span>}
       {children}
     </UiBadge>
   )

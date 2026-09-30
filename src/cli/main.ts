@@ -59,6 +59,7 @@ const websiteOptions = [
   new Option('--theme-important <color>', 'Color of the IMPORTANT alerts').env('THEME_IMPORTANT'),
   new Option('--theme-warning <color>', 'Color of the WARNING alerts').env('THEME_WARNING'),
   new Option('--theme-caution <color>', 'Color of the CAUTION alerts').env('THEME_CAUTION'),
+  new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
 ]
 
 /**

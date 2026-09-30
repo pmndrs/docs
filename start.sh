@@ -29,6 +29,7 @@ export THEME_TIP="#238636"
 export THEME_IMPORTANT="#8957e5"
 export THEME_WARNING="#d29922"
 export THEME_CAUTION="#da3633"
+export THEME_STORYBOOK="#ff4785"
 export CONTRIBUTORS_PAT=
 
 pnpm run build
