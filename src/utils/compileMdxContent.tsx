@@ -20,7 +20,6 @@ import {
   ul,
 } from '@/components/mdx'
 import { Badge } from '@/components/mdx/Badge'
-import { rehypeInlineBadges } from '@/components/mdx/Badge/rehypeInlineBadges'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
@@ -45,6 +44,7 @@ import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
+import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import type { ComponentType } from 'react'
@@ -102,7 +102,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         remarkPlugins: [remarkGFM],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
-          rehypeInlineBadges(),
+          rehypeInlineFlow(['Badge']),
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),
           rehypeDetails,

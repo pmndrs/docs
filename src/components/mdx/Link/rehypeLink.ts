@@ -43,7 +43,8 @@ export function rehypeLink(BASE_PATH: string | undefined) {
 
     visit(tree, null, function (node) {
       const isMDLink = 'tagName' in node && node.tagName === 'a'
-      const isHTMLLink = 'name' in node && node.name === 'a'
+      // `<Badge href>` renders a link too
+      const isHTMLLink = 'name' in node && (node.name === 'a' || node.name === 'Badge')
 
       if (isMDLink) {
         //

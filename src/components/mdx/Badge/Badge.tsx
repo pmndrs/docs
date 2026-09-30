@@ -1,5 +1,6 @@
 import { Badge as UiBadge } from '@/components/ui/badge'
 import type { CSSProperties, ReactNode } from 'react'
+import { linkProps } from '../Link/linkProps'
 import { brandIcons } from './icons'
 
 /**
@@ -24,13 +25,15 @@ export type BadgeColor =
  * The badge is shadcn's `secondary` variant, whose colors are the `--secondary` and
  * `--secondary-foreground` variables — `secondary-container` and `on-secondary-container`
  * once `material-theme-builder/shadcn.css` maps them. A color re-points them, on the badge
- * only, at the same pair of another role: the variant's background, text and link hover
- * follow, and a role needs no class of its own.
+ * only, at the main pair of a role, `<role>` and `on-<role>`: the variant's background, text
+ * and link hover follow, and a role needs no class of its own. The main pair, not the
+ * container one: every role's container is a pale tone in light mode, and `storybook` would
+ * read as `caution`. A role the theme does not have falls back to the uncolored look.
  */
 function colorVars(color: BadgeColor) {
   return {
-    '--secondary': `var(--md-sys-color-${color}-container)`,
-    '--secondary-foreground': `var(--md-sys-color-on-${color}-container)`,
+    '--secondary': `var(--md-sys-color-${color}, var(--md-sys-color-secondary-container))`,
+    '--secondary-foreground': `var(--md-sys-color-on-${color}, var(--md-sys-color-on-secondary-container))`,
   } as CSSProperties
 }
 
@@ -56,7 +59,6 @@ export function Badge({
   logo?: string
   children: ReactNode
 }) {
-  const isExternal = href?.startsWith('https://')
   const icon = logo ? brandIcons[logo] : undefined
 
   return (
@@ -66,15 +68,7 @@ export function Badge({
       // baseline, a badge starting with an svg would take the svg's bottom edge for its own
       className="align-middle"
       style={color ? colorVars(color) : undefined}
-      render={
-        href ? (
-          <a
-            href={href}
-            target={isExternal ? '_blank' : undefined}
-            rel={isExternal ? 'noopener noreferrer' : undefined}
-          />
-        ) : undefined
-      }
+      render={href ? <a {...linkProps(href)} /> : undefined}
     >
       {icon && (
         <svg data-icon="inline-start" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

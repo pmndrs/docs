@@ -2,7 +2,7 @@ import type { Element, ElementContent, Parent, Root, RootContent } from 'hast'
 import { visit } from 'unist-util-visit'
 
 //
-// Badges written as JSX on lines of their own
+// Inline components written as JSX on lines of their own, e.g. `Badge`
 //
 // <Badge>a</Badge> <Badge>b</Badge>
 //
@@ -19,16 +19,19 @@ import { visit } from 'unist-util-visit'
 //   { type: 'mdxJsxFlowElement', name: 'Badge', children: [...] },
 // ]
 //
-// Each badge then stands as a block of its own: the page lays out every top-level node as a
+// Each one then stands as a block of its own: the page lays out every top-level node as a
 // block of the text column (`.post-container > *` in globals.css, unlayered, so its `display:
-// block` beats the badge's `inline-flex` utility), and the badges stack. Inside another
-// component, MDX drops the newline between them, and they touch. A badge is inline content,
-// though, like a link: a run of them becomes the paragraph markdown would have made of it,
-// with badges as text elements and a space between them.
+// block` beats a badge's `inline-flex` utility), and they stack. Inside another component,
+// MDX drops the newline between them, and they touch. Any component listed in `names` is
+// inline content, though, like a link: a run of them becomes the paragraph markdown would
+// have made of it, with them as text elements and a space between them.
 //
 
-function isFlowBadge(node: RootContent) {
-  return node.type === 'mdxJsxFlowElement' && node.name === 'Badge'
+function isInlineFlow(
+  node: RootContent,
+  names: string[],
+): node is Extract<RootContent, { type: 'mdxJsxFlowElement' }> {
+  return node.type === 'mdxJsxFlowElement' && !!node.name && names.includes(node.name)
 }
 
 function isBlank(node: RootContent) {
@@ -36,8 +39,8 @@ function isBlank(node: RootContent) {
 }
 
 /**
- * A badge written over several lines, `<Badge>\n  storybook\n</Badge>`, has its text parsed
- * as a paragraph: keep the text only, a paragraph being no content of a badge.
+ * A component written over several lines, `<Badge>\n  storybook\n</Badge>`, has its text
+ * parsed as a paragraph: keep the text only, a paragraph being no inline content.
  */
 function inlineChildren(children: RootContent[]) {
   const meaningful = children.filter((child) => !isBlank(child))
@@ -48,15 +51,15 @@ function inlineChildren(children: RootContent[]) {
   return children
 }
 
-function wrapFlowBadges(parent: Root | Parent) {
+function wrapInlineFlows(parent: Root | Parent, names: string[]) {
   const children: RootContent[] = []
-  let paragraph: Element | undefined // the paragraph of the current run of badges, if any
+  let paragraph: Element | undefined // the paragraph of the current run, if any
   let blanks: RootContent[] = [] // whitespace after the run, kept only if the run ends there
 
   for (const child of parent.children) {
-    if (child.type === 'mdxJsxFlowElement' && child.name === 'Badge') {
+    if (isInlineFlow(child, names)) {
       if (paragraph) {
-        // One space between two badges, as between two words — MDX keeps no whitespace
+        // One space between two of them, as between two words — MDX keeps no whitespace
         // between flow elements inside JSX
         paragraph.children.push({ type: 'text', value: ' ' })
       } else {
@@ -87,10 +90,11 @@ function wrapFlowBadges(parent: Root | Parent) {
 }
 
 // https://unifiedjs.com/learn/guide/create-a-rehype-plugin/
-export function rehypeInlineBadges() {
+export function rehypeInlineFlow(names: string[]) {
   return () => (tree: Root) => {
     visit(tree, function (node) {
-      if ('children' in node && node.children.some(isFlowBadge)) wrapFlowBadges(node)
+      if ('children' in node && node.children.some((child) => isInlineFlow(child, names)))
+        wrapInlineFlows(node, names)
     })
   }
 }

@@ -2,12 +2,12 @@ import { compileMDX } from 'next-mdx-remote/rsc'
 import { createElement, type ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { rehypeInlineBadges } from './rehypeInlineBadges'
+import { rehypeInlineFlow } from './rehypeInlineFlow'
 
 async function render(source: string) {
   const { content } = await compileMDX({
     source,
-    options: { mdxOptions: { rehypePlugins: [rehypeInlineBadges()] } },
+    options: { mdxOptions: { rehypePlugins: [rehypeInlineFlow(['Badge'])] } },
     components: {
       Badge: ({
         href,
@@ -32,7 +32,7 @@ async function render(source: string) {
   return renderToStaticMarkup(content)
 }
 
-describe('rehypeInlineBadges', () => {
+describe('rehypeInlineFlow', () => {
   it('puts badges written on the same line in one paragraph', async () => {
     expect(await render('<Badge>a</Badge> <Badge>b</Badge>')).toBe(
       '<p><mark>a</mark> <mark>b</mark></p>',
