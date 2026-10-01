@@ -10,6 +10,11 @@ import { parseDocsMetadata } from '@/utils/docs'
 
 export const dynamic = 'force-static'
 
+// Only the pages `generateStaticParams` lists exist; any other path is a 404, as for the pages
+// themselves in `src/app/[...slug]/page.tsx`. Handled on demand instead, it threw a 500: `MDX` is
+// only set at build time on Vercel.
+export const dynamicParams = false
+
 const SUFFIX = '.md'
 
 type Params = { slug: string[] }
