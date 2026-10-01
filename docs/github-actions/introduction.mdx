@@ -10,7 +10,7 @@ nav: 15
 
 In your `.github/workflows` folder, create a eg. `docs.yml` file:
 
-```yml
+```yml title=".github/workflows/docs.yml"
 uses: pmndrs/docs/.github/workflows/build.yml@v3
   with:
     mdx: 'docs'
@@ -49,7 +49,7 @@ Optional inputs for the [version switcher](/getting-started/introduction#version
 
 eg. for a monorepo package whose branches are deployed by Vercel's Git integration:
 
-```yml
+```yml title=".github/workflows/docs.yml"
 uses: pmndrs/docs/.github/workflows/build.yml@v4
   with:
     # ...

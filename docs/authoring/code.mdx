@@ -1,6 +1,6 @@
 ---
 title: "`Code`"
-description: Code blocks with syntax highlighting and line numbers
+description: Code blocks with syntax highlighting, line numbers, file names and collapsing
 sourcecode: docs/authoring/code.mdx
 nav: 5
 ---
@@ -8,6 +8,102 @@ nav: 5
 <Intro>
   Code blocks with syntax highlighting.
 </Intro>
+
+## File name
+
+A `title="..."` shows a file name above the code, with the icon of its file type:
+
+````md
+```ts title="lib/utils.ts"
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+````
+
+result:
+
+```ts title="lib/utils.ts"
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+The icon follows the file extension, or else the language of the block: TypeScript, React
+(`.tsx`, `.jsx`), JavaScript, CSS, JSON, YAML, HTML, Markdown, MDX, a terminal for shell scripts, a
+generic code file otherwise.
+
+## Collapsible
+
+A long block can show only its first lines, until the reader expands it, with `collapsible` (with
+or without a `title`):
+
+````md
+```css title="src/styles/globals.css" collapsible
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+}
+```
+````
+
+result:
+
+```css title="src/styles/globals.css" collapsible
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+}
+```
+
+The copy button copies the whole block, collapsed or not. A `collapsible` block short enough to
+show whole stays as it is.
 
 ## Line numbers and highlights
 

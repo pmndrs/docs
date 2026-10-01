@@ -84,6 +84,55 @@ describe('compileMdxContent', () => {
     expect(html).toContain('1')
   })
 
+  it('shows the title of a code block as a file name, in a header with its copy button', async () => {
+    const result = await compileMdxContent('```ts title="lib/utils.ts"\nexport const x = 1\n```', {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    // The header: the TypeScript logo, the file name, then the copy button, before the code
+    const header = html.slice(0, html.indexOf('<pre'))
+    expect(header).toMatch(/<svg[^>]*viewBox="0 0 24 24"[^>]*fill="currentColor"/)
+    expect(header).toContain('lib/utils.ts')
+    expect(header).toContain('aria-label="Copy to clipboard"')
+    // Not a tooltip of the code
+    expect(html).not.toMatch(/<pre[^>]*title=/)
+    expect(html).toMatch(/<pre[^>]*class="language-ts/)
+  })
+
+  it.each([
+    ['with a title', '```css title="globals.css" collapsible\n:root {}\n```'],
+    ['without a title', '```css collapsible\n:root {}\n```'],
+  ])('makes a collapsible code block collapsed, %s', async (_, source) => {
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    // Closed, the frame clips the code: on the server, a collapsible block is taken for a long one
+    expect(html).toMatch(/<div[^>]*data-closed[^>]*>/)
+    expect(html).toContain('group-data-closed/code:max-h-64')
+    // The header, title or not, holds the trigger, which controls the clip, and the copy button
+    const header = html.slice(0, html.indexOf('<pre'))
+    const controls = header.match(/aria-controls="([^"]+)"[^>]*aria-expanded="false"[^>]*>Expand</)
+    expect(controls).not.toBeNull()
+    expect(html).toContain(`id="${controls?.[1]}"`)
+    expect(header).toContain('aria-label="Copy to clipboard"')
+    // The fade's button, a pointer shortcut, is no second control
+    expect(html).toMatch(/<button[^>]*tabindex="-1"[^>]*aria-hidden="true"[^>]*>Expand</)
+    expect(html.match(/>Expand</g)).toHaveLength(2)
+  })
+
   it('compiles MDX with links', async () => {
     const result = await compileMdxContent('Check [this link](#section)', {
       relFilePath,

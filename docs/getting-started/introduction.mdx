@@ -99,7 +99,7 @@ nav: 0
 
 Given a `advanced/introduction.mdx` file in the `MDX` folder:
 
-```md
+```md title="advanced/introduction.mdx"
 ![](dog.png)
 ```
 
@@ -170,7 +170,7 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 This is [`dev.sh`](https://github.com/pmndrs/docs/blob/main/dev.sh). The site listens on `PORT` (default `3000`), the MDX folder on any free port, so several checkouts can run side by side:
 
-```sh
+```sh collapsible
 $ (
   trap 'kill -9 0' SIGINT
 
@@ -222,7 +222,7 @@ Then go to: http://localhost:3000
 
 This is [`start.sh`](https://github.com/pmndrs/docs/blob/main/start.sh), same ports:
 
-```sh
+```sh collapsible
 $ (
   trap 'kill -9 0' SIGINT
 
