@@ -17,23 +17,9 @@ import {
   FileTextIcon,
   SquareTerminalIcon,
 } from 'lucide-react'
+import { useCopied } from '@/hooks/useCopied'
 import { getPromptUrl } from '@/utils/promptUrl'
-import { useEffect, useState, useSyncExternalStore } from 'react'
-
-/**
- * Whether something was just copied, falling back to `false` 2s later.
- */
-function useCopied() {
-  const [copied, setCopied] = useState(false)
-
-  useEffect(() => {
-    if (!copied) return
-    const timeout = setTimeout(() => setCopied(false), 2000)
-    return () => clearTimeout(timeout)
-  }, [copied])
-
-  return [copied, setCopied] as const
-}
+import { useSyncExternalStore } from 'react'
 
 /**
  * The page origin, `null` while rendering on the server (and hydrating).

@@ -22,6 +22,7 @@ import {
 import { Badge } from '@/components/mdx/Badge'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
+import { rehypePackageManagers } from '@/components/mdx/Code/rehypePackageManagers'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { Details } from '@/components/mdx/Details'
@@ -109,6 +110,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
           rehypeSummary,
           rehypeGha,
           rehypeMermaid(),
+          rehypePackageManagers(),
           rehypePrismPlus,
           rehypeCode(),
           rehypeToc(tableOfContents, url, title),
