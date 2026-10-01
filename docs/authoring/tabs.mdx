@@ -1,0 +1,144 @@
+---
+title: "`Tabs`"
+description: Alternative contents, one shown at a time
+sourcecode: docs/authoring/tabs.mdx
+nav: 17
+---
+
+<Intro>
+  Alternative contents, one shown at a time.
+</Intro>
+
+```md
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    | Aspect | React |
+    | --- | --- |
+    | Type | Library |
+    | Templates | JSX |
+    | Reactivity | Re-render on state change |
+
+  </TabsContent>
+  <TabsContent value="vue">
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Type | Framework |
+    | Templates | Single-file components with HTML templates |
+    | Reactivity | Reactive proxies |
+
+  </TabsContent>
+  <TabsContent value="svelte">
+
+    | Aspect | Svelte |
+    | --- | --- |
+    | Type | Compiler |
+    | Templates | `.svelte` files |
+    | Reactivity | Compiled at build time |
+
+  </TabsContent>
+</Tabs>
+```
+
+result:
+
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    | Aspect | React |
+    | --- | --- |
+    | Type | Library |
+    | Templates | JSX |
+    | Reactivity | Re-render on state change |
+
+  </TabsContent>
+  <TabsContent value="vue">
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Type | Framework |
+    | Templates | Single-file components with HTML templates |
+    | Reactivity | Reactive proxies |
+
+  </TabsContent>
+  <TabsContent value="svelte">
+
+    | Aspect | Svelte |
+    | --- | --- |
+    | Type | Compiler |
+    | Templates | `.svelte` files |
+    | Reactivity | Compiled at build time |
+
+  </TabsContent>
+</Tabs>
+
+Same API as [shadcn `Tabs`](https://ui.shadcn.com/docs/components/base/tabs).
+
+`defaultValue` is required (otherwise no tab is shown until hydration).
+
+Markdown inside a `TabsContent` (a table, a code block, a list) needs a blank line after the opening tag and before the closing one.
+
+---
+
+Triggers accept any markup:
+
+```md
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React <Badge>19</Badge></TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    | Aspect | React |
+    | --- | --- |
+    | Version | 19 |
+    | Released | December 2024 |
+
+  </TabsContent>
+  <TabsContent value="vue">
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Version | 3 |
+    | Released | September 2020 |
+
+  </TabsContent>
+</Tabs>
+```
+
+result:
+
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React <Badge>19</Badge></TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    | Aspect | React |
+    | --- | --- |
+    | Version | 19 |
+    | Released | December 2024 |
+
+  </TabsContent>
+  <TabsContent value="vue">
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Version | 3 |
+    | Released | September 2020 |
+
+  </TabsContent>
+</Tabs>

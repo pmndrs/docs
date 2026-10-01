@@ -45,6 +45,7 @@ import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { Step, Steps } from '@/components/mdx/Steps'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
@@ -139,6 +140,10 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         Step,
         Steps,
         Summary,
+        Tabs,
+        TabsList,
+        TabsTrigger,
+        TabsContent,
         h1,
         h2,
         h3,
