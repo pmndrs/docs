@@ -11,6 +11,7 @@ import {
 import { LibsMenu } from '@/components/LibsMenu'
 import Search from '@/components/Search'
 import { SidebarNav } from '@/components/SidebarNav'
+import { SponsorCard } from '@/components/SponsorCard'
 import { VersionBanner } from '@/components/VersionBanner'
 import { VersionSwitcher } from '@/components/VersionSwitcher'
 import { SidebarFooter, SidebarTrigger } from '@/components/ui/sidebar'
@@ -198,7 +199,10 @@ export default async function Layoutt({ params, children }: Props) {
                 {footer}
               </article>
             </LayoutContent>
-            <LayoutAside className="pt-8">{toc}</LayoutAside>
+            <LayoutAside className="py-8">
+              {toc}
+              <SponsorCard className="mt-8 mr-(--rgrid-m)" />
+            </LayoutAside>
           </LayoutBody>
         </Layout>
       </DocsContext>
