@@ -133,6 +133,15 @@ describe('compileMdxContent', () => {
     // Every panel is in the HTML: the hidden one with its code block, the shown one with its text
     expect(html).toMatch(/<pre[^>]*class="language-tsx/)
     expect(html).toContain('Vue is a progressive framework.')
+    // Only the shown panel is visible: each panel is its opening tag up to the next one, and
+    // `\shidden` matches the `hidden` attribute, not `data-hidden`
+    const panels = html.split(/(?=<div[^>]*role="tabpanel")/).slice(1)
+    const reactPanel = panels.find((panel) => panel.includes('<pre'))
+    const vuePanel = panels.find((panel) => panel.includes('Vue is a progressive framework.'))
+    const hiddenAttribute = /^<div[^>]*\shidden[=\s>]/
+    expect(reactPanel).toMatch(hiddenAttribute)
+    expect(vuePanel).toBeDefined()
+    expect(vuePanel).not.toMatch(hiddenAttribute)
   })
 })
 

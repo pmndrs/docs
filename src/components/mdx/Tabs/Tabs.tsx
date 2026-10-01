@@ -16,35 +16,45 @@ import type { ComponentProps } from 'react'
 // (next-mdx-remote/rsc), handing everything to the client ui ones.
 //
 
+//
+// Base UI types `className` as a string or a function of the part's state, but `cn()` drops
+// functions: only a string is accepted.
+//
+type WithStringClassName<P> = Omit<P, 'className'> & { className?: string }
+
+type TabsProps = WithStringClassName<Omit<ComponentProps<typeof UiTabs>, 'defaultValue'>> & {
+  defaultValue: NonNullable<ComponentProps<typeof UiTabs>['defaultValue']>
+}
+
 /**
  * Alternative contents, one shown at a time, e.g. the same component in React, Vue and Svelte.
  *
  * - `defaultValue`: the `value` of the tab shown first. Without it, no tab is shown in the
  *   HTML, and Base UI only picks the first one once the page's JavaScript runs.
  */
-export function Tabs({ className, ...props }: ComponentProps<typeof UiTabs>) {
-  return (
-    // Wrapped: `.post-container > *` (globals.css) forces `display: block` on the article's
-    // children, which would undo the column the ui `Tabs` lays its list and panels out in.
-    <div className="my-6">
-      <UiTabs className={cn('gap-0', className)} {...props} />
-    </div>
-  )
+export function Tabs({ className, ...props }: TabsProps) {
+  // `.post-container > *` (globals.css) makes this root `display: block` instead of the ui
+  // `Tabs`' flex column. Fine: with `gap-0`, block flow stacks the list and panels the same way.
+  return <UiTabs className={cn('my-6 gap-0', className)} {...props} />
 }
 
 /**
- * The row of `TabsTrigger`s: text, no box — no height, padding or gap of its own. The `line`
- * variant by default.
+ * The row of `TabsTrigger`s: text, no box — no height or padding of its own. The `line`
+ * variant by default. It wraps onto more lines when the triggers don't fit, e.g. on a phone.
  */
 export function TabsList({
   variant = 'line',
   className,
   ...props
-}: ComponentProps<typeof UiTabsList>) {
+}: WithStringClassName<ComponentProps<typeof UiTabsList>>) {
   return (
     <UiTabsList
       variant={variant}
-      className={cn('w-full justify-start gap-6 p-0 group-data-horizontal/tabs:h-auto', className)}
+      className={cn(
+        // `gap-y-2` keeps a wrapped line clear of the underline above it (`after:bottom-[-4px]`)
+        'w-full flex-wrap justify-start gap-x-6 gap-y-2 p-0 group-data-horizontal/tabs:h-auto',
+        className,
+      )}
       {...props}
     />
   )
@@ -55,7 +65,10 @@ export function TabsList({
  * no padding, its natural width. The underline under the active one only is the `line`
  * variant's.
  */
-export function TabsTrigger({ className, ...props }: ComponentProps<typeof UiTabsTrigger>) {
+export function TabsTrigger({
+  className,
+  ...props
+}: WithStringClassName<ComponentProps<typeof UiTabsTrigger>>) {
   return (
     <UiTabsTrigger
       className={cn(
@@ -78,7 +91,7 @@ export function TabsContent({
   keepMounted = true,
   className,
   ...props
-}: ComponentProps<typeof UiTabsContent>) {
+}: WithStringClassName<ComponentProps<typeof UiTabsContent>>) {
   return (
     <UiTabsContent keepMounted={keepMounted} className={cn('text-base', className)} {...props} />
   )

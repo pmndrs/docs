@@ -34,8 +34,9 @@ type Story = StoryObj<typeof meta>
  * between them.
  */
 export const Default: Story = {
-  render: () => (
-    <Tabs defaultValue="react">
+  args: { defaultValue: 'react' },
+  render: (args) => (
+    <Tabs {...args}>
       <TabsList>
         <TabsTrigger value="react">React</TabsTrigger>
         <TabsTrigger value="vue">Vue</TabsTrigger>
@@ -58,8 +59,9 @@ export const Default: Story = {
  * A trigger holds any markup, e.g. a `Badge`.
  */
 export const RichTrigger: Story = {
-  render: () => (
-    <Tabs defaultValue="react">
+  args: { defaultValue: 'react' },
+  render: (args) => (
+    <Tabs {...args}>
       <TabsList>
         <TabsTrigger value="react">
           React <Badge>19</Badge>
@@ -73,5 +75,49 @@ export const RichTrigger: Story = {
         <P>Vue 3 is the current major version.</P>
       </TabsContent>
     </Tabs>
+  ),
+}
+
+/**
+ * The row of triggers wraps onto more lines when it doesn't fit, e.g. on a phone, here in a
+ * narrow column.
+ */
+export const ManyTabs: Story = {
+  args: { defaultValue: 'r3f' },
+  render: (args) => (
+    <div className="max-w-xs">
+      <Tabs {...args}>
+        <TabsList>
+          <TabsTrigger value="r3f">React Three Fiber</TabsTrigger>
+          <TabsTrigger value="three">Vanilla three.js</TabsTrigger>
+          <TabsTrigger value="threlte">Threlte for Svelte</TabsTrigger>
+          <TabsTrigger value="tresjs">TresJS for Vue</TabsTrigger>
+          <TabsTrigger value="angular">Angular Three</TabsTrigger>
+          <TabsTrigger value="react-native">React Native</TabsTrigger>
+          <TabsTrigger value="webgpu">WebGPU renderer</TabsTrigger>
+        </TabsList>
+        <TabsContent value="r3f">
+          <P>A React renderer for three.js.</P>
+        </TabsContent>
+        <TabsContent value="three">
+          <P>three.js on its own, no framework.</P>
+        </TabsContent>
+        <TabsContent value="threlte">
+          <P>three.js components for Svelte.</P>
+        </TabsContent>
+        <TabsContent value="tresjs">
+          <P>three.js components for Vue.</P>
+        </TabsContent>
+        <TabsContent value="angular">
+          <P>A custom Angular renderer for three.js.</P>
+        </TabsContent>
+        <TabsContent value="react-native">
+          <P>React Three Fiber on iOS and Android.</P>
+        </TabsContent>
+        <TabsContent value="webgpu">
+          <P>three.js drawing with WebGPU instead of WebGL.</P>
+        </TabsContent>
+      </Tabs>
+    </div>
   ),
 }

@@ -17,13 +17,31 @@ nav: 16
     <TabsTrigger value="svelte">Svelte</TabsTrigger>
   </TabsList>
   <TabsContent value="react">
-    React is a library for building user interfaces out of components.
+
+    | Aspect | React |
+    | --- | --- |
+    | Type | Library |
+    | Templates | JSX |
+    | Reactivity | Re-render on state change |
+
   </TabsContent>
   <TabsContent value="vue">
-    Vue is a progressive framework for building user interfaces.
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Type | Framework |
+    | Templates | Single-file components with HTML templates |
+    | Reactivity | Reactive proxies |
+
   </TabsContent>
   <TabsContent value="svelte">
-    Svelte is a compiler that turns components into plain JavaScript.
+
+    | Aspect | Svelte |
+    | --- | --- |
+    | Type | Compiler |
+    | Templates | `.svelte` files |
+    | Reactivity | Compiled at build time |
+
   </TabsContent>
 </Tabs>
 ```
@@ -37,19 +55,39 @@ result:
     <TabsTrigger value="svelte">Svelte</TabsTrigger>
   </TabsList>
   <TabsContent value="react">
-    React is a library for building user interfaces out of components.
+
+    | Aspect | React |
+    | --- | --- |
+    | Type | Library |
+    | Templates | JSX |
+    | Reactivity | Re-render on state change |
+
   </TabsContent>
   <TabsContent value="vue">
-    Vue is a progressive framework for building user interfaces.
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Type | Framework |
+    | Templates | Single-file components with HTML templates |
+    | Reactivity | Reactive proxies |
+
   </TabsContent>
   <TabsContent value="svelte">
-    Svelte is a compiler that turns components into plain JavaScript.
+
+    | Aspect | Svelte |
+    | --- | --- |
+    | Type | Compiler |
+    | Templates | `.svelte` files |
+    | Reactivity | Compiled at build time |
+
   </TabsContent>
 </Tabs>
 
 Same API as [shadcn `Tabs`](https://ui.shadcn.com/docs/components/base/tabs).
 
 `defaultValue` is required (otherwise no tab is shown until hydration).
+
+Markdown inside a `TabsContent` (a table, a code block, a list) needs a blank line after the opening tag and before the closing one.
 
 ---
 
@@ -62,10 +100,20 @@ Triggers accept any markup:
     <TabsTrigger value="vue">Vue</TabsTrigger>
   </TabsList>
   <TabsContent value="react">
-    React 19 is the current major version.
+
+    | Aspect | React |
+    | --- | --- |
+    | Version | 19 |
+    | Released | December 2024 |
+
   </TabsContent>
   <TabsContent value="vue">
-    Vue 3 is the current major version.
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Version | 3 |
+    | Released | September 2020 |
+
   </TabsContent>
 </Tabs>
 ```
@@ -78,9 +126,19 @@ result:
     <TabsTrigger value="vue">Vue</TabsTrigger>
   </TabsList>
   <TabsContent value="react">
-    React 19 is the current major version.
+
+    | Aspect | React |
+    | --- | --- |
+    | Version | 19 |
+    | Released | December 2024 |
+
   </TabsContent>
   <TabsContent value="vue">
-    Vue 3 is the current major version.
+
+    | Aspect | Vue |
+    | --- | --- |
+    | Version | 3 |
+    | Released | September 2020 |
+
   </TabsContent>
 </Tabs>
