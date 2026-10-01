@@ -67,13 +67,34 @@ on:
         type: string
         default: '4'
         description: 'npm version or range of @pmndrs/docs to build with'
+      lib_version:
+        type: string
+        description: 'Version label in the sidebar footer, overriding the one read from git, eg: `v1.2.3`'
+      tag_match:
+        type: string
+        description: 'Glob narrowing the tags the version label is read from (`git describe --tags --match`), eg: `v*.*.*` or `leva@*`'
+      version_url_template:
+        type: string
+        description: 'Opt-in branch switcher: full public URL of a branch deployment (base path included), with a `{branch}` placeholder, eg: `https://mylib-git-{branch:vercel}-myteam.vercel.app`'
+      version_production_branch:
+        type: string
+        description: 'Branch deployed at the site URL itself, default `main`'
+      version_branches:
+        type: string
+        description: 'Regex of the branches the switcher offers, replacing the default exclusion of `dependabot/`, `renovate/` and `changeset-release/`'
+      version_branches_list:
+        type: string
+        description: 'Explicit list of the branches the switcher offers (comma or space separated), instead of the remote branches'
 
 jobs:
   build-job:
     runs-on: ubuntu-latest
 
     steps:
+      # Full history and tags: the version label is `git describe --tags`
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - id: configurepages
         uses: actions/configure-pages@v6
         with:
@@ -108,6 +129,12 @@ jobs:
           THEME_CAUTION: '${{ inputs.theme_caution }}'
           THEME_STORYBOOK: '${{ inputs.theme_storybook }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
+          LIB_VERSION: '${{ inputs.lib_version }}'
+          TAG_MATCH: '${{ inputs.tag_match }}'
+          VERSION_URL_TEMPLATE: '${{ inputs.version_url_template }}'
+          VERSION_PRODUCTION_BRANCH: '${{ inputs.version_production_branch }}'
+          VERSION_BRANCHES: '${{ inputs.version_branches }}'
+          VERSION_BRANCHES_LIST: '${{ inputs.version_branches_list }}'
 
       - uses: actions/upload-pages-artifact@v5
         with:

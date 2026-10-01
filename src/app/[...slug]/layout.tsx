@@ -11,7 +11,9 @@ import {
 import { LibsMenu } from '@/components/LibsMenu'
 import Search from '@/components/Search'
 import { SidebarNav } from '@/components/SidebarNav'
-import { SidebarTrigger } from '@/components/ui/sidebar'
+import { VersionBanner } from '@/components/VersionBanner'
+import { VersionSwitcher } from '@/components/VersionSwitcher'
+import { SidebarFooter, SidebarTrigger } from '@/components/ui/sidebar'
 import { DiscordIcon, GitHubIcon } from '@/components/brand-icons'
 import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
@@ -183,9 +185,15 @@ export default async function Layoutt({ params, children }: Props) {
             {header}
           </LayoutHeader>
           <LayoutBody>
-            <LayoutSidebar>{nav}</LayoutSidebar>
+            <LayoutSidebar>
+              {nav}
+              <SidebarFooter>
+                <VersionSwitcher />
+              </SidebarFooter>
+            </LayoutSidebar>
             <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
               <article className="post-container">
+                <VersionBanner className="mt-8" />
                 {children}
                 {footer}
               </article>

@@ -64,6 +64,12 @@ $ pnpm install
 | `THEME_CAUTION`                       | "caution" color                                                                                                                                                          | `#da3633`                                                                                        |
 | `THEME_STORYBOOK`                     | "storybook" color                                                                                                                                                        | `#ff4785`                                                                                        |
 | `CONTRIBUTORS_PAT`                    | GitHub token for contributors API and the header star count (see: https://docs.github.com/en/rest/collaborators/collaborators?apiVersion=2022-11-28#list-repository-collaborators) | `ghp_1234567890`                                                                                 |
+| `LIB_VERSION`                         | Version label in the sidebar footer, instead of `git describe --tags` (see [Version switcher](#version-switcher))                                                        | `v1.2.3`                                                                                         |
+| `TAG_MATCH`                           | Tags the version label is described from (`git describe --tags --match`)                                                                                                 | `v*.*.*` or `leva@*`                                                                             |
+| `VERSION_URL_TEMPLATE`                | Full public URL of a branch deployment, base path included (like `NEXT_PUBLIC_URL`); setting it enables the version switcher                                                                                                      | `https://mylib-git-{branch:vercel}-myteam.vercel.app`                                            |
+| `VERSION_PRODUCTION_BRANCH`           | Branch served at `NEXT_PUBLIC_URL` (default: `main`)                                                                                                                     | `master`                                                                                         |
+| `VERSION_BRANCHES`                    | Regex of the branches the switcher offers (default: all but `dependabot/`, `renovate/`, `changeset-release/`)                                                            | `^(main\|next\|v\d+)$`                                                                           |
+| `VERSION_BRANCHES_LIST`               | Explicit branches the switcher offers, comma or space separated, instead of the remote's                                                                                 | `main,next,v9`                                                                                   |
 
 \* Required
 
@@ -107,6 +113,38 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 > - We currently don't have secondary/tertiary colors (maybe some day).
 
 </details>
+
+### Version switcher
+
+The sidebar footer shows the version being browsed: `git describe --tags` of the checkout, eg. `v10.7.9` on a tagged commit, `v10.7.9-3-ga1b2c3d` after it, or `<branch>@<shortsha>` without tags. `LIB_VERSION` overrides it. In a monorepo, or with a moving major tag (`v4`), narrow the tags with `TAG_MATCH`:
+
+| repo tags                  | `TAG_MATCH` |
+| -------------------------- | ----------- |
+| `v10.7.9`, `v10`           | `v*.*.*`    |
+| `leva@0.10.1`, `other@1.0` | `leva@*`    |
+
+Set `VERSION_URL_TEMPLATE`, and the label opens a filterable list of the repo's branches: picking one goes to the same page on that branch's deployment. Without it, the label is all there is. Like `NEXT_PUBLIC_URL`, it is the deployment's full public URL, base path included if it has one (eg. `https://previews.example.com/mylib/{branch}`): the page path is appended to it as is. `{branch}` stands for the branch name, slugified the way your host names its branch URLs:
+
+| placeholder           | `feat/Dark_mode` becomes | host                                                        | example template                                      |
+| --------------------- | ------------------------ | ----------------------------------------------------------- | ----------------------------------------------------- |
+| `{branch}`            | `feat-dark-mode`         | URLs you create yourself (lowercase, other runs become `-`) | `https://docs-git-{branch}-pmndrs.vercel.app`         |
+| `{branch:vercel}`     | `feat-darkmode`          | Vercel Git integration                                      | `https://mylib-git-{branch:vercel}-myteam.vercel.app` |
+| `{branch:cloudflare}` | `feat-dark-mode`         | Cloudflare Pages (cut to 28 characters)                     | `https://{branch:cloudflare}.mylib.pages.dev`         |
+| `{branch:netlify}`    | `feat-dark-mode`         | Netlify branch deploys                                      | `https://{branch:netlify}--mylib.netlify.app`         |
+| `{branch:raw}`        | `feat%2FDark_mode`       | a path or a query string                                    | `https://example.com/preview?branch={branch:raw}`     |
+
+An unknown `{branch:<preset>}`, like an invalid `VERSION_BRANCHES` regex, fails the build.
+
+The branch being built is the one CI names, when it does: `GITHUB_HEAD_REF` then `GITHUB_REF_NAME` (GitHub Actions), `VERCEL_GIT_COMMIT_REF` (Vercel), `CF_PAGES_BRANCH` (Cloudflare Pages), `BRANCH` (Netlify, when `NETLIFY=true`). Otherwise it is git's checked-out branch; a detached `HEAD` is no branch.
+
+`VERSION_PRODUCTION_BRANCH` (default: `main`) is listed first, and leads to `NEXT_PUBLIC_URL` rather than to the template. Any other branch gets a banner on its pages, linking to the same page in production.
+
+The branches are the remote's (`git ls-remote --heads origin`), minus `dependabot/`, `renovate/` and `changeset-release/` ones. `VERSION_BRANCHES` replaces that filter with a regex, eg. `^(?!copilot/|dependabot/)` to also leave out `copilot/` branches; `VERSION_BRANCHES_LIST` skips git altogether, eg. `main,next,v9`. The list is read once, at build time: a deployment keeps the branches of its day, until it is rebuilt.
+
+> [!IMPORTANT]
+>
+> - The per-branch URLs are yours to create: the switcher only links to them. Vercel's Git integration, Cloudflare Pages and Netlify branch deploys create them. Vercel CLI deployments (`vercel deploy`) do not: give each preview its URL with `vercel alias set <deployment-url> <alias>`, as this repo's [`ci.yml`](https://github.com/pmndrs/docs/blob/main/.github/workflows/ci.yml) does.
+> - Git needs the full history and tags: in GitHub Actions, check out with `fetch-depth: 0` (the [reusable workflow](/github-actions/introduction) does). A build without git simply shows no label.
 
 ## Usage
 
