@@ -1,5 +1,20 @@
 # @pmndrs/docs
 
+## 4.4.0
+
+### Minor Changes
+
+- [#615](https://github.com/pmndrs/docs/pull/615) [`038a703`](https://github.com/pmndrs/docs/commit/038a7036a44a8e33a6cf79d587deddd4e183409e) Thanks [@abernier](https://github.com/abernier)! - Page actions in each doc header: a "Copy Page" split button that copies the page as markdown, with a menu to view it as markdown, copy the `npx @pmndrs/docs <lib>/<path>` command that opens it in the CLI, or open it in ChatGPT or Claude. Every page is now also served as raw markdown at `/md/<path>.md`, included in the static export.
+
+- [#614](https://github.com/pmndrs/docs/pull/614) [`753eada`](https://github.com/pmndrs/docs/commit/753eada066c2c9823397dafda5f13f1f0695a7d8) Thanks [@abernier](https://github.com/abernier)! - The library name in the header now opens a menu of the pmndrs libraries whose docs are built with
+  `@pmndrs/docs`, each with its icon; the one the site documents is checked and leads to the home of
+  its docs. `libs` gains a `pmndrs_docs` flag to mark
+  those libraries, and React Three Jolt, Sky and timeline join the list. The ".docs" suffix that
+  followed the name is gone, so the `libname_dotsuffix_label` and `libname_dotsuffix_href` inputs of
+  the reusable workflow, and the `--libname-dotsuffix-label` and `--libname-dotsuffix-href` options
+  of the CLI, are deprecated and now ignored. They are still accepted, so existing callers keep
+  working unchanged.
+
 ## 4.3.1
 
 ### Patch Changes
