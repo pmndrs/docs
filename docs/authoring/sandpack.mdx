@@ -12,12 +12,15 @@ nav: 8
 > [!NOTE]
 > See Sandpack [official documentation](https://sandpack.codesandbox.io/docs/getting-started/usage) for full usage.
 
+> [!WARNING]
+> Pin `three` to `0.185.1` or lower: since `0.186.0`, its CommonJS entry calls `process.emitWarning`, which Sandpack's in-browser bundler does not provide (the preview fails with `process.emitWarning is not a function`).
+
 ```tsx
 <Sandpack
   template="react-ts"
   customSetup={{
     dependencies: {
-      'three': 'latest',
+      'three': '0.185.1',
       '@react-three/fiber': 'latest',
       '@react-three/drei': 'latest'
     },
@@ -46,7 +49,7 @@ result:
   template="react-ts"
   customSetup={{
     dependencies: {
-      'three': 'latest',
+      'three': '0.185.1',
       '@react-three/fiber': 'latest',
       '@react-three/drei': 'latest'
     },
