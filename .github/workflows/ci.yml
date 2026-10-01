@@ -67,6 +67,42 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
 
+      # The version switcher in the sidebar footer. The CLI reads git itself, but this site is
+      # built by Vercel, from sources `vercel deploy` uploads without `.git`: no tags, no remote.
+      # So its `NEXT_PUBLIC_VERSION_*` variables are resolved here, from the full checkout above,
+      # by the same function the CLI calls, and handed down as build env -- which also keeps
+      # `next.config.mjs` from resolving them again on Vercel.
+      #
+      # Before `changesets/action`, which can leave HEAD on its `changeset-release/main` commit:
+      # the label must describe the commit this run is for.
+      #
+      # `v*.*.*` skips the moving major tag (`v4`), which `git describe` would otherwise prefer
+      # on a release commit.
+      #
+      # The branches offered are the ones with a deployment to switch to: `main` (docs.pmnd.rs)
+      # and the head branches of this repo's open pull requests, the only ones aliased below.
+      # Fork and Dependabot PRs are left out: their runs get no Actions secrets, hence no
+      # deployment. The remote's heads would also offer branches with nothing behind their URL.
+      # Should `gh` fail, though, the list is left unset and the switcher falls back to those
+      # heads (bot branches excluded).
+      # https://docs.github.com/en/code-security/dependabot/troubleshooting-dependabot/troubleshooting-dependabot-on-github-actions
+      - id: version
+        run: |
+          if pr_branches=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 \
+            --json headRefName,isCrossRepository \
+            --jq '.[] | select((.isCrossRepository | not) and (.headRefName | startswith("dependabot/") | not)) | .headRefName'); then
+            export VERSION_BRANCHES_LIST="main $pr_branches"
+          else
+            echo "::warning::Could not list the open pull requests; offering the remote's branches instead"
+          fi
+          node scripts/version-env.mts >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_MATCH: 'v*.*.*'
+          VERSION_URL_TEMPLATE: 'https://docs-git-{branch}-pmndrs.vercel.app'
+          # Not left to default to `NEXT_PUBLIC_URL`, which previews leave empty
+          VERSION_PRODUCTION_URL: 'https://docs.pmnd.rs'
+
       #
       #  ██████ ██   ██  █████  ███    ██  ██████  ███████ ███████ ███████ ████████
       # ██      ██   ██ ██   ██ ████   ██ ██       ██      ██      ██         ██
@@ -129,10 +165,10 @@ jobs:
             --build-env DIST_DIR= \
             --build-env OUTPUT= \
             --build-env HOME_REDIRECT= \
-            --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/docs" \
-            --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/${{ github.head_ref || github.ref_name }}/docs" \
-            --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}" \
-            --build-env NEXT_PUBLIC_URL= \
+            --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/$GIT_BRANCH/docs" \
+            --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/$GIT_BRANCH/docs" \
+            --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/$GIT_BRANCH" \
+            --build-env NEXT_PUBLIC_URL="$NEXT_PUBLIC_URL" \
             --build-env ICON= \
             --build-env LOGO=gutenberg.jpg \
             --build-env GITHUB="https://github.com/${{ github.repository }}" \
@@ -147,9 +183,41 @@ jobs:
             --build-env THEME_CAUTION="#da3633" \
             --build-env THEME_STORYBOOK="#ff4785" \
             --build-env CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
+            --build-env NEXT_PUBLIC_VERSION_LABEL="$NEXT_PUBLIC_VERSION_LABEL" \
+            --build-env NEXT_PUBLIC_VERSION_BRANCH="$NEXT_PUBLIC_VERSION_BRANCH" \
+            --build-env NEXT_PUBLIC_VERSION_URL_TEMPLATE="$NEXT_PUBLIC_VERSION_URL_TEMPLATE" \
+            --build-env NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH="$NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH" \
+            --build-env NEXT_PUBLIC_VERSION_BRANCHES="$NEXT_PUBLIC_VERSION_BRANCHES" \
+            --build-env NEXT_PUBLIC_VERSION_PRODUCTION_URL="$NEXT_PUBLIC_VERSION_PRODUCTION_URL" \
             > deployment-url.txt
 
-          echo "deployment_url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
+          echo "deployment_url=$(cat deployment-url.txt)" >> "$GITHUB_OUTPUT"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          # Through env rather than inline: they come from branch names, which a PR author picks
+          GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          # Production only: a preview's metadata, OG images and llms.txt must not point to docs.pmnd.rs
+          NEXT_PUBLIC_URL: ${{ github.event_name == 'push' && 'https://docs.pmnd.rs' || '' }}
+          NEXT_PUBLIC_VERSION_LABEL: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_LABEL }}
+          NEXT_PUBLIC_VERSION_BRANCH: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_BRANCH }}
+          NEXT_PUBLIC_VERSION_URL_TEMPLATE: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_URL_TEMPLATE }}
+          NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH }}
+          NEXT_PUBLIC_VERSION_BRANCHES: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_BRANCHES }}
+          NEXT_PUBLIC_VERSION_PRODUCTION_URL: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_PRODUCTION_URL }}
+
+      # Vercel generates branch URLs (`<project>-git-<branch>-<scope>.vercel.app`) only for
+      # deployments made by its Git integration, not for these CLI ones. So give each preview the
+      # URL `VERSION_URL_TEMPLATE` links its branch to, and re-point it on every push. Production
+      # needs none: `main` is docs.pmnd.rs.
+      #
+      # Not fatal: a branch name too long for a 63-character hostname label cannot get its alias,
+      # and that is no reason to fail the pull request.
+      - name: Alias the preview to its branch URL
+        if: github.event_name != 'push' && steps.version.outputs.slug != ''
+        continue-on-error: true
+        run: |
+          npx -y vercel alias set "${{ steps.vercel-deploy.outputs.deployment_url }}" \
+            "docs-git-${{ steps.version.outputs.slug }}-pmndrs.vercel.app" \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=pmndrs

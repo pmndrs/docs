@@ -1,5 +1,6 @@
 import { version } from '@/package.json'
 import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
+import { assertValidUrlTemplate } from '@/utils/slugify-branch'
 import { Command, Option, type OptionValues } from 'commander'
 import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
@@ -8,6 +9,8 @@ import { formatHits, formatMatches } from './browse.print'
 import { matchingLines, search } from './browse.search'
 import { resolveTarget } from './browse.target'
 import { fragmentComponents, renderFragment, renderToHtml } from './render'
+import * as gitInfo from './git-info'
+import { resolveVersionEnv } from './version-env'
 import { buildWebsite } from './website'
 
 /**
@@ -54,6 +57,32 @@ const websiteOptions = [
   new Option('--theme-warning <color>', 'Color of the WARNING alerts').env('THEME_WARNING'),
   new Option('--theme-caution <color>', 'Color of the CAUTION alerts').env('THEME_CAUTION'),
   new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
+  new Option('--lib-version <version>', 'Version label, instead of `git describe --tags`').env(
+    'LIB_VERSION',
+  ),
+  new Option('--tag-match <glob>', 'Tags the version is described from, e.g. "leva@*"').env(
+    'TAG_MATCH',
+  ),
+  new Option(
+    '--version-url-template <url>',
+    'Full public URL of a branch deployment, base path included, e.g. "https://docs-git-{branch}-pmndrs.vercel.app"; enables the version switcher',
+  ).env('VERSION_URL_TEMPLATE'),
+  new Option(
+    '--version-production-branch <branch>',
+    'Branch served at --version-production-url, the others at --version-url-template (default: "main")',
+  ).env('VERSION_PRODUCTION_BRANCH'),
+  new Option(
+    '--version-production-url <url>',
+    "Public URL of the production branch's deployment (default: --url)",
+  ).env('VERSION_PRODUCTION_URL'),
+  new Option(
+    '--version-branches <regex>',
+    'Branches the switcher offers (default: all but dependabot/, renovate/, changeset-release/)',
+  ).env('VERSION_BRANCHES'),
+  new Option(
+    '--version-branches-list <branches>',
+    "Explicit branches the switcher offers, comma-separated, instead of the remote's",
+  ).env('VERSION_BRANCHES_LIST'),
 ]
 
 /**
@@ -158,6 +187,17 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   for (const option of websiteOptions) {
     env[option.envVar!] = opts[option.attributeName()]
   }
+
+  // Git is asked here, in the library's checkout, and not by the build: that runs in a copy of
+  // this package, where git would describe the wrong repository, or none at all. Every variable
+  // is set, even empty, which is what tells `next.config.mjs` not to resolve them again.
+  // Handed the whole environment, not only the options: git reads the CI's own variables
+  // (`GITHUB_*`, `VERCEL_GIT_COMMIT_REF`) to tell which branch and commit this is.
+  const versionEnv = resolveVersionEnv(
+    { ...process.env, ...env },
+    { cwd: from, git: gitInfo, assertValidUrlTemplate },
+  )
+  Object.assign(env, versionEnv)
 
   await buildWebsite({
     packageRoot: resolve(dirname(new URL(import.meta.url).pathname), '..'),

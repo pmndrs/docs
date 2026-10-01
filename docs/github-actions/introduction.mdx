@@ -32,3 +32,27 @@ uses: pmndrs/docs/.github/workflows/build.yml@v3
 ```
 
 See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
+
+## Version switcher
+
+Optional inputs for the [version switcher](/getting-started/introduction#version-switcher); `version_production_branch` defaults to the repository's default branch.
+
+| input                       | env                         |
+| --------------------------- | --------------------------- |
+| `lib_version`               | `LIB_VERSION`               |
+| `tag_match`                 | `TAG_MATCH`                 |
+| `version_url_template`      | `VERSION_URL_TEMPLATE`      |
+| `version_production_branch` | `VERSION_PRODUCTION_BRANCH` |
+| `version_production_url`    | `VERSION_PRODUCTION_URL`    |
+| `version_branches`          | `VERSION_BRANCHES`          |
+| `version_branches_list`     | `VERSION_BRANCHES_LIST`     |
+
+eg. for a monorepo package whose branches are deployed by Vercel's Git integration:
+
+```yml
+uses: pmndrs/docs/.github/workflows/build.yml@v4
+  with:
+    # ...
+    tag_match: 'leva@*'
+    version_url_template: 'https://leva-git-{branch:vercel}-pmndrs.vercel.app'
+```
