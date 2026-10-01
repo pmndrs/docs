@@ -11,7 +11,7 @@ import { versionInfo, withoutTrailingSlash } from '@/utils/version'
  * (`VERSION_URL_TEMPLATE`): says which branch this is, and links to the same page on production.
  */
 export function VersionBanner({ className }: { className?: string }) {
-  // Without its base path: `NEXT_PUBLIC_URL` already includes it.
+  // Without its base path: the production URL already includes it.
   const pathname = usePathname()
 
   const { branch, urlTemplate, productionBranch, productionUrl } = versionInfo

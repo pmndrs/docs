@@ -16,14 +16,21 @@ const TEMPLATE = 'https://docs-git-{branch}-pmndrs.vercel.app'
 describe('resolveVersionEnv', () => {
   test('labels the build with git describe, narrowed by TAG_MATCH, in the given cwd', () => {
     const git = fakeGit()
-    const env = resolveVersionEnv(
-      { TAG_MATCH: 'leva@*' },
-      { cwd: '/repo', git, assertValidUrlTemplate },
-    )
+    const input = { TAG_MATCH: 'leva@*' }
+    const env = resolveVersionEnv(input, { cwd: '/repo', git, assertValidUrlTemplate })
 
     expect(env.NEXT_PUBLIC_VERSION_LABEL).toBe('v1.2.3')
     expect(env.NEXT_PUBLIC_VERSION_BRANCH).toBe('feat/x')
-    expect(git.getVersion).toHaveBeenCalledWith({ cwd: '/repo', tagMatch: 'leva@*' })
+    expect(git.getVersion).toHaveBeenCalledWith({ cwd: '/repo', tagMatch: 'leva@*', env: input })
+  })
+
+  test('git is handed the same env, for the CI variables it reads', () => {
+    const git = fakeGit()
+    const input = { GITHUB_HEAD_REF: 'feat/pr', GITHUB_EVENT_PATH: '/event.json' }
+    resolveVersionEnv(input, { cwd: '/repo', git, assertValidUrlTemplate })
+
+    expect(git.getCurrentBranch).toHaveBeenCalledWith({ cwd: '/repo', env: input })
+    expect(git.getVersion).toHaveBeenCalledWith({ cwd: '/repo', tagMatch: undefined, env: input })
   })
 
   test('LIB_VERSION wins, and git describe is not even asked', () => {
@@ -46,6 +53,22 @@ describe('resolveVersionEnv', () => {
   test('the production branch defaults to main', () => {
     const env = resolveVersionEnv({}, { git: fakeGit(), assertValidUrlTemplate })
     expect(env.NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH).toBe('main')
+  })
+
+  test('the production URL is VERSION_PRODUCTION_URL, else the site URL, else unknown', () => {
+    const productionUrlOf = (input: Record<string, string>) =>
+      resolveVersionEnv(input, { git: fakeGit(), assertValidUrlTemplate })
+        .NEXT_PUBLIC_VERSION_PRODUCTION_URL
+
+    const preview = {
+      NEXT_PUBLIC_URL: 'https://docs-git-feat-x-pmndrs.vercel.app',
+      VERSION_PRODUCTION_URL: 'https://docs.pmnd.rs',
+    }
+    expect(productionUrlOf(preview)).toBe('https://docs.pmnd.rs')
+    expect(productionUrlOf({ NEXT_PUBLIC_URL: 'https://docs.pmnd.rs' })).toBe(
+      'https://docs.pmnd.rs',
+    )
+    expect(productionUrlOf({})).toBe('')
   })
 
   test('with a template: the production branch first, the current one always included', () => {
@@ -99,6 +122,7 @@ describe('resolveVersionEnv', () => {
       NEXT_PUBLIC_VERSION_BRANCH: '',
       NEXT_PUBLIC_VERSION_URL_TEMPLATE: TEMPLATE,
       NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH: 'main',
+      NEXT_PUBLIC_VERSION_PRODUCTION_URL: '',
       NEXT_PUBLIC_VERSION_BRANCHES: '["main"]',
     })
   })

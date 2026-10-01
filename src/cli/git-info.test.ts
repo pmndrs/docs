@@ -1,8 +1,8 @@
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterAll, describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import {
   filterBranches,
   getBranches,
@@ -110,6 +110,17 @@ describe('getCurrentBranch', () => {
     expect(branchOf({ ...all, GITHUB_HEAD_REF: '', GITHUB_REF_NAME: '' })).toBe('vercel')
   })
 
+  test('a pushed tag is no branch: GITHUB_REF_NAME is then ignored', () => {
+    const tagPush = { GITHUB_REF_NAME: 'v1.0.0', GITHUB_REF_TYPE: 'tag' }
+    expect(getCurrentBranch({ cwd: notARepo, env: tagPush })).toBeUndefined()
+    expect(
+      getCurrentBranch({ cwd: notARepo, env: { ...tagPush, VERCEL_GIT_COMMIT_REF: 'vercel' } }),
+    ).toBe('vercel')
+    expect(
+      getCurrentBranch({ cwd: notARepo, env: { ...tagPush, GITHUB_REF_TYPE: 'branch' } }),
+    ).toBe('v1.0.0')
+  })
+
   test('without CI variables nor git, there is no branch', () => {
     expect(getCurrentBranch({ cwd: notARepo, env: {} })).toBeUndefined()
   })
@@ -171,6 +182,56 @@ describe('in a local repository', () => {
     expect(getVersion({ cwd: repo, tagMatch: 'leva@*', env: {} })).toMatch(
       /^leva@0\.10\.1-1-g[0-9a-f]+$/,
     )
+  })
+
+  describe('on a GitHub pull request run', () => {
+    // The checkout GitHub gives: the PR's head on a branch, and a merge commit, on none, checked
+    // out on top of it.
+    const eventDir = mkdtempSync(join(tmpdir(), 'git-info-event-'))
+    const eventPath = join(eventDir, 'event.json')
+    const writeEvent = (event: unknown) => writeFileSync(eventPath, JSON.stringify(event))
+    afterAll(() => rmSync(eventDir, { recursive: true, force: true }))
+
+    let head: string
+    beforeAll(() => {
+      run('checkout', '--quiet', '-b', 'feat/pr')
+      commit('pr head')
+      head = run('rev-parse', 'HEAD').trim()
+      run('tag', 'v2.0.0')
+      run('checkout', '--quiet', '--detach')
+      commit('synthetic merge')
+    })
+    afterAll(() => run('checkout', '--quiet', 'main'))
+
+    test('describes the head of the PR, not the merge commit checked out', () => {
+      writeEvent({ pull_request: { head: { sha: head } } })
+      expect(getVersion({ cwd: repo, env: { GITHUB_EVENT_PATH: eventPath } })).toBe('v2.0.0')
+      // HEAD itself is one commit past the tag.
+      expect(getVersion({ cwd: repo, env: {} })).toMatch(/^v2\.0\.0-1-g[0-9a-f]+$/)
+    })
+
+    test('falls back to the head commit short sha when no tag matches', () => {
+      writeEvent({ pull_request: { head: { sha: head } } })
+      const env = { GITHUB_EVENT_PATH: eventPath, GITHUB_HEAD_REF: 'feat/pr' }
+      const shortHead = run('rev-parse', '--short', head).trim()
+      expect(getVersion({ cwd: repo, tagMatch: 'nomatch@*', env })).toBe(`feat/pr@${shortHead}`)
+    })
+
+    test('describes HEAD when the payload cannot say which commit, or names one not fetched', () => {
+      const describedHead = getVersion({ cwd: repo, env: {} })
+
+      writeEvent({ pull_request: { head: { sha: 'f'.repeat(40) } } })
+      expect(getVersion({ cwd: repo, env: { GITHUB_EVENT_PATH: eventPath } })).toBe(describedHead)
+
+      writeEvent({ ref: 'refs/heads/main' })
+      expect(getVersion({ cwd: repo, env: { GITHUB_EVENT_PATH: eventPath } })).toBe(describedHead)
+
+      writeFileSync(eventPath, '{ not json')
+      expect(getVersion({ cwd: repo, env: { GITHUB_EVENT_PATH: eventPath } })).toBe(describedHead)
+
+      const missing = join(eventDir, 'no-such-event.json')
+      expect(getVersion({ cwd: repo, env: { GITHUB_EVENT_PATH: missing } })).toBe(describedHead)
+    })
   })
 
   test('no remote, no branches', () => {

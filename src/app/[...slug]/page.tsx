@@ -2,6 +2,7 @@ import { CopyPage } from '@/components/CopyPage'
 import cn from '@/lib/cn'
 import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
 import { getData, getDocs } from '@/utils/docs'
+import { withoutTrailingSlash } from '@/utils/version'
 
 export type Props = {
   params: Promise<{ slug: string[] }>
@@ -43,7 +44,7 @@ export default async function Page({ params }: Props) {
   const markdownUrl = `${BASE_PATH || ''}/md${doc.url}.md`
   const pageUrl = `${BASE_PATH || ''}${doc.url}`
   const absolutePageUrl = NEXT_PUBLIC_URL
-    ? `${NEXT_PUBLIC_URL.replace(/\/+$/, '')}${doc.url}`
+    ? `${withoutTrailingSlash(NEXT_PUBLIC_URL)}${doc.url}`
     : undefined
   const command = cliCommand(resolveLibKey({ url: NEXT_PUBLIC_URL, basePath: BASE_PATH }), doc.url)
 

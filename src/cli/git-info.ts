@@ -6,6 +6,7 @@
 // `undefined` or `[]`, and the caller simply shows less.
 
 import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 
 /** The environment variables read here; a plain record, so tests can pass `{}`. */
 type Env = Record<string, string | undefined>
@@ -41,11 +42,12 @@ function git(args: string[], cwd?: string): string | undefined {
  * The branch being built.
  *
  * CI variables come first, because git alone lies there: a pull request is checked out as a
- * detached `HEAD`, and a host that builds itself may not ship `.git` at all. A detached `HEAD`
- * is no branch at all. In order:
+ * detached `HEAD`, and a host that builds itself may not ship `.git` at all. A detached `HEAD` --
+ * which is also what checking out a tag gives -- is no branch at all. In order:
  *
  * - GitHub Actions: `GITHUB_HEAD_REF` is the PR's source branch (set only on pull_request
- *   events), `GITHUB_REF_NAME` the pushed branch otherwise
+ *   events), `GITHUB_REF_NAME` the pushed branch otherwise -- unless `GITHUB_REF_TYPE` is `tag`:
+ *   a pushed tag is then what `GITHUB_REF_NAME` names, and a tag is no branch
  *   (https://docs.github.com/en/actions/reference/workflows-and-actions/variables#default-environment-variables)
  * - Vercel: `VERCEL_GIT_COMMIT_REF`, "the git branch of the commit the deployment was triggered by"
  *   (https://vercel.com/docs/environment-variables/system-environment-variables#vercel_git_commit_ref)
@@ -53,7 +55,8 @@ function git(args: string[], cwd?: string): string | undefined {
 export function getCurrentBranch({ cwd, env = process.env }: { cwd?: string; env?: Env } = {}):
   | string
   | undefined {
-  const fromEnv = env.GITHUB_HEAD_REF || env.GITHUB_REF_NAME || env.VERCEL_GIT_COMMIT_REF
+  const githubRef = env.GITHUB_REF_TYPE === 'tag' ? undefined : env.GITHUB_REF_NAME
+  const fromEnv = env.GITHUB_HEAD_REF || githubRef || env.VERCEL_GIT_COMMIT_REF
   if (fromEnv) return fromEnv
 
   const fromGit = git(['rev-parse', '--abbrev-ref', 'HEAD'], cwd)
@@ -62,8 +65,38 @@ export function getCurrentBranch({ cwd, env = process.env }: { cwd?: string; env
 }
 
 /**
+ * The commit a GitHub `pull_request` run is about: the PR's head, when that commit is present locally.
+ *
+ * On those runs, `actions/checkout` checks out `refs/pull/<n>/merge` -- a merge commit GitHub
+ * makes up, on no branch, whose `git describe` describes nothing anyone pushed. The event payload
+ * (`GITHUB_EVENT_PATH`) names the real head, `pull_request.head.sha`; it is only there when the
+ * checkout fetched enough history (`fetch-depth: 0`), hence the check. No payload, no PR, a
+ * malformed file, a commit not fetched: `undefined`, and the caller describes `HEAD` as usual.
+ * (https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request)
+ */
+function pullRequestHead({ cwd, env }: { cwd?: string; env: Env }): string | undefined {
+  if (!env.GITHUB_EVENT_PATH) return undefined
+
+  let sha: unknown
+  try {
+    const event = JSON.parse(readFileSync(env.GITHUB_EVENT_PATH, 'utf8'))
+    sha = event?.pull_request?.head?.sha
+  } catch {
+    return undefined
+  }
+  // A hex object name and nothing else, so that it can never be read as an option by git.
+  if (typeof sha !== 'string' || !/^[0-9a-f]{7,64}$/i.test(sha)) return undefined
+
+  const exists = git(['rev-parse', '--verify', '--quiet', `${sha}^{commit}`], cwd)
+  return exists ? sha : undefined
+}
+
+/**
  * A human label for the commit being built: `v10.7.9` on a tagged commit, `v10.7.9-3-ga1b2c3d`
  * three commits after it.
+ *
+ * That commit is `HEAD`, except on a GitHub pull request run, where it is the PR's head rather
+ * than the merge commit checked out (see {@link pullRequestHead}).
  *
  * `tagMatch` narrows the tags considered, which monorepos need (`leva@*` among the tags of
  * every other package). Without tags -- none yet, or a shallow clone that did not fetch them --
@@ -76,12 +109,15 @@ export function getVersion({
   tagMatch,
   env = process.env,
 }: { cwd?: string; tagMatch?: string; env?: Env } = {}): string | undefined {
+  const revision = pullRequestHead({ cwd, env }) ?? 'HEAD'
+
   const describeArgs = ['describe', '--tags']
   if (tagMatch) describeArgs.push('--match', tagMatch)
+  describeArgs.push(revision)
   const described = git(describeArgs, cwd)
   if (described) return described
 
-  const sha = git(['rev-parse', '--short', 'HEAD'], cwd)
+  const sha = git(['rev-parse', '--short', revision], cwd)
   if (!sha) return undefined
 
   const branch = getCurrentBranch({ cwd, env })

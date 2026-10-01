@@ -21,7 +21,10 @@ export type VersionInfo = {
   urlTemplate?: string
   /** The branch deployed to `productionUrl`. */
   productionBranch: string
-  /** The public URL of the production deployment, base path included (`NEXT_PUBLIC_URL`). */
+  /**
+   * The public URL of the production deployment, base path included:
+   * `NEXT_PUBLIC_VERSION_PRODUCTION_URL`, or this build's own `NEXT_PUBLIC_URL` when that is unset.
+   */
   productionUrl?: string
   /**
    * The branches to switch to, as the build lists them: the production branch first, the current
@@ -35,7 +38,8 @@ export const versionInfo: VersionInfo = {
   branch: process.env.NEXT_PUBLIC_VERSION_BRANCH || undefined,
   urlTemplate: process.env.NEXT_PUBLIC_VERSION_URL_TEMPLATE || undefined,
   productionBranch: process.env.NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH || DEFAULT_PRODUCTION_BRANCH,
-  productionUrl: process.env.NEXT_PUBLIC_URL || undefined,
+  productionUrl:
+    process.env.NEXT_PUBLIC_VERSION_PRODUCTION_URL || process.env.NEXT_PUBLIC_URL || undefined,
   branches: parseBranches(process.env.NEXT_PUBLIC_VERSION_BRANCHES),
 }
 

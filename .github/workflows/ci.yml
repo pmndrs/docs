@@ -100,6 +100,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG_MATCH: 'v*.*.*'
           VERSION_URL_TEMPLATE: 'https://docs-git-{branch}-pmndrs.vercel.app'
+          # Not left to default to `NEXT_PUBLIC_URL`, which previews leave empty
+          VERSION_PRODUCTION_URL: 'https://docs.pmnd.rs'
 
       #
       #  ██████ ██   ██  █████  ███    ██  ██████  ███████ ███████ ███████ ████████
@@ -166,7 +168,7 @@ jobs:
             --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/$GIT_BRANCH/docs" \
             --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/$GIT_BRANCH/docs" \
             --build-env SOURCECODE_BASEURL="https://github.com/${{ github.repository }}/tree/$GIT_BRANCH" \
-            --build-env NEXT_PUBLIC_URL=https://docs.pmnd.rs \
+            --build-env NEXT_PUBLIC_URL="$NEXT_PUBLIC_URL" \
             --build-env ICON= \
             --build-env LOGO=gutenberg.jpg \
             --build-env GITHUB="https://github.com/${{ github.repository }}" \
@@ -186,6 +188,7 @@ jobs:
             --build-env NEXT_PUBLIC_VERSION_URL_TEMPLATE="$NEXT_PUBLIC_VERSION_URL_TEMPLATE" \
             --build-env NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH="$NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH" \
             --build-env NEXT_PUBLIC_VERSION_BRANCHES="$NEXT_PUBLIC_VERSION_BRANCHES" \
+            --build-env NEXT_PUBLIC_VERSION_PRODUCTION_URL="$NEXT_PUBLIC_VERSION_PRODUCTION_URL" \
             > deployment-url.txt
 
           echo "deployment_url=$(cat deployment-url.txt)" >> "$GITHUB_OUTPUT"
@@ -194,11 +197,14 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           # Through env rather than inline: they come from branch names, which a PR author picks
           GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          # Production only: a preview's metadata, OG images and llms.txt must not point to docs.pmnd.rs
+          NEXT_PUBLIC_URL: ${{ github.event_name == 'push' && 'https://docs.pmnd.rs' || '' }}
           NEXT_PUBLIC_VERSION_LABEL: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_LABEL }}
           NEXT_PUBLIC_VERSION_BRANCH: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_BRANCH }}
           NEXT_PUBLIC_VERSION_URL_TEMPLATE: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_URL_TEMPLATE }}
           NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH }}
           NEXT_PUBLIC_VERSION_BRANCHES: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_BRANCHES }}
+          NEXT_PUBLIC_VERSION_PRODUCTION_URL: ${{ steps.version.outputs.NEXT_PUBLIC_VERSION_PRODUCTION_URL }}
 
       # Vercel generates branch URLs (`<project>-git-<branch>-<scope>.vercel.app`) only for
       # deployments made by its Git integration, not for these CLI ones. So give each preview the

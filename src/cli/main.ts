@@ -69,8 +69,12 @@ const websiteOptions = [
   ).env('VERSION_URL_TEMPLATE'),
   new Option(
     '--version-production-branch <branch>',
-    'Branch served at --url, the others at --version-url-template (default: "main")',
+    'Branch served at --version-production-url, the others at --version-url-template (default: "main")',
   ).env('VERSION_PRODUCTION_BRANCH'),
+  new Option(
+    '--version-production-url <url>',
+    "Public URL of the production branch's deployment (default: --url)",
+  ).env('VERSION_PRODUCTION_URL'),
   new Option(
     '--version-branches <regex>',
     'Branches the switcher offers (default: all but dependabot/, renovate/, changeset-release/)',
@@ -187,7 +191,13 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   // Git is asked here, in the library's checkout, and not by the build: that runs in a copy of
   // this package, where git would describe the wrong repository, or none at all. Every variable
   // is set, even empty, which is what tells `next.config.mjs` not to resolve them again.
-  Object.assign(env, resolveVersionEnv(env, { cwd: from, git: gitInfo, assertValidUrlTemplate }))
+  // Handed the whole environment, not only the options: git reads the CI's own variables
+  // (`GITHUB_*`, `VERCEL_GIT_COMMIT_REF`) to tell which branch and commit this is.
+  const versionEnv = resolveVersionEnv(
+    { ...process.env, ...env },
+    { cwd: from, git: gitInfo, assertValidUrlTemplate },
+  )
+  Object.assign(env, versionEnv)
 
   await buildWebsite({
     packageRoot: resolve(dirname(new URL(import.meta.url).pathname), '..'),

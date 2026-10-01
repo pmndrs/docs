@@ -58,8 +58,8 @@ export function VersionSwitcher() {
 
 function BranchCombobox({ children }: { children: ReactNode }) {
   // The path within the site, without its base path: the target deployment's URL (the production
-  // `NEXT_PUBLIC_URL`, or the URL template expanded) is a public URL that already includes its own
-  // base path, as `NEXT_PUBLIC_URL` does.
+  // URL, or the URL template expanded) is a public URL that already includes its own base path, as
+  // `NEXT_PUBLIC_URL` does.
   const pathname = usePathname()
 
   // Base UI also commits a value from a key typed on the closed trigger (its typeahead, with
