@@ -8,6 +8,11 @@ export type Props = {
   params: Promise<{ slug: string[] }>
 }
 
+// Only the pages `generateStaticParams` lists exist; any other path is a 404. Rendered on demand
+// instead, a path such as `/.well-known/oauth-authorization-server` (what MCP clients probe) threw
+// a 500: `MDX` is only set at build time on Vercel, and a doc that does not exist throws anyway.
+export const dynamicParams = false
+
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
 

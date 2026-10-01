@@ -438,6 +438,11 @@ Always handle errors gracefully and consider alternative approaches when a speci
     basePath: '/api',
     maxDuration: 60,
     verboseLogs: false,
+    // The legacy SSE transport (/api/sse, /api/message) needs Redis, and we run none:
+    // left enabled, a request there throws for want of a Redis URL and never ends the
+    // response, so the function hangs until Vercel times it out. Off, it is a plain 404,
+    // and clients use the streamable HTTP transport at /api/mcp.
+    disableSse: true,
   },
 )
 
