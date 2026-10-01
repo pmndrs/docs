@@ -44,9 +44,10 @@ export default async function Page({ params }: Props) {
   const { doc } = await getData(...slug) // [ 'getting-started', 'introduction' ]
 
   // Paths on this site, absolute when the build knows its public URL -- which already includes
-  // the base path, as in `llms-full.txt`. The markdown is served by `src/app/md/[...slug]/route.ts`.
+  // the base path, as in `llms-full.txt`. The markdown is the page URL plus `.md`, served by
+  // `src/app/md/[...slug]/route.ts`.
   const { NEXT_PUBLIC_URL, NEXT_PUBLIC_LIBNAME, BASE_PATH } = process.env
-  const markdownUrl = `${BASE_PATH || ''}/md${doc.url}.md`
+  const markdownUrl = `${BASE_PATH || ''}${doc.url}.md`
   const pageUrl = `${BASE_PATH || ''}${doc.url}`
   const absolutePageUrl = NEXT_PUBLIC_URL
     ? `${withoutTrailingSlash(NEXT_PUBLIC_URL)}${doc.url}`
