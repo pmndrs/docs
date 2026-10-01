@@ -21,6 +21,9 @@ jobs:
       # in step with itself. Our own site is then built by exactly what consumers install —
       # a broken release shows up here before anyone downstream moves to it.
       version: 'latest'
+      # Skips the moving major tag (`v4`), which `git describe` would otherwise prefer on a release
+      # commit -- as in ci.yml.
+      tag_match: 'v*.*.*'
       mdx: 'docs'
       libname: 'Poimandres'
       libname_short: 'pmndrs'

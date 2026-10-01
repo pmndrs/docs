@@ -13,7 +13,8 @@
 // `GITHUB_*` variables, through git-info.
 //
 // Outputs: the six `NEXT_PUBLIC_VERSION_*` variables, plus `slug`, the generic slug of the branch
-// being built -- what `{branch}` expands to in `VERSION_URL_TEMPLATE`.
+// being built -- what `{branch}` expands to in `VERSION_URL_TEMPLATE`. With a URL template, it
+// also requests each offered branch's URL, to offer only the ones with a deployment behind it.
 //
 // Each value must stay on one line, or `$GITHUB_OUTPUT` would read the rest as other keys. They
 // do: `NEXT_PUBLIC_VERSION_BRANCHES` is compact JSON, and git names hold no newline.
@@ -36,9 +37,16 @@ const versionEnv = resolveVersionEnv(process.env, { git, assertValidUrlTemplate 
 // label too long for DNS, and not two branches whose slugs collide -- they would fight over one
 // alias. The production branch is always kept: it is served at the production URL, not the
 // template's.
+//
+// Nor a branch that has nothing at its URL yet: a pull request whose CI has not run since the
+// alias step existed leads to a 404. Each URL is asked once, in parallel. Only a 404 or a failed
+// request drops a branch, not any other status: Vercel answers 404 for an alias it does not know,
+// while a protected deployment answers 401 or 403 -- and does exist. The branch being built is
+// kept unasked: its deployment is the one being made, aliased right after.
 const template = versionEnv.NEXT_PUBLIC_VERSION_URL_TEMPLATE
 if (template) {
   const productionBranch = versionEnv.NEXT_PUBLIC_VERSION_PRODUCTION_BRANCH
+  const currentBranch = versionEnv.NEXT_PUBLIC_VERSION_BRANCH
   const branches: string[] = JSON.parse(versionEnv.NEXT_PUBLIC_VERSION_BRANCHES)
 
   const branchCountBySlug = new Map<string, number>()
@@ -47,19 +55,34 @@ if (template) {
     branchCountBySlug.set(slug, (branchCountBySlug.get(slug) ?? 0) + 1)
   }
 
-  const deployable: string[] = []
-  for (const branch of branches) {
-    if (branch === productionBranch) {
-      deployable.push(branch)
-      continue
+  const isDeployed = async (url: string) => {
+    try {
+      const response = await fetch(url, {
+        method: 'HEAD',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(10_000),
+      })
+      return response.status !== 404
+    } catch {
+      return false
     }
-
-    const hostname = new URL(await expandUrlTemplate(template, branch)).hostname
-    const fitsInDns = hostname.split('.').every((label) => label.length <= MAX_LABEL_LENGTH)
-    const hasOwnSlug = branchCountBySlug.get(slugifyBranch(branch)) === 1
-    if (fitsInDns && hasOwnSlug) deployable.push(branch)
   }
-  versionEnv.NEXT_PUBLIC_VERSION_BRANCHES = JSON.stringify(deployable)
+
+  const keep = await Promise.all(
+    branches.map(async (branch) => {
+      if (branch === productionBranch) return true
+
+      const url = await expandUrlTemplate(template, branch)
+      const hostname = new URL(url).hostname
+      const fitsInDns = hostname.split('.').every((label) => label.length <= MAX_LABEL_LENGTH)
+      const hasOwnSlug = branchCountBySlug.get(slugifyBranch(branch)) === 1
+      if (!fitsInDns || !hasOwnSlug) return false
+
+      if (branch === currentBranch) return true
+      return isDeployed(url)
+    }),
+  )
+  versionEnv.NEXT_PUBLIC_VERSION_BRANCHES = JSON.stringify(branches.filter((_, i) => keep[i]))
 }
 
 for (const [key, value] of Object.entries(versionEnv)) {
