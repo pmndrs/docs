@@ -1,0 +1,86 @@
+---
+title: "`Tabs`"
+description: Alternative contents, one shown at a time
+sourcecode: docs/authoring/tabs.mdx
+nav: 16
+---
+
+<Intro>
+  Alternative contents, one shown at a time.
+</Intro>
+
+```md
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+    React is a library for building user interfaces out of components.
+  </TabsContent>
+  <TabsContent value="vue">
+    Vue is a progressive framework for building user interfaces.
+  </TabsContent>
+  <TabsContent value="svelte">
+    Svelte is a compiler that turns components into plain JavaScript.
+  </TabsContent>
+</Tabs>
+```
+
+result:
+
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+    React is a library for building user interfaces out of components.
+  </TabsContent>
+  <TabsContent value="vue">
+    Vue is a progressive framework for building user interfaces.
+  </TabsContent>
+  <TabsContent value="svelte">
+    Svelte is a compiler that turns components into plain JavaScript.
+  </TabsContent>
+</Tabs>
+
+Same API as [shadcn `Tabs`](https://ui.shadcn.com/docs/components/base/tabs).
+
+`defaultValue` is required (otherwise no tab is shown until hydration).
+
+---
+
+Triggers accept any markup:
+
+```md
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React <Badge>19</Badge></TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+    React 19 is the current major version.
+  </TabsContent>
+  <TabsContent value="vue">
+    Vue 3 is the current major version.
+  </TabsContent>
+</Tabs>
+```
+
+result:
+
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React <Badge>19</Badge></TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+    React 19 is the current major version.
+  </TabsContent>
+  <TabsContent value="vue">
+    Vue 3 is the current major version.
+  </TabsContent>
+</Tabs>

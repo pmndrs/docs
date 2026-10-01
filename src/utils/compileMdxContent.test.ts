@@ -98,6 +98,42 @@ describe('compileMdxContent', () => {
     const html = renderToString(result.content)
     expect(html).toMatch(/<p[^>]*>Check <a[^>]*href="#section"[^>]*>this link<\/a><\/p>/)
   })
+
+  it('compiles Tabs, with markdown in a TabsContent', async () => {
+    const source = [
+      '<Tabs defaultValue="vue">',
+      '  <TabsList>',
+      '    <TabsTrigger value="react">React</TabsTrigger>',
+      '    <TabsTrigger value="vue">Vue</TabsTrigger>',
+      '  </TabsList>',
+      '  <TabsContent value="react">',
+      '',
+      '    ```tsx',
+      '    useState(0)',
+      '    ```',
+      '',
+      '  </TabsContent>',
+      '  <TabsContent value="vue">',
+      '    Vue is a progressive framework.',
+      '  </TabsContent>',
+      '</Tabs>',
+    ].join('\n')
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    expect(html).toMatch(/<button[^>]*>React<\/button>/)
+    expect(html).toMatch(/<button[^>]*aria-selected="true"[^>]*>Vue<\/button>/)
+    // Every panel is in the HTML: the hidden one with its code block, the shown one with its text
+    expect(html).toMatch(/<pre[^>]*class="language-tsx/)
+    expect(html).toContain('Vue is a progressive framework.')
+  })
 })
 
 /**

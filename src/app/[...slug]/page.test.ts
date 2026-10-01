@@ -23,6 +23,7 @@ const pages = [
   '/authoring/contributors',
   '/authoring/backers',
   '/authoring/entries',
+  '/authoring/tabs',
   '/github-actions/introduction',
 ]
 
