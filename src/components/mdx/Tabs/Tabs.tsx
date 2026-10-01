@@ -34,7 +34,8 @@ type TabsProps = WithStringClassName<Omit<ComponentProps<typeof UiTabs>, 'defaul
  *   HTML, and Base UI only picks the first one once the page's JavaScript runs.
  *
  * A `#hash` pointing into a panel not shown, e.g. the anchor of a heading in a `TabsContent`,
- * opens its tab and scrolls to it: on load, and when the hash changes.
+ * opens its tab and scrolls to it: on load, when the hash changes, and when a link to it is
+ * clicked.
  */
 export function Tabs({ className, children, ...props }: TabsProps) {
   // `.post-container > *` (globals.css) makes this root `display: block` instead of the ui

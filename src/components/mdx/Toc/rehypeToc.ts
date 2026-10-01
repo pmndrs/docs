@@ -31,9 +31,8 @@ const isHeading = (node: Node) => node.type === 'element' && /^h[1-6]$/.test(nod
  * The row of tab triggers: their labels ("React", "Vue"...) are not content of their own.
  */
 const isTabList = (node: Node) =>
-  ((node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') &&
-    node.name === 'TabsList') ||
-  (node.type === 'element' && node.properties?.role === 'tablist')
+  (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') &&
+  node.name === 'TabsList'
 
 /**
  * Nodes whose value is code (imports, `{...}` expressions) or markup, not text of the page.
@@ -46,30 +45,46 @@ const nonTextTypes = ['mdxjsEsm', 'mdxFlowExpression', 'mdxTextExpression', 'com
  *
  * Each heading gets a unique `id`: the same title twice in a page gets `-1`, `-2`... suffixes on
  * its 2nd, 3rd occurrence (as GitHub does).
+ *
+ * A heading's `parent` is the closest previous heading with a lower level (as `withDepth`). A
+ * heading in a component is the parent of deeper headings in that component only: after the
+ * component, the headings before it are parents again.
  */
 export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
   return () => (root: Node) => {
-    const previous: Record<number, DocToC> = {}
-    const slugCounts = new Map<string, number>()
     const items = new Map<Node, DocToC>()
 
+    // The ids taken, each with the number of times it was asked for again (github-slugger's
+    // algorithm): "Foo", "Foo", "Foo 1" give `foo`, `foo-1`, `foo-1-1`
+    const occurrences = new Map<string, number>()
+
     const uniqueId = (slug: string) => {
-      const count = slugCounts.get(slug) ?? 0
-      slugCounts.set(slug, count + 1)
-      return count === 0 ? slug : `${slug}-${count}`
+      let id = slug
+      while (occurrences.has(id)) {
+        const count = (occurrences.get(slug) ?? 0) + 1
+        occurrences.set(slug, count)
+        id = `${slug}-${count}`
+      }
+      occurrences.set(id, 0)
+      return id
     }
 
     //
     // Every heading of the page, in document order
     //
 
-    const visitHeadings = (node: Node) => {
+    // `ancestors`: the headings the next one can be nested in, outermost first
+    const visitHeadings = (node: Node, ancestors: DocToC[]) => {
       if (isHeading(node)) {
         const level = parseInt(node.tagName[1]) - 1
 
         const title = toString(node)
         const id = uniqueId(slugify(title))
         node.properties.id = id
+
+        while (ancestors.length > 0 && ancestors[ancestors.length - 1].level >= level) {
+          ancestors.pop()
+        }
 
         const item: DocToC = {
           id,
@@ -78,17 +93,19 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
           url: `${url}#${id}`,
           title,
           content: '',
-          parent: previous[level - 2] ?? null,
+          parent: ancestors[ancestors.length - 1] ?? null,
         }
-        previous[level - 1] = item
+        ancestors.push(item)
 
         target.push(item)
         items.set(node, item)
       }
 
-      node.children?.forEach(visitHeadings)
+      // A component's own copy: the headings in it don't parent the ones after it
+      const childAncestors = node.type === 'mdxJsxFlowElement' ? [...ancestors] : ancestors
+      node.children?.forEach((child) => visitHeadings(child, childAncestors))
     }
-    visitHeadings(root)
+    visitHeadings(root, [])
 
     //
     // Extract content for each heading: the text after it, up to the next heading or the end of

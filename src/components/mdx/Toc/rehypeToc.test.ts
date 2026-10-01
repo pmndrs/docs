@@ -67,6 +67,30 @@ describe('rehypeToc', () => {
     expect(ids).toEqual(['constructor', 'installation', 'installation-1', 'installation-2'])
   })
 
+  it('never suffixes an id into one a title already gives', () => {
+    const ids = (html: string) => toc(html).map(({ id }) => id)
+
+    expect(ids('<h2>Foo</h2><h2>Foo</h2><h2>Foo 1</h2>')).toEqual(['foo', 'foo-1', 'foo-1-1'])
+    expect(ids('<h2>Foo</h2><h2>Foo 1</h2><h2>Foo</h2>')).toEqual(['foo', 'foo-1', 'foo-2'])
+  })
+
+  it('parents the headings in a component with the ones before it, not the other way round', () => {
+    const tree = root([
+      el('h2', [text('Install')]),
+      jsx('Tabs', [
+        jsx('TabsContent', [el('h3', [text('With React')])]),
+        jsx('TabsContent', [el('h3', [text('With Vue')])]),
+      ]),
+      el('h4', [text('Note')]),
+    ])
+
+    const [install, withReact, withVue, note] = tocOf(tree)
+
+    expect(withReact.parent).toBe(install)
+    expect(withVue.parent).toBe(install)
+    expect(note.parent).toBe(install)
+  })
+
   describe('content', () => {
     const tree = () =>
       root([
@@ -100,14 +124,6 @@ describe('rehypeToc', () => {
 
       expect(usage.content).not.toContain('React')
       expect(usage.content).not.toContain('Vue')
-    })
-
-    it('leaves out the labels of a role="tablist" element', () => {
-      const [heading] = toc(
-        '<h2>Title</h2><div role="tablist"><button>React</button><button>Vue</button></div><p>body</p>',
-      )
-
-      expect(heading.content).toBe('body')
     })
 
     it('keeps the words of consecutive components apart', () => {
