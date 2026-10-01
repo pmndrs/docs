@@ -53,6 +53,25 @@ const basePath = process.env.BASE_PATH || ''
 const distDir = process.env.DIST_DIR || undefined
 const output = process.env.OUTPUT || undefined
 
+/**
+ * Each page's markdown at the page's own URL plus `.md`, e.g. `/getting-started/introduction.md`.
+ *
+ * It is served by `src/app/md/[...slug]/route.ts`, under `/md` because a route handler cannot
+ * sit beside `[...slug]/page.tsx`. A default (`afterFiles`) rewrite is checked before dynamic
+ * routes, so the `[...slug]` catch-all never sees these paths.
+ *
+ * Server only: a static export has no rewrites (Next warns about them), and `next-build.sh` and
+ * the CLI move the exported files to the same URLs instead.
+ */
+async function rewrites() {
+  return [
+    {
+      source: '/:path+.md',
+      destination: '/md/:path+.md',
+    },
+  ]
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: true,
@@ -63,8 +82,17 @@ const nextConfig = {
   basePath,
   distDir,
   output,
+  rewrites: output === 'export' ? undefined : rewrites,
   async redirects() {
     return [
+      // Where the markdown of a page was first published. Redirects only apply to the request
+      // as it comes in, never to the destination of a rewrite, so this does not loop with the
+      // rewrite above, which still serves the markdown from `/md`.
+      {
+        source: '/md/:path+.md',
+        destination: '/:path+.md',
+        permanent: true,
+      },
       {
         source: '/home',
         destination: '/',

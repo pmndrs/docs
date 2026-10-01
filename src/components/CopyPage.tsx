@@ -56,7 +56,7 @@ async function copyMarkdown(markdownUrl: string) {
 /**
  * The page actions of a doc header: "Copy Page", and a menu to read the same markdown elsewhere.
  *
- * @param markdownUrl - the page as markdown, as a path on this site (`<basePath>/md/<path>.md`)
+ * @param markdownUrl - the page as markdown, as a path on this site (`<basePath>/<path>.md`)
  * @param pageUrl - the page itself, as a path on this site (`<basePath>/<path>`)
  * @param absolutePageUrl - the same, absolute, when the build knows the site's public URL
  * @param libname - the library the docs are about, for the chatbot prompts

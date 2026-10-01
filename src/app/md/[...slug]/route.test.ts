@@ -33,7 +33,7 @@ afterAll(async () => {
 })
 
 function get(slug: string[]) {
-  return GET(new Request(`http://localhost/md/${slug.join('/')}`), {
+  return GET(new Request(`http://localhost/${slug.join('/')}`), {
     params: Promise.resolve({ slug }),
   })
 }
