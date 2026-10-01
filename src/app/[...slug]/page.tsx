@@ -1,4 +1,6 @@
+import { CopyPage } from '@/components/CopyPage'
 import cn from '@/lib/cn'
+import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
 import { getData, getDocs } from '@/utils/docs'
 
 export type Props = {
@@ -35,10 +37,33 @@ export default async function Page({ params }: Props) {
 
   const { doc } = await getData(...slug) // [ 'getting-started', 'introduction' ]
 
+  // Paths on this site, absolute when the build knows its public URL -- which already includes
+  // the base path, as in `llms-full.txt`. The markdown is served by `src/app/md/[...slug]/route.ts`.
+  const { NEXT_PUBLIC_URL, NEXT_PUBLIC_LIBNAME, BASE_PATH } = process.env
+  const markdownUrl = `${BASE_PATH || ''}/md${doc.url}.md`
+  const pageUrl = `${BASE_PATH || ''}${doc.url}`
+  const absolutePageUrl = NEXT_PUBLIC_URL
+    ? `${NEXT_PUBLIC_URL.replace(/\/+$/, '')}${doc.url}`
+    : undefined
+  const command = cliCommand(resolveLibKey({ url: NEXT_PUBLIC_URL, basePath: BASE_PATH }), doc.url)
+
   return (
     <>
       <header className={cn('mb-6 mt-8 border-b', 'border-outline-variant/50')}>
-        <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc.title}</h1>
+        <div className="mb-2 flex items-start gap-4">
+          <h1 className="min-w-0 text-5xl font-bold tracking-tighter">{doc.title}</h1>
+          {/* Whatever the title leaves, but never less than the icon-only buttons: `CopyPage`
+              collapses its label through a container query on this width */}
+          <div className="@container mt-2 flex min-w-16 flex-1 justify-end">
+            <CopyPage
+              markdownUrl={markdownUrl}
+              pageUrl={pageUrl}
+              absolutePageUrl={absolutePageUrl}
+              libname={NEXT_PUBLIC_LIBNAME}
+              command={command}
+            />
+          </div>
+        </div>
         {doc.description && (
           <div className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
             {doc.description}
