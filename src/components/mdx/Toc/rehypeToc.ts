@@ -53,7 +53,7 @@ export const rehypeToc = (target: DocToC[] = [], url: string, page: string) => {
           if (isHeading(sibling)) break // stop at the next heading
 
           content.push(toString(sibling))
-          sibling = root.children[siblingIndex++]
+          sibling = root.children[++siblingIndex]
         }
 
         const item: DocToC = {
