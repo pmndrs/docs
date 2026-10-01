@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.6.0
+
+### Minor Changes
+
+- [#622](https://github.com/pmndrs/docs/pull/622) [`8c6045f`](https://github.com/pmndrs/docs/commit/8c6045f097a325c95c3651f2ce940d9cb3b56f44) Thanks [@abernier](https://github.com/abernier)! - Version label in the sidebar footer (`git describe --tags`), opening a branch switcher to the same page on each branch's deployment when `VERSION_URL_TEMPLATE` is set.
+
 ## 4.5.0
 
 ### Minor Changes
