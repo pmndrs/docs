@@ -3,21 +3,21 @@ import { visit } from 'unist-util-visit'
 
 /**
  * The `title="..."` of a fence's meta, e.g. `lib/utils.ts` for ```` ```ts title="lib/utils.ts" ````.
- * Double or single quotes.
+ * Double or single quotes. After a space, or the `}` of line highlights: `{2}title="x.ts"`.
  */
 export function parseTitle(meta: string | undefined) {
-  const match = meta?.match(/(?:^|\s)title=(?:"([^"]*)"|'([^']*)')/)
+  const match = meta?.match(/(?:^|[\s}])title=(?:"([^"]*)"|'([^']*)')/)
   const title = match?.[1] ?? match?.[2]
   return title || undefined
 }
 
 /**
  * Whether a fence's meta has the `collapsible` flag, e.g. ```` ```css title="globals.css" collapsible ````.
- * Not a word of a quoted value.
+ * Not a word of a quoted value. After a space, or the `}` of line highlights: `{2}collapsible`.
  */
 export function parseCollapsible(meta: string | undefined) {
   const unquoted = meta?.replace(/"[^"]*"|'[^']*'/g, '') ?? ''
-  return /(?:^|\s)collapsible(?:\s|$)/.test(unquoted)
+  return /(?:^|[\s}])collapsible(?:\s|$)/.test(unquoted)
 }
 
 /**

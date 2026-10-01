@@ -119,13 +119,37 @@ export const Collapsible: Story = {
 }
 
 /**
- * Collapsible without a title: "Expand" sits next to the copy button, top right.
+ * Collapsible without a title: a header still holds "Expand" and the copy button, clear of the
+ * first line.
  */
 export const CollapsibleWithoutTitle: Story = {
   args: {
     className: 'language-css',
     collapsible: true,
     children: <code className="language-css">{longCss}</code>,
+  },
+}
+
+/**
+ * Collapsible, but short enough to show whole: a plain block, without fade nor "Expand".
+ */
+export const CollapsibleShort: Story = {
+  args: {
+    className: 'language-css',
+    title: 'src/styles/globals.css',
+    collapsible: true,
+    children: <code className="language-css">{`:root {\n  --radius: 0.625rem;\n}`}</code>,
+  },
+}
+
+/**
+ * Collapsible, short and without a title: the copy button floats top right, as a plain block's.
+ */
+export const CollapsibleShortWithoutTitle: Story = {
+  args: {
+    className: 'language-css',
+    collapsible: true,
+    children: <code className="language-css">{`:root {\n  --radius: 0.625rem;\n}`}</code>,
   },
 }
 

@@ -13,7 +13,17 @@ import {
   type PackageManagerCommands,
 } from '@/utils/packageManagers'
 import { CheckIcon, CopyIcon, SquareTerminalIcon } from 'lucide-react'
-import { ComponentProps, isValidElement, ReactNode, useState } from 'react'
+import {
+  ComponentProps,
+  isValidElement,
+  ReactNode,
+  UIEvent,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react'
+import { flushSync } from 'react-dom'
 import { CodeFileIcon } from './CodeFileIcon'
 
 // Using a fixed color to only have 1 theme for prism. A variable too, for the fade of a collapsed
@@ -27,7 +37,7 @@ const preClassName = 'overflow-x-auto scroll-fade-x no-scrollbar p-(--pad) font-
 
 export type CodeProps = ComponentProps<'pre'> &
   Partial<PackageManagerCommands> & {
-    /** Collapsed to its first lines, with a button to expand it */
+    /** Collapsed to its first lines, with a button to expand it, when longer than them */
     collapsible?: boolean
   }
 
@@ -37,7 +47,7 @@ export type CodeProps = ComponentProps<'pre'> &
  * copy button.
  *
  * `collapsible` (a ```` ```ts collapsible ```` fence's) shows only its first lines, with a button to
- * expand it.
+ * expand it; a block short enough to show whole stays as it is.
  *
  * Given its command in every package manager (`pnpm`, `npm`, `yarn` and `bun`, as
  * `rehypePackageManagers` sets them), it offers them as tabs instead.
@@ -54,15 +64,53 @@ export const Code = ({
   ...props
 }: CodeProps) => {
   const [open, setOpen] = useState(false)
+  const clipId = useId()
+  const clipRef = useRef<HTMLDivElement>(null)
+  const [overflows, setOverflows] = useState(true)
+
+  // Measured closed, clipped to its first lines: whether the code goes past them. Open, it fits
+  // whatever its length, so the last closed measure stands. Before it (on the server, and at
+  // hydration), a `collapsible` block is taken for a long one, as it usually is: a long one does
+  // not move, and only a short one, rarer, loses its fade and buttons once measured.
+  useEffect(() => {
+    const clip = clipRef.current
+    if (!collapsible || !clip || open) return
+
+    const observer = new ResizeObserver(() => {
+      // A pixel of rounding is no overflow
+      setOverflows(clip.scrollHeight > clip.clientHeight + 1)
+    })
+    observer.observe(clip)
+    if (clip.firstElementChild) observer.observe(clip.firstElementChild)
+    return () => observer.disconnect()
+  }, [collapsible, open])
 
   if (pnpm !== undefined && npm !== undefined && yarn !== undefined && bun !== undefined) {
     return <PackageManagerCode commands={{ pnpm, npm, yarn, bun }} className={className} />
   }
 
+  // Collapsible, and long enough to collapse
+  const collapses = collapsible && overflows
+
+  // Find in page scrolls even an `overflow-hidden` box to reveal a match in it (as focus does, or a
+  // selection dragged past its edge): one in the clipped lines opens the block. The match then
+  // moves down by what the box had scrolled, and the page follows it there, so it stays in view.
+  // Not `hidden="until-found"`, the standard for it: that hides the whole box, not its last lines.
+  const handleClipScroll = (event: UIEvent<HTMLDivElement>) => {
+    const clip = event.currentTarget
+    const scrolled = clip.scrollTop
+    if (open || scrolled <= 0) return
+
+    flushSync(() => setOpen(true))
+    clip.scrollTop = 0
+    window.scrollBy({ top: scrolled, behavior: 'instant' })
+  }
+
   const actions = (actionsClassName: string) => (
     <CodeActions
       className={actionsClassName}
-      collapsible={collapsible}
+      collapsible={collapses}
+      controls={clipId}
       open={open}
       getText={() => extractTextFromChildren(children)}
     />
@@ -79,28 +127,53 @@ export const Code = ({
 
   const content = (
     <>
-      {title && (
+      {/* Untitled, a block that collapses still takes the header, for its buttons not to paint
+          over its first line */}
+      {(title || collapses) && (
         <CodeHeader>
-          <CodeFileIcon
-            filename={title}
-            language={className?.match(/(?:^|\s)language-(\S+)/)?.[1]}
-            className="size-4 shrink-0 opacity-70"
-          />
-          <span className="truncate font-mono text-sm opacity-70">{title}</span>
+          {title && (
+            <>
+              <CodeFileIcon
+                filename={title}
+                language={className?.match(/(?:^|\s)language-(\S+)/)?.[1]}
+                className="size-4 shrink-0 opacity-70"
+              />
+              <span className="truncate font-mono text-sm opacity-70">{title}</span>
+            </>
+          )}
           {actions('ml-auto')}
         </CodeHeader>
       )}
       {collapsible ? (
         // Clipped while closed, the `<pre>` still scrolling sideways inside
-        <div className="overflow-hidden group-data-closed/code:max-h-64">{pre}</div>
+        <div
+          ref={clipRef}
+          id={clipId}
+          onScroll={handleClipScroll}
+          className="overflow-hidden group-data-closed/code:max-h-64"
+        >
+          {pre}
+        </div>
       ) : (
         pre
       )}
-      {!title && actions('absolute right-0 top-0 m-4')}
-      {collapsible && (
-        <CollapsibleTrigger className="absolute inset-x-0 bottom-0 flex h-20 items-center justify-center rounded-b-lg bg-linear-to-b from-(--code-background)/70 to-(--code-background) text-sm text-current/70 group-data-open/code:hidden">
-          Expand
-        </CollapsibleTrigger>
+      {!title && !collapses && actions('absolute right-0 top-0 m-4')}
+      {collapses && (
+        // Decorative, for the lines under it to stay selectable and scrollable sideways: only its
+        // button takes the pointer. A shortcut to the header's trigger, the accessible control,
+        // it is no second tab stop.
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-20 items-center justify-center bg-linear-to-b from-(--code-background)/70 to-(--code-background) group-data-open/code:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            tabIndex={-1}
+            aria-hidden="true"
+            onClick={() => setOpen(true)}
+            className="pointer-events-auto h-7 px-2 text-current/70"
+          >
+            Expand
+          </Button>
+        </div>
       )}
     </>
   )
@@ -130,11 +203,14 @@ function CodeHeader({ children }: { children: ReactNode }) {
  */
 function CodeActions({
   collapsible,
+  controls,
   open,
   getText,
   className,
 }: {
   collapsible?: boolean
+  /** The id of what the expand/collapse button clips */
+  controls: string
   open: boolean
   getText: () => string
   className?: string
@@ -144,6 +220,9 @@ function CodeActions({
       {collapsible && (
         <>
           <CollapsibleTrigger
+            // Over Base UI's own, which names a `CollapsibleContent` (this block has none), and only
+            // while open: the clipped code shows either way
+            aria-controls={controls}
             render={
               <Button
                 variant="ghost"

@@ -41,6 +41,11 @@ describe('parseTitle', () => {
     expect(parseTitle('{1,4-6} title="src/app.tsx" showLineNumbers')).toBe('src/app.tsx')
   })
 
+  it('reads it right after line highlights', () => {
+    expect(parseTitle('{2}title="x.ts"')).toBe('x.ts')
+    expect(parseTitle("{1,3-4}title='x.ts' showLineNumbers")).toBe('x.ts')
+  })
+
   it('keeps spaces in the title', () => {
     expect(parseTitle('title="my file.ts"')).toBe('my file.ts')
   })
@@ -58,12 +63,15 @@ describe('parseTitle', () => {
 })
 
 describe('parseCollapsible', () => {
-  it.each(['collapsible', 'title="globals.css" collapsible', '{1} collapsible showLineNumbers'])(
-    'finds the flag in %j',
-    (meta) => {
-      expect(parseCollapsible(meta)).toBe(true)
-    },
-  )
+  it.each([
+    'collapsible',
+    'title="globals.css" collapsible',
+    '{1} collapsible showLineNumbers',
+    '{2}collapsible',
+    '{1,3}collapsible title="x.ts"',
+  ])('finds the flag in %j', (meta) => {
+    expect(parseCollapsible(meta)).toBe(true)
+  })
 
   it.each([undefined, '', 'title="collapsible.ts"', "title='a collapsible b'", 'notcollapsible'])(
     'finds no flag in %j',
@@ -86,6 +94,13 @@ describe('rehypeCode', () => {
     expect(html).toContain('data-title="src/app.tsx"')
     expect(html).toContain('highlight-line')
     expect(html).toContain('line-number')
+  })
+
+  it('reads the title and the flag right after line highlights', async () => {
+    const html = await render('```ts {1}title="x.ts" collapsible\nconst a = 1\nconst b = 2\n```')
+    expect(html).toContain('data-title="x.ts"')
+    expect(html).toContain('data-collapsible="true"')
+    expect(html).toContain('highlight-line')
   })
 
   it('gives <Code> the collapsible flag, with a title or without', async () => {

@@ -119,11 +119,18 @@ describe('compileMdxContent', () => {
       entries,
     })
     const html = renderToString(result.content)
-    // Closed, the frame clips the code, and two triggers expand it: a button and the fade
+    // Closed, the frame clips the code: on the server, a collapsible block is taken for a long one
     expect(html).toMatch(/<div[^>]*data-closed[^>]*>/)
     expect(html).toContain('group-data-closed/code:max-h-64')
-    expect(html.match(/aria-expanded="false"[^>]*>Expand</g)).toHaveLength(2)
-    expect(html).toContain('aria-label="Copy to clipboard"')
+    // The header, title or not, holds the trigger, which controls the clip, and the copy button
+    const header = html.slice(0, html.indexOf('<pre'))
+    const controls = header.match(/aria-controls="([^"]+)"[^>]*aria-expanded="false"[^>]*>Expand</)
+    expect(controls).not.toBeNull()
+    expect(html).toContain(`id="${controls?.[1]}"`)
+    expect(header).toContain('aria-label="Copy to clipboard"')
+    // The fade's button, a pointer shortcut, is no second control
+    expect(html).toMatch(/<button[^>]*tabindex="-1"[^>]*aria-hidden="true"[^>]*>Expand</)
+    expect(html.match(/>Expand</g)).toHaveLength(2)
   })
 
   it('compiles MDX with links', async () => {

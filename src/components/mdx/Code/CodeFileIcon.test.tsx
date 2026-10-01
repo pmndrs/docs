@@ -29,6 +29,11 @@ describe('fileIconName', () => {
     expect(fileIconName('vite.config.foo', 'ts')).toBe('typescript')
   })
 
+  it('reads the language in any case', () => {
+    expect(fileIconName('Dockerfile', 'Bash')).toBe('terminal')
+    expect(fileIconName(undefined, 'TSX')).toBe('react')
+  })
+
   it('knows neither an unknown extension nor an unknown language', () => {
     expect(fileIconName('main.rs', 'rust')).toBeUndefined()
     expect(fileIconName('file.constructor', undefined)).toBeUndefined()

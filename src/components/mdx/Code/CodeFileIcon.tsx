@@ -37,9 +37,10 @@ const fileIcons: Record<string, string> = {
 export function fileIconName(filename: string | undefined, language: string | undefined) {
   const basename = filename?.split('/').pop() ?? ''
   const extension = basename.includes('.') ? basename.split('.').pop()?.toLowerCase() : undefined
+  const lowerLanguage = language?.toLowerCase()
 
   if (extension && Object.hasOwn(fileIcons, extension)) return fileIcons[extension]
-  if (language && Object.hasOwn(fileIcons, language)) return fileIcons[language]
+  if (lowerLanguage && Object.hasOwn(fileIcons, lowerLanguage)) return fileIcons[lowerLanguage]
   return undefined
 }
 
