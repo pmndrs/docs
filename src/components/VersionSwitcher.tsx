@@ -29,10 +29,12 @@ export function VersionSwitcher() {
   // Without git (or with nothing it could tell), there is nothing to show.
   if (!label && !branch) return null
 
+  // Discreet: small and muted, a footnote rather than a menu entry. The color is the button's,
+  // so the switcher's hover still lights it up.
   const lines = (
-    <div className="flex min-w-0 flex-col gap-0.5 leading-none">
-      <span className="truncate font-medium">{label ?? branch}</span>
-      {label && branch && <span className="truncate text-muted-foreground">{branch}</span>}
+    <div className="flex min-w-0 flex-col gap-1 text-xs leading-none">
+      <span className="truncate">{label ?? branch}</span>
+      {label && branch && <span className="truncate opacity-70">{branch}</span>}
     </div>
   )
 
@@ -44,9 +46,8 @@ export function VersionSwitcher() {
         ) : (
           // Same look as the switcher's trigger, but not a control: no hover, no press.
           <SidebarMenuButton
-            size="lg"
             render={<div />}
-            className="cursor-default hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground"
+            className="h-auto cursor-default py-2 text-muted-foreground hover:bg-transparent hover:text-muted-foreground active:bg-transparent active:text-muted-foreground"
           >
             {lines}
           </SidebarMenuButton>
@@ -97,12 +98,12 @@ function BranchCombobox({ children }: { children: ReactNode }) {
     >
       {/* Not the shadcn `ComboboxTrigger`, which appends its own chevron. */}
       <ComboboxPrimitive.Trigger
-        render={<SidebarMenuButton size="lg" />}
+        render={<SidebarMenuButton />}
         aria-label={triggerLabel(versionInfo)}
-        className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+        className="h-auto py-2 text-muted-foreground data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
       >
         {children}
-        <ChevronsUpDownIcon className="ml-auto" />
+        <ChevronsUpDownIcon className="ml-auto size-3.5!" />
       </ComboboxPrimitive.Trigger>
       {/* Above the trigger, which sits at the foot of the sidebar. */}
       <ComboboxContent side="top" align="start" aria-label="Switch branch">
