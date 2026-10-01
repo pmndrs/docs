@@ -29,6 +29,8 @@ const meta = {
           { name: 'warning', hex: '#d29922', blend: true },
           { name: 'caution', hex: '#da3633', blend: true },
           { name: 'storybook', hex: '#ff4785', blend: false },
+          { name: 'npm', hex: '#cb3837', blend: false },
+          { name: 'chromatic', hex: '#fc521f', blend: false },
         ]}
       >
         <Story />
@@ -72,6 +74,8 @@ const colors: BadgeColor[] = [
   'warning',
   'caution',
   'storybook',
+  'npm',
+  'chromatic',
 ]
 
 /**
