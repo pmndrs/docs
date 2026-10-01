@@ -57,6 +57,8 @@ const websiteOptions = [
   new Option('--theme-warning <color>', 'Color of the WARNING alerts').env('THEME_WARNING'),
   new Option('--theme-caution <color>', 'Color of the CAUTION alerts').env('THEME_CAUTION'),
   new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
+  new Option('--theme-npm <color>', 'Color of the npm badges').env('THEME_NPM'),
+  new Option('--theme-chromatic <color>', 'Color of the chromatic badges').env('THEME_CHROMATIC'),
   new Option('--lib-version <version>', 'Version label, instead of `git describe --tags`').env(
     'LIB_VERSION',
   ),

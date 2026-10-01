@@ -182,6 +182,8 @@ jobs:
             --build-env THEME_WARNING="#d29922" \
             --build-env THEME_CAUTION="#da3633" \
             --build-env THEME_STORYBOOK="#ff4785" \
+            --build-env THEME_NPM="#cb3837" \
+            --build-env THEME_CHROMATIC="#fc521f" \
             --build-env CONTRIBUTORS_PAT="${{ secrets.GITHUB_TOKEN }}" \
             --build-env NEXT_PUBLIC_VERSION_LABEL="$NEXT_PUBLIC_VERSION_LABEL" \
             --build-env NEXT_PUBLIC_VERSION_BRANCH="$NEXT_PUBLIC_VERSION_BRANCH" \

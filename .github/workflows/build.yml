@@ -63,6 +63,12 @@ on:
       theme_storybook:
         type: string
         default: '#ff4785'
+      theme_npm:
+        type: string
+        default: '#cb3837'
+      theme_chromatic:
+        type: string
+        default: '#fc521f'
       version:
         type: string
         default: '4'
@@ -133,6 +139,8 @@ jobs:
           THEME_WARNING: '${{ inputs.theme_warning }}'
           THEME_CAUTION: '${{ inputs.theme_caution }}'
           THEME_STORYBOOK: '${{ inputs.theme_storybook }}'
+          THEME_NPM: '${{ inputs.theme_npm }}'
+          THEME_CHROMATIC: '${{ inputs.theme_chromatic }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
           LIB_VERSION: '${{ inputs.lib_version }}'
           TAG_MATCH: '${{ inputs.tag_match }}'

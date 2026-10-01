@@ -19,6 +19,8 @@ export type BadgeColor =
   | 'warning'
   | 'caution'
   | 'storybook'
+  | 'npm'
+  | 'chromatic'
   | (string & {})
 
 /**

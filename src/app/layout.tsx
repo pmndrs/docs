@@ -109,6 +109,8 @@ export default function RootLayout({
   const warning = process.env.THEME_WARNING || '#d29922'
   const caution = process.env.THEME_CAUTION || '#da3633'
   const storybook = process.env.THEME_STORYBOOK || '#ff4785'
+  const npm = process.env.THEME_NPM || '#cb3837'
+  const chromatic = process.env.THEME_CHROMATIC || '#fc521f'
   const scheme = (process.env.THEME_SCHEME || 'tonalSpot') as
     | 'content'
     | 'expressive'
@@ -143,8 +145,10 @@ export default function RootLayout({
             { name: 'important', hex: important, blend: true },
             { name: 'warning', hex: warning, blend: true },
             { name: 'caution', hex: caution, blend: true },
-            // Storybook's brand pink, for its badges: not blended, so it stays recognizable
+            // Brand colors, for their badges: not blended, so they stay recognizable
             { name: 'storybook', hex: storybook, blend: false },
+            { name: 'npm', hex: npm, blend: false },
+            { name: 'chromatic', hex: chromatic, blend: false },
           ]}
         >
           <ThemeProvider attribute="class">{children}</ThemeProvider>
