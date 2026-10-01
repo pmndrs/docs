@@ -6,6 +6,7 @@ import {
   TabsTrigger as UiTabsTrigger,
 } from '@/components/ui/tabs'
 import type { ComponentProps } from 'react'
+import { TabsAnchor } from './TabsAnchor'
 
 //
 // shadcn's Tabs (https://ui.shadcn.com/docs/components/base/tabs), as is: the same parts, the
@@ -31,11 +32,19 @@ type TabsProps = WithStringClassName<Omit<ComponentProps<typeof UiTabs>, 'defaul
  *
  * - `defaultValue`: the `value` of the tab shown first. Without it, no tab is shown in the
  *   HTML, and Base UI only picks the first one once the page's JavaScript runs.
+ *
+ * A `#hash` pointing into a panel not shown, e.g. the anchor of a heading in a `TabsContent`,
+ * opens its tab and scrolls to it: on load, and when the hash changes.
  */
-export function Tabs({ className, ...props }: TabsProps) {
+export function Tabs({ className, children, ...props }: TabsProps) {
   // `.post-container > *` (globals.css) makes this root `display: block` instead of the ui
   // `Tabs`' flex column. Fine: with `gap-0`, block flow stacks the list and panels the same way.
-  return <UiTabs className={cn('my-6 gap-0', className)} {...props} />
+  return (
+    <UiTabs className={cn('my-6 gap-0', className)} {...props}>
+      {children}
+      <TabsAnchor />
+    </UiTabs>
+  )
 }
 
 /**

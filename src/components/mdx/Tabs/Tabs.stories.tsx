@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { Mtb } from 'material-theme-builder/react'
 
 import { Badge } from '../Badge'
-import { p as P } from '../index'
+import { h3 as H3, p as P } from '../index'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs'
 import { allModes } from '../../../../.storybook/modes'
 
@@ -119,5 +119,34 @@ export const ManyTabs: Story = {
         </TabsContent>
       </Tabs>
     </div>
+  ),
+}
+
+/**
+ * A heading in a panel not shown: following a link to its anchor opens its tab, then scrolls to
+ * it. As does loading the page with that `#hash`.
+ */
+export const AnchorInHiddenPanel: Story = {
+  args: { defaultValue: 'react' },
+  render: (args) => (
+    <>
+      <P>
+        <a href="#with-vue">Go to With Vue</a>
+      </P>
+      <Tabs {...args}>
+        <TabsList>
+          <TabsTrigger value="react">React</TabsTrigger>
+          <TabsTrigger value="vue">Vue</TabsTrigger>
+        </TabsList>
+        <TabsContent value="react">
+          <H3 id="with-react">With React</H3>
+          <P>Install the React bindings.</P>
+        </TabsContent>
+        <TabsContent value="vue">
+          <H3 id="with-vue">With Vue</H3>
+          <P>Install the Vue bindings.</P>
+        </TabsContent>
+      </Tabs>
+    </>
   ),
 }
