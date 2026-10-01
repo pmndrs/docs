@@ -112,11 +112,14 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 ### dev
 
+`./dev.sh` runs this, with `PORT` (default `3000`) for the site and `_PORT` (default: a free port) for the MDX server, so several checkouts can run side by side:
+
 ```sh
 $ (
   trap 'kill -9 0' SIGINT
 
-  export _PORT=60141
+  export PORT="${PORT:-3000}"
+  export _PORT="${_PORT:-60141}"
 
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
@@ -144,7 +147,6 @@ $ (
   export THEME_STORYBOOK="#ff4785"
   export CONTRIBUTORS_PAT=
 
-  kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
   pnpm run dev &
@@ -160,13 +162,16 @@ Then go to: http://localhost:3000
 
 ### build
 
+`./start.sh` runs this (same `PORT` / `_PORT`):
+
 ```sh
 $ (
   trap 'kill -9 0' SIGINT
 
   rm -rf out
 
-  export _PORT=60141
+  export PORT="${PORT:-3000}"
+  export _PORT="${_PORT:-60141}"
 
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
@@ -196,10 +201,9 @@ $ (
 
   pnpm run build
 
-  kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
-  npx serve out &
+  npx serve out -p $PORT &
 
   wait
 )

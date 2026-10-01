@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# Static build (`out/`), then the MDX folder served on $_PORT (images resolve against it) + `out/` on $PORT.
+# Dev server: MDX folder served on $_PORT (images resolve against it) + `next dev` on $PORT.
 #
 #   PORT   site port (default: 3000)
 #   _PORT  MDX server port (default: a free port picked at runtime)
 
-# Stop every process started below, with their own children (npx -> serve).
-# Signals go to these pids only, never to a process group, so whoever
-# launched this script is left alone.
+# Stop every process started below, with their own children (npx -> serve,
+# pnpm -> next -> workers). Signals go to these pids only, never to a process
+# group, so whoever launched this script is left alone.
 kill_tree() {
   local pid=$1
   local child
@@ -35,20 +35,16 @@ free_port() {
 export PORT="${PORT:-3000}"
 export _PORT="${_PORT:-$(free_port)}"
 
-rm -rf out
-# Types left by `next dev` reference src/app/api, which the export build moves aside
-rm -rf .next/dev/types
-
 export MDX=docs
 export NEXT_PUBLIC_LIBNAME="Poimandres"
 export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
 export BASE_PATH=
 export DIST_DIR=
-export OUTPUT=export
+export OUTPUT=
 export HOME_REDIRECT=
 export MDX_BASEURL=http://localhost:$_PORT
-export SOURCECODE_BASEURL=
-export EDIT_BASEURL=
+export SOURCECODE_BASEURL="vscode://file$(pwd)"
+export EDIT_BASEURL="vscode://file$(pwd)/docs"
 export NEXT_PUBLIC_URL=
 export ICON=
 export LOGO=gutenberg.jpg
@@ -65,14 +61,11 @@ export THEME_CAUTION="#da3633"
 export THEME_STORYBOOK="#ff4785"
 export CONTRIBUTORS_PAT=
 
-# Kept in the foreground: a stop request is handled once the build is done,
-# so next-build.sh always gets to restore what it moves aside
-pnpm run build || exit 1
-
 npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 pids="$pids $!"
 
-npx serve out -p $PORT --no-port-switching --no-clipboard &
+# `next dev` reads $PORT
+pnpm run dev &
 site=$!
 pids="$pids $site"
 
