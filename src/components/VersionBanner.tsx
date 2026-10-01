@@ -22,20 +22,24 @@ export function VersionBanner({ className }: { className?: string }) {
     : undefined
 
   return (
-    // A polite `status`, not the `alert` default: it is there from the page load, not news to
-    // interrupt the reader with.
-    <Alert role="status" className={className}>
-      <GitBranchIcon />
-      <AlertTitle>
-        You&apos;re viewing the <code>{branch}</code> deployment.
-      </AlertTitle>
-      {productionHref && (
-        <AlertDescription>
-          <a href={productionHref}>
-            View on <code>{productionBranch}</code> →
-          </a>
-        </AlertDescription>
-      )}
-    </Alert>
+    // Wrapped: `.post-container > *` (globals.css) forces `display: block` on the article's
+    // children, which would undo the Alert's grid and push its icon onto a row of its own.
+    <div className={className}>
+      {/* A polite `status`, not the `alert` default: it is there from the page load, not news to
+          interrupt the reader with. */}
+      <Alert role="status">
+        <GitBranchIcon />
+        <AlertTitle>
+          You&apos;re viewing the <code>{branch}</code> deployment.
+        </AlertTitle>
+        {productionHref && (
+          <AlertDescription>
+            <a href={productionHref}>
+              View on <code>{productionBranch}</code> →
+            </a>
+          </AlertDescription>
+        )}
+      </Alert>
+    </div>
   )
 }
