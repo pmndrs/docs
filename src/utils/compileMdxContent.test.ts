@@ -240,3 +240,35 @@ describe('Codesandbox', () => {
     expect(html).toContain('bg-surface-container')
   })
 })
+
+/**
+ * A shell block of npm commands gets a tab per package manager. Rendered without hydration (as
+ * the website's first paint, or the CLI's HTML), it shows the default, pnpm, one.
+ */
+describe('package managers', () => {
+  const render = async (source: string) => {
+    const result = await compileMdxContent(source, {
+      relFilePath: '/test/file.mdx',
+      absoluteFilePath: '/home/user/docs/test/file.mdx',
+      title: 'Test Title',
+      url: '/test/file',
+      tableOfContents: [],
+      entries: [],
+    })
+    return renderToHtml(result.content)
+  }
+
+  it('renders the tabs, showing the pnpm command', async () => {
+    const html = await render('```bash\nnpm install three\n```')
+    expect(html).toContain('role="tablist"')
+    expect(html).toMatch(/<button[^>]*role="tab"[^>]*>pnpm<\/button>/)
+    expect(html).toMatch(/<button[^>]*role="tab"[^>]*>bun<\/button>/)
+    expect(html).toContain('pnpm add three')
+  })
+
+  it('renders other shell blocks as before', async () => {
+    const html = await render('```bash\ncd my-app\n```')
+    expect(html).not.toContain('role="tablist"')
+    expect(html).toContain('code-highlight')
+  })
+})

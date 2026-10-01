@@ -22,6 +22,7 @@ import {
 import { Badge } from '@/components/mdx/Badge'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
+import { rehypePackageManagers } from '@/components/mdx/Code/rehypePackageManagers'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { Details } from '@/components/mdx/Details'
@@ -41,6 +42,7 @@ import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { Backers, Contributors } from '@/components/mdx/People'
 import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
+import { Step, Steps } from '@/components/mdx/Steps'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
@@ -110,6 +112,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
           rehypeSummary,
           rehypeGha,
           rehypeMermaid(),
+          rehypePackageManagers(),
           rehypePrismPlus,
           rehypeCode(),
           rehypeToc(tableOfContents, url, title),
@@ -134,6 +137,8 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         Backers,
         Mermaid,
         Sandpack,
+        Step,
+        Steps,
         Summary,
         Tabs,
         TabsList,

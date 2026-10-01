@@ -1,45 +1,122 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCopied } from '@/hooks/useCopied'
+import { usePackageManager } from '@/hooks/usePackageManager'
 import cn from '@/lib/cn'
-import { ClipboardCheckIcon, ClipboardIcon } from 'lucide-react'
-import { ComponentProps, isValidElement, ReactNode, useEffect, useState } from 'react'
+import {
+  isPackageManager,
+  packageManagers,
+  type PackageManagerCommands,
+} from '@/utils/packageManagers'
+import { CheckIcon, CopyIcon, SquareTerminalIcon } from 'lucide-react'
+import { ComponentProps, isValidElement, ReactNode } from 'react'
 
-export const Code = ({ children, className, ...props }: ComponentProps<'pre'>) => {
-  const [copied, setCopied] = useState(false)
+// Using a fixed color to only have 1 theme for prism
+const codeBackground = 'bg-[oklch(from_var(--md-sys-color-on-primary-fixed)_l_calc(c*0.2)_h)]'
+const codeText = 'text-primary-fixed'
+const codeColors = cn(codeBackground, codeText)
 
-  const handleClick = async () => {
-    const textToCopy = extractTextFromChildren(children)
+export type CodeProps = ComponentProps<'pre'> & Partial<PackageManagerCommands>
 
-    await navigator.clipboard.writeText(textToCopy)
-    setCopied(true)
+/**
+ * A code block. Given its command in every package manager (`pnpm`, `npm`, `yarn` and `bun`, as
+ * `rehypePackageManagers` sets them), it offers them as tabs.
+ */
+export const Code = ({ children, className, pnpm, npm, yarn, bun, ...props }: CodeProps) => {
+  if (pnpm !== undefined && npm !== undefined && yarn !== undefined && bun !== undefined) {
+    return <PackageManagerCode commands={{ pnpm, npm, yarn, bun }} className={className} />
   }
 
-  useEffect(() => {
-    if (!copied) return
-    const int = setTimeout(() => setCopied(false), 2000)
-    return () => clearTimeout(int)
-  }, [copied])
-
+  // The copy button sits next to the `<pre>`, over its background: it takes the code text color
   return (
-    <div className={cn('relative')}>
+    <div className={cn('relative', codeText)}>
       <pre
         {...props}
         className={cn(
           className,
           'my-5 overflow-auto rounded-lg p-(--pad) font-mono text-sm',
-          'bg-[oklch(from_var(--md-sys-color-on-primary-fixed)_l_calc(c*0.2)_h)] text-primary-fixed', // using a fixed color to only have 1 theme for prism
+          codeColors,
         )}
       >
         {children}
       </pre>
-      <button
-        className="absolute right-0 top-0 m-4 flex size-8 items-center justify-center rounded-md text-outline-variant transition-colors hover:text-outline"
-        onClick={handleClick}
-        aria-label="Copy to clipboard"
-      >
-        {copied ? <ClipboardCheckIcon className="size-6" /> : <ClipboardIcon className="size-6" />}
-      </button>
+      <CopyButton
+        className="absolute right-0 top-0 m-4"
+        getText={() => extractTextFromChildren(children)}
+      />
     </div>
+  )
+}
+
+/**
+ * The same command in every package manager, one tab each: the pick is the reader's, for every
+ * command on the page (see `usePackageManager`).
+ *
+ * Not highlighted: the commands are plain text, the same in every tab.
+ */
+function PackageManagerCode({
+  commands,
+  className,
+}: {
+  commands: PackageManagerCommands
+  className?: string
+}) {
+  const [packageManager, setPackageManager] = usePackageManager()
+
+  return (
+    <Tabs
+      value={packageManager}
+      onValueChange={(value) => {
+        if (isPackageManager(value)) setPackageManager(value)
+      }}
+      className={cn('my-5 gap-0 overflow-hidden rounded-lg', codeColors)}
+    >
+      <div className="flex items-center gap-2 border-b px-4 py-2">
+        <SquareTerminalIcon className="size-4 shrink-0" />
+        <TabsList aria-label="Package manager">
+          {packageManagers.map((packageManager) => (
+            <TabsTrigger key={packageManager} value={packageManager}>
+              {packageManager}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <CopyButton className="ml-auto" getText={() => commands[packageManager]} />
+      </div>
+      {packageManagers.map((packageManager) => (
+        <TabsContent key={packageManager} value={packageManager}>
+          <pre className={cn(className, 'overflow-auto p-(--pad) font-mono text-sm')}>
+            <code className={className}>{commands[packageManager]}</code>
+          </pre>
+        </TabsContent>
+      ))}
+    </Tabs>
+  )
+}
+
+function CopyButton({ getText, className }: { getText: () => string; className?: string }) {
+  const [copied, setCopied] = useCopied()
+
+  const handleClick = async () => {
+    try {
+      await navigator.clipboard.writeText(getText())
+      setCopied(true)
+    } catch {
+      // Clipboard unavailable or denied: no check mark
+    }
+  }
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      className={className}
+      onClick={handleClick}
+      aria-label="Copy to clipboard"
+    >
+      {copied ? <CheckIcon /> : <CopyIcon />}
+    </Button>
   )
 }
 

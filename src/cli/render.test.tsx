@@ -21,6 +21,7 @@ test.each([
   ['Code', '```js\nconst a = 1\n```', 'language-js'],
   ['Mermaid', '```mermaid\ngraph TD;\nA-->B;\n```', 'graph TD;'],
   ['Keypoints', '<Keypoints><KeypointsItem>a</KeypointsItem></Keypoints>', 'Keypoints'],
+  ['Steps', '<Steps>\n\n<Step>One</Step>\n\nbody\n\n</Steps>', '[counter-reset:step]'],
   ['Grid', '<Grid cols={2}>\n  <div>a</div>\n</Grid>', 'grid-list'],
   ['Intro', '<Intro>lead</Intro>', 'lead'],
   ['Img', '![a dog](dog.png)', '<img'],
@@ -29,6 +30,17 @@ test.each([
   ['heading anchors', '## Section one', 'id="section-one"'],
 ])('renders %s', async (_name, source, marker) => {
   expect(await render(source)).toContain(marker)
+})
+
+/**
+ * The numbers are styled on the `Steps` wrapper's direct `h3` children: a `Step` wrapped in a
+ * `<p>` would lose its number. Both the flat form and the indented one the docs teach.
+ */
+test.each([
+  ['flat', '<Steps>\n\n<Step>One</Step>\n\nbody\n\n</Steps>'],
+  ['indented', '<Steps>\n\n  <Step>One</Step>\n\n  body\n\n</Steps>'],
+])('renders a %s Step as a direct h3 child of Steps', async (_name, source) => {
+  expect(await render(source)).toMatch(/\[counter-reset:step\][^"]*"><h3[^>]*>One<\/h3>/)
 })
 
 test('renders the title, which the website takes from the layout instead', async () => {
