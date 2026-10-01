@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { Mtb } from 'material-theme-builder/react'
-import { Fragment } from 'react'
+import { Fragment, type CSSProperties } from 'react'
 
 import { Badge, type BadgeColor } from './Badge'
 import { allModes } from '../../../../.storybook/modes'
@@ -17,7 +17,7 @@ const meta = {
   },
   decorators: [
     // The theme the website builds in `src/app/layout.tsx`, with its default colors: the
-    // badge colors are its tokens.
+    // badge colors are its tokens, and its brand colors.
     (Story) => (
       <Mtb
         source="#323e48"
@@ -28,12 +28,19 @@ const meta = {
           { name: 'important', hex: '#8957e5', blend: true },
           { name: 'warning', hex: '#d29922', blend: true },
           { name: 'caution', hex: '#da3633', blend: true },
-          { name: 'storybook', hex: '#ff4785', blend: false },
-          { name: 'npm', hex: '#cb3837', blend: false },
-          { name: 'chromatic', hex: '#fc521f', blend: false },
         ]}
       >
-        <Story />
+        <div
+          style={
+            {
+              '--brand-storybook': '#ff4785',
+              '--brand-npm': '#cb3837',
+              '--brand-chromatic': '#fc521f',
+            } as CSSProperties
+          }
+        >
+          <Story />
+        </div>
       </Mtb>
     ),
   ],

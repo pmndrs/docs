@@ -15,6 +15,11 @@ describe('Badge', () => {
     expect(html).toContain('--secondary-foreground:var(--md-sys-color-on-tip, ')
   })
 
+  it('points the secondary colors at a brand color as is, with white on it', () => {
+    const html = renderToStaticMarkup(<Badge color="npm">npm</Badge>)
+    expect(html).toContain('style="--secondary:var(--brand-npm);--secondary-foreground:white"')
+  })
+
   it('falls back to the secondary look for a role the theme does not have', () => {
     const html = renderToStaticMarkup(<Badge color="brand-new">new</Badge>)
     expect(html).toContain(
