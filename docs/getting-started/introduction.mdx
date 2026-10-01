@@ -114,7 +114,8 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 </details>
 
-### Version switcher
+<details id="version-switcher">
+  <summary>`VERSION_*`, `LIB_VERSION`, `TAG_MATCH`</summary>
 
 The sidebar footer shows the version being browsed: `git describe --tags` of the checkout, eg. `v10.7.9` on a tagged commit, `v10.7.9-3-ga1b2c3d` after it, or `<branch>@<shortsha>` without tags. `LIB_VERSION` overrides it. In a monorepo, or with a moving major tag (`v4`), narrow the tags with `TAG_MATCH`:
 
@@ -145,6 +146,8 @@ The branches are the remote's (`git ls-remote --heads origin`), minus `dependabo
 >
 > - The per-branch URLs are yours to create: the switcher only links to them. Vercel's Git integration, Cloudflare Pages and Netlify branch deploys create them. Vercel CLI deployments (`vercel deploy`) do not: give each preview its URL with `vercel alias set <deployment-url> <alias>`, as this repo's [`ci.yml`](https://github.com/pmndrs/docs/blob/main/.github/workflows/ci.yml) does.
 > - Git needs the full history and tags: in GitHub Actions, check out with `fetch-depth: 0` (the [reusable workflow](/github-actions/introduction) does). A build without git simply shows no label.
+
+</details>
 
 ## Usage
 
