@@ -143,6 +143,64 @@ describe('compileMdxContent', () => {
     expect(vuePanel).toBeDefined()
     expect(vuePanel).not.toMatch(hiddenAttribute)
   })
+
+  it('gives the headings in a TabsContent an id and a table of contents entry', async () => {
+    const source = [
+      '## Installation',
+      '',
+      'Pick your framework.',
+      '',
+      '<Tabs defaultValue="react">',
+      '  <TabsList>',
+      '    <TabsTrigger value="react">React</TabsTrigger>',
+      '    <TabsTrigger value="vue">Vue</TabsTrigger>',
+      '  </TabsList>',
+      '  <TabsContent value="react">',
+      '',
+      '    ### With React',
+      '',
+      '    Install the React bindings.',
+      '',
+      '  </TabsContent>',
+      '  <TabsContent value="vue">',
+      '',
+      '    ### With Vue',
+      '',
+      '    Install the Vue bindings.',
+      '',
+      '  </TabsContent>',
+      '</Tabs>',
+      '',
+      'Then import it.',
+    ].join('\n')
+    const toc: any[] = []
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents: toc,
+      entries,
+    })
+    const html = renderToString(result.content)
+    expect(html).toContain('id="with-react"')
+    expect(html).toContain('id="with-vue"')
+    expect(html).not.toContain('#undefined')
+
+    const [installation, withReact, withVue] = toc
+    expect(toc.map(({ id }) => id)).toEqual(['installation', 'with-react', 'with-vue'])
+    expect(withReact.parent).toBe(installation)
+    expect(withVue.parent).toBe(installation)
+    expect(withReact.content).toContain('Install the React bindings.')
+    expect(withReact.content).not.toContain('Vue')
+
+    // The outer heading keeps the text around the Tabs, not the triggers' or the panels'
+    expect(installation.content).toContain('Pick your framework.')
+    expect(installation.content).toContain('Then import it.')
+    expect(installation.content).not.toContain('ReactVue')
+    expect(installation.content).not.toContain('bindings')
+  })
 })
 
 /**
