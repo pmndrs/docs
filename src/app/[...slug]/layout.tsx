@@ -16,6 +16,7 @@ import { DiscordIcon, GitHubIcon } from '@/components/brand-icons'
 import { Toc } from '@/components/mdx/Toc'
 import cn from '@/lib/cn'
 import { getData } from '@/utils/docs'
+import { formatStars, getStars } from '@/utils/github'
 import Link from 'next/link'
 import { DocsContext } from './DocsContext'
 
@@ -34,6 +35,8 @@ export default async function Layoutt({ params, children }: Props) {
   const currentPage = docs[currentPageIndex]
   const previousPage = currentPageIndex > 0 && docs[currentPageIndex - 1]
   const nextPage = currentPageIndex < docs.length - 1 && docs[currentPageIndex + 1]
+
+  const githubStars = process.env.GITHUB ? await getStars(process.env.GITHUB) : undefined
 
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
   const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
@@ -59,17 +62,29 @@ export default async function Layoutt({ params, children }: Props) {
 
       <div className="flex">
         {[
-          { href: process.env.GITHUB, icon: <GitHubIcon size="1em" /> },
-          { href: process.env.DISCORD, icon: <DiscordIcon size="1em" /> },
-        ].map(({ href, icon }, index) => (
+          {
+            href: process.env.GITHUB,
+            label: 'GitHub',
+            icon: <GitHubIcon size="1em" />,
+            count: githubStars !== undefined ? formatStars(githubStars) : undefined,
+          },
+          { href: process.env.DISCORD, label: 'Discord', icon: <DiscordIcon size="1em" /> },
+        ].map(({ href, label, icon, count }, index) => (
           <React.Fragment key={index}>
             {href && (
               <Link
                 href={href}
-                className={cn('hidden size-9 items-center justify-center lg:flex')}
+                aria-label={label}
+                className={cn(
+                  'hidden h-9 min-w-9 items-center justify-center gap-1.5 lg:flex',
+                  count && 'px-2',
+                )}
                 target="_blank"
               >
                 {icon}
+                {count && (
+                  <span className="text-xs text-on-surface-variant tabular-nums">{count}</span>
+                )}
               </Link>
             )}
           </React.Fragment>
