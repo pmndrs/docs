@@ -14,9 +14,30 @@ export function isPackageManager(value: unknown): value is PackageManager {
 type OtherCommands = Omit<PackageManagerCommands, 'npm'>
 
 /**
+ * Chained, piped or redirected commands, and substitutions: the line is more than one npm command.
+ */
+const shellOperators = ['&&', '||', ';', '|', '>', '<', '`', '$(']
+
+function hasShellOperator(line: string) {
+  return shellOperators.some((operator) => line.includes(operator))
+}
+
+/**
+ * The arguments of `npx`, without a leading `-y` / `--yes` (the other package managers do not
+ * prompt) — `null` when another npx option is left, which we do not know how to translate.
+ */
+function npxArgsWithoutYes(args: string): string | null {
+  const rest = args.replace(/^(?:-y|--yes)\s+/, '')
+  if (rest.startsWith('-')) return null
+  return rest
+}
+
+/**
  * One npm command line, in the other package managers — `null` when it is not one we know.
  */
 function convertLine(line: string): OtherCommands | null {
+  if (hasShellOperator(line)) return null
+
   // `npm install` / `npm i`, with or without packages
   const install = line.match(/^npm (?:install|i)(?: (.*))?$/)
   if (install) {
@@ -37,36 +58,41 @@ function convertLine(line: string): OtherCommands | null {
     return { pnpm: `pnpm add ${args}`, yarn: `yarn add ${devArgs}`, bun: `bun add ${devArgs}` }
   }
 
-  // `npx create-foo` (before `npx`, which would match it too)
-  const npxCreate = line.match(/^npx create-(\S.*)$/)
-  if (npxCreate) {
-    const rest = npxCreate[1]
-    return {
-      pnpm: `pnpm create ${rest}`,
-      yarn: `yarn create ${rest}`,
-      bun: `bunx --bun create-${rest}`,
+  // `npx foo` and `npx create-foo`
+  const npx = line.match(/^npx (\S.*)$/)
+  if (npx) {
+    const args = npxArgsWithoutYes(npx[1])
+    if (args === null) return null
+
+    const create = args.match(/^create-(\S.*)$/)
+    if (create) {
+      const rest = create[1]
+      return {
+        pnpm: `pnpm create ${rest}`,
+        yarn: `yarn create ${rest}`,
+        bun: `bunx --bun create-${rest}`,
+      }
     }
+
+    return { pnpm: `pnpm dlx ${args}`, yarn: `yarn dlx ${args}`, bun: `bunx --bun ${args}` }
   }
 
   // `npm create foo`
   const npmCreate = line.match(/^npm create (\S.*)$/)
   if (npmCreate) {
-    const rest = npmCreate[1]
+    // npm needs `--` before the options it passes on to the initializer, the others do not
+    const tokens = npmCreate[1].split(/\s+/)
+    const separator = tokens.indexOf('--')
+    if (separator !== -1) tokens.splice(separator, 1)
+    const rest = tokens.join(' ')
     return { pnpm: `pnpm create ${rest}`, yarn: `yarn create ${rest}`, bun: `bun create ${rest}` }
   }
 
-  // `npx foo`
-  const npx = line.match(/^npx (\S.*)$/)
-  if (npx) {
-    const rest = npx[1]
-    return { pnpm: `pnpm dlx ${rest}`, yarn: `yarn dlx ${rest}`, bun: `bunx --bun ${rest}` }
-  }
-
-  // `npm run foo`
+  // `npm run foo` — bun needs `run`: its own commands (`bun build`, `bun test`…) win over scripts
   const run = line.match(/^npm run (\S.*)$/)
   if (run) {
     const rest = run[1]
-    return { pnpm: `pnpm ${rest}`, yarn: `yarn ${rest}`, bun: `bun ${rest}` }
+    return { pnpm: `pnpm ${rest}`, yarn: `yarn ${rest}`, bun: `bun run ${rest}` }
   }
 
   return null
@@ -82,7 +108,8 @@ function isCommentOrEmpty(line: string) {
  * `pnpm add three`, `yarn add three` and `bun add three`.
  *
  * Empty and `#` comment lines are kept as they are. `null` when the command has a line that is
- * not an npm command we know, or no command at all: the block is then left alone.
+ * not an npm command we know (chained or piped commands included), or no command at all: the block
+ * is then left alone.
  */
 export function toPackageManagers(command: string): PackageManagerCommands | null {
   const lines = command.trimEnd().split('\n')

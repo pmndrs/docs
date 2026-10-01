@@ -14,8 +14,9 @@ import { CheckIcon, CopyIcon, SquareTerminalIcon } from 'lucide-react'
 import { ComponentProps, isValidElement, ReactNode } from 'react'
 
 // Using a fixed color to only have 1 theme for prism
-const codeColors =
-  'bg-[oklch(from_var(--md-sys-color-on-primary-fixed)_l_calc(c*0.2)_h)] text-primary-fixed'
+const codeBackground = 'bg-[oklch(from_var(--md-sys-color-on-primary-fixed)_l_calc(c*0.2)_h)]'
+const codeText = 'text-primary-fixed'
+const codeColors = cn(codeBackground, codeText)
 
 export type CodeProps = ComponentProps<'pre'> & Partial<PackageManagerCommands>
 
@@ -28,8 +29,9 @@ export const Code = ({ children, className, pnpm, npm, yarn, bun, ...props }: Co
     return <PackageManagerCode commands={{ pnpm, npm, yarn, bun }} className={className} />
   }
 
+  // The copy button sits next to the `<pre>`, over its background: it takes the code text color
   return (
-    <div className={cn('relative')}>
+    <div className={cn('relative', codeText)}>
       <pre
         {...props}
         className={cn(
