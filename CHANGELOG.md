@@ -1,5 +1,41 @@
 # @pmndrs/docs
 
+## 4.7.0
+
+### Minor Changes
+
+- [#620](https://github.com/pmndrs/docs/pull/620) [`6713de5`](https://github.com/pmndrs/docs/commit/6713de5fd155d2b8402d5dbd009ba584405af818) Thanks [@abernier](https://github.com/abernier)! - Add `npm` and `chromatic` theme colors (`THEME_NPM`, `#cb3837`, and `THEME_CHROMATIC`, `#fc521f`),
+  for `<Badge color="npm" logo="npm">` and `<Badge color="chromatic" logo="chromatic">`, next to
+  `storybook`.
+
+- [#631](https://github.com/pmndrs/docs/pull/631) [`6158f69`](https://github.com/pmndrs/docs/commit/6158f6956ae38c061d4b7f0189d733260ec442bd) Thanks [@abernier](https://github.com/abernier)! - Add `Steps` and `Step` MDX components: every `<Step>` heading inside `<Steps>` becomes a numbered
+  step, hanging on a vertical line from `md` up, like shadcn/ui's installation steps.
+
+- [#630](https://github.com/pmndrs/docs/pull/630) [`c96a3c4`](https://github.com/pmndrs/docs/commit/c96a3c465e07a14a9423d5019a38f4287f851d7c) Thanks [@abernier](https://github.com/abernier)! - A ` ```bash `, ` ```sh ` or ` ```shell ` block of npm commands (`npm install`, `npm i`, `npx`,
+  `npm create`, `npm run`) now shows a tab per package manager — pnpm, npm, yarn and bun — and copies
+  the command of the active one. The reader's pick is shared by every block and remembered. Other
+  blocks render as before.
+
+- [#635](https://github.com/pmndrs/docs/pull/635) [`f54ddef`](https://github.com/pmndrs/docs/commit/f54ddefecec8a604f2410ff2b8378400c919e35b) Thanks [@abernier](https://github.com/abernier)! - Wide tables and code blocks (package-manager tabs included) now fade their edges while scrolled
+  horizontally, with shadcn's `scroll-fade-x` utility: the fade shows only on the side with more
+  content, and nothing fades when the content fits. Their scrollbar is hidden.
+
+- [#632](https://github.com/pmndrs/docs/pull/632) [`e58ba81`](https://github.com/pmndrs/docs/commit/e58ba81850d49ead9ec1de4ba0047b20946adce5) Thanks [@abernier](https://github.com/abernier)! - Add `Tabs` MDX component
+
+- [#633](https://github.com/pmndrs/docs/pull/633) [`b7daecb`](https://github.com/pmndrs/docs/commit/b7daecb089f4e7a193481739f0560ec1f03ef266) Thanks [@abernier](https://github.com/abernier)! - Headings nested in a component (`TabsContent`, `Details`, `Grid`...) now get an anchor and appear
+  in the table of contents, and a link to one in a hidden tab opens that tab. The same title twice
+  in a page now gets a `-1`, `-2`... suffixed anchor. Search content follows: a nested heading owns
+  the text of its component, and tab labels, imports and expressions are no longer indexed.
+
+### Patch Changes
+
+- [#627](https://github.com/pmndrs/docs/pull/627) [`a0aa2e2`](https://github.com/pmndrs/docs/commit/a0aa2e222565b28d982c91d18017cb98ac6b0912) Thanks [@abernier](https://github.com/abernier)! - `<Badge color="storybook|npm|chromatic">` wears the exact brand color (`THEME_STORYBOOK`,
+  `THEME_NPM`, `THEME_CHROMATIC`), with white text, in light and dark alike, instead of a muted
+  Material tone of it.
+
+- [#629](https://github.com/pmndrs/docs/pull/629) [`57b96d5`](https://github.com/pmndrs/docs/commit/57b96d56c45240afeef81228d8f2654cbdccbf34) Thanks [@abernier](https://github.com/abernier)! - The table of contents no longer counts the first node after each heading twice in that heading's
+  `content` (used for search).
+
 ## 4.6.0
 
 ### Minor Changes
