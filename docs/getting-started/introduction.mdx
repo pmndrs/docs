@@ -42,8 +42,6 @@ $ pnpm install
 | `MDX`\*                               | Path to `*.mdx` folder<br/>NB: can be relative or absolute                                                                                                               | `docs` or `~/code/myproject/documentation`                                                       |
 | `NEXT_PUBLIC_LIBNAME`\*               | Library name                                                                                                                                                             | `React Three Fiber`                                                                              |
 | `NEXT_PUBLIC_LIBNAME_SHORT`           | Library short name                                                                                                                                                       | `r3f`                                                                                            |
-| `NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL` | Text for the ".docs" suffix link inside the header                                                                                                                       | `docs`                                                                                           |
-| `NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF`  | Href for the ".docs" suffix link inside the header                                                                                                                       | `https://docs.pmnd.rs`                                                                          |
 | `BASE_PATH`                           | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                             |
 | `DIST_DIR`                            | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                            |
 | `OUTPUT`                              | Set to `export` for static output                                                                                                                                        | `export`                                                                                         |
@@ -122,8 +120,6 @@ $ (
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
   export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
-  export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs"
-  export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://docs.pmnd.rs"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=
@@ -173,8 +169,6 @@ $ (
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
   export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
-  export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL="docs"
-  export NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF="https://docs.pmnd.rs"
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export

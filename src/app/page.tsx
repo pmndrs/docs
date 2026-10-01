@@ -1,34 +1,15 @@
-import docsIcon from '@/assets/docs-icon.png'
-import dreiIcon from '@/assets/drei-icon.svg'
-import jotaiIcon from '@/assets/jotai-icon.png'
-import ppIcon from '@/assets/pp-icon.svg'
-import r3fIcon from '@/assets/r3f-icon.svg'
-import reactSpringIcon from '@/assets/react-spring-icon.svg'
-import uiKitIcon from '@/assets/uikit-icon.svg'
-import zustandIcon from '@/assets/zustand-icon.svg'
 import { GitHubIcon } from '@/components/brand-icons'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
 import { Badge } from '@/components/ui/badge'
 import { libs } from '@/libs'
+import { libsIcons } from '@/libs-icons'
 import { FileTextIcon } from 'lucide-react'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
-import Image, { type StaticImageData } from 'next/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-
-/** The icons, kept here because they are assets: `@/libs` stays readable outside Next. */
-const icons: Partial<Record<keyof typeof libs, StaticImageData>> = {
-  'react-three-fiber': r3fIcon,
-  'react-spring': reactSpringIcon,
-  drei: dreiIcon,
-  zustand: zustandIcon,
-  jotai: jotaiIcon,
-  'react-postprocessing': ppIcon,
-  uikit: uiKitIcon,
-  docs: docsIcon,
-}
 
 const title = 'Poimandres documentation'
 const description = `Index of documentation for pmndrs/* libraries`
@@ -128,7 +109,7 @@ export default function Page() {
 
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
             {Object.entries(libs).map(([id, data]) => {
-              const icon = icons[id as keyof typeof libs]
+              const icon = libsIcons[id as keyof typeof libs]
 
               return (
                 <div

@@ -24,12 +24,6 @@ const websiteOptions = [
   new Option('--libname-short <name>', 'Short library name, for narrow screens').env(
     'NEXT_PUBLIC_LIBNAME_SHORT',
   ),
-  new Option('--libname-dotsuffix-label <label>', 'Suffix label, e.g. "docs"').env(
-    'NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL',
-  ),
-  new Option('--libname-dotsuffix-href <url>', 'Suffix link').env(
-    'NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF',
-  ),
   new Option('--base-path <path>', 'Base path of the final URL, e.g. "/react-three-fiber"').env(
     'BASE_PATH',
   ),
@@ -198,6 +192,13 @@ A fragment is the compiled MDX and nothing else: no layout, no stylesheet, no sc
   .action(run)
 
 for (const option of websiteOptions) build.addOption(option)
+
+// Deprecated: the header no longer has a ".docs" suffix. Still accepted, so that existing
+// invocations do not fail on an unknown option, but hidden from --help, and read by nothing.
+build.addOption(
+  new Option('--libname-dotsuffix-label <label>', 'Deprecated and ignored').hideHelp(),
+)
+build.addOption(new Option('--libname-dotsuffix-href <url>', 'Deprecated and ignored').hideHelp())
 
 //
 // browse & search -- the published documentation, rather than a folder of MDX

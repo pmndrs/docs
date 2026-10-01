@@ -1,9 +1,9 @@
 /**
  * The pmndrs libraries this site indexes.
  *
- * Deliberately free of Next imports -- the icons live in `src/app/page.tsx`, next to the
- * `<Image>` that renders them. Everything that is not a browser reads this module: the MCP
- * route, the `browse` CLI, a script, a test.
+ * Deliberately free of Next imports -- the icons live in `src/libs-icons.ts`, imported the Next
+ * way. Everything that is not a browser reads this module: the MCP route, the `browse` CLI, a
+ * script, a test.
  */
 
 export interface Library {
@@ -17,6 +17,8 @@ export interface Library {
   // generator. Only these libraries can be served over MCP -- see
   // `src/app/api/[transport]/route.ts`. Flip it on once a site ships its dump.
   llms_full?: boolean
+  // Whether the docs site is built with this generator: listed in the header's libraries menu.
+  pmndrs_docs?: boolean
 }
 
 export const libs = {
@@ -26,6 +28,7 @@ export const libs = {
     github: 'https://github.com/pmndrs/react-three-fiber',
     description: 'React-three-fiber is a React renderer for three.js',
     llms_full: true,
+    pmndrs_docs: true,
   },
   'react-spring': {
     title: 'React Spring',
@@ -40,6 +43,7 @@ export const libs = {
     description:
       'Drei is a growing collection of useful helpers and abstractions for react-three-fiber',
     llms_full: true,
+    pmndrs_docs: true,
   },
   zustand: {
     title: 'Zustand',
@@ -48,6 +52,7 @@ export const libs = {
     description:
       'Zustand is a small, fast and scalable bearbones state-management solution, it has a comfy api based on hooks',
     llms_full: true,
+    pmndrs_docs: true,
   },
   jotai: {
     title: 'Jotai',
@@ -68,6 +73,7 @@ export const libs = {
     description:
       '@react-three/a11y brings accessibility to webGL with easy-to-use react-three-fiber components',
     llms_full: true,
+    pmndrs_docs: true,
   },
   'react-postprocessing': {
     title: 'React Postprocessing',
@@ -75,18 +81,21 @@ export const libs = {
     github: 'https://github.com/pmndrs/react-postprocessing',
     description: 'React Postprocessing is a postprocessing wrapper for @react-three/fiber',
     llms_full: true,
+    pmndrs_docs: true,
   },
   uikit: {
     title: 'uikit',
     docs_url: 'https://pmndrs.github.io/uikit/docs',
     github: 'https://github.com/pmndrs/uikit',
     description: 'uikit brings user interfaces to @react-three/fiber',
+    pmndrs_docs: true,
   },
   xr: {
     title: 'xr',
     docs_url: 'https://pmndrs.github.io/xr/docs',
     github: 'https://github.com/pmndrs/xr',
     description: 'VR/AR for @react-three/fiber',
+    pmndrs_docs: true,
   },
   docs: {
     title: 'Docs',
@@ -94,24 +103,51 @@ export const libs = {
     github: 'https://github.com/pmndrs/docs',
     description: 'Documentation generator for `pmndrs/*`',
     llms_full: true,
+    pmndrs_docs: true,
   },
   prai: {
     title: 'prai',
     docs_url: 'https://pmndrs.github.io/prai',
     github: 'https://github.com/pmndrs/prai',
     description: 'JS Framework for building step-by-step LLM instructions`',
+    pmndrs_docs: true,
   },
   viverse: {
     title: 'viverse',
     docs_url: 'https://pmndrs.github.io/viverse',
     github: 'https://github.com/pmndrs/viverse',
     description: 'Toolkit for building Three.js and React Three Fiber Apps for VIVERSE and beyond.',
+    pmndrs_docs: true,
   },
   leva: {
     title: 'leva',
     docs_url: 'https://pmndrs.github.io/leva',
     github: 'https://github.com/pmndrs/leva',
     description: 'React-first components GUI',
+    pmndrs_docs: true,
+  },
+  'react-three-jolt': {
+    title: 'React Three Jolt',
+    docs_url: 'https://pmndrs.github.io/react-three-jolt',
+    github: 'https://github.com/pmndrs/react-three-jolt',
+    description: 'Jolt physics in React',
+    llms_full: true,
+    pmndrs_docs: true,
+  },
+  sky: {
+    title: 'Sky',
+    docs_url: 'https://pmndrs.github.io/sky',
+    github: 'https://github.com/pmndrs/sky',
+    description: 'Full WebGPU sky system based on the Unreal Engine sky by Sébastien Hillaire',
+    llms_full: true,
+    pmndrs_docs: true,
+  },
+  timeline: {
+    title: 'timeline',
+    docs_url: 'https://pmndrs.github.io/timeline',
+    github: 'https://github.com/pmndrs/timeline',
+    description: 'Write composable 3D behaviors like a story.',
+    pmndrs_docs: true,
   },
 } as const satisfies Record<string, Library>
 
