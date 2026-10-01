@@ -21,6 +21,7 @@ test.each([
   ['Code', '```js\nconst a = 1\n```', 'language-js'],
   ['Mermaid', '```mermaid\ngraph TD;\nA-->B;\n```', 'graph TD;'],
   ['Keypoints', '<Keypoints><KeypointsItem>a</KeypointsItem></Keypoints>', 'Keypoints'],
+  ['Steps', '<Steps>\n\n<Step>One</Step>\n\nbody\n\n</Steps>', '[counter-reset:step]'],
   ['Grid', '<Grid cols={2}>\n  <div>a</div>\n</Grid>', 'grid-list'],
   ['Intro', '<Intro>lead</Intro>', 'lead'],
   ['Img', '![a dog](dog.png)', '<img'],
