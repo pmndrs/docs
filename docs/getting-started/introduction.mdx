@@ -19,22 +19,35 @@ nav: 0
 
 ## INSTALL
 
-Pre-requisites:
+<Steps>
 
-- Install [nvm](https://github.com/nvm-sh/nvm), then:
+  <Step>Clone the repository</Step>
+
+  ```sh
+  $ git clone https://github.com/pmndrs/docs.git
+  $ cd docs
+  ```
+
+  <Step>Use the right Node version</Step>
+
+  With [nvm](https://github.com/nvm-sh/nvm), which reads the repository's `.nvmrc`:
+
   ```sh
   $ nvm install
   $ nvm use
   $ node -v # make sure your version satisfies package.json#engines.node
   ```
+
   nb: if you want this node version to be your default nvm's one:
   `nvm alias default node`
 
-```sh
-$ git clone https://github.com/pmndrs/docs.git
-$ cd docs
-$ pnpm install
-```
+  <Step>Install the dependencies</Step>
+
+  ```sh
+  $ pnpm install
+  ```
+
+</Steps>
 
 ## Configuration
 
