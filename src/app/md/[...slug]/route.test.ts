@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { generateStaticParams, GET } from './route'
+import { dynamicParams, generateStaticParams, GET } from './route'
 
 let root: string
 let previousMDX: string | undefined
@@ -42,6 +42,13 @@ describe('generateStaticParams', () => {
   it('lists every page, with the .md suffix on its last segment', async () => {
     const params = await generateStaticParams()
     expect(params).toEqual([{ slug: ['getting-started', 'introduction.md'] }, { slug: ['faq.md'] }])
+  })
+})
+
+describe('dynamicParams', () => {
+  it('is false, so Next 404s on any path generateStaticParams did not list', () => {
+    // At runtime on Vercel `MDX` is unset, and GET would throw a 500 before it could 404
+    expect(dynamicParams).toBe(false)
   })
 })
 

@@ -576,4 +576,20 @@ Content with &lt;special&gt; characters &amp; symbols.
       expect(body).not.toContain('"text":""')
     })
   })
+
+  describe('SSE transport', () => {
+    it('answers /api/sse with a 404 instead of hanging', async () => {
+      // Regression: with SSE enabled, mcp-handler reaches for Redis on this endpoint,
+      // throws for want of a URL, and never ends the response -- in production the
+      // function ran until Vercel killed it. Here this test would hit its timeout.
+      const { GET } = await import('./route')
+      const response = await GET(
+        new Request('https://docs.pmnd.rs/api/sse', {
+          headers: { Accept: 'text/event-stream' },
+        }),
+      )
+
+      expect(response.status).toBe(404)
+    })
+  })
 })
