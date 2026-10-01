@@ -42,6 +42,7 @@ import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { Backers, Contributors } from '@/components/mdx/People'
 import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
+import { Step, Steps } from '@/components/mdx/Steps'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
@@ -135,6 +136,8 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         Backers,
         Mermaid,
         Sandpack,
+        Step,
+        Steps,
         Summary,
         h1,
         h2,

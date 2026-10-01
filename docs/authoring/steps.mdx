@@ -1,0 +1,82 @@
+---
+title: "`Steps`"
+description: Numbered steps, one per `Step` heading
+sourcecode: docs/authoring/steps.mdx
+nav: 16
+---
+
+<Intro>
+  Numbers a sequence of steps, like an installation guide.
+</Intro>
+
+Every `Step` inside `Steps` is the heading of a new step, numbered automatically; whatever follows it (paragraphs, code blocks…) is the content of that step. Unlike a `###`, a `Step` has no anchor, and no entry in the table of contents.
+
+````md
+<Steps>
+
+  <Step>Install the dependencies</Step>
+
+  ```sh
+  npm install three @react-three/fiber
+  ```
+
+  <Step>Create a scene</Step>
+
+  Render a `Canvas`, with a mesh in it:
+
+  ```tsx
+  import { Canvas } from '@react-three/fiber'
+
+  export default function App() {
+    return (
+      <Canvas>
+        <mesh>
+          <boxGeometry />
+          <meshNormalMaterial />
+        </mesh>
+      </Canvas>
+    )
+  }
+  ```
+
+  <Step>Run it</Step>
+
+  That's it: start your dev server.
+
+</Steps>
+````
+
+result:
+
+<Steps>
+
+  <Step>Install the dependencies</Step>
+
+  ```sh
+  npm install three @react-three/fiber
+  ```
+
+  <Step>Create a scene</Step>
+
+  Render a `Canvas`, with a mesh in it:
+
+  ```tsx
+  import { Canvas } from '@react-three/fiber'
+
+  export default function App() {
+    return (
+      <Canvas>
+        <mesh>
+          <boxGeometry />
+          <meshNormalMaterial />
+        </mesh>
+      </Canvas>
+    )
+  }
+  ```
+
+  <Step>Run it</Step>
+
+  That's it: start your dev server.
+
+</Steps>
