@@ -32,6 +32,17 @@ test.each([
   expect(await render(source)).toContain(marker)
 })
 
+/**
+ * The numbers are styled on the `Steps` wrapper's direct `h3` children: a `Step` wrapped in a
+ * `<p>` would lose its number. Both the flat form and the indented one the docs teach.
+ */
+test.each([
+  ['flat', '<Steps>\n\n<Step>One</Step>\n\nbody\n\n</Steps>'],
+  ['indented', '<Steps>\n\n  <Step>One</Step>\n\n  body\n\n</Steps>'],
+])('renders a %s Step as a direct h3 child of Steps', async (_name, source) => {
+  expect(await render(source)).toMatch(/\[counter-reset:step\][^"]*"><h3[^>]*>One<\/h3>/)
+})
+
 test('renders the title, which the website takes from the layout instead', async () => {
   expect(await render('# In the body')).toMatch(/<h1[^>]*>In the body<\/h1>/)
   expect(await render('---\ntitle: From frontmatter\n---\n\nbody')).toMatch(
