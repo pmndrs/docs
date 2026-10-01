@@ -1,5 +1,19 @@
 # @pmndrs/docs
 
+## 4.8.0
+
+### Minor Changes
+
+- [#637](https://github.com/pmndrs/docs/pull/637) [`bea34bb`](https://github.com/pmndrs/docs/commit/bea34bb7227e971adae554dd52a281fa238eb454) Thanks [@abernier](https://github.com/abernier)! - A code block takes a file name, as ` ```ts title="lib/utils.ts" `: a header above the code shows
+  it, with the icon of its file type (TypeScript, React, JavaScript, CSS, JSON, YAML, HTML, Markdown,
+  MDX, shell) and the copy button, like the shadcn/ui docs.
+
+  A long one can be `collapsible` (` ```css title="globals.css" collapsible `, with or without a
+  title): it shows its first lines under a fade, with an "Expand" button next to the copy one, and
+  the fade itself to click.
+
+  Blocks without either render as before.
+
 ## 4.7.0
 
 ### Minor Changes
