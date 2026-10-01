@@ -24,8 +24,6 @@ jobs:
       mdx: 'docs'
       libname: 'Poimandres'
       libname_short: 'pmndrs'
-      libname_dotsuffix_label: 'docs'
-      libname_dotsuffix_href: 'https://pmnd.rs'
       home_redirect: '/getting-started/introduction'
       icon: '🖨️'
       logo: 'gutenberg.jpg'

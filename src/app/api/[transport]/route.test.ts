@@ -204,14 +204,16 @@ describe('MCP Route Handler', () => {
         'a11y',
         'react-postprocessing',
         'docs',
+        'react-three-jolt',
+        'sky',
       ])
     })
 
     it('should exclude pmndrs.github.io libraries that publish no llms-full.txt', async () => {
       const { libs } = await import('@/libs')
 
-      // Regression: these are hosted on pmndrs.github.io but are not built with this
-      // generator, so `${docs_url}/llms-full.txt` 404s. Selecting on the host alone
+      // Regression: these are hosted on pmndrs.github.io but are not flagged as shipping
+      // `${docs_url}/llms-full.txt` (missing, or not vetted yet). Selecting on the host alone
       // used to expose them with a silently empty index.
       for (const libname of ['uikit', 'xr', 'prai', 'viverse', 'leva'] as const) {
         const lib = libs[libname]

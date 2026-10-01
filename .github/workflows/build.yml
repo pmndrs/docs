@@ -12,12 +12,14 @@ on:
         type: string
       libname_short:
         type: string
+      # Deprecated: the header no longer has a ".docs" suffix. Still declared so that existing
+      # callers passing them do not fail, but ignored.
       libname_dotsuffix_label:
         type: string
-        default: 'docs'
+        description: 'Deprecated and ignored: the header no longer has a ".docs" suffix.'
       libname_dotsuffix_href:
         type: string
-        default: 'https://docs.pmnd.rs'
+        description: 'Deprecated and ignored: the header no longer has a ".docs" suffix.'
       home_redirect:
         required: true
         type: string
@@ -86,8 +88,6 @@ jobs:
         env:
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
-          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
-          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
