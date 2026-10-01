@@ -29,15 +29,15 @@ export const Code = ({ children, className, pnpm, npm, yarn, bun, ...props }: Co
     return <PackageManagerCode commands={{ pnpm, npm, yarn, bun }} className={className} />
   }
 
-  // The copy button sits next to the `<pre>`, over its background: it takes the code text color
+  // The frame (background, radius, margin) sits on the wrapper, not on the `<pre>`: the scroll fade
+  // masks the scroller and everything it paints. The copy button, a sibling, stays unmasked.
   return (
-    <div className={cn('relative', codeText)}>
+    <div className={cn('relative my-5 overflow-hidden rounded-lg', codeColors)}>
       <pre
         {...props}
         className={cn(
           className,
-          'my-5 overflow-auto rounded-lg p-(--pad) font-mono text-sm',
-          codeColors,
+          'overflow-x-auto scroll-fade-x no-scrollbar p-(--pad) font-mono text-sm',
         )}
       >
         {children}
@@ -86,7 +86,12 @@ function PackageManagerCode({
       </div>
       {packageManagers.map((packageManager) => (
         <TabsContent key={packageManager} value={packageManager}>
-          <pre className={cn(className, 'overflow-auto p-(--pad) font-mono text-sm')}>
+          <pre
+            className={cn(
+              className,
+              'overflow-x-auto scroll-fade-x no-scrollbar p-(--pad) font-mono text-sm',
+            )}
+          >
             <code className={className}>{commands[packageManager]}</code>
           </pre>
         </TabsContent>
