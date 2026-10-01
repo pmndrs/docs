@@ -6,7 +6,7 @@ import { brandIcons } from './icons'
 /**
  * A color role of the theme `<Mtb>` builds (see `src/app/layout.tsx`): its system roles, or
  * one of the custom colors the layout passes it. Any other custom color given to `<Mtb>`
- * works too, with no change here.
+ * works too, with no change here. Or a brand color, one of `brandColors`.
  */
 export type BadgeColor =
   | 'primary'
@@ -24,15 +24,31 @@ export type BadgeColor =
   | (string & {})
 
 /**
+ * The brand colors the layout exposes as is, `--brand-<color>` (see `src/app/layout.tsx`): a
+ * Material tone of them would be a muted pink, not the brand.
+ */
+const brandColors: BadgeColor[] = ['storybook', 'npm', 'chromatic']
+
+/**
  * The badge is shadcn's `secondary` variant, whose colors are the `--secondary` and
  * `--secondary-foreground` variables — `secondary-container` and `on-secondary-container`
  * once `material-theme-builder/shadcn.css` maps them. A color re-points them, on the badge
  * only, at the main pair of a role, `<role>` and `on-<role>`: the variant's background, text
  * and link hover follow, and a role needs no class of its own. The main pair, not the
- * container one: every role's container is a pale tone in light mode, and `storybook` would
- * read as `caution`. A role the theme does not have falls back to the uncolored look.
+ * container one: every role's container is a pale tone in light mode, the roles hard to tell
+ * apart. A role the theme does not have falls back to the uncolored look.
+ *
+ * A brand color re-points them at the brand color, with white on it, in light and dark alike,
+ * as the brands and shields.io have it.
  */
 function colorVars(color: BadgeColor) {
+  if (brandColors.includes(color)) {
+    return {
+      '--secondary': `var(--brand-${color})`,
+      '--secondary-foreground': 'white',
+    } as CSSProperties
+  }
+
   return {
     '--secondary': `var(--md-sys-color-${color}, var(--md-sys-color-secondary-container))`,
     '--secondary-foreground': `var(--md-sys-color-on-${color}, var(--md-sys-color-on-secondary-container))`,

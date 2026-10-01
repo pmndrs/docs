@@ -134,7 +134,18 @@ export default function RootLayout({
         <link rel="alternate" type="text/plain" href={`${basePath}/llms-full.txt`} />
         <SandpackCSS />
       </head>
-      <body className="wrap-break-word bg-surface text-on-surface">
+      <body
+        className="wrap-break-word bg-surface text-on-surface"
+        // Brand colors, for their badges: as is, in light and dark alike — not given to `<Mtb>`,
+        // whose tones of them are muted pinks, not the brand
+        style={
+          {
+            '--brand-storybook': storybook,
+            '--brand-npm': npm,
+            '--brand-chromatic': chromatic,
+          } as React.CSSProperties
+        }
+      >
         <Mtb
           source={primary}
           scheme={scheme}
@@ -145,10 +156,6 @@ export default function RootLayout({
             { name: 'important', hex: important, blend: true },
             { name: 'warning', hex: warning, blend: true },
             { name: 'caution', hex: caution, blend: true },
-            // Brand colors, for their badges: not blended, so they stay recognizable
-            { name: 'storybook', hex: storybook, blend: false },
-            { name: 'npm', hex: npm, blend: false },
-            { name: 'chromatic', hex: chromatic, blend: false },
           ]}
         >
           <ThemeProvider attribute="class">{children}</ThemeProvider>
