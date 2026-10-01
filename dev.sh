@@ -1,39 +1,9 @@
-#!/usr/bin/env bash
-#
-# Dev server: MDX folder served on $_PORT (images resolve against it) + `next dev` on $PORT.
-#
-#   PORT   site port (default: 3000)
-#   _PORT  MDX server port (default: a free port picked at runtime)
+#!/bin/sh
 
-# Stop every process started below, with their own children (npx -> serve,
-# pnpm -> next -> workers). Signals go to these pids only, never to a process
-# group, so whoever launched this script is left alone.
-kill_tree() {
-  local pid=$1
-  local child
-  for child in $(pgrep -P "$pid"); do
-    kill_tree "$child"
-  done
-  kill -TERM "$pid" 2>/dev/null
-}
-pids=""
-cleanup() {
-  trap - INT TERM
-  for pid in $pids; do
-    kill_tree "$pid"
-  done
-  wait
-}
-# 130/143: the usual exit codes for "stopped by SIGINT/SIGTERM"
-trap 'cleanup; exit 130' INT
-trap 'cleanup; exit 143' TERM
+trap 'kill -9 0' SIGINT
 
-free_port() {
-  node -e 'const s = require("net").createServer(); s.listen(0, () => { console.log(s.address().port); s.close() })'
-}
-
-export PORT="${PORT:-3000}"
-export _PORT="${_PORT:-$(free_port)}"
+export PORT=${PORT:-3000}
+export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
 
 export MDX=docs
 export NEXT_PUBLIC_LIBNAME="Poimandres"
@@ -62,15 +32,7 @@ export THEME_STORYBOOK="#ff4785"
 export CONTRIBUTORS_PAT=
 
 npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-pids="$pids $!"
 
-# `next dev` reads $PORT
 pnpm run dev &
-site=$!
-pids="$pids $site"
 
-# If the site server stops on its own, take the MDX server down with it
-wait $site
-status=$?
-cleanup
-exit $status
+wait
