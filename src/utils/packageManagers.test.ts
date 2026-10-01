@@ -163,6 +163,27 @@ describe('toPackageManagers', () => {
     expect(toPackageManagers('  npm install three')).toBeNull()
   })
 
+  it('keeps `-E` and gives yarn and bun `-E` for `--save-exact`', () => {
+    expect(toPackageManagers('npm install -E three')).toEqual({
+      pnpm: 'pnpm add -E three',
+      npm: 'npm install -E three',
+      yarn: 'yarn add -E three',
+      bun: 'bun add -E three',
+    })
+    expect(toPackageManagers('npm install --save-dev --save-exact three')).toEqual({
+      pnpm: 'pnpm add --save-dev --save-exact three',
+      npm: 'npm install --save-dev --save-exact three',
+      yarn: 'yarn add -D -E three',
+      bun: 'bun add -D -E three',
+    })
+  })
+
+  it('leaves installs with other flags alone', () => {
+    expect(toPackageManagers('npm install --legacy-peer-deps three')).toBeNull()
+    expect(toPackageManagers('npm install --force three')).toBeNull()
+    expect(toPackageManagers('npm install -O three')).toBeNull()
+  })
+
   it('leaves global and flags-only installs alone', () => {
     expect(toPackageManagers('npm install -g @pmndrs/docs')).toBeNull()
     expect(toPackageManagers('npm install --global @pmndrs/docs')).toBeNull()

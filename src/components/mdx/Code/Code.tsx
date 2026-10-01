@@ -99,8 +99,12 @@ function CopyButton({ getText, className }: { getText: () => string; className?:
   const [copied, setCopied] = useCopied()
 
   const handleClick = async () => {
-    await navigator.clipboard.writeText(getText())
-    setCopied(true)
+    try {
+      await navigator.clipboard.writeText(getText())
+      setCopied(true)
+    } catch {
+      // Clipboard unavailable or denied: no check mark
+    }
   }
 
   return (

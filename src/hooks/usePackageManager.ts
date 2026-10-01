@@ -27,19 +27,19 @@ function writeStorage(packageManager: PackageManager) {
   }
 }
 
-function subscribe(listener: () => void) {
-  // Another tab changed it
-  const onStorage = (event: StorageEvent) => {
-    if (event.key !== null && event.key !== STORAGE_KEY) return
-    selected = readStorage()
-    listener()
-  }
+// Another tab changed it: one window listener for every subscriber
+function onStorage(event: StorageEvent) {
+  if (event.key !== null && event.key !== STORAGE_KEY) return
+  selected = readStorage()
+  for (const listener of listeners) listener()
+}
 
+function subscribe(listener: () => void) {
+  if (listeners.size === 0) window.addEventListener('storage', onStorage)
   listeners.add(listener)
-  window.addEventListener('storage', onStorage)
   return () => {
     listeners.delete(listener)
-    window.removeEventListener('storage', onStorage)
+    if (listeners.size === 0) window.removeEventListener('storage', onStorage)
   }
 }
 

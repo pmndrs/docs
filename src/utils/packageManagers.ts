@@ -23,6 +23,17 @@ function hasShellOperator(line: string) {
 }
 
 /**
+ * The `npm install <pkg…>` flags the other package managers know too, with their yarn and bun
+ * spelling (pnpm takes them as they are).
+ */
+const portableInstallFlags = new Map([
+  ['-D', '-D'],
+  ['--save-dev', '-D'],
+  ['-E', '-E'],
+  ['--save-exact', '-E'],
+])
+
+/**
  * The arguments of `npx`, without a leading `-y` / `--yes` (the other package managers do not
  * prompt) — `null` when another npx option is left, which we do not know how to translate.
  */
@@ -53,9 +64,13 @@ function convertLine(line: string): OtherCommands | null {
     const isGlobal = tokens.some((token) => token === '-g' || token === '--global')
     if (!hasPackage || isGlobal) return null
 
-    // yarn and bun know `-D`, not `--save-dev`
-    const devArgs = tokens.map((token) => (token === '--save-dev' ? '-D' : token)).join(' ')
-    return { pnpm: `pnpm add ${args}`, yarn: `yarn add ${devArgs}`, bun: `bun add ${devArgs}` }
+    // Any other flag (`--legacy-peer-deps`, `--force`, `-O`…) may not exist in the others
+    const flags = tokens.filter((token) => token.startsWith('-'))
+    if (!flags.every((flag) => portableInstallFlags.has(flag))) return null
+
+    // yarn and bun spell them `-D` and `-E` (they have no `--save-dev`)
+    const otherArgs = tokens.map((token) => portableInstallFlags.get(token) ?? token).join(' ')
+    return { pnpm: `pnpm add ${args}`, yarn: `yarn add ${otherArgs}`, bun: `bun add ${otherArgs}` }
   }
 
   // `npx foo` and `npx create-foo`
