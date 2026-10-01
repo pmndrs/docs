@@ -1,5 +1,14 @@
 # @pmndrs/docs
 
+## 4.5.0
+
+### Minor Changes
+
+- [#617](https://github.com/pmndrs/docs/pull/617) [`e3cf4f3`](https://github.com/pmndrs/docs/commit/e3cf4f352358566d112bbd7277e9cc9a1578ffd5) Thanks [@abernier](https://github.com/abernier)! - The header shows the official GitHub and Discord logos, and the GitHub link now carries the repo's
+  star count (`33k`), fetched once at build time from the `GITHUB` repo. It reuses
+  `CONTRIBUTORS_PAT` when set, and the link simply shows without a count if the GitHub API cannot be
+  reached.
+
 ## 4.4.0
 
 ### Minor Changes
