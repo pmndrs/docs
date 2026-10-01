@@ -9,6 +9,8 @@ nav: 4
   Display images using markdown or HTML syntax with automatic dimensions and relative path support.
 </Intro>
 
+## Relative paths
+
 Relative images are supported. Eg, inside your [`MDX`](introduction#configuration:~:text=MDX) folder:
 ```text {2}
 |-- authoring
@@ -33,7 +35,7 @@ result:
 >
 > For others, think about adding them to **prevent layout shift**.
 
----
+## Dimensions
 
 It is also possible to specify only one dimension (other is inferred from intrinsic ratio), eg:
 
@@ -45,7 +47,7 @@ result:
 
 <img src="gutenberg.jpg" height="200" />
 
----
+## Sizing with CSS
 
 Although it is probably better to use CSS for this:
 
