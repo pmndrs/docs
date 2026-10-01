@@ -6,14 +6,12 @@
  *
  * - `{branch}` (or `{branch:generic}`): our own slug, for aliases we create ourselves
  * - `{branch:vercel}`: Vercel's generated branch URL, `https://<project>-git-{branch:vercel}-<scope>.vercel.app`
- * - `{branch:cloudflare}`: Cloudflare Pages' branch alias, `https://{branch:cloudflare}.<project>.pages.dev`
- * - `{branch:netlify}`: Netlify's branch deploy, `https://{branch:netlify}--<site>.netlify.app`
  * - `{branch:raw}`: the branch name as is, URL-encoded (for a path or a query string)
  */
 
-export type BranchPreset = 'generic' | 'vercel' | 'cloudflare' | 'netlify' | 'raw'
+export type BranchPreset = 'generic' | 'vercel' | 'raw'
 
-const PRESETS: readonly BranchPreset[] = ['generic', 'vercel', 'cloudflare', 'netlify', 'raw']
+const PRESETS: readonly BranchPreset[] = ['generic', 'vercel', 'raw']
 
 /**
  * The generic slug: lowercase, every run of characters other than `[a-z0-9]` becomes one `-`,
@@ -80,37 +78,6 @@ export async function vercelBranchLabelPart(
     .slice(0, MAX_LABEL_LENGTH - hashAndSuffix.length)
     .replace(/-+$/, '')
   return `${head.slice(prefix.length)}-${hash6}`
-}
-
-/** Longest Cloudflare Pages branch alias. */
-const CLOUDFLARE_MAX_ALIAS_LENGTH = 28
-
-/**
- * Cloudflare Pages' branch alias (`<alias>.<project>.pages.dev`): lowercase, non-alphanumeric
- * characters become `-` — e.g. `fix/api` → `fix-api`
- * (https://developers.cloudflare.com/pages/configuration/preview-deployments/).
- *
- * The docs stop there. The rest is observed, not documented: the alias is cut to 28 characters
- * and only then loses a trailing `-` (`download-api-add-filter-information` →
- * `download-api-add-filter-info`). Collapsing runs of `-` and trimming a leading one are
- * assumptions, which only matter for unusual branch names.
- */
-export function slugifyBranchCloudflare(branch: string): string {
-  return slugifyBranch(branch).slice(0, CLOUDFLARE_MAX_ALIAS_LENGTH).replace(/-+$/, '')
-}
-
-/**
- * Netlify's branch deploy subdomain (`<branch>--<site>.netlify.app`,
- * https://docs.netlify.com/deploy/deploy-overview/): characters that are not valid in a URL
- * become `-` — e.g. `feature/blog` → `feature-blog`, per Netlify staff on
- * https://answers.netlify.com/t/how-to-do-a-branch-deploy-when-it-is-a-branch-containing-slash/4240.
- *
- * Lowercasing and collapsing runs of `-` are assumptions (hostnames are case-insensitive anyway).
- * Netlify does not truncate: past 63 characters for `<branch>--<site>`, the URL does not work
- * (https://docs.netlify.com/manage/domains/manage-domains/manage-domains-for-branch-deploys/).
- */
-export function slugifyBranchNetlify(branch: string): string {
-  return slugifyBranch(branch)
 }
 
 /** `{branch}` or `{branch:<preset>}`; the preset is captured as is, to report a bad one. */
@@ -183,10 +150,6 @@ async function expandPlaceholder(
       return slugifyBranch(branch)
     case 'raw':
       return encodeURIComponent(branch)
-    case 'cloudflare':
-      return slugifyBranchCloudflare(branch)
-    case 'netlify':
-      return slugifyBranchNetlify(branch)
     case 'vercel': {
       // The hostname label around the placeholder: back to the previous `.` or `/`, forward to the
       // next `.` or `/` — e.g. `drei-git-` and `-pmndrs` in `https://drei-git-{branch:vercel}-pmndrs.vercel.app`

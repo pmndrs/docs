@@ -126,17 +126,15 @@ The sidebar footer shows the version being browsed: `git describe --tags` of the
 
 Set `VERSION_URL_TEMPLATE`, and the label opens a filterable list of the repo's branches: picking one goes to the same page on that branch's deployment. Without it, the label is all there is. Like `NEXT_PUBLIC_URL`, it is the deployment's full public URL, base path included if it has one (eg. `https://previews.example.com/mylib/{branch}`): the page path is appended to it as is. `{branch}` stands for the branch name, slugified the way your host names its branch URLs:
 
-| placeholder           | `feat/Dark_mode` becomes | host                                                        | example template                                      |
-| --------------------- | ------------------------ | ----------------------------------------------------------- | ----------------------------------------------------- |
-| `{branch}`            | `feat-dark-mode`         | URLs you create yourself (lowercase, other runs become `-`) | `https://docs-git-{branch}-pmndrs.vercel.app`         |
-| `{branch:vercel}`     | `feat-darkmode`          | Vercel Git integration                                      | `https://mylib-git-{branch:vercel}-myteam.vercel.app` |
-| `{branch:cloudflare}` | `feat-dark-mode`         | Cloudflare Pages (cut to 28 characters)                     | `https://{branch:cloudflare}.mylib.pages.dev`         |
-| `{branch:netlify}`    | `feat-dark-mode`         | Netlify branch deploys                                      | `https://{branch:netlify}--mylib.netlify.app`         |
-| `{branch:raw}`        | `feat%2FDark_mode`       | a path or a query string                                    | `https://example.com/preview?branch={branch:raw}`     |
+| placeholder       | `feat/Dark_mode` becomes | host                                                        | example template                                      |
+| ----------------- | ------------------------ | ----------------------------------------------------------- | ----------------------------------------------------- |
+| `{branch}`        | `feat-dark-mode`         | URLs you create yourself (lowercase, other runs become `-`) | `https://docs-git-{branch}-pmndrs.vercel.app`         |
+| `{branch:vercel}` | `feat-darkmode`          | Vercel Git integration                                      | `https://mylib-git-{branch:vercel}-myteam.vercel.app` |
+| `{branch:raw}`    | `feat%2FDark_mode`       | a path or a query string                                    | `https://example.com/preview?branch={branch:raw}`     |
 
 An unknown `{branch:<preset>}`, like an invalid `VERSION_BRANCHES` regex, fails the build.
 
-The branch being built is the one CI names, when it does: `GITHUB_HEAD_REF` then `GITHUB_REF_NAME` (GitHub Actions), `VERCEL_GIT_COMMIT_REF` (Vercel), `CF_PAGES_BRANCH` (Cloudflare Pages), `BRANCH` (Netlify, when `NETLIFY=true`). Otherwise it is git's checked-out branch; a detached `HEAD` is no branch.
+The branch being built is the one CI names, when it does: `GITHUB_HEAD_REF` then `GITHUB_REF_NAME` (GitHub Actions) then `VERCEL_GIT_COMMIT_REF` (Vercel). Otherwise it is git's checked-out branch; a detached `HEAD` is no branch.
 
 `VERSION_PRODUCTION_BRANCH` (default: `main`) is listed first, and leads to `NEXT_PUBLIC_URL` rather than to the template. Any other branch gets a banner on its pages, linking to the same page in production.
 
@@ -144,7 +142,7 @@ The branches are the remote's (`git ls-remote --heads origin`), minus `dependabo
 
 > [!IMPORTANT]
 >
-> - The per-branch URLs are yours to create: the switcher only links to them. Vercel's Git integration, Cloudflare Pages and Netlify branch deploys create them. Vercel CLI deployments (`vercel deploy`) do not: give each preview its URL with `vercel alias set <deployment-url> <alias>`, as this repo's [`ci.yml`](https://github.com/pmndrs/docs/blob/main/.github/workflows/ci.yml) does.
+> - The per-branch URLs are yours to create: the switcher only links to them. Vercel's Git integration creates them. Vercel CLI deployments (`vercel deploy`) do not: give each preview its URL with `vercel alias set <deployment-url> <alias>`, as this repo's [`ci.yml`](https://github.com/pmndrs/docs/blob/main/.github/workflows/ci.yml) does.
 > - Git needs the full history and tags: in GitHub Actions, check out with `fetch-depth: 0` (the [reusable workflow](/github-actions/introduction) does). A build without git simply shows no label.
 
 </details>

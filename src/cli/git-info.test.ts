@@ -95,42 +95,19 @@ describe('getCurrentBranch', () => {
     expect(getCurrentBranch({ cwd: notARepo, env: { VERCEL_GIT_COMMIT_REF: 'feat/v' } })).toBe(
       'feat/v',
     )
-    expect(getCurrentBranch({ cwd: notARepo, env: { CF_PAGES_BRANCH: 'feat/c' } })).toBe('feat/c')
-    expect(getCurrentBranch({ cwd: notARepo, env: { NETLIFY: 'true', BRANCH: 'feat/n' } })).toBe(
-      'feat/n',
-    )
   })
 
-  test('BRANCH alone is too generic a name: only Netlify is trusted with it', () => {
-    expect(getCurrentBranch({ cwd: notARepo, env: { BRANCH: 'feat/n' } })).toBeUndefined()
-  })
-
-  test('GitHub first, then Vercel, Cloudflare Pages and Netlify', () => {
+  test('GitHub first, then Vercel', () => {
     const all = {
       GITHUB_HEAD_REF: 'github-pr',
       GITHUB_REF_NAME: 'github-push',
       VERCEL_GIT_COMMIT_REF: 'vercel',
-      CF_PAGES_BRANCH: 'cloudflare',
-      NETLIFY: 'true',
-      BRANCH: 'netlify',
     }
     const branchOf = (env: Record<string, string>) => getCurrentBranch({ cwd: notARepo, env })
 
     expect(branchOf(all)).toBe('github-pr')
     expect(branchOf({ ...all, GITHUB_HEAD_REF: '' })).toBe('github-push')
     expect(branchOf({ ...all, GITHUB_HEAD_REF: '', GITHUB_REF_NAME: '' })).toBe('vercel')
-    expect(
-      branchOf({ ...all, GITHUB_HEAD_REF: '', GITHUB_REF_NAME: '', VERCEL_GIT_COMMIT_REF: '' }),
-    ).toBe('cloudflare')
-    expect(
-      branchOf({
-        ...all,
-        GITHUB_HEAD_REF: '',
-        GITHUB_REF_NAME: '',
-        VERCEL_GIT_COMMIT_REF: '',
-        CF_PAGES_BRANCH: '',
-      }),
-    ).toBe('netlify')
   })
 
   test('without CI variables nor git, there is no branch', () => {

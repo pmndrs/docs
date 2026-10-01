@@ -3,8 +3,6 @@ import {
   assertValidUrlTemplate,
   expandUrlTemplate,
   slugifyBranch,
-  slugifyBranchCloudflare,
-  slugifyBranchNetlify,
   slugifyBranchVercel,
 } from './slugify-branch'
 
@@ -35,29 +33,6 @@ describe('slugifyBranchVercel', () => {
 
   it('lowercases', () => {
     expect(slugifyBranchVercel('Feat/Switcher')).toBe('feat-switcher')
-  })
-})
-
-describe('slugifyBranchCloudflare', () => {
-  it('lowercases and turns non-alphanumeric characters into hyphens (documented example)', () => {
-    expect(slugifyBranchCloudflare('fix/api')).toBe('fix-api')
-  })
-
-  it('cuts to 28 characters, then drops a trailing hyphen (observed aliases)', () => {
-    expect(slugifyBranchCloudflare('download-api-add-filter-information')).toBe(
-      'download-api-add-filter-info',
-    )
-    // The 28-character cut ends on "-", which then goes
-    expect(slugifyBranchCloudflare('fix/placeholder-version-and-master-marker-test')).toBe(
-      'fix-placeholder-version-and',
-    )
-  })
-})
-
-describe('slugifyBranchNetlify', () => {
-  it('turns characters that are invalid in a URL into hyphens', () => {
-    expect(slugifyBranchNetlify('staging')).toBe('staging')
-    expect(slugifyBranchNetlify('feature/blog')).toBe('feature-blog')
   })
 })
 
@@ -109,18 +84,6 @@ describe('expandUrlTemplate', () => {
     ).rejects.toThrow('<project>-git-')
   })
 
-  it('reproduces Cloudflare Pages and Netlify branch URLs', async () => {
-    expect(
-      await expandUrlTemplate(
-        'https://{branch:cloudflare}.owid.pages.dev',
-        'download-api-add-filter-information',
-      ),
-    ).toBe('https://download-api-add-filter-info.owid.pages.dev')
-    expect(
-      await expandUrlTemplate('https://{branch:netlify}--mysite.netlify.app', 'feature/blog'),
-    ).toBe('https://feature-blog--mysite.netlify.app')
-  })
-
   it('replaces every placeholder', async () => {
     expect(
       await expandUrlTemplate('https://{branch}.example.com/{branch:raw}/{branch}', 'feat/x'),
@@ -146,9 +109,7 @@ describe('expandUrlTemplate', () => {
 describe('assertValidUrlTemplate', () => {
   it('accepts every known preset, and no placeholder at all', () => {
     expect(() =>
-      assertValidUrlTemplate(
-        'https://{branch}.{branch:generic}.{branch:vercel}.{branch:cloudflare}.{branch:netlify}/{branch:raw}',
-      ),
+      assertValidUrlTemplate('https://{branch}.{branch:generic}.{branch:vercel}/{branch:raw}'),
     ).not.toThrow()
     expect(() => assertValidUrlTemplate('https://example.com/docs')).not.toThrow()
   })

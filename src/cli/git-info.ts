@@ -49,20 +49,11 @@ function git(args: string[], cwd?: string): string | undefined {
  *   (https://docs.github.com/en/actions/reference/workflows-and-actions/variables#default-environment-variables)
  * - Vercel: `VERCEL_GIT_COMMIT_REF`, "the git branch of the commit the deployment was triggered by"
  *   (https://vercel.com/docs/environment-variables/system-environment-variables#vercel_git_commit_ref)
- * - Cloudflare Pages: `CF_PAGES_BRANCH`
- *   (https://developers.cloudflare.com/pages/configuration/build-configuration/#environment-variables)
- * - Netlify: `BRANCH`, only when `NETLIFY` is `true` -- a name that generic may well be set for
- *   other reasons elsewhere (https://docs.netlify.com/build/configure-builds/environment-variables/#git-metadata)
  */
 export function getCurrentBranch({ cwd, env = process.env }: { cwd?: string; env?: Env } = {}):
   | string
   | undefined {
-  const fromEnv =
-    env.GITHUB_HEAD_REF ||
-    env.GITHUB_REF_NAME ||
-    env.VERCEL_GIT_COMMIT_REF ||
-    env.CF_PAGES_BRANCH ||
-    (env.NETLIFY === 'true' ? env.BRANCH : undefined)
+  const fromEnv = env.GITHUB_HEAD_REF || env.GITHUB_REF_NAME || env.VERCEL_GIT_COMMIT_REF
   if (fromEnv) return fromEnv
 
   const fromGit = git(['rev-parse', '--abbrev-ref', 'HEAD'], cwd)
