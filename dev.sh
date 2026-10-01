@@ -2,9 +2,6 @@
 
 trap 'kill -9 0' SIGINT
 
-# `next dev` leaves types pointing at `src/app/api`, which the export build moves aside
-rm -rf out .next/dev/types
-
 export PORT=${PORT:-3000}
 export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
 
@@ -13,11 +10,11 @@ export NEXT_PUBLIC_LIBNAME="Poimandres"
 export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
 export BASE_PATH=
 export DIST_DIR=
-export OUTPUT=export
+export OUTPUT=
 export HOME_REDIRECT=
 export MDX_BASEURL=http://localhost:$_PORT
-export SOURCECODE_BASEURL=
-export EDIT_BASEURL=
+export SOURCECODE_BASEURL="vscode://file$(pwd)"
+export EDIT_BASEURL="vscode://file$(pwd)/docs"
 export NEXT_PUBLIC_URL=
 export ICON=
 export LOGO=gutenberg.jpg
@@ -34,10 +31,8 @@ export THEME_CAUTION="#da3633"
 export THEME_STORYBOOK="#ff4785"
 export CONTRIBUTORS_PAT=
 
-pnpm run build
-
 npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
-npx serve out -p $PORT &
+pnpm run dev &
 
 wait

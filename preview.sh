@@ -3,7 +3,8 @@
 main() {
   trap 'kill -9 0' SIGINT
 
-  export _PORT="${_PORT:-60141}"
+  export PORT="${PORT:-3000}"
+  export _PORT="${_PORT:-$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')}"
   export VERSION="${VERSION:-latest}"
 
   export MDX="${MDX:-docs}"
@@ -16,10 +17,9 @@ main() {
   # Every other option is read straight from the environment — same process, nothing to forward
   npx -y "@pmndrs/docs@$VERSION" build "$MDX" "$MDX/out" --format website || exit 1
 
-  kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
-  npx -y serve "$MDX/out" &
+  npx -y serve "$MDX/out" -p $PORT &
 
   wait
 }

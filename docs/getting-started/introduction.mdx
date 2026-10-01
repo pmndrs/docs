@@ -148,11 +148,14 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 ### dev
 
+This is [`dev.sh`](https://github.com/pmndrs/docs/blob/main/dev.sh). The site listens on `PORT` (default `3000`), the MDX folder on any free port, so several checkouts can run side by side:
+
 ```sh
 $ (
   trap 'kill -9 0' SIGINT
 
-  export _PORT=60141
+  export PORT=${PORT:-3000}
+  export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
 
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
@@ -180,7 +183,6 @@ $ (
   export THEME_STORYBOOK="#ff4785"
   export CONTRIBUTORS_PAT=
 
-  kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
   pnpm run dev &
@@ -196,13 +198,17 @@ Then go to: http://localhost:3000
 
 ### build
 
+This is [`start.sh`](https://github.com/pmndrs/docs/blob/main/start.sh), same ports:
+
 ```sh
 $ (
   trap 'kill -9 0' SIGINT
 
-  rm -rf out
+  # `next dev` leaves types pointing at `src/app/api`, which the export build moves aside
+  rm -rf out .next/dev/types
 
-  export _PORT=60141
+  export PORT=${PORT:-3000}
+  export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
 
   export MDX=docs
   export NEXT_PUBLIC_LIBNAME="Poimandres"
@@ -210,7 +216,7 @@ $ (
   export BASE_PATH=
   export DIST_DIR=
   export OUTPUT=export
-  export HOME_REDIRECT=/getting-started/introduction
+  export HOME_REDIRECT=
   export MDX_BASEURL=http://localhost:$_PORT
   export SOURCECODE_BASEURL=
   export EDIT_BASEURL=
@@ -232,10 +238,9 @@ $ (
 
   pnpm run build
 
-  kill $(lsof -ti:"$_PORT")
   npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
 
-  npx serve out &
+  npx serve out -p $PORT &
 
   wait
 )
@@ -252,7 +257,8 @@ $ cd ~/code/pmndrs/react-three-fiber
 $ (
   trap 'kill -9 0' SIGINT
 
-  export _PORT=60141
+  export PORT=${PORT:-3000}
+  export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
 
   export NEXT_PUBLIC_LIBNAME="React Three Fiber"
   export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
@@ -264,10 +270,9 @@ $ (
 
   npx -y @pmndrs/docs@latest build docs docs/out --format website
 
-  kill $(lsof -ti:"$_PORT")
   npx serve docs -p $_PORT --no-port-switching --no-clipboard &
 
-  npx -y serve docs/out &
+  npx -y serve docs/out -p $PORT &
 
   wait
 )
