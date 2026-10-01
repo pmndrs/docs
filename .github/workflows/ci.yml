@@ -82,9 +82,9 @@ jobs:
       # The branches offered are the ones with a deployment to switch to: `main` (docs.pmnd.rs)
       # and the head branches of this repo's open pull requests, the only ones aliased below.
       # Fork and Dependabot PRs are left out: their runs get no Actions secrets, hence no
-      # deployment. The remote's heads would also offer branches with nothing behind their URL.
-      # Should `gh` fail, though, the list is left unset and the switcher falls back to those
-      # heads (bot branches excluded).
+      # deployment. The script then drops those with no deployment behind their URL yet (a PR
+      # whose CI has not run since). Should `gh` fail, the list is left unset and the switcher
+      # falls back to the remote's heads (bot branches excluded), filtered the same way.
       # https://docs.github.com/en/code-security/dependabot/troubleshooting-dependabot/troubleshooting-dependabot-on-github-actions
       - id: version
         run: |
