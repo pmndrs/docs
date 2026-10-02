@@ -214,40 +214,4 @@ test.describe('tabs syncKey', () => {
       'vue',
     )
   })
-
-  test('a link to a heading below synced tabs still lands on it', async ({ page }) => {
-    // Vue, its panel taller than React's, the `defaultValue`: it replaces it once hydrated, after
-    // the browser scrolled to the `#hash`, and pushes the heading down
-    await page.addInitScript(() => {
-      localStorage.setItem('pmndrs-docs:tabs:framework', 'vue')
-    })
-    await page.goto('/authoring/tabs#links')
-    await page.waitForLoadState('networkidle')
-
-    const templates = page.locator('[data-slot="tabs"]').filter({ hasText: 'Templates are JSX' })
-    await expect(templates.getByRole('tab', { name: 'Vue' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
-
-    // Once the smooth scroll is over
-    await expect
-      .poll(() =>
-        page.evaluate(async () => {
-          const y = scrollY
-          await new Promise((resolve) => setTimeout(resolve, 300))
-          return scrollY === y
-        }),
-      )
-      .toBe(true)
-
-    // Where scrolling to it puts it, with its scroll margin
-    const [top, scrolledToTop] = await page.evaluate(() => {
-      const heading = document.getElementById('links')!
-      const top = heading.getBoundingClientRect().top
-      heading.scrollIntoView({ behavior: 'instant' })
-      return [top, heading.getBoundingClientRect().top]
-    })
-    expect(Math.abs(top - scrolledToTop)).toBeLessThan(1)
-  })
 })

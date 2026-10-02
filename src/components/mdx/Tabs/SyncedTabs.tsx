@@ -2,7 +2,7 @@
 
 import { Tabs as UiTabs } from '@/components/ui/tabs'
 import { useStoredChoice } from '@/hooks/useStoredChoice'
-import { useEffect, useRef, useState, useSyncExternalStore, type ComponentProps } from 'react'
+import { useState, type ComponentProps } from 'react'
 
 type SyncedTabsProps = Omit<
   ComponentProps<typeof UiTabs>,
@@ -42,77 +42,11 @@ export function SyncedTabs({ syncKey, defaultValue, values, ...props }: SyncedTa
     if (picked !== null && values.includes(picked)) setShown(picked)
   }
 
-  // Rendered on the server, its stored pick shown right after hydration: in the same render as
-  // `hydrating` turns `false`. That switch changes the height of the panel shown after the browser
-  // scrolled to the `#hash`, and a target below this `Tabs` would end out of view: scrolled to
-  // again. Once, never for a later pick: one made elsewhere on the page doesn't move the reader.
-  const root = useRef<HTMLDivElement>(null)
-  const hydrating = useHydrating()
-  const [serverRendered] = useState(hydrating)
-  const hydrated = useRef(false)
-  useEffect(() => {
-    if (!serverRendered || hydrating || hydrated.current) return
-    hydrated.current = true
-    if (shown === defaultValue || !location.hash || !root.current) return
-    return whenPanelsSettle(root.current, scrollToHash)
-  }, [serverRendered, hydrating, shown, defaultValue])
-
   function pick(value: unknown) {
     if (typeof value !== 'string') return
     setShown(value)
     setPicked(value)
   }
 
-  return <UiTabs {...props} ref={root} value={shown} onValueChange={pick} />
-}
-
-/**
- * `true` while rendering on the server and hydrating, `false` once hydrated, and on a client-side
- * navigation.
- */
-function useHydrating() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => false,
-    () => true,
-  )
-}
-
-/**
- * Calls `callback` once the panel left is hidden too, only the one shown remaining: Base UI hides
- * it once its exit animation is over, a frame or more after the switch. Returns a cleanup.
- */
-function whenPanelsSettle(root: HTMLElement, callback: () => void) {
-  // Its own panels, not those of a nested `Tabs`
-  const settled = () =>
-    Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]')).filter(
-      (panel) => panel.closest('[data-slot="tabs"]') === root && !panel.hidden,
-    ).length <= 1
-
-  if (settled()) {
-    callback()
-    return
-  }
-
-  const observer = new MutationObserver(() => {
-    if (!settled()) return
-    observer.disconnect()
-    callback()
-  })
-  observer.observe(root, { subtree: true, attributes: true, attributeFilter: ['hidden'] })
-  return () => observer.disconnect()
-}
-
-/**
- * Scrolls to the element the `#hash` of this page points to, as `TabsAnchor` does. Nothing for an
- * element in a hidden panel: `TabsAnchor` opens it and scrolls to it, a frame later.
- */
-function scrollToHash() {
-  let id: string
-  try {
-    id = decodeURIComponent(location.hash.slice(1))
-  } catch {
-    return // a malformed hash, e.g. `#%`, points to nothing
-  }
-  if (id) document.getElementById(id)?.scrollIntoView()
+  return <UiTabs {...props} value={shown} onValueChange={pick} />
 }
