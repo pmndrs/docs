@@ -124,7 +124,8 @@ export default function Page() {
                           {'llms_full' in data && data.llms_full && (
                             <Badge
                               variant="secondary"
-                              title={`Reachable from an MCP client as lib="${id}"`}
+                              title={`Reachable from an MCP client as lib="${id}" -- see its requests live`}
+                              render={<Link href={`/mcp/live?lib=${encodeURIComponent(id)}`} />}
                             >
                               MCP
                             </Badge>
