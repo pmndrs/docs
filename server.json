@@ -1,0 +1,31 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pmndrs/docs",
+  "title": "pmndrs docs",
+  "description": "Search and read the docs and examples of react-three-fiber, drei, zustand, jotai... from your agent",
+  "version": "4.11.0",
+  "websiteUrl": "https://docs.pmnd.rs",
+  "repository": {
+    "url": "https://github.com/pmndrs/docs",
+    "source": "github",
+    "id": "295147585"
+  },
+  "icons": [
+    {
+      "src": "https://docs.pmnd.rs/icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": ["any"]
+    },
+    {
+      "src": "https://docs.pmnd.rs/android-chrome-192x192.png",
+      "mimeType": "image/png",
+      "sizes": ["192x192"]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://docs.pmnd.rs/api/mcp"
+    }
+  ]
+}
