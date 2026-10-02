@@ -44,6 +44,13 @@ describe('GET', () => {
     expect(await res.text()).toBe(svg('🥑'))
   })
 
+  it('escapes an ICON text that is not valid XML as is', async () => {
+    vi.stubEnv('ICON', '<&>')
+    const res = await GET()
+
+    expect(await res.text()).toContain('>&lt;&amp;&gt;</text>')
+  })
+
   it('embeds an ICON path, local to MDX, as a data URI', async () => {
     vi.stubEnv('ICON', '/icon.png')
     const res = await GET()

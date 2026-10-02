@@ -7,6 +7,10 @@ import { PackageIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 
+// The remote icons that failed to load, kept across mounts: the menu mounts its items anew at
+// every opening, and would otherwise request a missing icon -- and show an empty box -- each time.
+const failedSrcs = new Set<string>()
+
 /**
  * The icon of a pmndrs library, decorative, `size` pixels square:
  * 1. its asset in `libsIcons`, if it has one
@@ -24,9 +28,12 @@ export function LibIcon({
   size: number
   className?: string
 }) {
-  const [failed, setFailed] = useState(false)
-
   const asset = libsIcons[id]
+  const lib: Library = libs[id]
+  // Every such `docs_url` is absolute but the docs hub's own, and the hub has an asset below
+  const src = lib.pmndrs_docs ? `${lib.docs_url}/icon.svg` : undefined
+  const [failed, setFailed] = useState(() => src !== undefined && failedSrcs.has(src))
+
   if (asset) {
     return (
       <Image
@@ -40,18 +47,19 @@ export function LibIcon({
     )
   }
 
-  // Every such `docs_url` is absolute but the docs hub's own, and the hub has an asset above
-  const lib: Library = libs[id]
-  if (lib.pmndrs_docs && !failed) {
+  if (src && !failed) {
     return (
       <Image
-        src={`${lib.docs_url}/icon.svg`}
+        src={src}
         width={size}
         height={size}
         alt=""
         aria-hidden
         className={cn('object-contain', className)}
-        onError={() => setFailed(true)}
+        onError={() => {
+          failedSrcs.add(src)
+          setFailed(true)
+        }}
       />
     )
   }
