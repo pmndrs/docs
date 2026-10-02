@@ -9,11 +9,10 @@ import {
   LayoutSidebar,
 } from '@/components/Layout'
 import { LibsMenu } from '@/components/LibsMenu'
-import { PrimaryColorPicker } from '@/components/PrimaryColorPicker'
 import Search from '@/components/Search'
 import { SidebarNav } from '@/components/SidebarNav'
 import { SponsorCard } from '@/components/SponsorCard'
-import { ThemeToggle } from '@/components/ThemeToggle'
+import { ThemeControls } from '@/components/ThemeControls'
 import { VersionBanner } from '@/components/VersionBanner'
 import { VersionSwitcher } from '@/components/VersionSwitcher'
 import { SidebarFooter, SidebarTrigger } from '@/components/ui/sidebar'
@@ -94,8 +93,6 @@ export default async function Layoutt({ params, children }: Props) {
             )}
           </React.Fragment>
         ))}
-        <PrimaryColorPicker />
-        <ThemeToggle />
       </div>
     </div>
   )
@@ -191,8 +188,10 @@ export default async function Layoutt({ params, children }: Props) {
           <LayoutBody>
             <LayoutSidebar>
               {nav}
-              <SidebarFooter>
+              <SidebarFooter className="flex-row items-center">
                 <VersionSwitcher />
+                {/* Where the TOC column is hidden: below `xl` */}
+                <ThemeControls className="ml-auto shrink-0 xl:hidden" />
               </SidebarFooter>
             </LayoutSidebar>
             <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
@@ -202,9 +201,11 @@ export default async function Layoutt({ params, children }: Props) {
                 {footer}
               </article>
             </LayoutContent>
-            <LayoutAside className="py-8">
+            <LayoutAside className="flex-col pt-8 xl:flex">
               {toc}
               <SponsorCard className="mt-8 mr-(--rgrid-m)" />
+              {/* At the foot of the column, and of the viewport while a long TOC scrolls under it */}
+              <ThemeControls className="sticky top-full mt-auto justify-end bg-surface py-4 pr-(--rgrid-m)" />
             </LayoutAside>
           </LayoutBody>
         </Layout>
