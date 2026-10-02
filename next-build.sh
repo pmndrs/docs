@@ -41,4 +41,12 @@ if [ "$IS_EXPORT" = "true" ]; then
   rmdir tmp/mcp-backup
 fi
 
+# Each page's markdown is exported under `md/` (src/app/md/[...slug]/route.ts), but belongs
+# beside the page, at `<path>.md`: the URL a server build rewrites to it.
+EXPORT_DIR="${DIST_DIR:-out}"
+if [ "$IS_EXPORT" = "true" ] && [ $STATUS -eq 0 ] && [ -d "$EXPORT_DIR/md" ]; then
+  cp -R "$EXPORT_DIR/md/." "$EXPORT_DIR/"
+  rm -rf "$EXPORT_DIR/md"
+fi
+
 exit $STATUS

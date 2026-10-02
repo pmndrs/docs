@@ -125,8 +125,13 @@ export async function buildWebsite({
       workDir,
     )
 
+    // Each page's markdown is exported under `md/` (`src/app/md/[...slug]/route.ts`), but
+    // belongs beside the page, at `<path>.md`: the URL a server build rewrites to it.
+    const exportDir = join(workDir, distDir)
+    const markdownDir = join(exportDir, 'md')
     await mkdir(outDir, { recursive: true })
-    await cp(join(workDir, distDir), outDir, { recursive: true })
+    await cp(exportDir, outDir, { recursive: true, filter: (source) => source !== markdownDir })
+    if (existsSync(markdownDir)) await cp(markdownDir, outDir, { recursive: true })
   } finally {
     await rm(workDir, { recursive: true, force: true })
   }

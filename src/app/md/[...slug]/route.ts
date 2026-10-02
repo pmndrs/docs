@@ -1,14 +1,21 @@
 import { parseDocsMetadata } from '@/utils/docs'
 
 //
-// Each page as raw markdown, at `/md/<path>.md` -- what the "Copy Page" and "View as Markdown"
-// actions of a page header read, and what the "Open in ChatGPT/Claude" prompts point at.
+// Each page as raw markdown, published at the page's URL plus `.md` (`/<path>.md`) -- what the
+// "Copy Page" and "View as Markdown" actions of a page header read.
 //
-// A route handler cannot sit next to `[...slug]/page.tsx`, hence its own `/md` prefix. It
-// stays out of `/api`, which the static export leaves behind.
+// A route handler cannot sit next to `[...slug]/page.tsx`, hence its own `/md` prefix -- an
+// internal one. A server build rewrites `/<path>.md` to `/md/<path>.md` (`next.config.mjs`), and
+// a static export moves the files from `md/` to `<path>.md` (`next-build.sh` and the CLI's
+// `src/cli/website.ts`). It stays out of `/api`, which the static export leaves behind.
 //
 
 export const dynamic = 'force-static'
+
+// Only the pages `generateStaticParams` lists exist; any other path is a 404, as for the pages
+// themselves in `src/app/[...slug]/page.tsx`. Handled on demand instead, it threw a 500: `MDX` is
+// only set at build time on Vercel.
+export const dynamicParams = false
 
 const SUFFIX = '.md'
 
