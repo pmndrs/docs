@@ -16,6 +16,7 @@
 
 import { WINDOW_MS, type McpEvent } from '@/app/mcp/live/_components/event'
 import { createRedisEventBus } from './redis-bus'
+import { ENVIRONMENT, getRedisConnection } from './redis-client'
 
 export interface McpEventBus {
   /**
@@ -69,25 +70,21 @@ export function createMemoryEventBus({
   }
 }
 
-/**
- * The deployment the events come from -- "production", "preview", or "development" off Vercel. All
- * of them share one `REDIS_URL`: without this in the key, the requests of a preview or a local
- * server would show on docs.pmnd.rs/mcp/live, and the other way around.
- */
-const ENVIRONMENT = process.env.VERCEL_ENV || 'development'
-
 // On `globalThis`, so that every route of an instance shares one bus -- and so that `next dev`
-// keeps it when it reloads a module, rather than starting an empty one (or opening a new Redis
-// connection) beside the old.
+// keeps it when it reloads a module, rather than starting an empty one beside the old.
 const GLOBAL_KEY = Symbol.for('@pmndrs/docs/mcp-event-bus')
 
 type GlobalWithBus = typeof globalThis & { [GLOBAL_KEY]?: McpEventBus }
 
 export function getEventBus(): McpEventBus {
   const global = globalThis as GlobalWithBus
-  const url = process.env.REDIS_URL
-  global[GLOBAL_KEY] ??= url
-    ? createRedisEventBus({ url, capacity: DEFAULT_CAPACITY, prefix: `mcp-live:${ENVIRONMENT}` })
+  const connection = getRedisConnection()
+  global[GLOBAL_KEY] ??= connection
+    ? createRedisEventBus({
+        connection,
+        capacity: DEFAULT_CAPACITY,
+        prefix: `mcp-live:${ENVIRONMENT}`,
+      })
     : createMemoryEventBus()
   return global[GLOBAL_KEY]
 }

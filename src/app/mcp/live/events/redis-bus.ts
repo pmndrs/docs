@@ -4,70 +4,30 @@
  * too -- the other deployments' events, to begin with, see `getEventBus`), holding the last
  * `capacity` events, newest first.
  *
- * An instance holds at most one connection (the database allows 30 in all), opened on first use.
- * Redis being down must never fail an MCP request, nor crash the process: every error is logged,
- * and the call it broke publishes nothing, or reads an empty window.
+ * It writes through the instance's one connection (`redis-client.ts`). Redis being down must
+ * never fail an MCP request: every error is logged, and the call it broke publishes nothing, or
+ * reads an empty window.
  */
 
-import { createClient, type RedisClientType } from 'redis'
 import { WINDOW_MS, type McpEvent } from '@/app/mcp/live/_components/event'
 import type { McpEventBus } from './bus'
-
-function connectionOptions(url: string) {
-  return {
-    url,
-    socket: {
-      connectTimeout: 2_000,
-      // A few quick retries, then the client gives up: the next call opens a new one
-      reconnectStrategy: (retries: number) =>
-        retries < 5 ? Math.min(100 * 2 ** retries, 1_000) : false,
-    },
-    // Fails a command at once while disconnected, rather than queueing it in memory
-    disableOfflineQueue: true,
-  }
-}
-
-function logError(error: unknown) {
-  console.error('MCP events Redis error:', error)
-}
-
-export type RedisEventBus = McpEventBus & {
-  /** Closes the connection -- for tests, which would otherwise not exit. */
-  close(): Promise<void>
-}
+import { logRedisError, type RedisConnection } from './redis-client'
 
 export function createRedisEventBus({
-  url,
+  connection,
   capacity,
   maxAgeMs = WINDOW_MS,
   prefix = 'mcp-live',
   now = Date.now,
 }: {
-  url: string
+  connection: RedisConnection
   capacity: number
   maxAgeMs?: number
   /** Namespaces the list. */
   prefix?: string
   now?: () => number
-}): RedisEventBus {
+}): McpEventBus {
   const key = `${prefix}:events`
-
-  function newClient(): RedisClientType {
-    // Without an `error` listener, a lost connection would crash the process
-    return createClient(connectionOptions(url)).on('error', logError)
-  }
-
-  let commands: { client: RedisClientType; connected: Promise<unknown> } | undefined
-
-  async function commandClient() {
-    // Not open: never connected yet, closed, or given up on reconnecting
-    if (!commands?.client.isOpen) {
-      const client = newClient()
-      commands = { client, connected: client.connect() }
-    }
-    await commands.connected
-    return commands.client
-  }
 
   return {
     async publish(event) {
@@ -75,20 +35,20 @@ export function createRedisEventBus({
       // database's rate limit
       try {
         const json = JSON.stringify(event)
-        const client = await commandClient()
+        const client = await connection.client()
         await client
           .multi()
           .lPush(key, json)
           .lTrim(key, 0, capacity - 1)
           .execAsPipeline()
       } catch (error) {
-        logError(error)
+        logRedisError(error)
       }
     },
 
     async recent(limit = capacity) {
       try {
-        const client = await commandClient()
+        const client = await connection.client()
         const newestFirst = await client.lRange(key, 0, Math.min(limit, capacity) - 1)
         const oldest = now() - maxAgeMs
         return newestFirst
@@ -96,15 +56,9 @@ export function createRedisEventBus({
           .map((json) => JSON.parse(json) as McpEvent)
           .filter((event) => event.ts >= oldest)
       } catch (error) {
-        logError(error)
+        logRedisError(error)
         return []
       }
-    },
-
-    async close() {
-      const client = commands?.client
-      commands = undefined
-      if (client?.isOpen) await client.close()
     },
   }
 }
