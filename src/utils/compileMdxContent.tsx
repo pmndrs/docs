@@ -37,6 +37,7 @@ import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { Intro } from '@/components/mdx/Intro'
 import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
 import { Keypoints, KeypointsItem } from '@/components/mdx/Keypoints'
+import { McpLiveEmbed } from '@/components/mdx/McpLiveEmbed'
 import { Mermaid } from '@/components/mdx/Mermaid'
 import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { Backers, Contributors } from '@/components/mdx/People'
@@ -135,6 +136,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         KeypointsItem,
         Contributors,
         Backers,
+        McpLiveEmbed,
         Mermaid,
         Sandpack,
         Step,
