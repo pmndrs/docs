@@ -1,0 +1,47 @@
+name: Publish to MCP Registry
+
+# Lists https://docs.pmnd.rs/api/mcp on https://registry.modelcontextprotocol.io, from `server.json`.
+#
+# Runs on every release tag, which `changesets/action` pushes from ci.yml with the App token --
+# a tag pushed with the default `GITHUB_TOKEN` would not trigger this workflow, hence the
+# manual `workflow_dispatch` fallback.
+#
+# Auth is GitHub OIDC: the registry grants `io.github.<repository owner>/*` to a workflow
+# running in this repository, so no secret and no human login is needed.
+# See https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/github-actions.mdx
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # OIDC authentication to the registry
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      # The version of the server is the version of the package, so it never has to be bumped
+      # by hand in `server.json`.
+      - name: Set the version from package.json
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          jq --arg v "$VERSION" '.version = $v' server.json > server.tmp && mv server.tmp server.json
+          cat server.json
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish
