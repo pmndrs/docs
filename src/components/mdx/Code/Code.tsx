@@ -30,7 +30,7 @@ import { CodeFileIcon } from './CodeFileIcon'
 // block.
 const codeBackground =
   '[--code-background:oklch(from_var(--md-sys-color-on-primary-fixed)_l_calc(c*0.2)_h)] bg-(--code-background)'
-const codeText = 'text-primary-fixed'
+const codeText = 'text-[oklch(from_var(--md-sys-color-primary-fixed)_l_calc(c*0.2)_h)]'
 const codeColors = cn(codeBackground, codeText)
 
 const preClassName = 'overflow-x-auto scroll-fade-x no-scrollbar p-(--pad) font-mono text-sm'
