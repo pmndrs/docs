@@ -22,15 +22,7 @@ These URLs are linked in the HTML header as:
 
 ## MCP Server
 
-<div>
-  <iframe
-    src="/mcp/live?embed"
-    title="MCP live: the requests the pmndrs docs MCP server is serving"
-    loading="lazy"
-    className="h-[36rem] w-full rounded-lg"
-  />
-  <p className="mt-1 text-xs text-on-surface-variant">The MCP server's requests, live — see the [full view](/mcp/live).</p>
-</div>
+<McpLiveEmbed />
 
 `llms-full.txt` is a whole documentation site in one file — too big to paste into an agent for a one-line question. So [docs.pmnd.rs](https://docs.pmnd.rs) also exposes it as an [MCP](https://modelcontextprotocol.io) server, which lets an agent read a table of contents first, then fetch the one page it needs.
 
