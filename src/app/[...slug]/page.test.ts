@@ -355,6 +355,137 @@ test.describe('primary color', () => {
 })
 
 //
+// Contrast: the reader's level reshapes the palette, and is remembered
+//
+
+test.describe('contrast', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the toggle cycles standard, medium and high, is remembered, and forgotten for the default', async ({
+    page,
+  }) => {
+    const hydrationErrors = collectHydrationErrors(page)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const palette = () => page.locator('style#mcu-styles').textContent()
+    const defaultPalette = await palette()
+    // The palette in effect, whichever `<style>` it comes from
+    const primary = () =>
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
+      )
+    const defaultPrimary = await primary()
+    const storedLevel = () =>
+      page.evaluate(() => localStorage.getItem('pmndrs-docs:contrast-level'))
+    const cache = () =>
+      page.evaluate(() =>
+        JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
+      )
+
+    const name = /^Contrast(:|$)/
+    const toggle = page.getByRole('button', { name })
+
+    // The page as first painted: the HTML and its inline scripts, React never running. The JS
+    // chunks only: the CSS ones hide the other icons
+    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+    async function reloadWithoutReact() {
+      await page.route(chunks, (route) => route.abort())
+      await page.reload()
+    }
+    async function reloadWithReact() {
+      await page.unroute(chunks)
+      await page.reload()
+      await page.waitForLoadState('networkidle')
+      await showThemeControls(page)
+    }
+
+    await showThemeControls(page)
+
+    // Nothing picked: the site's default (`THEME_CONTRAST` of `start.sh`)
+    await expect(toggle).toHaveAccessibleName('Contrast: standard, switch to medium')
+
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Contrast: medium, switch to high')
+    await expect.poll(palette).not.toBe(defaultPalette)
+    const mediumPalette = await palette()
+    expect(await storedLevel()).toBe('0.5')
+
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Contrast: high, switch to standard')
+    await expect.poll(palette).not.toBe(mediumPalette)
+    const highPalette = await palette()
+    const highPrimary = await primary()
+    expect(highPrimary).not.toBe(defaultPrimary)
+    expect(await storedLevel()).toBe('1')
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(highPalette)
+    await expect(toggle).toHaveAccessibleName('Contrast: high, switch to standard')
+    // Cached once applied, for the next load: the default color, at this level
+    await expect.poll(async () => (await cache())?.contrast).toBe(1)
+    expect((await cache())?.color).toBe('#323e48')
+
+    // The level from the first paint, its icon included: no flash of the default palette
+    await reloadWithoutReact()
+    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary()).toBe(highPrimary)
+    await expect(anyCopy(page, name).locator('.lucide-contrast.size-6')).toHaveCSS(
+      'display',
+      'block',
+    )
+    await expect(anyCopy(page, name).locator('.lucide-contrast.size-4')).toHaveCSS(
+      'display',
+      'none',
+    )
+    await expect(anyCopy(page, name).locator('.lucide-contrast.size-5')).toHaveCSS(
+      'display',
+      'none',
+    )
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(highPalette)
+    // Once `Mtb` has the level, only its palette is left
+    await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
+    await expect(page.locator('html')).not.toHaveAttribute('data-prepaint-contrast')
+
+    // With a picked color too: the cache is the palette of both
+    await page.locator('input[type="color"]').filter({ visible: true }).fill('#ff0000')
+    await expect
+      .poll(async () => {
+        const { color, contrast } = (await cache()) ?? {}
+        return { color, contrast }
+      })
+      .toEqual({ color: '#ff0000', contrast: 1 })
+    const pickedPrimary = await primary()
+    await reloadWithoutReact()
+    expect(await primary()).toBe(pickedPrimary)
+    await reloadWithReact()
+    await page.locator('input[type="color"]').filter({ visible: true }).fill('#323e48')
+    await expect.poll(async () => (await cache())?.color).toBe('#323e48')
+
+    // Back to the site's default: forgotten, and its palette with it
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Contrast: standard, switch to medium')
+    await expect.poll(palette).toBe(defaultPalette)
+    expect(await storedLevel()).toBeNull()
+    expect(await cache()).toBeNull()
+
+    // Forgotten, the default from the first paint again
+    await reloadWithoutReact()
+    expect(await primary()).toBe(defaultPrimary)
+    await expect(anyCopy(page, name).locator('.lucide-contrast.size-4')).toHaveCSS(
+      'display',
+      'block',
+    )
+
+    await page.unroute(chunks)
+    expect(hydrationErrors).toEqual([])
+  })
+})
+
+//
 // Theme: light, dark or the system's, picked by the reader and remembered
 //
 
