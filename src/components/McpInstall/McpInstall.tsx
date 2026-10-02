@@ -34,7 +34,13 @@ export function McpInstall() {
       <details className="text-sm">
         <summary className="cursor-pointer">Other clients</summary>
         <Tabs defaultValue="claude-code" syncKey="mcp-client" className="my-2">
-          <TabsList aria-label="MCP client">
+          {/* One line, scrolling sideways when the tabs don't fit, its overflowing edge fading out
+              (shadcn's `scroll-fade-x`, as the `Code` block's scroller). The bottom padding keeps
+              the active tab's underline, drawn below the tab, inside the scroller's clip. */}
+          <TabsList
+            aria-label="MCP client"
+            className="flex-nowrap overflow-x-auto pb-1.5 scroll-fade-x no-scrollbar"
+          >
             <TabsTrigger value="claude-code" className="text-sm">
               Claude Code
             </TabsTrigger>
@@ -113,11 +119,11 @@ export function McpInstall() {
   )
 }
 
-/** A compact install link, styled as a small outline button */
+/** A compact install link, styled as a small filled button, to stand out on the callout */
 function InstallLink({ href, children }: { href: string; children: string }) {
   return (
     <Button
-      variant="outline"
+      variant="default"
       size="sm"
       nativeButton={false}
       render={<a href={href} rel="noopener" />}
