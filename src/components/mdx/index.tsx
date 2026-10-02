@@ -78,12 +78,19 @@ export const td = (props: ComponentProps<'td'>) => (
 )
 
 export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => (
-  <a {...props} {...linkProps(href, target, rel)} className={cn(className, 'text-primary')} />
+  <a
+    {...props}
+    {...linkProps(href, target, rel)}
+    className={cn(className, 'text-primary [&_code]:text-primary')}
+  />
 )
 
+// The text role goes with the background role: inherited, the parent's text can be meant for
+// another background (on-primary-container, in the sidebar's current page) and vanish on this one
+// at high contrast.
 export const code = (props: ComponentProps<'code'>) => (
   <code
-    className="bg-surface-container-high rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
+    className="bg-surface-container-high text-on-surface rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
     {...props}
   />
 )

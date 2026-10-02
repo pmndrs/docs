@@ -86,16 +86,27 @@ pre[class*='language-'] {
 
 /* Code blocks */
 pre[class*='language-'] {
-  --comment: #a6accd;
-  --punctuation: #e4f0fb;
-  --property: #e4f0fb;
-  --boolean: #5de4c7;
-  --string: #5de4c7;
-  --operator: #add7ff;
-  --function: #5de4c7;
-  --keyword: #add7ff;
-  --literal: #fffac2;
-  --falsy: #f087bd;
+  /*
+   * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
+   * the same in light and dark: the code block background is always dark (see Code.tsx).
+   * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
+   * strings and functions 120 degrees apart), with its own lightness and chroma, so the
+   * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
+   * near-neutral, like the plain code text (see Code.tsx).
+   */
+  --seed: var(--md-ref-palette-primary-80);
+  --keyword: oklch(from var(--seed) 0.78 0.15 h);
+  --operator: var(--keyword);
+  --literal: oklch(from var(--seed) 0.86 0.13 calc(h + 60));
+  --boolean: var(--literal);
+  --string: oklch(from var(--seed) 0.84 0.13 calc(h + 120));
+  --property: oklch(from var(--seed) 0.86 0.06 calc(h + 180));
+  --function: oklch(from var(--seed) 0.8 0.14 calc(h + 240));
+  --comment: var(--md-ref-palette-neutral-variant-60);
+  --punctuation: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
+  /* Diffs keep their meaning (green, red) rather than following the seed */
+  --inserted: var(--md-ref-palette-tip-80);
+  --deleted: var(--md-ref-palette-caution-80);
   --linenumber-border-width: --spacing(1);
   --pad: --spacing(6);
 }
@@ -124,8 +135,7 @@ pre[class*='language-'] {
 .token.property,
 .token.tag,
 .token.constant,
-.token.symbol,
-.token.deleted {
+.token.symbol {
   color: var(--property);
 }
 
@@ -138,8 +148,7 @@ pre[class*='language-'] {
 .token.attr-value,
 .token.string,
 .token.char,
-.token.builtin,
-.token.inserted {
+.token.builtin {
   color: var(--string);
 }
 
@@ -168,8 +177,12 @@ pre[class*='language-'] {
   color: var(--literal);
 }
 
+.token.inserted {
+  color: var(--inserted);
+}
+
 .token.deleted {
-  color: var(--falsy);
+  color: var(--deleted);
 }
 
 .token.important,
@@ -203,16 +216,17 @@ pre[class*='language-'] {
   @apply -mx-(--pad) px-(--pad);
 }
 
+/* Tonal palette tones, not sys roles: the code block background is the same dark in both modes */
 .code-line.inserted {
-  @apply bg-tip-container/30;
+  @apply bg-(--md-ref-palette-tip-30)/50;
 }
 .code-line.deleted {
-  @apply bg-error-container/30;
+  @apply bg-(--md-ref-palette-caution-30)/50;
 }
 
 .highlight-line {
   border-left: var(--linenumber-border-width) solid; /* Set highlight accent border color */
-  @apply -mx-(--pad) border-l-inverse-surface/50 bg-inverse-surface/10;
+  @apply -mx-(--pad) border-l-(--md-ref-palette-neutral-90)/50 bg-(--md-ref-palette-neutral-90)/10;
 }
 
 .line-number::before {
