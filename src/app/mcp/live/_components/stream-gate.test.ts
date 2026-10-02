@@ -125,10 +125,12 @@ describe('watchStreamGate', () => {
 
 describe('resumeUrl', () => {
   it('asks to resume after the last event seen', () => {
-    expect(resumeUrl('/api/mcp-events', undefined)).toBe('/api/mcp-events')
-    expect(resumeUrl('/api/mcp-events', '0abc-0001')).toBe('/api/mcp-events?lastEventId=0abc-0001')
-    expect(resumeUrl('https://docs.pmnd.rs/api/mcp-events?lib=drei', 'x y')).toBe(
-      'https://docs.pmnd.rs/api/mcp-events?lib=drei&lastEventId=x%20y',
+    expect(resumeUrl('/mcp/live/events', undefined)).toBe('/mcp/live/events')
+    expect(resumeUrl('/mcp/live/events', '0abc-0001')).toBe(
+      '/mcp/live/events?lastEventId=0abc-0001',
+    )
+    expect(resumeUrl('https://docs.pmnd.rs/mcp/live/events?x=1', 'x y')).toBe(
+      'https://docs.pmnd.rs/mcp/live/events?x=1&lastEventId=x%20y',
     )
   })
 })

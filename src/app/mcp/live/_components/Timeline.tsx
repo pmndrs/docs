@@ -13,7 +13,7 @@ const time = new Intl.DateTimeFormat(undefined, {
   second: '2-digit',
 })
 
-export function describeEvent(event: McpEvent) {
+function describeEvent(event: McpEvent) {
   const target = [event.lib, event.path].filter(Boolean).join(' ')
   return [
     `${event.client} -> ${event.name}`,

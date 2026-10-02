@@ -1,8 +1,11 @@
 /**
- * One request to the MCP server, as `/api/mcp-events` streams it -- shared by the server code that
- * produces it (`src/app/api/_mcp-events`) and the page that draws it. Both are left out of the
- * npm package and of the static export.
+ * One request to the MCP server, as `/mcp/live/events` streams it -- shared by the server code
+ * that produces it (`../events`) and the page that draws it. Both are left out of the npm package
+ * and of the static export.
  */
+
+/** How far back the view looks: what the server's buffer keeps, and what the page draws. */
+export const WINDOW_MS = 15 * 60 * 1000
 
 export type McpEventKind = 'tool' | 'resource'
 

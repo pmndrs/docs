@@ -6,7 +6,7 @@ import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/libs'
 import packageJson from '@/package.json' with { type: 'json' }
 import { assertExampleName, exampleUrl, indexUrl } from '@/utils/examples'
-import { instrument, rememberClient } from '../_mcp-events/capture'
+import { instrument, rememberClient } from '@/app/mcp/live/events/capture'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see

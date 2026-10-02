@@ -1,7 +1,9 @@
 'use client'
 
-import * as d3 from 'd3'
+import { easeCubicInOut, easeSinInOut } from 'd3-ease'
 import { sankeyLinkHorizontal } from 'd3-sankey'
+import { select, type BaseType, type Selection } from 'd3-selection'
+import { transition } from 'd3-transition'
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react'
 import type { McpEvent } from './event'
 import { linkId, type Graph, type GraphLink, type GraphNode } from './graph'
@@ -28,7 +30,7 @@ const COLUMN_COLORS = [
  * How long a particle takes to cross the graph: slower for slower requests, within bounds that
  * keep a cached hit visible and a timeout from crawling.
  */
-export function travelMs(durationMs: number) {
+function travelMs(durationMs: number) {
   return Math.min(900 + durationMs * 1.5, 4500)
 }
 
@@ -131,7 +133,7 @@ export function Sankey({
     if (!svg || width === 0) return
 
     const { nodes, links, columnX } = layoutGraph(graph, width, height)
-    const root = d3.select(svg)
+    const root = select(svg)
     const linkPath = sankeyLinkHorizontal<GraphNode, GraphLink>()
     const strokeWidth = (link: LaidLink) => Math.max(1, link.width ?? 1)
     const isOverflow = (node: unknown) => (node as LaidNode).overflow !== undefined
@@ -143,10 +145,10 @@ export function Sankey({
     // can animate it, and straight away otherwise -- interrupting whatever was under way, so a
     // stale tween cannot land after it.
     const animate = shouldAnimate()
-    const transition = d3.transition().duration(TRANSITION_MS).ease(d3.easeCubicInOut)
-    function move<E extends d3.BaseType, D>(selection: d3.Selection<E, D, d3.BaseType, unknown>) {
+    const tween = transition().duration(TRANSITION_MS).ease(easeCubicInOut)
+    function move<E extends BaseType, D>(selection: Selection<E, D, BaseType, unknown>) {
       return animate
-        ? (selection.transition(transition) as unknown as d3.Selection<E, D, d3.BaseType, unknown>)
+        ? (selection.transition(tween) as unknown as Selection<E, D, BaseType, unknown>)
         : selection.interrupt()
     }
 
@@ -176,7 +178,7 @@ export function Sankey({
             .attr('stroke-opacity', animate ? 0 : strokeOpacity),
         (update) => update,
         (exit) => {
-          if (animate) exit.transition(transition).attr('stroke-opacity', 0).remove()
+          if (animate) exit.transition(tween).attr('stroke-opacity', 0).remove()
           else exit.interrupt().remove()
           return exit
         },
@@ -230,7 +232,7 @@ export function Sankey({
         },
         (update) => update,
         (exit) => {
-          if (animate) exit.transition(transition).attr('opacity', 0).remove()
+          if (animate) exit.transition(tween).attr('opacity', 0).remove()
           else exit.interrupt().remove()
           return exit
         },
@@ -342,7 +344,7 @@ export function Sankey({
       )
 
       for (const { event, start, duration } of particlesRef.current) {
-        const progress = d3.easeSinInOut((now - start) / duration)
+        const progress = easeSinInOut((now - start) / duration)
         const color = event.ok ? colors.ok : colors.error
 
         // A short tail: the same particle a little earlier, fainter

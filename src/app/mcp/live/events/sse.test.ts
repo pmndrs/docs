@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createEventId, createMemoryEventBus, type McpEvent, type McpEventBus } from './bus'
+import type { McpEvent } from '@/app/mcp/live/_components/event'
+import { createEventId, createMemoryEventBus, type McpEventBus } from './bus'
 import { createEventStream } from './sse'
 
 function event(lib: string): McpEvent {
@@ -29,26 +30,21 @@ async function readMessages(reader: ReadableStreamDefaultReader<Uint8Array>, cou
 }
 
 describe('createEventStream', () => {
-  it('sends the backlog, then live events, filtered by library', async () => {
+  it('sends the backlog, then live events', async () => {
     const bus = createMemoryEventBus()
     bus.publish(event('drei'))
     bus.publish(event('zustand'))
 
     const controller = new AbortController()
-    const reader = createEventStream({
-      bus,
-      filter: { libs: ['drei'] },
-      signal: controller.signal,
-    }).getReader()
+    const reader = createEventStream({ bus, signal: controller.signal }).getReader()
 
     const [retry, backlog] = await readMessages(reader, 2)
     expect(retry).toBe('retry: 3000')
     expect(backlog).toContain('event: backlog')
     const data = JSON.parse(backlog.split('data: ')[1]) as McpEvent[]
-    expect(data.map(({ lib }) => lib)).toEqual(['drei'])
+    expect(data.map(({ lib }) => lib)).toEqual(['drei', 'zustand'])
 
-    bus.publish(event('zustand'))
-    const live = event('drei')
+    const live = event('uikit')
     bus.publish(live)
 
     const [message] = await readMessages(reader, 1)

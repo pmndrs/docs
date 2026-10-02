@@ -5,7 +5,7 @@ import cn from '@/lib/cn'
 import { libs as LIBS } from '@/libs'
 import { ArrowUpRightIcon } from 'lucide-react'
 import { useCallback, useMemo, useRef, useState } from 'react'
-import type { McpEvent } from './event'
+import { WINDOW_MS, type McpEvent } from './event'
 import { buildGraph, MAX_NODES_PER_COLUMN } from './graph'
 import { HEADER_HEIGHT, heightFor, NODE_PADDING } from './layout'
 import { LibFilter } from './LibFilter'
@@ -45,7 +45,9 @@ const EXPAND_STEP = 8
 
 const EMPTY: Selection = []
 
-export interface McpLiveProps {
+const WINDOW_MINUTES = WINDOW_MS / 60_000
+
+interface McpLiveProps {
   /** The app's `basePath`: the stream and the full view are served beside this page. */
   basePath: string
   /**
@@ -61,7 +63,7 @@ export interface McpLiveProps {
 
 /**
  * The requests the pmndrs docs MCP server is serving, live: a Sankey of client -> tool/resource
- * -> library (-> page) over the last 15 minutes, one particle per request as it comes in, and a
+ * -> library (-> page) over the window the server keeps, one particle per request as it comes in, and a
  * timeline of the last five minutes under it. Pick libraries to see their pages.
  *
  * It streams only while on screen in a visible tab.
@@ -87,7 +89,7 @@ export function McpLive({
 
   // Everything is streamed, and the selection filters here: changing it is then instant and
   // animated, rather than a reconnection that would start the graph over
-  const { events, status } = useMcpEvents(`${basePath}/api/mcp-events`, open, onLive)
+  const { events, status } = useMcpEvents(`${basePath}/mcp/live/events`, open, onLive)
 
   const [extraRows, setExtraRows] = useState(0)
   const rows = compact ? COMPACT_ROWS : MAX_NODES_PER_COLUMN + extraRows
@@ -138,7 +140,7 @@ export function McpLive({
         </Badge>
         <span className="text-sm text-on-surface-variant">
           {visibleEvents.length} MCP {visibleEvents.length === 1 ? 'request' : 'requests'} in the
-          last 15 minutes
+          last {WINDOW_MINUTES} minutes
         </span>
         {compact && (
           <a
@@ -189,7 +191,7 @@ export function McpLive({
 
       <p className="text-xs text-on-surface-variant">
         Partial live view — events from the instance serving this stream. Each server instance only
-        sees the requests it handled, and keeps the last 15 minutes in memory.
+        sees the requests it handled, and keeps the last {WINDOW_MINUTES} minutes in memory.
       </p>
     </div>
   )

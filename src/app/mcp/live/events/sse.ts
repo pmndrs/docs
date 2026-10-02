@@ -1,4 +1,5 @@
-import { matchesFilter, type McpEvent, type McpEventBus, type McpEventFilter } from './bus'
+import type { McpEvent } from '@/app/mcp/live/_components/event'
+import type { McpEventBus } from './bus'
 
 /**
  * The bus as Server-Sent Events, for the `/mcp/live` page:
@@ -10,7 +11,7 @@ import { matchesFilter, type McpEvent, type McpEventBus, type McpEventFilter } f
  * `Last-Event-ID`, and its backlog then starts after it, when the bus still has it.
  */
 
-export const HEARTBEAT_MS = 15_000
+const HEARTBEAT_MS = 15_000
 
 export const SSE_HEADERS = {
   'Content-Type': 'text/event-stream; charset=utf-8',
@@ -20,24 +21,22 @@ export const SSE_HEADERS = {
   'X-Accel-Buffering': 'no',
 }
 
-export function formatEvent(event: McpEvent) {
+function formatEvent(event: McpEvent) {
   return `id: ${event.id}\nevent: mcp\ndata: ${JSON.stringify(event)}\n\n`
 }
 
-export function formatBacklog(events: McpEvent[]) {
+function formatBacklog(events: McpEvent[]) {
   const last = events.at(-1)
   return `${last ? `id: ${last.id}\n` : ''}event: backlog\ndata: ${JSON.stringify(events)}\n\n`
 }
 
 export function createEventStream({
   bus,
-  filter,
   lastEventId,
   signal,
   heartbeatMs = HEARTBEAT_MS,
 }: {
   bus: McpEventBus
-  filter?: McpEventFilter
   lastEventId?: string | null
   signal: AbortSignal
   heartbeatMs?: number
@@ -58,7 +57,7 @@ export function createEventStream({
         }
       }
 
-      let backlog = bus.recent(filter)
+      let backlog = bus.recent()
       if (lastEventId) {
         const seen = backlog.findIndex(({ id }) => id === lastEventId)
         if (seen !== -1) backlog = backlog.slice(seen + 1)
@@ -67,9 +66,7 @@ export function createEventStream({
       send('retry: 3000\n\n')
       send(formatBacklog(backlog))
 
-      const unsubscribe = bus.subscribe((event) => {
-        if (matchesFilter(event, filter)) send(formatEvent(event))
-      })
+      const unsubscribe = bus.subscribe((event) => send(formatEvent(event)))
       const heartbeat = setInterval(() => send(': heartbeat\n\n'), heartbeatMs)
 
       const onAbort = () => {

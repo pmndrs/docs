@@ -7,42 +7,26 @@
  * backend (Redis pub/sub and a capped list, say) would replace `createMemoryEventBus` behind
  * the same `McpEventBus` interface, in this one file.
  *
- * Server-only, and kept under `src/app/api` so it leaves the static export and the npm package
- * along with the routes that use it.
+ * Server-only, and kept under `src/app/mcp/live` so it leaves the static export and the npm
+ * package along with the page and the route that use it.
  *
  * An event carries identifiers only: never an IP, a header, or an argument beyond the library,
  * the page path and the example name -- see `capture.ts`, which builds them.
  */
 
-import type { McpEvent } from '@/app/mcp/live/_components/event'
+import { WINDOW_MS, type McpEvent } from '@/app/mcp/live/_components/event'
 
-export type { McpEvent, McpEventKind } from '@/app/mcp/live/_components/event'
-
-export interface McpEventFilter {
-  /** Only the events about one of these libraries -- all of them when empty or left out. */
-  libs?: string[]
-}
-
-export type McpEventListener = (event: McpEvent) => void
+type McpEventListener = (event: McpEvent) => void
 
 export interface McpEventBus {
   publish(event: McpEvent): void
   /** Returns the function that unsubscribes. */
   subscribe(listener: McpEventListener): () => void
   /** The events still in the window, oldest first. */
-  recent(filter?: McpEventFilter): McpEvent[]
+  recent(): McpEvent[]
 }
 
-export function matchesFilter(event: McpEvent, filter: McpEventFilter = {}) {
-  const { libs } = filter
-  if (libs && libs.length > 0 && (event.lib === undefined || !libs.includes(event.lib))) {
-    return false
-  }
-  return true
-}
-
-export const DEFAULT_CAPACITY = 500
-export const DEFAULT_MAX_AGE_MS = 15 * 60 * 1000
+const DEFAULT_CAPACITY = 500
 
 /**
  * An in-memory bus: a ring buffer of the last `capacity` events, of which `recent` returns those
@@ -50,7 +34,7 @@ export const DEFAULT_MAX_AGE_MS = 15 * 60 * 1000
  */
 export function createMemoryEventBus({
   capacity = DEFAULT_CAPACITY,
-  maxAgeMs = DEFAULT_MAX_AGE_MS,
+  maxAgeMs = WINDOW_MS,
   now = Date.now,
 }: {
   capacity?: number
@@ -86,12 +70,12 @@ export function createMemoryEventBus({
       }
     },
 
-    recent(filter) {
+    recent() {
       const oldest = now() - maxAgeMs
       const events: McpEvent[] = []
       for (let offset = 0; offset < capacity; offset++) {
         const event = buffer[(next + offset) % capacity]
-        if (event && event.ts >= oldest && matchesFilter(event, filter)) events.push(event)
+        if (event && event.ts >= oldest) events.push(event)
       }
       return events
     },

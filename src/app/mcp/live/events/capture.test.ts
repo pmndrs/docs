@@ -1,7 +1,8 @@
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { getEventBus, type McpEvent } from './bus'
+import type { McpEvent } from '@/app/mcp/live/_components/event'
+import { getEventBus } from './bus'
 import { clientFromUserAgent, normalizeClientName, resolveClient } from './capture'
 
 vi.mock('next/headers', () => ({
@@ -29,7 +30,7 @@ afterAll(() => server.close())
 let id = 0
 
 async function rpc(method: string, params: unknown, userAgent: string) {
-  const { POST } = await import('../[transport]/route')
+  const { POST } = await import('@/app/api/[transport]/route')
   const response = await POST(
     new Request('https://docs.pmnd.rs/api/mcp', {
       method: 'POST',
@@ -140,6 +141,18 @@ describe('capture', () => {
       ok: true,
     })
     expect(events[0].lib).toBeUndefined()
+  })
+
+  it('falls back to the User-Agent when clients announcing different names share it', async () => {
+    // A generic User-Agent: the second `initialize` must not take over the first one's calls
+    await initialize('Third Agent', 'python-httpx/0.28.1')
+    await initialize('Fourth Agent', 'python-httpx/0.28.1')
+
+    const events = await published(() =>
+      rpc('resources/read', { uri: 'docs://pmndrs/manifest' }, 'python-httpx/0.28.1'),
+    )
+
+    expect(events[0]).toMatchObject({ client: 'python-httpx' })
   })
 })
 

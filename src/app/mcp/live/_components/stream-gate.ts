@@ -20,7 +20,7 @@ export interface GateEnvironment {
  * How long the gate stays open once the component is scrolled away or its tab hidden: scrolling
  * past it, or switching tabs for a moment, should not cost a reconnection.
  */
-export const CLOSE_DELAY_MS = 5_000
+const CLOSE_DELAY_MS = 5_000
 
 function browserEnvironment(): GateEnvironment {
   return {

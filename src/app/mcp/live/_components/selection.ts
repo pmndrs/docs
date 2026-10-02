@@ -20,7 +20,7 @@ export type GraphMode =
   | { kind: 'rooted'; lib: string }
 
 /** Past this many libraries selected, their pages are not shown. */
-export const MAX_LIBS_WITH_PAGES = 3
+const MAX_LIBS_WITH_PAGES = 3
 
 export function graphMode(selection: Selection): GraphMode {
   if (selection.length === 1) return { kind: 'rooted', lib: selection[0] }

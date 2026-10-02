@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createEventId, createMemoryEventBus, getEventBus, type McpEvent } from './bus'
+import type { McpEvent } from '@/app/mcp/live/_components/event'
+import { createEventId, createMemoryEventBus, getEventBus } from './bus'
 
 function event(overrides: Partial<McpEvent> = {}): McpEvent {
   const ts = overrides.ts ?? 1_000
@@ -47,21 +48,6 @@ describe('createMemoryEventBus', () => {
     now = 120
 
     expect(bus.recent().map(({ path }) => path)).toEqual(['/new'])
-  })
-
-  it('filters by library', () => {
-    const bus = createMemoryEventBus({ now: () => 1_000 })
-    bus.publish(event({ lib: 'drei' }))
-    bus.publish(event({ lib: 'zustand' }))
-    bus.publish(event({ kind: 'resource', name: 'docs://pmndrs/manifest', lib: undefined }))
-
-    expect(bus.recent({ libs: ['zustand'] }).map(({ lib }) => lib)).toEqual(['zustand'])
-    expect(bus.recent({ libs: ['zustand', 'drei'] }).map(({ lib }) => lib)).toEqual([
-      'drei',
-      'zustand',
-    ])
-    expect(bus.recent({})).toHaveLength(3)
-    expect(bus.recent({ libs: [] })).toHaveLength(3)
   })
 
   it('delivers to subscribers until they unsubscribe', () => {

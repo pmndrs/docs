@@ -77,7 +77,7 @@ const OVERFLOW_NOUNS: Record<ColumnKind, [one: string, many: string]> = {
   page: ['page', 'pages'],
 }
 
-export function overflowLabel(kind: ColumnKind, hidden: number) {
+function overflowLabel(kind: ColumnKind, hidden: number) {
   const [one, many] = OVERFLOW_NOUNS[kind]
   return `+${hidden} other ${hidden === 1 ? one : many}`
 }

@@ -1,10 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import type { McpEvent } from './event'
-
-/** How far back the graph looks -- what the server's buffer holds at most, too. */
-export const WINDOW_MS = 15 * 60 * 1000
+import { WINDOW_MS, type McpEvent } from './event'
 
 /** Past this, the oldest events go first, whatever their age. */
 const MAX_EVENTS = 1000
@@ -31,7 +28,7 @@ export function resumeUrl(url: string, lastEventId: string | undefined) {
 }
 
 /**
- * The events of the sliding window, from the `/api/mcp-events` stream at `url`, connected only
+ * The events of the sliding window, from the `/mcp/live/events` stream at `url`, connected only
  * while `enabled`.
  *
  * `onLive` is called once per event published while connected -- not for a backlog, which only

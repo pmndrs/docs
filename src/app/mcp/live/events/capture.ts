@@ -1,5 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { createEventId, getEventBus, type McpEvent, type McpEventBus } from './bus'
+import type { McpEvent } from '@/app/mcp/live/_components/event'
+import { createEventId, getEventBus, type McpEventBus } from './bus'
 
 /**
  * Turns every tool call and resource read of an MCP server into an `McpEvent` on the bus.
@@ -14,7 +15,8 @@ import { createEventId, getEventBus, type McpEvent, type McpEventBus } from './b
  * What a request does carry is its User-Agent, which the SDK hands each handler in
  * `extra.requestInfo.headers`. So the client is resolved from that, the first of these that answers:
  * 1. the `clientInfo.name` an `initialize` sent with this exact User-Agent, on this instance --
- *    see `rememberClient`, which the route calls with every POST before handing it on;
+ *    see `rememberClient`, which the route calls with every POST before handing it on -- unless
+ *    clients announcing different names share that User-Agent ("node", say);
  * 2. else a short token read from the User-Agent itself ("claude-code", "cursor", "node");
  * 3. else "unknown".
  */
@@ -61,14 +63,15 @@ export function clientFromUserAgent(userAgent: string | undefined): string | und
 }
 
 //
-// `clientInfo.name` by User-Agent, learnt from `initialize` requests
+// `clientInfo.name` by User-Agent, learnt from `initialize` requests -- `null` for a User-Agent
+// that several names were announced with, which then says nothing about which one it is
 //
 
 const MAX_REMEMBERED_CLIENTS = 256
 const CLIENTS_KEY = Symbol.for('@pmndrs/docs/mcp-clients-by-user-agent')
 
-function rememberedClients(): Map<string, string> {
-  const global = globalThis as typeof globalThis & { [CLIENTS_KEY]?: Map<string, string> }
+function rememberedClients(): Map<string, string | null> {
+  const global = globalThis as typeof globalThis & { [CLIENTS_KEY]?: Map<string, string | null> }
   global[CLIENTS_KEY] ??= new Map()
   return global[CLIENTS_KEY]
 }
@@ -90,7 +93,10 @@ export async function rememberClient(request: Request) {
 
   let body: unknown
   try {
-    body = await request.clone().json()
+    const text = await request.clone().text()
+    // Every tool call comes through here: only an `initialize` is worth parsing
+    if (!text.includes('"initialize"')) return
+    body = JSON.parse(text)
   } catch {
     return
   }
@@ -101,8 +107,9 @@ export async function rememberClient(request: Request) {
     if (!name) continue
 
     const clients = rememberedClients()
+    const known = clients.get(userAgent)
     clients.delete(userAgent) // re-inserted last: the Map's order is the eviction order
-    clients.set(userAgent, name)
+    clients.set(userAgent, known === undefined || known === name ? name : null)
     if (clients.size > MAX_REMEMBERED_CLIENTS) {
       clients.delete(clients.keys().next().value!)
     }

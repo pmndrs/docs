@@ -6,8 +6,8 @@
 # (route.ts files) as they require server runtime. This script temporarily moves the
 # server-only parts of the app out of the way during the build, then restores them
 # afterward to preserve the source:
-#   - src/app/api       the Route Handlers (MCP server, its event stream)
-#   - src/app/mcp/live  the page that streams from them
+#   - src/app/api       the MCP server
+#   - src/app/mcp/live  the live view of its requests, and their event stream
 #
 # Keep this list in step with `isExcluded` in src/cli/website.ts and the `!` entries of
 # `files` in package.json.
@@ -25,9 +25,9 @@ fi
 
 # Move the server-only directories if building for export
 if [ "$IS_EXPORT" = "true" ]; then
-  mkdir -p tmp/mcp-backup
+  mkdir -p tmp
   mv src/app/api tmp/api-backup
-  mv src/app/mcp/live tmp/mcp-backup/live
+  mv src/app/mcp/live tmp/mcp-live-backup
 fi
 
 # Run Next.js build
@@ -37,8 +37,7 @@ STATUS=$?
 # Restore them if they were moved
 if [ "$IS_EXPORT" = "true" ]; then
   mv tmp/api-backup src/app/api
-  mv tmp/mcp-backup/live src/app/mcp/live
-  rmdir tmp/mcp-backup
+  mv tmp/mcp-live-backup src/app/mcp/live
 fi
 
 # Each page's markdown is exported under `md/` (src/app/md/[...slug]/route.ts), but belongs

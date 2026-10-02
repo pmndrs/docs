@@ -43,9 +43,9 @@ function findWorkDir(packageRoot: string) {
 
 /**
  * What the copy leaves behind, mirroring the `!` entries of `files`: Route Handlers cannot be
- * statically exported, nor the `/mcp/live` page that streams from one; and tests and stories are
- * not part of the app — they reach for `.storybook` and `vitest`, which the app has no reason to
- * carry.
+ * statically exported, nor the `/mcp/live` page that streams from one of its own; and tests and
+ * stories are not part of the app — they reach for `.storybook` and `vitest`, which the app has no
+ * reason to carry.
  */
 const isExcluded = (path: string) =>
   /\.(test|stories)\.[jt]sx?$/.test(path) ||
