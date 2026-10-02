@@ -603,6 +603,148 @@ Content with &lt;special&gt; characters &amp; symbols.
     })
   })
 
+  describe('CORS', () => {
+    const corsHeaders = {
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET, POST, OPTIONS',
+      'access-control-allow-headers':
+        'Content-Type, Accept, Authorization, Mcp-Session-Id, MCP-Protocol-Version, Last-Event-ID',
+      'access-control-expose-headers': 'Mcp-Session-Id, MCP-Protocol-Version',
+      'access-control-max-age': '86400',
+    }
+
+    it('answers a preflight with 204 and the CORS headers', async () => {
+      // Regression: without an OPTIONS export, Next answered the preflight itself, with no
+      // Access-Control headers, and a browser-based client was refused without a word.
+      const { OPTIONS } = await import('./route')
+      const response = OPTIONS()
+
+      expect(response.status).toBe(204)
+      for (const [name, value] of Object.entries(corsHeaders)) {
+        expect(response.headers.get(name)).toBe(value)
+      }
+    })
+
+    it('carries Access-Control-Allow-Origin on a successful POST', async () => {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+        }),
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.headers.get('access-control-allow-origin')).toBe('*')
+    })
+  })
+
+  describe('Refused requests', () => {
+    let warn: ReturnType<typeof vi.spyOn>
+    beforeEach(() => {
+      warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+    afterEach(() => {
+      warn.mockRestore()
+    })
+
+    it('answers a malformed JSON body with a 400 parse error, at once', async () => {
+      // Regression: mcp-handler parsed the body itself and, on a broken one, threw where
+      // nothing caught it -- the response was never written, and in production the function
+      // ran until Vercel timed it out. Here this test would hit its timeout.
+      const { POST } = await import('./route')
+      const started = Date.now()
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: '{"jsonrpc":',
+        }),
+      )
+
+      expect(Date.now() - started).toBeLessThan(1000)
+      expect(response.status).toBe(400)
+      expect(response.headers.get('access-control-allow-origin')).toBe('*')
+      expect(await response.json()).toEqual({
+        jsonrpc: '2.0',
+        error: { code: -32700, message: 'Parse error' },
+        id: null,
+      })
+    })
+
+    it('answers an empty body with the same 400', async () => {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+        }),
+      )
+
+      expect(response.status).toBe(400)
+      expect(await response.json()).toMatchObject({ error: { code: -32700 } })
+    })
+
+    it('logs one warn line, with the reason, when the handler refuses a request', async () => {
+      // Valid JSON, but not a JSON-RPC message: the SDK answers 400, and that answer is what
+      // the line is for -- it is the only trace of why a client is being refused.
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+            'User-Agent': 'diag-400/0.1',
+            'MCP-Protocol-Version': '2025-11-25',
+          },
+          body: JSON.stringify({ hello: 'world' }),
+        }),
+      )
+
+      expect(response.status).toBe(400)
+      expect(warn).toHaveBeenCalledTimes(1)
+      const [label, line] = warn.mock.calls[0]
+      expect(label).toBe('MCP request refused')
+      expect(JSON.parse(line as string)).toMatchObject({
+        status: 400,
+        methods: [null],
+        userAgent: 'diag-400/0.1',
+        protocolVersion: '2025-11-25',
+        response: expect.stringContaining('-32700'),
+      })
+      // The client still gets the body the handler wrote: logging read a clone
+      expect(await response.text()).toContain('-32700')
+    })
+
+    it('logs nothing for a request the handler accepts', async () => {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+        }),
+      )
+
+      expect(response.status).toBe(200)
+      expect(warn).not.toHaveBeenCalled()
+    })
+  })
+
   describe('SSE transport', () => {
     it('answers /api/sse with a 404 instead of hanging', async () => {
       // Regression: with SSE enabled, mcp-handler reaches for Redis on this endpoint,
