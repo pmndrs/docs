@@ -459,12 +459,107 @@ Always handle errors gracefully and consider alternative approaches when a speci
 )
 
 /**
+ * Open to browsers from any origin. The server is public, read-only documentation and asks for
+ * no credentials, so `*` gives nothing away -- and without these a browser-based MCP client is
+ * refused at the preflight, with no error it can show. Set here rather than in `next.config.mjs`
+ * `headers()`: the route's tests then see them, and the policy travels with the route instead
+ * of with the server it happens to run on.
+ */
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers':
+    'Content-Type, Accept, Authorization, Mcp-Session-Id, MCP-Protocol-Version, Last-Event-ID',
+  'Access-Control-Expose-Headers': 'Mcp-Session-Id, MCP-Protocol-Version',
+  'Access-Control-Max-Age': '86400',
+}
+
+/**
+ * `response` with the CORS headers added. A new Response around the same body rather than a
+ * mutation: the one from mcp-handler streams, and is left as it came.
+ */
+function withCors(response: Response): Response {
+  const headers = new Headers(response.headers)
+  for (const [name, value] of Object.entries(CORS_HEADERS)) {
+    headers.set(name, value)
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
+}
+
+/** The answer the SDK itself gives a body that is not JSON. */
+function parseError(): Response {
+  return Response.json(
+    { jsonrpc: '2.0', error: { code: -32700, message: 'Parse error' }, id: null },
+    { status: 400 },
+  )
+}
+
+/**
+ * One line in the function's logs for a request the handler refused: the status, the method(s)
+ * asked for, the client, the protocol version it claims, and the handler's own reason. Meant to
+ * be read in Vercel's logs -- the route refuses a few hundred requests a day that nothing
+ * explains, and the reason in the response is the only thing that will. 4xx only, so that a
+ * 200 -- a stream, possibly long -- is never read here. Can go once the question is answered.
+ */
+async function warnRefused(request: Request, body: unknown, response: Response) {
+  const messages = Array.isArray(body) ? body : [body]
+  const methods = messages.map((message) =>
+    typeof message === 'object' && message !== null && 'method' in message
+      ? message.method
+      : undefined,
+  )
+  console.warn(
+    'MCP request refused',
+    JSON.stringify({
+      status: response.status,
+      methods,
+      userAgent: request.headers.get('user-agent'),
+      protocolVersion: request.headers.get('mcp-protocol-version'),
+      response: await response.clone().text(),
+    }),
+  )
+}
+
+/**
  * The handler, after noting which client an `initialize` names -- tool calls only carry a
  * User-Agent, see `capture.ts`.
  */
 async function POST(request: Request) {
+  // mcp-handler reads a JSON body with `req.json()` itself, where nothing catches: on an empty
+  // or broken body it throws, the response is never written, and the function runs until its
+  // `maxDuration` for a 504. So the body is read first, and such a one is answered here. Only a
+  // JSON body: another content-type is read as text by mcp-handler, and refused by the SDK.
+  let body: unknown
+  if (request.headers.get('content-type')?.includes('application/json')) {
+    try {
+      body = JSON.parse(await request.clone().text())
+    } catch {
+      return withCors(parseError())
+    }
+  }
+
   await rememberClient(request)
-  return handler(request)
+  const response = await handler(request)
+  if (response.status >= 400 && response.status < 500) {
+    await warnRefused(request, body, response)
+  }
+  return withCors(response)
 }
 
-export { handler as GET, POST }
+async function GET(request: Request) {
+  return withCors(await handler(request))
+}
+
+/**
+ * The preflight a browser sends before a POST. Answered here: mcp-handler has no branch for
+ * OPTIONS, so handed to it, the request would hang like a broken body does.
+ */
+function OPTIONS() {
+  return withCors(new Response(null, { status: 204 }))
+}
+
+export { GET, OPTIONS, POST }
