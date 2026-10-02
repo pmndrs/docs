@@ -193,6 +193,37 @@ describe('compileMdxContent', () => {
     expect(vuePanel).not.toMatch(hiddenAttribute)
   })
 
+  it('renders a Tabs with a syncKey as one without: its defaultValue, until hydrated', async () => {
+    const tabs = (syncKey: string) =>
+      [
+        `<Tabs defaultValue="core"${syncKey}>`,
+        '  <TabsList>',
+        '    <TabsTrigger value="core">Core</TabsTrigger>',
+        '    <TabsTrigger value="r3f">React Three Fiber</TabsTrigger>',
+        '  </TabsList>',
+        '  <TabsContent value="core">Any renderer.</TabsContent>',
+        '  <TabsContent value="r3f">In a `<Canvas>`.</TabsContent>',
+        '</Tabs>',
+      ].join('\n')
+    const render = async (source: string) => {
+      const result = await compileMdxContent(source, {
+        relFilePath,
+        absoluteFilePath,
+        baseUrl,
+        title,
+        url,
+        tableOfContents,
+        entries,
+      })
+      return renderToString(result.content)
+    }
+
+    const synced = await render(tabs(' syncKey="lib"'))
+    expect(synced).toMatch(/<button[^>]*aria-selected="true"[^>]*>Core<\/button>/)
+    expect(synced).toContain('In a <code')
+    expect(synced).toBe(await render(tabs('')))
+  })
+
   it('gives the headings in a TabsContent an id and a table of contents entry', async () => {
     const source = [
       '## Installation',
