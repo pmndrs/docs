@@ -42,7 +42,9 @@ const websiteOptions = [
     'SOURCECODE_BASEURL',
   ),
   new Option('--edit-baseurl <url>', 'Base URL of the "edit this page" links').env('EDIT_BASEURL'),
-  new Option('--icon <emoji>', 'Favicon emoji, e.g. "🥑"').env('ICON'),
+  new Option('--icon <icon>', 'Favicon: an emoji, e.g. "🥑", or an image path local to MDX').env(
+    'ICON',
+  ),
   new Option('--logo <path>', 'Logo path or URL').env('LOGO'),
   new Option('--github <url>', 'GitHub URL').env('GITHUB'),
   new Option('--discord <url>', 'Discord URL').env('DISCORD'),

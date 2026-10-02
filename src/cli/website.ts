@@ -129,8 +129,13 @@ export async function buildWebsite({
     // belongs beside the page, at `<path>.md`: the URL a server build rewrites to it.
     const exportDir = join(workDir, distDir)
     const markdownDir = join(exportDir, 'md')
+    // Without `ICON`, `/icon.svg` (`src/app/icon.svg/route.ts`) is a 404, but the export writes
+    // its body all the same: left out, so the file is missing rather than a broken image.
+    const iconFile = join(exportDir, 'icon.svg')
+    const isLeftOut = (source: string) =>
+      source === markdownDir || (!environment.ICON && source === iconFile)
     await mkdir(outDir, { recursive: true })
-    await cp(exportDir, outDir, { recursive: true, filter: (source) => source !== markdownDir })
+    await cp(exportDir, outDir, { recursive: true, filter: (source) => !isLeftOut(source) })
     if (existsSync(markdownDir)) await cp(markdownDir, outDir, { recursive: true })
   } finally {
     await rm(workDir, { recursive: true, force: true })

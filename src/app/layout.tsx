@@ -1,6 +1,4 @@
 import cn from '@/lib/cn'
-import { svg } from '@/utils/icon'
-import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
@@ -65,19 +63,12 @@ const description = `Documentation for ${NEXT_PUBLIC_LIBNAME}`
 const url = NEXT_PUBLIC_URL
 const siteName = NEXT_PUBLIC_LIBNAME
 
+// The icon `ICON` describes, published at `/icon.svg` (`src/app/icon.svg/route.ts`): the very file
+// the libraries menu of the other pmndrs docs sites shows, so the two cannot diverge. Next adds
+// neither the base path nor `metadataBase` to an icon URL: it is written as is.
 const icon = []
 if (process.env.ICON) {
-  if (process.env.ICON.startsWith('/')) {
-    // "normal" icon
-    icon.push({
-      url: resolveMdxUrl(process.env.ICON, '/', process.env.MDX_BASEURL),
-    })
-  } else {
-    // Emoji icon
-    icon.push({
-      url: `data:image/svg+xml,${encodeURIComponent(svg(process.env.ICON))}`,
-    })
-  }
+  icon.push({ url: `${process.env.BASE_PATH || ''}/icon.svg`, type: 'image/svg+xml' })
 }
 
 export const metadata: Metadata = {
