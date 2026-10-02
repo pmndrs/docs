@@ -1,5 +1,15 @@
 # @pmndrs/docs
 
+## 4.14.0
+
+### Minor Changes
+
+- [#663](https://github.com/pmndrs/docs/pull/663) [`04d37d3`](https://github.com/pmndrs/docs/commit/04d37d3aa1dda3a6134c62e14517a8f13620987e) Thanks [@abernier](https://github.com/abernier)! - Code blocks take their syntax colors from the site's palette: the accents rotate the seed's hue, so they follow `THEME_PRIMARY` and the reader's picked color while staying apart from each other. Diff lines stay green and red, and no longer look washed out in light mode.
+
+### Patch Changes
+
+- [#665](https://github.com/pmndrs/docs/pull/665) [`b0e3115`](https://github.com/pmndrs/docs/commit/b0e3115b356b64e3886a99d3ae1fea39b3040e6a) Thanks [@abernier](https://github.com/abernier)! - Inline code keeps a readable text color on its own background, which it no longer inherits: in the sidebar's current page at high contrast, it had turned near-black on a dark chip.
+
 ## 4.13.0
 
 ### Minor Changes
