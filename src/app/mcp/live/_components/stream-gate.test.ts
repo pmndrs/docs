@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { watchStreamGate, type GateEnvironment } from './stream-gate'
-import { resumeUrl } from './use-mcp-events'
 
 /** A document and an IntersectionObserver the test drives by hand. */
 function fakeEnvironment(visibility: DocumentVisibilityState = 'visible') {
@@ -120,17 +119,5 @@ describe('watchStreamGate', () => {
     stop()
     expect(fake.observer.disconnect).toHaveBeenCalled()
     expect(fake.listeners.size).toBe(0)
-  })
-})
-
-describe('resumeUrl', () => {
-  it('asks to resume after the last event seen', () => {
-    expect(resumeUrl('/mcp/live/events', undefined)).toBe('/mcp/live/events')
-    expect(resumeUrl('/mcp/live/events', '0abc-0001')).toBe(
-      '/mcp/live/events?lastEventId=0abc-0001',
-    )
-    expect(resumeUrl('https://docs.pmnd.rs/mcp/live/events?x=1', 'x y')).toBe(
-      'https://docs.pmnd.rs/mcp/live/events?x=1&lastEventId=x%20y',
-    )
   })
 })

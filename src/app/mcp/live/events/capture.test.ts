@@ -1,7 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import type { McpEvent } from '@/app/mcp/live/_components/event'
 import { getEventBus } from './bus'
 import { clientFromUserAgent, normalizeClientName, resolveClient } from './capture'
 
@@ -47,14 +46,13 @@ async function rpc(method: string, params: unknown, userAgent: string) {
 
 /** Runs `request` and returns what it published on the bus. */
 async function published(request: () => Promise<unknown>) {
-  const events: McpEvent[] = []
-  const unsubscribe = getEventBus().subscribe((event) => events.push(event))
+  const publish = vi.spyOn(getEventBus(), 'publish')
   try {
     await request()
+    return publish.mock.calls.map(([event]) => event)
   } finally {
-    unsubscribe()
+    publish.mockRestore()
   }
-  return events
 }
 
 const initialize = (name: string, userAgent: string) =>
