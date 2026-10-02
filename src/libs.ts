@@ -149,6 +149,15 @@ export const libs = {
     description: 'Write composable 3D behaviors like a story.',
     pmndrs_docs: true,
   },
+  denoiser: {
+    title: 'Denoiser',
+    // The site root hosts the demos; the docs are exported under `/docs`.
+    docs_url: 'https://pmndrs.github.io/denoiser/docs',
+    github: 'https://github.com/pmndrs/denoiser',
+    description: 'Native level ML denoising on the web: Intel Open Image Denoiser ported to ONNX',
+    llms_full: true,
+    pmndrs_docs: true,
+  },
 } as const satisfies Record<string, Library>
 
 export type SUPPORTED_LIBRARY_NAMES = keyof typeof libs
