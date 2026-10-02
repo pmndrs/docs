@@ -13,6 +13,7 @@ import { PrimaryColorPicker } from '@/components/PrimaryColorPicker'
 import Search from '@/components/Search'
 import { SidebarNav } from '@/components/SidebarNav'
 import { SponsorCard } from '@/components/SponsorCard'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { VersionBanner } from '@/components/VersionBanner'
 import { VersionSwitcher } from '@/components/VersionSwitcher'
 import { SidebarFooter, SidebarTrigger } from '@/components/ui/sidebar'
@@ -94,6 +95,7 @@ export default async function Layoutt({ params, children }: Props) {
           </React.Fragment>
         ))}
         <PrimaryColorPicker />
+        <ThemeToggle />
       </div>
     </div>
   )

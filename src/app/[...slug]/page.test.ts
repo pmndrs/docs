@@ -301,3 +301,82 @@ test.describe('primary color', () => {
     expect(hydrationErrors).toEqual([])
   })
 })
+
+//
+// Theme: light, dark or the system's, picked from the header and remembered
+//
+
+test.describe('theme', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the toggle cycles system, light and dark, is remembered, and follows the system', async ({
+    page,
+  }) => {
+    const hydrationErrors: string[] = []
+    page.on('console', (message) => {
+      if (message.type() !== 'error') return
+      // The development message, and the production one (minified React errors 418 to 425)
+      if (/hydrat|Minified React error #4(1[89]|2[0-5])/i.test(message.text())) {
+        hydrationErrors.push(message.text())
+      }
+    })
+
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const html = page.locator('html')
+    const toggle = page.getByRole('button', { name: /^Theme(:|$)/ })
+    const storedTheme = () => page.evaluate(() => localStorage.getItem('theme'))
+
+    // Nothing picked: the system's
+    await expect(toggle).toHaveAccessibleName('Theme: system, switch to light')
+    await expect(html).toHaveClass(/\blight\b/)
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await expect(html).toHaveClass(/\bdark\b/)
+
+    // Picked: whatever the system's
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Theme: light, switch to dark')
+    await expect(html).toHaveClass(/\blight\b/)
+    await expect(html).not.toHaveClass(/\bdark\b/)
+    expect(await storedTheme()).toBe('light')
+
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Theme: dark, switch to system')
+    await expect(html).toHaveClass(/\bdark\b/)
+    expect(await storedTheme()).toBe('dark')
+    await page.emulateMedia({ colorScheme: 'light' })
+    await expect(html).toHaveClass(/\bdark\b/)
+
+    await page.reload()
+    await page.waitForLoadState('networkidle')
+    await expect(toggle).toHaveAccessibleName('Theme: dark, switch to system')
+    await expect(html).toHaveClass(/\bdark\b/)
+
+    // The page as first painted, React never running: the stored theme's icon already, no swap.
+    // The JS chunks only: the CSS ones hide the other icons
+    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+    await page.route(chunks, (route) => route.abort())
+    await page.reload()
+    await expect(html).toHaveClass(/\bdark\b/)
+    await expect(toggle.locator('.lucide-moon')).toBeVisible()
+    await expect(toggle.locator('.lucide-sun')).toBeHidden()
+    await expect(toggle.locator('.lucide-monitor')).toBeHidden()
+    await page.unroute(chunks)
+    await page.reload()
+    await page.waitForLoadState('networkidle')
+
+    // Back to the system's, which it follows again
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Theme: system, switch to light')
+    expect(await storedTheme()).toBe('system')
+    await expect(html).toHaveClass(/\blight\b/)
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await expect(html).toHaveClass(/\bdark\b/)
+    // Once hydrated, the button shows the theme itself
+    await expect(html).not.toHaveAttribute('data-prepaint-theme')
+
+    expect(hydrationErrors).toEqual([])
+  })
+})
