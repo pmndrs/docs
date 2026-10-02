@@ -486,6 +486,149 @@ test.describe('contrast', () => {
 })
 
 //
+// Scheme: the reader's Material scheme reshapes the palette, and is remembered
+//
+
+test.describe('scheme', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the toggle cycles every scheme, composes with the contrast, is remembered, and forgotten for the default', async ({
+    page,
+  }) => {
+    const hydrationErrors = collectHydrationErrors(page)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const palette = () => page.locator('style#mcu-styles').textContent()
+    const defaultPalette = await palette()
+    // The palette in effect, whichever `<style>` it comes from
+    const primary = () =>
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
+      )
+    const defaultPrimary = await primary()
+    const storedScheme = () => page.evaluate(() => localStorage.getItem('pmndrs-docs:scheme'))
+    const cache = () =>
+      page.evaluate(() =>
+        JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
+      )
+
+    const name = /^Scheme(:|$)/
+    const toggle = page.getByRole('button', { name })
+
+    // The page as first painted: the HTML and its inline scripts, React never running. The JS
+    // chunks only: the CSS ones hide the other icons
+    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+    async function reloadWithoutReact() {
+      await page.route(chunks, (route) => route.abort())
+      await page.reload()
+    }
+    async function reloadWithReact() {
+      await page.unroute(chunks)
+      await page.reload()
+      await page.waitForLoadState('networkidle')
+      await showThemeControls(page)
+    }
+
+    await showThemeControls(page)
+
+    // Nothing picked: the site's default (`THEME_SCHEME` of `start.sh`), then every other one, each
+    // its own palette
+    const schemes = [
+      ['tonal spot', 'tonalSpot'],
+      ['vibrant', 'vibrant'],
+      ['expressive', 'expressive'],
+      ['fidelity', 'fidelity'],
+      ['content', 'content'],
+      ['monochrome', 'monochrome'],
+      ['neutral', 'neutral'],
+    ]
+    await expect(toggle).toHaveAccessibleName('Scheme: tonal spot, switch to vibrant')
+    let previousPalette = defaultPalette
+    for (let i = 1; i < schemes.length; i++) {
+      const [label, value] = schemes[i]
+      const [nextLabel] = schemes[(i + 1) % schemes.length]
+      await toggle.click()
+      await expect(toggle).toHaveAccessibleName(`Scheme: ${label}, switch to ${nextLabel}`)
+      await expect.poll(palette).not.toBe(previousPalette)
+      previousPalette = (await palette())!
+      expect(await storedScheme()).toBe(value)
+    }
+
+    // Round to the default, forgotten, then vibrant again
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Scheme: tonal spot, switch to vibrant')
+    await expect.poll(palette).toBe(defaultPalette)
+    expect(await storedScheme()).toBeNull()
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Scheme: vibrant, switch to expressive')
+    await expect.poll(palette).not.toBe(defaultPalette)
+    const vibrantPalette = await palette()
+    const vibrantPrimary = await primary()
+    expect(vibrantPrimary).not.toBe(defaultPrimary)
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(vibrantPalette)
+    await expect(toggle).toHaveAccessibleName('Scheme: vibrant, switch to expressive')
+    // Cached once applied, for the next load: the default color and contrast, in this scheme
+    await expect.poll(async () => (await cache())?.scheme).toBe('vibrant')
+    expect((await cache())?.color).toBe('#323e48')
+    expect((await cache())?.contrast).toBe(0)
+
+    // The scheme from the first paint, its icon included: no flash of the default palette
+    await reloadWithoutReact()
+    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary()).toBe(vibrantPrimary)
+    await expect(anyCopy(page, name).locator('.lucide-sparkles')).toHaveCSS('display', 'block')
+    await expect(anyCopy(page, name).locator('.lucide-palette')).toHaveCSS('display', 'none')
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(vibrantPalette)
+    // Once `Mtb` has the scheme, only its palette is left
+    await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
+    await expect(page.locator('html')).not.toHaveAttribute('data-prepaint-scheme')
+
+    // With a contrast too: the palette of both, cached as such
+    const contrastToggle = page.getByRole('button', { name: /^Contrast(:|$)/ })
+    await contrastToggle.click()
+    await contrastToggle.click()
+    await expect(contrastToggle).toHaveAccessibleName('Contrast: high, switch to standard')
+    await expect.poll(palette).not.toBe(vibrantPalette)
+    await expect
+      .poll(async () => {
+        const { contrast, scheme } = (await cache()) ?? {}
+        return { contrast, scheme }
+      })
+      .toEqual({ contrast: 1, scheme: 'vibrant' })
+    const bothPrimary = await primary()
+    await reloadWithoutReact()
+    expect(await primary()).toBe(bothPrimary)
+    await reloadWithReact()
+    await contrastToggle.click()
+    await expect(contrastToggle).toHaveAccessibleName('Contrast: standard, switch to medium')
+    await expect.poll(async () => (await cache())?.contrast).toBe(0)
+
+    // Back to the site's default: forgotten, and its palette with it
+    for (let i = 2; i < schemes.length; i++) await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Scheme: neutral, switch to tonal spot')
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Scheme: tonal spot, switch to vibrant')
+    await expect.poll(palette).toBe(defaultPalette)
+    expect(await storedScheme()).toBeNull()
+    expect(await cache()).toBeNull()
+
+    // Forgotten, the default from the first paint again
+    await reloadWithoutReact()
+    expect(await primary()).toBe(defaultPrimary)
+    await expect(anyCopy(page, name).locator('.lucide-palette')).toHaveCSS('display', 'block')
+
+    await page.unroute(chunks)
+    expect(hydrationErrors).toEqual([])
+  })
+})
+
+//
 // Theme: light, dark or the system's, picked by the reader and remembered
 //
 
