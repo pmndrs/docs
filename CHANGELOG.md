@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.15.0
+
+### Minor Changes
+
+- [#666](https://github.com/pmndrs/docs/pull/666) [`6125fc8`](https://github.com/pmndrs/docs/commit/6125fc82a46d2b6b44da4b8e84cc0bdaf0ad761a) Thanks [@abernier](https://github.com/abernier)! - A scheme toggle next to the contrast one: each click cycles the palette's Material scheme -- tonal spot, vibrant, expressive, fidelity, content, monochrome, neutral -- from the site's own (`THEME_SCHEME`), at whatever contrast level is picked. Remembered across pages, reloads and tabs, and shown from the first paint, as the color and contrast are. The scheme and contrast toggles now show their current value in a tooltip on hover.
+
 ## 4.14.0
 
 ### Minor Changes
