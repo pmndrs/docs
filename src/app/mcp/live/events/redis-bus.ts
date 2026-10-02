@@ -1,7 +1,8 @@
 /**
  * The `McpEventBus` every server instance shares, on Redis -- what `getEventBus` returns when
- * `REDIS_URL` is set: a list named after `prefix` (so that the database could serve something
- * else too), holding the last `capacity` events, newest first.
+ * `REDIS_URL` is set: a list named after `prefix` (so that the database can serve something else
+ * too -- the other deployments' events, to begin with, see `getEventBus`), holding the last
+ * `capacity` events, newest first.
  *
  * An instance holds at most one connection (the database allows 30 in all), opened on first use.
  * Redis being down must never fail an MCP request, nor crash the process: every error is logged,
@@ -69,19 +70,20 @@ export function createRedisEventBus({
   }
 
   return {
-    publish(event) {
-      const json = JSON.stringify(event)
-      // Not awaited: the MCP request that publishes does not wait for Redis. Pipelined rather than
-      // a MULTI, which would cost two more operations against the database's rate limit.
-      commandClient()
-        .then((client) =>
-          client
-            .multi()
-            .lPush(key, json)
-            .lTrim(key, 0, capacity - 1)
-            .execAsPipeline(),
-        )
-        .catch(logError)
+    async publish(event) {
+      // Pipelined rather than a MULTI, which would cost two more operations against the
+      // database's rate limit
+      try {
+        const json = JSON.stringify(event)
+        const client = await commandClient()
+        await client
+          .multi()
+          .lPush(key, json)
+          .lTrim(key, 0, capacity - 1)
+          .execAsPipeline()
+      } catch (error) {
+        logError(error)
+      }
     },
 
     async recent(limit = capacity) {

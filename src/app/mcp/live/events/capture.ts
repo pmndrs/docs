@@ -1,4 +1,5 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { after } from 'next/server'
 import type { McpEvent } from '@/app/mcp/live/_components/event'
 import { createEventId, getEventBus, type McpEventBus } from './bus'
 
@@ -180,7 +181,7 @@ function capture(
 
     const publish = (ok: boolean) => {
       try {
-        bus.publish({
+        const published = bus.publish({
           id: createEventId(ts),
           ts,
           client: resolveClient(extra?.requestInfo?.headers),
@@ -189,6 +190,10 @@ function capture(
           durationMs: Math.round(performance.now() - start),
           ok,
         })
+        // Not awaited, so the call does not wait for Redis -- but kept alive past the response:
+        // Vercel suspends the instance once the response is sent, and a publish still opening
+        // its connection then would never complete.
+        after(published)
       } catch (error) {
         // Observing a request must never be what fails it
         console.error('Failed to publish MCP event:', error)
