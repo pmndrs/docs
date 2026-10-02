@@ -22,8 +22,10 @@ import {
 export function McpInstall() {
   return (
     <>
-      <div className="my-4 flex flex-wrap items-center gap-2 text-sm">
-        <span className="text-on-surface-variant">One click:</span>
+      {/* One line, scrolling sideways when the buttons don't fit, its overflowing edge fading out
+          (shadcn's `scroll-fade-x`, as the tabs row below). The vertical padding keeps the buttons'
+          focus ring inside the scroller's clip. */}
+      <div className="my-3 flex flex-nowrap items-center gap-1 overflow-x-auto py-1 scroll-fade-x no-scrollbar">
         <InstallLink href={cursorInstallUrl()}>Add to Cursor</InstallLink>
         <InstallLink href={vscodeInstallUrl()}>Add to VS Code</InstallLink>
         <InstallLink href={vscodeInstallUrl({ insiders: true })}>
@@ -119,12 +121,12 @@ export function McpInstall() {
   )
 }
 
-/** A compact install link, styled as a small filled button, to stand out on the callout */
+/** A compact install link, styled as the smallest filled button, to stand out on the callout */
 function InstallLink({ href, children }: { href: string; children: string }) {
   return (
     <Button
       variant="default"
-      size="sm"
+      size="xs"
       nativeButton={false}
       render={<a href={href} rel="noopener" />}
     >
