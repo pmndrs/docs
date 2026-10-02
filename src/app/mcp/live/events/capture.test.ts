@@ -128,6 +128,29 @@ describe('capture', () => {
     expect(event.path).toBeUndefined()
   })
 
+  it('records a search by its library, never by its query', async () => {
+    const [event] = await published(() =>
+      rpc(
+        'tools/call',
+        {
+          name: 'search_docs',
+          arguments: { query: 'my secret question', lib: 'react-three-fiber' },
+        },
+        'claude-code/2.0.14 (cli)',
+      ),
+    )
+
+    expect(event).toMatchObject({
+      client: 'claude-code',
+      kind: 'tool',
+      name: 'search_docs',
+      lib: 'react-three-fiber',
+      ok: true,
+    })
+    expect(event.path).toBeUndefined()
+    expect(JSON.stringify(event)).not.toContain('secret')
+  })
+
   it('publishes an event for a resource read, generalizing the library away', async () => {
     const [event] = await published(() =>
       rpc('resources/read', { uri: 'docs://react-three-fiber/index' }, 'Cursor/1.7.0'),

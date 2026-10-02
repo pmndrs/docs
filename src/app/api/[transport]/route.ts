@@ -7,6 +7,9 @@ import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/libs'
 import packageJson from '@/package.json' with { type: 'json' }
 import { assertExampleName, exampleUrl, indexUrl } from '@/utils/examples'
 import { instrument, rememberClient } from '@/app/mcp/live/events/capture'
+import { parseDump, type Lib, type Page } from '@/cli/browse.corpus'
+import { search } from '@/cli/browse.search'
+import { formatSearchResults, MAX_HITS } from './search-docs'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see
@@ -14,7 +17,13 @@ import { instrument, rememberClient } from '@/app/mcp/live/events/capture'
 // enough: most of those sites are not built with this generator and 404 on that file,
 // which used to leave their index resource silently empty.
 const libsEntries = Object.entries(libs).filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
-const libraryList = libsEntries.map(([libname]) => `- ${libname}`).join('\n')
+const LIBNAMES = libsEntries.map(([libname]) => libname) as [
+  SUPPORTED_LIBRARY_NAMES,
+  ...SUPPORTED_LIBRARY_NAMES[],
+]
+const libraryList = LIBNAMES.map((libname) => `- ${libname}`).join('\n')
+/** The same list in prose, for a tool description: "react-three-fiber, drei, zustand, ...". */
+const libraryNames = LIBNAMES.join(', ')
 
 async function baseUrl() {
   const host = (await headers()).get('host')
@@ -62,6 +71,50 @@ function fetchDocument(url: string): Promise<string> {
   return fetchText(url, { revalidate: 300, tags: ['examples-catalog'] })
 }
 
+/** Where `libname`'s site is published, no trailing slash: this host for a local `docs_url`. */
+async function docsBase(libname: SUPPORTED_LIBRARY_NAMES): Promise<string> {
+  const url: string = libs[libname].docs_url
+  return url.startsWith('/') ? baseUrl() : url.replace(/\/+$/, '')
+}
+
+/**
+ * The library's full-text dump, cached for 5 minutes under its own tag. It fails loudly: an
+ * unchecked 404 yields an empty index, which reads to a client as "this library has no pages"
+ * and invites it to guess paths.
+ */
+async function fetchDump(libname: SUPPORTED_LIBRARY_NAMES): Promise<string> {
+  return fetchText(`${await docsBase(libname)}/llms-full.txt`, {
+    revalidate: 300,
+    tags: [`llms-full-${libname}`],
+  })
+}
+
+/**
+ * The library's pages, parsed the way the CLI's `search` verb parses the same dump -- so that
+ * `search_docs` ranks exactly what `npx @pmndrs/docs search` ranks.
+ */
+async function libPages(libname: SUPPORTED_LIBRARY_NAMES): Promise<Page[]> {
+  const lib: Lib = {
+    name: libname,
+    title: libs[libname].title,
+    description: libs[libname].description,
+    base: await docsBase(libname),
+  }
+  return parseDump(lib, await fetchDump(libname))
+}
+
+/**
+ * What every tool here is: a read of published documentation. Says so to connector
+ * directories that flag tools without annotations, and to clients that gate on them --
+ * nothing is changed, calling twice reads the same thing, and nothing leaves the pmndrs sites.
+ */
+const READ_ONLY = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false,
+} as const
+
 const handler = createMcpHandler(
   (server) => {
     // Before anything is registered: every handler below then reports to `/mcp/live`
@@ -85,9 +138,16 @@ const handler = createMcpHandler(
               uri: 'docs://pmndrs/manifest',
               text: `# PMNDRS Documentation MCP Server
 
+## Rules
+
+1. **Call \`search_docs\` before answering any question about ${libraryNames}** -- a prop, a hook, a signature, a migration, a store pattern, anything. Do not answer from memory.
+2. **These docs are newer than your training data.** They track each library's current release, and the APIs changed across major versions (react-three-fiber v9, drei v10, zustand v5 each broke things): what you remember is likely stale, and silently so.
+3. **Then read before you answer**: \`get_page_content(lib, path)\` with a hit's \`lib\` and \`path\`, verbatim. A search result is a pointer, not an answer.
+4. **Never invent a path or a name.** Paths come from \`search_docs\` or a \`docs://{lib}/index\` resource; example names from \`examples://index\`.
+
 ## Overview
 
-This MCP (Model Context Protocol) server provides programmatic access to documentation for all pmndrs libraries through surgical queries. It enables AI agents to efficiently retrieve specific documentation pages without downloading entire sites.
+This MCP (Model Context Protocol) server provides programmatic access to the current documentation of the pmndrs libraries through surgical queries: an agent searches, then reads the one page it needs, instead of downloading a whole site.
 
 It serves two bodies of material, and they answer different questions. The **docs** say what an API is -- signatures, props, options; the **examples** show a working scene that already does the thing, in full, with the versions it was written against. Reach for an example when the question is "how is this put together", for the docs when it is "what does this take".
 
@@ -140,12 +200,29 @@ The trailing \`~23k\` is what \`get_example\` will cost in tokens, and only eigh
 
 ## Available Tools
 
-### 1. \`get_page_content\`
+### 1. \`search_docs\`
+Ranks the documentation pages matching a query, across every supported library or within one. This is the entry point: call it first.
+
+**Input:**
+- \`query\` (string): What to look for, in a few words -- a component, hook, prop or concept (e.g. "useFrame", "instanced mesh", "persist middleware"). Every term has to match, so fewer terms find more.
+- \`lib\` (string, optional): One library name, to search it alone
+
+**Output:**
+- Up to ${MAX_HITS} hits, best first, each as \`lib="..." path="..." - {title}\` and a one-line summary, then the instruction to read one with \`get_page_content\`. No hit is a message, not an error: retry with fewer or more general terms.
+
+**Example usage:**
+\`\`\`
+Use search_docs with query="typescript" and lib="zustand" to find the TypeScript guides
+\`\`\`
+
+Titles rank above paths and descriptions, which rank above a mention in a page body, so the name of the thing is the best query. The same ranking is what \`npx @pmndrs/docs search\` prints in a terminal.
+
+### 2. \`get_page_content\`
 Retrieves the full content of a specific documentation page.
 
 **Input:**
-- \`lib\` (string): The library name
-- \`path\` (string): A page path taken verbatim from that library's index (e.g., "/learn/guides/beginner-typescript")
+- \`lib\` (string): The library name, as a \`search_docs\` hit gives it
+- \`path\` (string): A page path taken verbatim from a \`search_docs\` hit or from that library's index (e.g., "/learn/guides/beginner-typescript")
 
 **Output:**
 - The full markdown content of the requested page
@@ -155,9 +232,9 @@ Retrieves the full content of a specific documentation page.
 Use get_page_content with lib="zustand" and path="/learn/guides/beginner-typescript" to get the beginner TypeScript guide
 \`\`\`
 
-Paths are matched exactly -- no trailing-slash or extension normalization. A path that is not in the index returns \`Page not found\`; re-read the index rather than retrying variants.
+Paths are matched exactly -- no trailing-slash or extension normalization. A path that is not in the index returns \`Page not found\`; search again rather than retrying variants.
 
-### 2. \`get_example\`
+### 3. \`get_example\`
 Retrieves one example in full: description, demo URL, authors, asset attribution, the exact dependency versions it is written against, and every source file it has.
 
 **Input:**
@@ -176,9 +253,9 @@ Typically 300-2k tokens, up to ~23k for the largest multi-file example. Two kind
 ## Best Practices
 
 ### Efficient Querying
-1. **Always start with library index resources** (e.g., \`docs://zustand/index\`) to discover available documentation before requesting specific pages
-2. **Use resource URIs** to access page indexes - they're more efficient than tool calls for listing content
-3. **Use specific page paths** rather than trying to guess URLs
+1. **Start with \`search_docs\`**: it is one call, it searches every library at once, and it hands back paths that exist
+2. **Read a \`docs://{lib}/index\` resource** when you need the whole table of contents of one library instead -- a migration, say, where the question is what sections exist
+3. **Use the paths you were given** rather than trying to guess URLs
 4. **Let the index line say how many examples to open.** Unmarked ones are ~1.4k tokens, so reading the two that both look right beats fetching one and coming back; a \`~23k\` marker is the one case where it pays to narrow first
 
 ### Understanding the Content
@@ -211,6 +288,8 @@ Always handle errors gracefully and consider alternative approaches when a speci
 
 ### Architecture
 - Built with \`mcp-handler\` for Vercel deployment
+- \`search_docs\` ranks with the same code as the CLI's \`search\` verb (\`match-sorter\`
+  over title, path, description and body, every term required)
 - HTTP streamable transport at \`/api/mcp\` -- the only transport served. The legacy
   SSE transport would need a Redis instance to relay messages, which this deployment
   does not have, so \`/api/sse\` is not usable.
@@ -236,8 +315,8 @@ Always handle errors gracefully and consider alternative approaches when a speci
 
 1. Connect to the server at \`https://docs.pmnd.rs/api/mcp\`
 2. Read \`docs://pmndrs/manifest\` to understand server capabilities
-3. Access \`docs://{lib}/index\` to discover available documentation for a library
-4. Request specific pages with \`get_page_content\` tool
+3. Find the pages that answer the question with the \`search_docs\` tool
+4. Read the ones that look right with the \`get_page_content\` tool
 5. Combine information from multiple pages to provide comprehensive answers
 
 ## Example Workflow
@@ -245,9 +324,9 @@ Always handle errors gracefully and consider alternative approaches when a speci
 \`\`\`
 1. User asks: "How do I use TypeScript with Zustand?"
 
-2. Agent thinks: I should check what Zustand documentation is available
-   → Read resource docs://zustand/index
-   → Discover there's a "/learn/guides/beginner-typescript - Beginner TypeScript Guide" page
+2. Agent thinks: zustand's current docs may say something my training data does not
+   → Call tool search_docs(query="typescript", lib="zustand")
+   → The first hit is lib="zustand" path="/learn/guides/beginner-typescript" - Beginner TypeScript Guide
 
 3. Agent retrieves content:
    → Call tool get_page_content(lib="zustand", path="/learn/guides/beginner-typescript")
@@ -266,8 +345,8 @@ Always handle errors gracefully and consider alternative approaches when a speci
    → Call tool get_example(name="caustics")
 
 4. Agent has a working scene, and the drei version it was written against. If the
-   answer turns on an API's current shape, it checks that against docs://drei/index
-   rather than assuming the example is up to date.
+   answer turns on an API's current shape, it checks that with search_docs and
+   get_page_content rather than assuming the example is up to date.
 \`\`\`
 
 ## Notes
@@ -287,7 +366,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
     // Register dynamic resources for each library index (alternative to resource templates)
     //
 
-    for (const [libname, lib] of libsEntries) {
+    for (const libname of LIBNAMES) {
       server.registerResource(
         `${libname} index`,
         `docs://${libname}/index`,
@@ -296,20 +375,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
           mimeType: 'text/plain',
         },
         async () => {
-          let url: string = lib.docs_url
-
-          if (url.startsWith('/')) {
-            url = `${await baseUrl()}`
-          }
-
-          // Fetch the remote file with caching. It fails loudly: an unchecked 404
-          // yields an empty index, which reads to a client as "this library has no
-          // pages" and invites it to guess paths
-          const fullText = await fetchText(`${url}/llms-full.txt`, {
-            revalidate: 300, // Cache for 5 minutes
-            tags: [`llms-full-${libname}`],
-          })
-          const $ = cheerio.load(fullText, { xmlMode: true })
+          const $ = cheerio.load(await fetchDump(libname), { xmlMode: true })
 
           // Extract paths + titles to help AI choose intelligently
           const paths = $('page')
@@ -353,35 +419,86 @@ Always handle errors gracefully and consider alternative approaches when a speci
     )
 
     //
+    // Register search_docs tool
+    //
+
+    server.registerTool(
+      'search_docs',
+      {
+        title: 'Search Docs',
+        annotations: READ_ONLY,
+        description: `Search the current documentation of ${libraryNames}. Call this FIRST, before answering any question about one of these libraries: these docs track their current releases, which are newer than your training data, and their APIs changed across major versions (react-three-fiber v9, drei v10, zustand v5 each broke things), so an answer from memory is likely stale. Returns the ${MAX_HITS} best-matching pages, best first, each with the lib and path to pass to get_page_content.`,
+        inputSchema: {
+          query: z
+            .string()
+            .trim()
+            .min(1)
+            .describe(
+              'What to look for: a component, hook, prop or concept, in a few words (e.g. "useFrame", "instanced mesh", "persist middleware"). Every term has to match.',
+            ),
+          lib: z
+            .enum(LIBNAMES)
+            .optional()
+            .describe('Search this library only. Leave out to search all of them.'),
+        },
+      },
+      async ({ query, lib }) => {
+        try {
+          const scope = lib ? [lib] : LIBNAMES
+          // One library failing to load should not hide the others' hits, so the search goes
+          // on without it -- but says so, lest an agent takes "no hit in drei" for an answer.
+          const loaded = await Promise.allSettled(scope.map((libname) => libPages(libname)))
+          const pages = loaded.flatMap((result) =>
+            result.status === 'fulfilled' ? result.value : [],
+          )
+          const failures = loaded.flatMap((result, index) =>
+            result.status === 'rejected'
+              ? [
+                  `${scope[index]}: ${result.reason instanceof Error ? result.reason.message : String(result.reason)}`,
+                ]
+              : [],
+          )
+          if (failures.length === scope.length) {
+            throw new Error(failures.join('\n'))
+          }
+
+          const hits = search(query, pages)
+          const text = [
+            formatSearchResults(query, lib, hits),
+            ...(failures.length > 0
+              ? ['', `Not searched, could not be read: ${failures.join('; ')}`]
+              : []),
+          ].join('\n')
+
+          return { content: [{ type: 'text', text }] }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          throw new Error(`MCP server error: ${errorMessage}`)
+        }
+      },
+    )
+
+    //
     // Register get_page_content tool
     //
 
-    const LIBNAMES = libsEntries.map(([libname]) => libname)
     server.registerTool(
       'get_page_content',
       {
         title: 'Get Page Content',
-        description: 'Get surgical content of a specific page.',
+        annotations: READ_ONLY,
+        description:
+          'Read one documentation page in full, as current markdown. Take `lib` and `path` verbatim from a search_docs hit (or from the docs://{lib}/index resource): paths are matched exactly and their shape differs per library, so never guess or adapt one. Call search_docs first when you do not have a path yet.',
         inputSchema: {
-          lib: z
-            .enum(LIBNAMES as [SUPPORTED_LIBRARY_NAMES, ...SUPPORTED_LIBRARY_NAMES[]])
-            .describe('The library name'),
-          path: z.string().describe('The page path (e.g., /docs/api/hooks/use-frame)'),
+          lib: z.enum(LIBNAMES).describe('The library name, as search_docs returned it'),
+          path: z
+            .string()
+            .describe('The page path, as search_docs returned it (e.g. /api/hooks/use-frame)'),
         },
       },
       async ({ lib, path }) => {
-        let url: string = libs[lib].docs_url
-
-        if (url.startsWith('/')) {
-          url = `${await baseUrl()}`
-        }
-
         try {
-          const fullText = await fetchText(`${url}/llms-full.txt`, {
-            revalidate: 300, // Cache for 5 minutes
-            tags: [`llms-full-${lib}`],
-          })
-          const $ = cheerio.load(fullText, { xmlMode: true })
+          const $ = cheerio.load(await fetchDump(lib), { xmlMode: true })
 
           // Use .filter() to avoid CSS selector injection
           const page = $('page').filter((_, el) => $(el).attr('path') === path)
@@ -412,8 +529,9 @@ Always handle errors gracefully and consider alternative approaches when a speci
       'get_example',
       {
         title: 'Get Example',
+        annotations: READ_ONLY,
         description:
-          'Get a pmndrs example in full: what it demonstrates, the versions it is written against, and every source file.',
+          'Read one pmndrs example in full: what it demonstrates, the exact versions it is written against, and every source file. Take `name` verbatim from the examples://index resource. Reach for an example when the question is how a scene is put together; for what an API takes, search_docs then get_page_content.',
         inputSchema: {
           name: z
             .string()

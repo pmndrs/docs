@@ -514,6 +514,157 @@ Content with &lt;special&gt; characters &amp; symbols.
     })
   })
 
+  describe('search_docs Tool', () => {
+    async function rpc(method: string, params: unknown) {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+        }),
+      )
+      return response.text()
+    }
+
+    const searchDocs = (args: Record<string, unknown>) =>
+      rpc('tools/call', { name: 'search_docs', arguments: args })
+
+    /** The `lib="..." path="..."` pairs of the hits, in the order they were listed. */
+    function hits(body: string) {
+      // The text comes back JSON-encoded inside the response, so its quotes are escaped
+      return [...body.matchAll(/lib=\\"([^\\]+)\\" path=\\"([^\\]+)\\"/g)].map(([, lib, path]) => ({
+        lib,
+        path,
+      }))
+    }
+
+    it('ranks the page whose title is the term first, and says how to read it', async () => {
+      const body = await searchDocs({ query: 'useFrame', lib: 'react-three-fiber' })
+
+      expect(hits(body)).toEqual([{ lib: 'react-three-fiber', path: '/api/hooks/use-frame' }])
+      expect(body).toContain('useFrame Hook')
+      expect(body).toContain('get_page_content(lib, path)')
+      expect(body).not.toContain('MCP server error')
+    })
+
+    it('ranks a title match above a body mention', async () => {
+      // "performance" is in the title of one page, and only in a body line of none
+      // other; "guide" is in the body of one. Together they order the whole fixture.
+      const body = await searchDocs({ query: 'performance', lib: 'zustand' })
+
+      expect(hits(body)[0]).toEqual({ lib: 'zustand', path: '/advanced/performance' })
+    })
+
+    it('searches every library without a lib, and only that one with it', async () => {
+      const everywhere = hits(await searchDocs({ query: 'getting started' }))
+      const libsHit = new Set(everywhere.map((hit) => hit.lib))
+      expect(libsHit.size).toBeGreaterThan(1)
+      expect(everywhere.every((hit) => hit.path === '/getting-started')).toBe(true)
+
+      const inZustand = hits(await searchDocs({ query: 'getting started', lib: 'zustand' }))
+      expect(inZustand).toEqual([{ lib: 'zustand', path: '/getting-started' }])
+    })
+
+    it('caps the list at ten hits, and says how many there were', async () => {
+      // Every mocked library has the same three pages, so a term all three contain
+      // matches 3 x (number of libraries) pages
+      const body = await searchDocs({ query: 'e' })
+
+      expect(hits(body)).toHaveLength(10)
+      expect(body).toMatch(/Top 10 of \d+ pages/)
+    })
+
+    it('answers an empty result with a message, not an error', async () => {
+      const body = await searchDocs({ query: 'nosuchthing', lib: 'drei' })
+
+      expect(hits(body)).toEqual([])
+      expect(body).toContain('No page matches')
+      expect(body).toContain('nosuchthing')
+      expect(body).not.toContain('"isError":true')
+    })
+
+    it('rejects a library the server does not serve', async () => {
+      // No msw handler exists for react-spring, and the server runs with
+      // onUnhandledRequest: 'error' -- so the rejection has to come from the schema
+      const body = await searchDocs({ query: 'spring', lib: 'react-spring' })
+
+      expect(body).toMatch(/invalid/i)
+      expect(hits(body)).toEqual([])
+    })
+
+    it('rejects an empty query', async () => {
+      const body = await searchDocs({ query: '   ', lib: 'drei' })
+
+      expect(body).toMatch(/invalid|too_small|at least 1/i)
+      expect(hits(body)).toEqual([])
+    })
+
+    it('goes on without a library whose dump cannot be read, and says so', async () => {
+      server.use(
+        http.get(`${libs.drei.docs_url}/llms-full.txt`, () => {
+          return new HttpResponse('Not Found', { status: 404 })
+        }),
+      )
+
+      const body = await searchDocs({ query: 'getting started' })
+
+      expect(hits(body).some((hit) => hit.lib === 'zustand')).toBe(true)
+      expect(hits(body).some((hit) => hit.lib === 'drei')).toBe(false)
+      expect(body).toContain('Not searched, could not be read: drei')
+      expect(body).not.toContain('"isError":true')
+    })
+
+    it('fails when the one library asked for cannot be read', async () => {
+      server.use(
+        http.get(`${libs.drei.docs_url}/llms-full.txt`, () => {
+          return new HttpResponse('Not Found', { status: 404 })
+        }),
+      )
+
+      const body = await searchDocs({ query: 'getting started', lib: 'drei' })
+
+      expect(body).toContain('"isError":true')
+      expect(body).toContain('Failed to fetch')
+    })
+
+    it('annotates every tool as a read-only, idempotent, closed-world one', async () => {
+      const body = await rpc('tools/list', {})
+      const { result } = JSON.parse(body.replace(/^.*?data: /s, '').split('\n')[0]) as {
+        result: {
+          tools: { name: string; title?: string; annotations?: Record<string, boolean> }[]
+        }
+      }
+
+      expect(result.tools.map((tool) => tool.name)).toEqual([
+        'search_docs',
+        'get_page_content',
+        'get_example',
+      ])
+      for (const tool of result.tools) {
+        expect(tool.title, tool.name).toBeTruthy()
+        expect(tool.annotations, tool.name).toEqual({
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        })
+      }
+    })
+
+    it('lists search_docs first, with a description that says to call it first', async () => {
+      const body = await rpc('tools/list', {})
+
+      expect(body.indexOf('"search_docs"')).toBeGreaterThan(-1)
+      expect(body.indexOf('"search_docs"')).toBeLessThan(body.indexOf('"get_page_content"'))
+      expect(body).toContain('Call this FIRST')
+      expect(body).toContain('newer than your training data')
+    })
+  })
+
   describe('Examples', () => {
     async function call(method: string, params: unknown) {
       const { POST } = await import('./route')
