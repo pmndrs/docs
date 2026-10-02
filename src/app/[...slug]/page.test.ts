@@ -314,6 +314,14 @@ test.describe('primary color', () => {
 
     await page.reload()
     await expect.poll(palette).toBe(pickedPalette)
+    // Cached once the color has settled, for the next load
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null')?.color,
+        ),
+      )
+      .toBe('#ff0000')
 
     // The pick from the first paint, the swatch included: no flash of the default palette
     await reloadWithoutReact()
