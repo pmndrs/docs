@@ -1,5 +1,6 @@
 'use client'
 
+import { PrimaryColorPrepaint } from '@/components/PrimaryColorPrepaint'
 import { DefaultPrimaryColorProvider, usePrimaryColor } from '@/hooks/usePrimaryColor'
 import { Mtb } from 'material-theme-builder/react'
 import { useDeferredValue, type ComponentProps } from 'react'
@@ -9,12 +10,20 @@ import { useDeferredValue, type ComponentProps } from 'react'
  * the site's default, which the picker can then bring back.
  *
  * `Mtb` writes its palette into a `<style>`: the server's HTML has the default one, the stored pick
- * replaces it right after hydration.
+ * replaces it right after hydration. Until then, `PrimaryColorPrepaint` shows the pick's palette
+ * from the first paint.
  */
-export function PrimaryColorMtb({ source, ...props }: ComponentProps<typeof Mtb>) {
+export function PrimaryColorMtb({ source, children, ...config }: ComponentProps<typeof Mtb>) {
+  // Everything but the color that shapes the palette: the same on the server and the client
+  const signature = JSON.stringify(config)
+
   return (
     <DefaultPrimaryColorProvider value={source}>
-      <SeededMtb {...props} />
+      <SeededMtb {...config}>
+        {/* Right after `Mtb`'s `<style>`, before the page */}
+        <PrimaryColorPrepaint signature={signature} />
+        {children}
+      </SeededMtb>
     </DefaultPrimaryColorProvider>
   )
 }

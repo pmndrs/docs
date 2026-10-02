@@ -1,7 +1,8 @@
 import { useStoredChoice } from '@/hooks/useStoredChoice'
 import { createRequiredContext } from '@/lib/createRequiredContext'
 
-const STORAGE_KEY = 'pmndrs-docs:primary-color'
+/** Where the pick is stored: read before the first paint too, by `PrimaryColorPrepaint` */
+export const PRIMARY_COLOR_KEY = 'pmndrs-docs:primary-color'
 
 // The site's own seed color, `THEME_PRIMARY`: only the server knows it, `PrimaryColorMtb` passes
 // it down
@@ -10,7 +11,7 @@ const [useDefaultPrimaryColor, DefaultPrimaryColorProvider] = createRequiredCont
 export { DefaultPrimaryColorProvider }
 
 // What `<input type="color">` gives, and the only form it takes back
-const HEX_COLOR = /^#[0-9a-f]{6}$/i
+export const HEX_COLOR = /^#[0-9a-f]{6}$/i
 
 export function isHexColor(value: string | null): value is string {
   return value !== null && HEX_COLOR.test(value)
@@ -25,7 +26,7 @@ export function isHexColor(value: string | null): value is string {
  */
 export function usePrimaryColor() {
   const defaultPrimaryColor = useDefaultPrimaryColor()
-  const [stored, setStored] = useStoredChoice(STORAGE_KEY)
+  const [stored, setStored] = useStoredChoice(PRIMARY_COLOR_KEY)
   const primaryColor = isHexColor(stored) ? stored : defaultPrimaryColor
   const isDefault = primaryColor.toLowerCase() === defaultPrimaryColor.toLowerCase()
 

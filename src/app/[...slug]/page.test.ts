@@ -224,6 +224,15 @@ test.describe('primary color', () => {
   test.use({ disableAutoSnapshot: true })
 
   test('a picked color re-seeds the palette, is remembered, and resets', async ({ page }) => {
+    const hydrationErrors: string[] = []
+    page.on('console', (message) => {
+      if (message.type() !== 'error') return
+      // The development message, and the production one (minified React errors 418 to 425)
+      if (/hydrat|Minified React error #4(1[89]|2[0-5])/i.test(message.text())) {
+        hydrationErrors.push(message.text())
+      }
+    })
+
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
 
@@ -231,10 +240,34 @@ test.describe('primary color', () => {
     // `<style>`'s text)
     const palette = () => page.locator('style#mcu-styles').textContent()
     const defaultPalette = await palette()
+    // The palette in effect, whichever `<style>` it comes from
+    const primary = () =>
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
+      )
+    const defaultPrimary = await primary()
+    const swatch = page.getByRole('button', { name: 'Theme color' }).locator('span')
+    const defaultSwatch = await swatch.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    )
+
+    // The page as first painted: the HTML and its inline scripts, React never running
+    const chunks = '**/_next/static/chunks/**'
+    async function reloadWithoutReact() {
+      await page.route(chunks, (route) => route.abort())
+      await page.reload()
+    }
+    async function reloadWithReact() {
+      await page.unroute(chunks)
+      await page.reload()
+      await page.waitForLoadState('networkidle')
+    }
 
     await page.locator('input[type="color"]').fill('#ff0000')
     await expect.poll(palette).not.toBe(defaultPalette)
     const pickedPalette = await palette()
+    const pickedPrimary = await primary()
+    expect(pickedPrimary).not.toBe(defaultPrimary)
     expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBe(
       '#ff0000',
     )
@@ -242,9 +275,29 @@ test.describe('primary color', () => {
     await page.reload()
     await expect.poll(palette).toBe(pickedPalette)
 
+    // The pick from the first paint, the swatch included: no flash of the default palette
+    await reloadWithoutReact()
+    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary()).toBe(pickedPrimary)
+    await expect(swatch).toHaveCSS('background-color', 'rgb(255, 0, 0)')
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(pickedPalette)
+    // Once `Mtb` has the pick, only its palette is left
+    await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
+    expect(await primary()).toBe(pickedPrimary)
+
     await page.getByRole('button', { name: 'Reset the theme color' }).click()
     await expect.poll(palette).toBe(defaultPalette)
     await expect(page.getByRole('button', { name: 'Reset the theme color' })).toBeHidden()
     expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBeNull()
+
+    // Reset, the default from the first paint again
+    await reloadWithoutReact()
+    expect(await primary()).toBe(defaultPrimary)
+    await expect(swatch).toHaveCSS('background-color', defaultSwatch)
+
+    await page.unroute(chunks)
+    expect(hydrationErrors).toEqual([])
   })
 })

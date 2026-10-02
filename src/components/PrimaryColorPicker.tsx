@@ -1,6 +1,8 @@
 'use client'
 
+import { PRIMARY_COLOR_PREPAINT_VAR } from '@/components/PrimaryColorPrepaint'
 import { Button } from '@/components/ui/button'
+import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { isHexColor, usePrimaryColor } from '@/hooks/usePrimaryColor'
 import cn from '@/lib/cn'
 import { RotateCcwIcon } from 'lucide-react'
@@ -14,6 +16,12 @@ import { useRef } from 'react'
 export function PrimaryColorPicker({ className }: { className?: string }) {
   const [primaryColor, setPrimaryColor, isDefault] = usePrimaryColor()
   const inputRef = useRef<HTMLInputElement>(null)
+  const isHydrated = useIsHydrated()
+  // Until hydrated, `primaryColor` is the default, as on the server: the stored pick is the one the
+  // pre-paint script put on `<html>`
+  const swatchColor = isHydrated
+    ? primaryColor
+    : `var(${PRIMARY_COLOR_PREPAINT_VAR}, ${primaryColor})`
 
   return (
     <div className={cn('flex', className)}>
@@ -36,7 +44,7 @@ export function PrimaryColorPicker({ className }: { className?: string }) {
           aria-label="Theme color"
           onClick={() => inputRef.current?.click()}
         >
-          <span className="size-4 rounded-full border" style={{ backgroundColor: primaryColor }} />
+          <span className="size-4 rounded-full border" style={{ backgroundColor: swatchColor }} />
         </Button>
         <input
           ref={inputRef}
