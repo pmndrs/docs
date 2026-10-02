@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.11.0
+
+### Minor Changes
+
+- [#647](https://github.com/pmndrs/docs/pull/647) [`711c537`](https://github.com/pmndrs/docs/commit/711c5372510ff9a3d1321570bef46afe71916084) Thanks [@kvvasuu](https://github.com/kvvasuu)! - An optional `syncKey` on `Tabs` makes every `Tabs` of the same key switch together, and remembers the pick across pages, reloads and browser tabs.
+
+### Patch Changes
+
+- [#651](https://github.com/pmndrs/docs/pull/651) [`c0f0fac`](https://github.com/pmndrs/docs/commit/c0f0facaf265bceb3c0dae53c20212bdfdb4b8ba) Thanks [@abernier](https://github.com/abernier)! - List `denoiser` in the header's libraries menu, and read it in `browse` and over MCP. Its docs
+  are built with this generator and publish a `llms-full.txt` at `pmndrs.github.io/denoiser/docs`,
+  but the library was never registered in `libs`.
+
 ## 4.10.0
 
 ### Minor Changes
