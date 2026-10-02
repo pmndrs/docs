@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach, vi, beforeEach } from 'vitest'
 import { setupServer } from 'msw/node'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 import { libs } from '@/libs'
 
 // Mock Next.js headers before importing the route
@@ -574,6 +574,31 @@ Content with &lt;special&gt; characters &amp; symbols.
 
       expect(body).toContain('Failed to fetch')
       expect(body).not.toContain('"text":""')
+    })
+    it('fails with a tool error, rather than hanging, when the catalog does not answer', async () => {
+      // The upstream timeout, cut short so the test does not wait the real one out
+      const timeout = AbortSignal.timeout.bind(AbortSignal)
+      const shortened = vi.spyOn(AbortSignal, 'timeout').mockImplementation(() => timeout(20))
+      server.use(
+        http.get('https://pmndrs.github.io/examples/examples/caustics.md', async () => {
+          await delay('infinite')
+          return HttpResponse.text(mockExample)
+        }),
+      )
+
+      try {
+        const body = await call('tools/call', {
+          name: 'get_example',
+          arguments: { name: 'caustics' },
+        })
+
+        expect(body).toContain('"isError":true')
+        expect(body).toContain(
+          'Timed out after 10s fetching https://pmndrs.github.io/examples/examples/caustics.md',
+        )
+      } finally {
+        shortened.mockRestore()
+      }
     })
   })
 

@@ -24,21 +24,42 @@ async function baseUrl() {
   return `${protocol}://${host}`
 }
 
+// The Vercel function's own limit. Far above what a request needs -- a cached read, or
+// an upstream fetch capped at UPSTREAM_TIMEOUT_MS -- so that one stuck request costs
+// seconds of billed time, not the platform's default of minutes.
+export const maxDuration = 30
+
+/** Past this, an upstream fetch is given up: the request fails, and says why. */
+const UPSTREAM_TIMEOUT_MS = 10_000
+
+/**
+ * The text at `url`, cached as `next` says. Fails loudly, with a message the client
+ * reads: on a non-2xx -- a swallowed 404 reads to a client as "no such page" or "no
+ * such example", and it will go on to invent one -- and on an upstream that has not
+ * answered within UPSTREAM_TIMEOUT_MS, headers and body alike.
+ */
+async function fetchText(url: string, next: RequestInit['next']): Promise<string> {
+  try {
+    const response = await fetch(url, { next, signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) })
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}: ${response.statusText}`)
+    }
+    return await response.text()
+  } catch (error) {
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      throw new Error(`Timed out after ${UPSTREAM_TIMEOUT_MS / 1000}s fetching ${url}`)
+    }
+    throw error
+  }
+}
+
 /**
  * One document as pmndrs/examples published it. Cached and tagged like the docs
  * dumps, except the gallery is already split per example and already rendered,
  * so a request pulls the few kB that was asked for and passes it straight on.
  */
-async function fetchDocument(url: string): Promise<string> {
-  const response = await fetch(url, {
-    next: { revalidate: 300, tags: ['examples-catalog'] },
-  })
-  // Same reason the library indexes fail loudly: a swallowed 404 reads to a
-  // client as "no such example", and it will go on to invent one.
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.statusText}`)
-  }
-  return response.text()
+function fetchDocument(url: string): Promise<string> {
+  return fetchText(url, { revalidate: 300, tags: ['examples-catalog'] })
 }
 
 const handler = createMcpHandler(
@@ -205,7 +226,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
 - No arbitrary URL fetching - only approved pmndrs libraries
 
 ### Performance
-- 60-second timeout for tool executions
+- 10-second timeout on every upstream fetch, 30 seconds per request in all
 - Minimal payload - only requested pages are transferred
 - XML parsing with Cheerio for efficient text extraction
 - **5-minute fetch cache** for documentation content (revalidated every 5 minutes)
@@ -281,21 +302,13 @@ Always handle errors gracefully and consider alternative approaches when a speci
             url = `${await baseUrl()}`
           }
 
-          // Fetch the remote file with caching
-          const response = await fetch(`${url}/llms-full.txt`, {
-            next: {
-              revalidate: 300, // Cache for 5 minutes
-              tags: [`llms-full-${libname}`],
-            },
+          // Fetch the remote file with caching. It fails loudly: an unchecked 404
+          // yields an empty index, which reads to a client as "this library has no
+          // pages" and invites it to guess paths
+          const fullText = await fetchText(`${url}/llms-full.txt`, {
+            revalidate: 300, // Cache for 5 minutes
+            tags: [`llms-full-${libname}`],
           })
-          // Fail loudly: an unchecked 404 yields an empty index, which reads to a
-          // client as "this library has no pages" and invites it to guess paths
-          if (!response.ok) {
-            throw new Error(
-              `MCP server error: Failed to fetch ${url}/llms-full.txt: ${response.statusText}`,
-            )
-          }
-          const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
 
           // Extract paths + titles to help AI choose intelligently
@@ -364,16 +377,10 @@ Always handle errors gracefully and consider alternative approaches when a speci
         }
 
         try {
-          const response = await fetch(`${url}/llms-full.txt`, {
-            next: {
-              revalidate: 300, // Cache for 5 minutes
-              tags: [`llms-full-${lib}`],
-            },
+          const fullText = await fetchText(`${url}/llms-full.txt`, {
+            revalidate: 300, // Cache for 5 minutes
+            tags: [`llms-full-${lib}`],
           })
-          if (!response.ok) {
-            throw new Error(`Failed to fetch llms-full.txt: ${response.statusText}`)
-          }
-          const fullText = await response.text()
           const $ = cheerio.load(fullText, { xmlMode: true })
 
           // Use .filter() to avoid CSS selector injection
@@ -440,12 +447,13 @@ Always handle errors gracefully and consider alternative approaches when a speci
   },
   {
     basePath: '/api',
-    maxDuration: 60,
     verboseLogs: false,
     // The legacy SSE transport (/api/sse, /api/message) needs Redis, and we run none:
     // left enabled, a request there throws for want of a Redis URL and never ends the
     // response, so the function hangs until Vercel times it out. Off, it is a plain 404,
-    // and clients use the streamable HTTP transport at /api/mcp.
+    // and clients use the streamable HTTP transport at /api/mcp. (mcp-handler's own
+    // `maxDuration` option only bounds that transport, so it is left out: the function's
+    // limit is the `maxDuration` export above.)
     disableSse: true,
   },
 )

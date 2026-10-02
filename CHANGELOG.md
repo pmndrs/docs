@@ -1,5 +1,31 @@
 # @pmndrs/docs
 
+## 4.9.0
+
+### Minor Changes
+
+- [#640](https://github.com/pmndrs/docs/pull/640) [`3167b88`](https://github.com/pmndrs/docs/commit/3167b88868c39e92b3a6a6cdca51bb5e08a89b9d) Thanks [@abernier](https://github.com/abernier)! - The markdown of a page is now at the page's own URL plus `.md`, e.g.
+  `/getting-started/introduction.md`, instead of `/md/getting-started/introduction.md`. The "Copy Page"
+  and "View as Markdown" actions use the new URL. On a server deployment the old `/md/<path>.md` URLs
+  permanently redirect to the new ones; a static export writes the files at the new paths only, so
+  there the old URLs are a 404.
+
+- [#641](https://github.com/pmndrs/docs/pull/641) [`3a690ad`](https://github.com/pmndrs/docs/commit/3a690ad553fca203607402dad08902e974fe908f) Thanks [@abernier](https://github.com/abernier)! - Under the table of contents, a card calls to sponsor Poimandres on GitHub
+  (https://github.com/sponsors/pmndrs), like the "Deploy on Vercel" card of the shadcn/ui docs. It
+  stays in view with the table of contents, and is hidden where it is (below `xl`).
+
+### Patch Changes
+
+- [#644](https://github.com/pmndrs/docs/pull/644) [`ef58d2d`](https://github.com/pmndrs/docs/commit/ef58d2d668cd18a568492afcbae65abfe6b452de) Thanks [@abernier](https://github.com/abernier)! - Sandpack previews that depend on `three` at `latest` (or any version from 0.186.0) work again: the
+  component now pins `three` to 0.185.1 for them. Since 0.186.0, three's CommonJS entry calls
+  `process.emitWarning`, which Sandpack's in-browser bundler does not provide, so those previews failed
+  with `process.emitWarning is not a function`.
+
+- [#639](https://github.com/pmndrs/docs/pull/639) [`c705277`](https://github.com/pmndrs/docs/commit/c705277fdc163b6827f3b92c4723a015ce815a36) Thanks [@abernier](https://github.com/abernier)! - A path that is not a page of the docs (`/sitemap.xml`, `/.well-known/...`, a mistyped URL) is now a
+  404 on a server deployment, instead of a 500: the catch-all route only serves the pages built from
+  the MDX folder, and no longer tries to render anything else at runtime, where `MDX` may be unset.
+  The same goes for the markdown of a page that does not exist.
+
 ## 4.8.0
 
 ### Minor Changes

@@ -1,33 +1,19 @@
 import { getEventBus } from './bus'
-import { createEventStream, SSE_HEADERS } from './sse'
+import { eventsResponse } from './response'
 
-// A stream, per request: never prerendered, never cached. And Node, not Edge -- the bus is a Redis
-// connection, or this instance's memory, which only the MCP route (a Node function) writes to.
+// Never prerendered: a build would otherwise freeze the empty window it saw. Caching is left to
+// the CDN, through the headers `eventsResponse` sets -- Next passes them through as they are on a
+// dynamic route. And Node, not Edge: the bus is a Redis connection, or this instance's memory,
+// which only the MCP route (a Node function) writes to.
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
-
-// The longest Vercel lets this function run, in seconds -- a stream included
-export const maxDuration = 300
-
-// Short of it, the stream ends by itself and the browser reconnects, rather than the platform
-// cutting it with a "Task timed out" error
-const CLOSE_AFTER_MS = (maxDuration - 20) * 1000
+// One Redis read: anything near this limit is a hung connection, not work
+export const maxDuration = 10
 
 /**
- * `GET /mcp/live/events[?lastEventId=...]`: the MCP requests the server serves, as Server-Sent
- * Events -- see `createEventStream`. Beside the page that reads it, and left out with it.
+ * `GET /mcp/live/events[?window]`: the MCP requests the server served lately, as JSON -- see
+ * `eventsResponse`. Beside the page that polls it, and left out with it.
  */
 export function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-
-  const stream = createEventStream({
-    bus: getEventBus(),
-    // The header when the browser reconnects on its own; the parameter when the page closed the
-    // stream and opens it again (`/mcp/live` does, off screen), which cannot set headers
-    lastEventId: request.headers.get('last-event-id') ?? searchParams.get('lastEventId'),
-    signal: request.signal,
-    closeAfterMs: CLOSE_AFTER_MS,
-  })
-
-  return new Response(stream, { headers: SSE_HEADERS })
+  return eventsResponse(getEventBus(), new URL(request.url).searchParams)
 }

@@ -37,14 +37,11 @@ async function until(check: () => Promise<boolean>) {
 describe.skipIf(!url)('createRedisEventBus', () => {
   const prefix = `mcp-live-test:${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
   const key = `${prefix}:events`
-  const channel = `${prefix}:events`
 
   // Created in `beforeAll`: the body of a skipped suite still runs, to collect its tests
   let admin: RedisClientType
   let a: RedisEventBus
   let b: RedisEventBus
-
-  const subscribers = async () => (await admin.pubSubNumSub(channel))[channel]
 
   beforeAll(async () => {
     admin = createClient({ url })
@@ -60,28 +57,12 @@ describe.skipIf(!url)('createRedisEventBus', () => {
     await admin.close()
   })
 
-  it('delivers what one instance publishes to another, and keeps it for its backlog', async () => {
-    const received: McpEvent[] = []
-    const unsubscribe = b.subscribe((e) => received.push(e))
-    // Subscribing is asynchronous: publish only once Redis knows of it
-    await until(async () => (await subscribers()) === 1)
-
+  it('returns to one instance what another published', async () => {
     const published = event('drei')
     a.publish(published)
 
-    await until(async () => received.length > 0)
-    expect(received).toEqual([published])
+    await until(async () => (await b.recent()).length > 0)
     expect(await b.recent()).toEqual([published])
-
-    unsubscribe()
-  })
-
-  it('returns the backlog oldest first, capped at `capacity`', async () => {
-    const events = Array.from({ length: 12 }, (_, index) => event(`lib-${index}`))
-    events.forEach((e) => a.publish(e))
-
-    await until(async () => (await b.recent()).at(-1)?.id === events.at(-1)!.id)
-    expect(await b.recent()).toEqual(events.slice(-10))
   })
 
   it('resolves `publish` once the event is stored', async () => {
@@ -90,16 +71,20 @@ describe.skipIf(!url)('createRedisEventBus', () => {
     expect((await b.recent()).at(-1)).toEqual(stored)
   })
 
-  it('closes its subscriber connection once the last listener is gone', async () => {
-    const first = b.subscribe(() => {})
-    const second = b.subscribe(() => {})
-    await until(async () => (await subscribers()) === 1)
+  it('returns the window oldest first, capped at `capacity`', async () => {
+    const events = Array.from({ length: 12 }, (_, index) => event(`lib-${index}`))
+    events.forEach((e) => a.publish(e))
 
-    first()
-    expect(await subscribers()).toBe(1)
+    await until(async () => (await b.recent()).at(-1)?.id === events.at(-1)!.id)
+    expect(await b.recent()).toEqual(events.slice(-10))
+  })
 
-    second()
-    await until(async () => (await subscribers()) === 0)
+  it('returns only the newest `limit` events when asked', async () => {
+    const events = Array.from({ length: 4 }, (_, index) => event(`limited-${index}`))
+    events.forEach((e) => a.publish(e))
+
+    await until(async () => (await b.recent(1)).at(-1)?.id === events.at(-1)!.id)
+    expect(await b.recent(2)).toEqual(events.slice(-2))
   })
 })
 

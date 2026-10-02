@@ -3,9 +3,9 @@
 import { useEffect, useState, type RefObject } from 'react'
 
 /**
- * Whether the stream should be open: only while the component is on screen AND its tab is
- * visible. Every reader of a page embedding `<McpLive>` would otherwise hold a connection open --
- * scrolled past it, or in a tab left in the background.
+ * Whether the view should poll for events: only while the component is on screen AND its tab is
+ * visible. Every reader of a page embedding `<McpLive>` would otherwise keep polling -- scrolled
+ * past it, or in a tab left in the background.
  */
 
 /** What `watchStreamGate` needs from the browser, injectable so it can be tested without one. */
@@ -18,7 +18,7 @@ export interface GateEnvironment {
 
 /**
  * How long the gate stays open once the component is scrolled away or its tab hidden: scrolling
- * past it, or switching tabs for a moment, should not cost a reconnection.
+ * past it, or switching tabs for a moment, should not cost a reread of the whole window.
  */
 const CLOSE_DELAY_MS = 5_000
 

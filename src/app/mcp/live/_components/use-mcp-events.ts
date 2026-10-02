@@ -1,39 +1,52 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { WINDOW_MS, type McpEvent } from './event'
-
-/** Past this, the oldest events go first, whatever their age. */
-const MAX_EVENTS = 1000
+import type { McpEvent, McpEventsPayload } from './event'
+import { mergeEvents, missesEvents, prune, replayDelays, windowUrl } from './merge'
 
 /**
- * - `paused`: not connected, on purpose -- see `stream-gate.ts`;
- * - `connecting`, then `live`;
- * - `reconnecting`: the connection dropped, and the browser is retrying on its own;
- * - `offline`: it gave up -- the endpoint answered with an error, or is not allowed from here.
+ * - `paused`: not polling, on purpose -- see `stream-gate.ts`;
+ * - `connecting`, until the first answer, then `live`;
+ * - `reconnecting`: a poll failed, and the next ones are retried, further and further apart;
+ * - `offline`: `OFFLINE_AFTER` polls in a row failed -- still retried, and `live` again on the
+ *   first that answers.
  */
 export type StreamStatus = 'paused' | 'connecting' | 'live' | 'reconnecting' | 'offline'
 
-function prune(events: McpEvent[], now: number) {
-  const oldest = now - WINDOW_MS
-  const kept = events.filter(({ ts }) => ts >= oldest)
-  return kept.length > MAX_EVENTS ? kept.slice(-MAX_EVENTS) : kept
+/**
+ * How often the page asks. The CDN keeps an answer 2 seconds (see `events/response.ts`): asking
+ * more often would mostly get the same one back.
+ */
+const POLL_MS = 2_500
+/** A poll that takes longer counts as failed. */
+const TIMEOUT_MS = 10_000
+const OFFLINE_AFTER = 3
+const MAX_RETRY_MS = 30_000
+/** How often the window slides, when nothing comes in. */
+const PRUNE_MS = 5_000
+
+function retryDelay(failures: number) {
+  return Math.min(POLL_MS * 2 ** failures, MAX_RETRY_MS)
 }
 
-/** `url`, asking to resume after `lastEventId` -- what a browser sends as `Last-Event-ID` when it
- * reconnects on its own, but cannot when the connection is closed and opened again by hand. */
-export function resumeUrl(url: string, lastEventId: string | undefined) {
-  if (!lastEventId) return url
-  return `${url}${url.includes('?') ? '&' : '?'}lastEventId=${encodeURIComponent(lastEventId)}`
+async function fetchEvents(url: string, signal: AbortSignal) {
+  // The default cache mode: `no-store` or `reload` would add `Cache-Control: no-cache` to the
+  // request. The response tells the browser to revalidate every time anyway.
+  const response = await fetch(url, { signal })
+  if (!response.ok) throw new Error(`${url} answered ${response.status}`)
+  return ((await response.json()) as McpEventsPayload).events
 }
 
 /**
- * The events of the sliding window, from the `/mcp/live/events` stream at `url`, connected only
- * while `enabled`.
+ * The events of the sliding window, polled from the `/mcp/live/events` endpoint at `url` every
+ * `POLL_MS`, only while `enabled`.
  *
- * `onLive` is called once per event published while connected -- not for a backlog, which only
- * fills the window. Events are deduplicated by id, so reconnecting never counts one twice, and a
- * reconnection resumes after the last event seen.
+ * The first poll -- and the first after a pause -- reads the whole window; the next ones only its
+ * newest events, unless events may have been missed in between (`missesEvents`). Events are
+ * deduplicated by id and kept in order of time.
+ *
+ * `onLive` is called once per event that came in while polling -- spread out as they came in,
+ * so a poll's worth arrives as it happened -- and not for a whole window, which only fills it.
  */
 export function useMcpEvents(url: string, enabled: boolean, onLive: (event: McpEvent) => void) {
   const [events, setEvents] = useState<McpEvent[]>([])
@@ -46,56 +59,94 @@ export function useMcpEvents(url: string, enabled: boolean, onLive: (event: McpE
     onLiveRef.current = onLive
   }, [onLive])
 
-  // Across connections: what was seen, and the last id to resume from
-  const seenRef = useRef(new Set<string>())
-  const lastIdRef = useRef<string>(undefined)
+  // What was last rendered, for each poll to merge into without waiting for a render
+  const eventsRef = useRef<McpEvent[]>([])
 
   useEffect(() => {
+    const commit = (next: McpEvent[]) => {
+      if (next === eventsRef.current) return
+      eventsRef.current = next
+      setEvents(next)
+    }
+
     if (!enabled) {
       if (openedRef.current) setStatus('paused')
       return
     }
     openedRef.current = true
-
     setStatus('connecting')
-    const source = new EventSource(resumeUrl(url, lastIdRef.current))
-    const seen = seenRef.current
 
-    const add = (incoming: McpEvent[]) => {
-      const fresh = incoming.filter(({ id }) => !seen.has(id))
-      fresh.forEach(({ id }) => seen.add(id))
-      if (incoming.length > 0) lastIdRef.current = incoming[incoming.length - 1].id
-      if (fresh.length > 0) {
-        setEvents((events) => prune([...events, ...fresh], Date.now()))
-      }
-      return fresh
+    let stopped = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let controller: AbortController | undefined
+    const replays = new Set<ReturnType<typeof setTimeout>>()
+    // Whether the next poll reads the whole window: the first one, and after a gap
+    let wholeWindow = true
+    let failures = 0
+
+    const replay = (fresh: McpEvent[]) => {
+      replayDelays(fresh, POLL_MS).forEach((delay, index) => {
+        const replaying = setTimeout(() => {
+          replays.delete(replaying)
+          onLiveRef.current(fresh[index])
+        }, delay)
+        replays.add(replaying)
+      })
     }
 
-    source.addEventListener('open', () => setStatus('live'))
-    source.addEventListener('error', () => {
-      setStatus(source.readyState === EventSource.CLOSED ? 'offline' : 'reconnecting')
-    })
-    source.addEventListener('backlog', (message) => {
-      add(JSON.parse(message.data) as McpEvent[])
-    })
-    source.addEventListener('mcp', (message) => {
-      add([JSON.parse(message.data) as McpEvent]).forEach((event) => onLiveRef.current(event))
-    })
+    const schedule = (delay: number) => {
+      timer = setTimeout(poll, delay)
+    }
 
-    return () => source.close()
+    async function poll() {
+      controller = new AbortController()
+      const readsWindow = wholeWindow
+      try {
+        const incoming = await fetchEvents(
+          readsWindow ? windowUrl(url) : url,
+          AbortSignal.any([controller.signal, AbortSignal.timeout(TIMEOUT_MS)]),
+        )
+        if (stopped) return
+
+        if (!readsWindow && missesEvents(eventsRef.current, incoming)) {
+          wholeWindow = true
+          schedule(0)
+          return
+        }
+
+        const { events, fresh } = mergeEvents(eventsRef.current, incoming, Date.now())
+        commit(events)
+        if (!readsWindow) replay(fresh)
+
+        wholeWindow = false
+        failures = 0
+        setStatus('live')
+        schedule(POLL_MS)
+      } catch {
+        if (stopped) return
+        failures++
+        setStatus(failures >= OFFLINE_AFTER ? 'offline' : 'reconnecting')
+        schedule(retryDelay(failures))
+      }
+    }
+    void poll()
+
+    return () => {
+      stopped = true
+      clearTimeout(timer)
+      controller?.abort()
+      replays.forEach(clearTimeout)
+    }
   }, [url, enabled])
 
   // The window slides even when nothing comes in
   useEffect(() => {
     const interval = setInterval(() => {
-      setEvents((events) => {
-        const pruned = prune(events, Date.now())
-        if (pruned.length === events.length) return events
-        const kept = new Set(pruned.map(({ id }) => id))
-        seenRef.current.forEach((id) => kept.has(id) || seenRef.current.delete(id))
-        return pruned
-      })
-    }, 5_000)
+      const pruned = prune(eventsRef.current, Date.now())
+      if (pruned === eventsRef.current) return
+      eventsRef.current = pruned
+      setEvents(pruned)
+    }, PRUNE_MS)
     return () => clearInterval(interval)
   }, [])
 
