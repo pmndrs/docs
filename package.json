@@ -14,8 +14,12 @@
     "@storybook/addon-docs": "^10.2.0",
     "@storybook/addon-themes": "^10.2.0",
     "@storybook/nextjs-vite": "^10.2.0",
+    "@types/d3": "^7.4.3",
+    "@types/d3-sankey": "^0.12.5",
     "autoprefixer": "^10.4.23",
     "chromatic": "^13.3.5",
+    "d3": "^7.9.0",
+    "d3-sankey": "^0.12.3",
     "esbuild": "^0.28.2",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
@@ -96,6 +100,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build:cli": "node scripts/build-cli.mjs",
+    "mcp:traffic": "node scripts/mcp-traffic.mts",
     "prepack": "node scripts/build-cli.mjs"
   },
   "engines": {
@@ -128,6 +133,7 @@
     "tsconfig.json",
     "!src/stories",
     "!src/app/api",
+    "!src/app/mcp/live",
     "!**/*.test.*",
     "!**/*.stories.*"
   ]
