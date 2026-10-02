@@ -48,4 +48,10 @@ if [ "$IS_EXPORT" = "true" ] && [ $STATUS -eq 0 ] && [ -d "$EXPORT_DIR/md" ]; th
   rm -rf "$EXPORT_DIR/md"
 fi
 
+# Without `ICON`, `/icon.svg` (src/app/icon.svg/route.ts) is a 404, but the export writes its body
+# all the same: remove it, so the file is missing rather than a broken image.
+if [ "$IS_EXPORT" = "true" ] && [ $STATUS -eq 0 ] && [ -z "$ICON" ]; then
+  rm -f "$EXPORT_DIR/icon.svg"
+fi
+
 exit $STATUS

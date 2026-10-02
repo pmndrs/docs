@@ -18,8 +18,16 @@ type Options = {
   shift?: number
 }
 
-export const svg = (emoji: string, { env, shift }: Options = { env: 'production', shift: 0 }) => {
+// `emoji` is any text (`ICON`): escaped, so a `&` or a `<` cannot break the SVG's markup
+const escapeXml = (text: string) =>
+  text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+
+export const svg = (
+  rawEmoji: string,
+  { env, shift }: Options = { env: 'production', shift: 0 },
+) => {
   const { bg, txt } = themes[env]
+  const emoji = escapeXml(rawEmoji)
 
   return `
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="${w}" height="${h}">

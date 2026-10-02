@@ -1,13 +1,12 @@
 import { GitHubIcon } from '@/components/brand-icons'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
+import { LibIcon } from '@/components/LibIcon'
 import { Badge } from '@/components/ui/badge'
 import { libs } from '@/libs'
-import { libsIcons } from '@/libs-icons'
 import { FileTextIcon } from 'lucide-react'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
@@ -109,8 +108,6 @@ export default function Page() {
 
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
             {Object.entries(libs).map(([id, data]) => {
-              const icon = libsIcons[id as keyof typeof libs]
-
               return (
                 <div
                   key={id}
@@ -134,21 +131,18 @@ export default function Page() {
                           {data.description}
                         </div>
                       </div>
-                      {icon && (
-                        <a
-                          href={data.github}
-                          target="_blank"
-                          rel="noopener"
-                          className="relative block h-20 w-20 shrink-0"
-                        >
-                          <Image
-                            src={icon}
-                            className="absolute inset-0 h-full w-full object-contain grayscale transition group-hover/card:grayscale-0"
-                            alt={data.title}
-                            aria-hidden
-                          />
-                        </a>
-                      )}
+                      <a
+                        href={data.github}
+                        target="_blank"
+                        rel="noopener"
+                        className="relative block h-20 w-20 shrink-0"
+                      >
+                        <LibIcon
+                          id={id as keyof typeof libs}
+                          size={80}
+                          className="absolute inset-0 h-full w-full grayscale transition group-hover/card:grayscale-0"
+                        />
+                      </a>
                     </div>
                     <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
                       <Link

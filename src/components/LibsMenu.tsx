@@ -8,10 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { LibIcon } from '@/components/LibIcon'
 import { libs } from '@/libs'
-import { libsIcons } from '@/libs-icons'
-import { CheckIcon, ChevronDownIcon, PackageIcon } from 'lucide-react'
-import Image from 'next/image'
+import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import Link from 'next/link'
 import type * as React from 'react'
 
@@ -66,7 +65,6 @@ export function LibsMenu({
       <DropdownMenuContent align="start" className="w-auto">
         <DropdownMenuGroup>
           {items.map(({ id, title, href }) => {
-            const icon = libsIcons[id]
             const current = id === currentItem?.id
 
             return (
@@ -75,11 +73,7 @@ export function LibsMenu({
                 // This site's own library stays on this site, so it also works on local and preview builds.
                 render={current ? <Link href={homeHref} aria-current="true" /> : <a href={href} />}
               >
-                {icon ? (
-                  <Image src={icon} alt="" aria-hidden className="size-4 object-contain" />
-                ) : (
-                  <PackageIcon className="text-muted-foreground" />
-                )}
+                <LibIcon id={id} size={16} className="size-4" />
                 <span className="flex-1">{title}</span>
                 {current && <CheckIcon />}
               </DropdownMenuItem>
