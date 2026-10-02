@@ -1,9 +1,16 @@
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
+import { after } from 'next/server'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import type { McpEvent } from '@/app/mcp/live/_components/event'
 import { getEventBus } from './bus'
 import { clientFromUserAgent, normalizeClientName, resolveClient } from './capture'
+
+// `after` needs the request scope Next gives a route, which a direct call to `POST` has not
+vi.mock('next/server', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('next/server')>()),
+  after: vi.fn(),
+}))
 
 vi.mock('next/headers', () => ({
   headers: vi.fn(async () => ({
@@ -92,6 +99,19 @@ describe('capture', () => {
     })
     expect(events[0].durationMs).toBeGreaterThanOrEqual(0)
     expect(await getEventBus().recent()).toContainEqual(events[0])
+  })
+
+  it('keeps the publish going past the response', async () => {
+    const publish = vi.spyOn(getEventBus(), 'publish')
+    vi.mocked(after).mockClear()
+
+    await rpc('resources/read', { uri: 'docs://react-three-fiber/index' }, 'node')
+
+    // On Vercel, the instance is suspended once the response is sent: a publish not handed to
+    // `after` would stall there, before it reached Redis
+    expect(publish).toHaveBeenCalledTimes(1)
+    expect(after).toHaveBeenCalledWith(publish.mock.results[0].value)
+    publish.mockRestore()
   })
 
   it('records a failed call without its free-text path', async () => {

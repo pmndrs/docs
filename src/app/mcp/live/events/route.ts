@@ -6,6 +6,13 @@ import { createEventStream, SSE_HEADERS } from './sse'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
+// The longest Vercel lets this function run, in seconds -- a stream included
+export const maxDuration = 300
+
+// Short of it, the stream ends by itself and the browser reconnects, rather than the platform
+// cutting it with a "Task timed out" error
+const CLOSE_AFTER_MS = (maxDuration - 20) * 1000
+
 /**
  * `GET /mcp/live/events[?lastEventId=...]`: the MCP requests the server serves, as Server-Sent
  * Events -- see `createEventStream`. Beside the page that reads it, and left out with it.
@@ -19,6 +26,7 @@ export function GET(request: Request) {
     // stream and opens it again (`/mcp/live` does, off screen), which cannot set headers
     lastEventId: request.headers.get('last-event-id') ?? searchParams.get('lastEventId'),
     signal: request.signal,
+    closeAfterMs: CLOSE_AFTER_MS,
   })
 
   return new Response(stream, { headers: SSE_HEADERS })

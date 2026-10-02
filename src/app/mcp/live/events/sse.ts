@@ -9,6 +9,9 @@ import type { McpEventBus } from './bus'
  *
  * Each event goes out with its `id`. A browser reconnecting sends the last one back as
  * `Last-Event-ID`, and its backlog then starts after it, when the bus still has it.
+ *
+ * After `closeAfterMs`, the stream ends on its own, so that it is not the platform that cuts it at
+ * the function's `maxDuration` -- with a runtime error. The browser just reconnects, and resumes.
  */
 
 const HEARTBEAT_MS = 15_000
@@ -35,11 +38,13 @@ export function createEventStream({
   lastEventId,
   signal,
   heartbeatMs = HEARTBEAT_MS,
+  closeAfterMs,
 }: {
   bus: McpEventBus
   lastEventId?: string | null
   signal: AbortSignal
   heartbeatMs?: number
+  closeAfterMs?: number
 }): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder()
   let cleanup = () => {}
@@ -65,8 +70,10 @@ export function createEventStream({
         else send(formatEvent(event))
       })
       const heartbeat = setInterval(() => send(': heartbeat\n\n'), heartbeatMs)
+      const timeout =
+        closeAfterMs === undefined ? undefined : setTimeout(() => close(), closeAfterMs)
 
-      const onAbort = () => {
+      const close = () => {
         cleanup()
         try {
           controller.close()
@@ -79,12 +86,13 @@ export function createEventStream({
         if (closed) return
         closed = true
         clearInterval(heartbeat)
+        clearTimeout(timeout)
         unsubscribe()
-        signal.removeEventListener('abort', onAbort)
+        signal.removeEventListener('abort', close)
       }
 
-      if (signal.aborted) onAbort()
-      else signal.addEventListener('abort', onAbort)
+      if (signal.aborted) close()
+      else signal.addEventListener('abort', close)
 
       send('retry: 3000\n\n')
 

@@ -1,5 +1,5 @@
 import { createClient, type RedisClientType } from 'redis'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import type { McpEvent } from '@/app/mcp/live/_components/event'
 import { createEventId } from './bus'
 import { createRedisEventBus, type RedisEventBus } from './redis-bus'
@@ -84,6 +84,12 @@ describe.skipIf(!url)('createRedisEventBus', () => {
     expect(await b.recent()).toEqual(events.slice(-10))
   })
 
+  it('resolves `publish` once the event is stored', async () => {
+    const stored = event('zustand')
+    await a.publish(stored)
+    expect((await b.recent()).at(-1)).toEqual(stored)
+  })
+
   it('closes its subscriber connection once the last listener is gone', async () => {
     const first = b.subscribe(() => {})
     const second = b.subscribe(() => {})
@@ -95,4 +101,18 @@ describe.skipIf(!url)('createRedisEventBus', () => {
     second()
     await until(async () => (await subscribers()) === 0)
   })
+})
+
+describe('createRedisEventBus, with Redis unreachable', () => {
+  it('neither throws nor rejects on `publish`', async () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => {})
+    // Nothing listens on port 1: the connection is refused, then given up on
+    const bus = createRedisEventBus({ url: 'redis://127.0.0.1:1', capacity: 10 })
+
+    await expect(bus.publish(event('drei'))).resolves.toBeUndefined()
+    expect(logged).toHaveBeenCalled()
+
+    await bus.close()
+    logged.mockRestore()
+  }, 10_000)
 })

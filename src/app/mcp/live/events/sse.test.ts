@@ -142,6 +142,30 @@ describe('createEventStream', () => {
     vi.useRealTimers()
   })
 
+  it('ends by itself after `closeAfterMs`, short of the platform cutting it', async () => {
+    vi.useFakeTimers()
+    const unsubscribe = vi.fn()
+    const bus: McpEventBus = {
+      publish: vi.fn(),
+      recent: async () => [],
+      subscribe: vi.fn(() => unsubscribe),
+    }
+
+    const controller = new AbortController()
+    const reader = createEventStream({
+      bus,
+      signal: controller.signal,
+      closeAfterMs: 5_000,
+    }).getReader()
+    await readMessages(reader, 2)
+
+    vi.advanceTimersByTime(5_000)
+
+    expect(unsubscribe).toHaveBeenCalledTimes(1)
+    expect((await reader.read()).done).toBe(true)
+    vi.useRealTimers()
+  })
+
   it('unsubscribes and closes when the request is aborted', async () => {
     const unsubscribe = vi.fn()
     const bus: McpEventBus = {

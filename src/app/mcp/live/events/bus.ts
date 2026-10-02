@@ -20,8 +20,12 @@ import { createRedisEventBus } from './redis-bus'
 export type McpEventListener = (event: McpEvent) => void
 
 export interface McpEventBus {
-  /** Never throws, and never makes the caller wait: an MCP request is what calls it. */
-  publish(event: McpEvent): void
+  /**
+   * Never throws, and never rejects: an MCP request is what calls it. The promise settles once
+   * the event is stored -- the caller need not wait for it, but must keep the instance alive
+   * until then (see `capture.ts`).
+   */
+  publish(event: McpEvent): Promise<void>
   /** Returns the function that unsubscribes. */
   subscribe(listener: McpEventListener): () => void
   /** The events still in the window, oldest first. */
@@ -50,7 +54,7 @@ export function createMemoryEventBus({
   const listeners = new Set<McpEventListener>()
 
   return {
-    publish(event) {
+    async publish(event) {
       buffer[next] = event
       next = (next + 1) % capacity
 
@@ -84,6 +88,13 @@ export function createMemoryEventBus({
   }
 }
 
+/**
+ * The deployment the events come from -- "production", "preview", or "development" off Vercel. All
+ * of them share one `REDIS_URL`: without this in the keys, the requests of a preview or a local
+ * server would show on docs.pmnd.rs/mcp/live, and the other way around.
+ */
+const ENVIRONMENT = process.env.VERCEL_ENV || 'development'
+
 // On `globalThis`, so that every route of an instance shares one bus -- and so that `next dev`
 // keeps it when it reloads a module, rather than starting an empty one (or opening new Redis
 // connections) beside the old.
@@ -95,7 +106,7 @@ export function getEventBus(): McpEventBus {
   const global = globalThis as GlobalWithBus
   const url = process.env.REDIS_URL
   global[GLOBAL_KEY] ??= url
-    ? createRedisEventBus({ url, capacity: DEFAULT_CAPACITY })
+    ? createRedisEventBus({ url, capacity: DEFAULT_CAPACITY, prefix: `mcp-live:${ENVIRONMENT}` })
     : createMemoryEventBus()
   return global[GLOBAL_KEY]
 }
