@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   CONTRAST_LEVEL_KEY,
   CONTRAST_LEVELS,
@@ -8,6 +9,7 @@ import {
   useContrastLevel,
 } from '@/hooks/useContrastLevel'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
+import { upperFirst } from 'lodash-es'
 import { ContrastIcon } from 'lucide-react'
 import { useEffect } from 'react'
 
@@ -53,25 +55,36 @@ export function ContrastToggle({ className }: { className?: string }) {
     <>
       {/* Until hydrated, `current` is the site's default, as on the server */}
       {!isHydrated && <script dangerouslySetInnerHTML={{ __html: prepaintScript(current.name) }} />}
-      <Button
-        variant="ghost"
-        size="icon"
-        aria-label={isHydrated ? `Contrast: ${current.name}, switch to ${next.name}` : 'Contrast'}
-        className={className}
-        onClick={() => setContrastLevel(next.value)}
-      >
-        {isHydrated ? (
-          <ContrastIcon className={ICON_SIZES[current.name]} />
-        ) : (
-          // The stored level is unknown on the server, and at hydration: the HTML can't depend on
-          // it. Every size is there, the pre-paint attribute shows the stored level's
-          <>
-            <ContrastIcon className="hidden size-4 in-data-[prepaint-contrast=standard]:block" />
-            <ContrastIcon className="hidden size-5 in-data-[prepaint-contrast=medium]:block" />
-            <ContrastIcon className="hidden size-6 in-data-[prepaint-contrast=high]:block" />
-          </>
-        )}
-      </Button>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={
+                isHydrated ? `Contrast: ${current.name}, switch to ${next.name}` : 'Contrast'
+              }
+              className={className}
+              onClick={() => setContrastLevel(next.value)}
+            />
+          }
+        >
+          {isHydrated ? (
+            <ContrastIcon className={ICON_SIZES[current.name]} />
+          ) : (
+            // The stored level is unknown on the server, and at hydration: the HTML can't depend on
+            // it. Every size is there, the pre-paint attribute shows the stored level's
+            <>
+              <ContrastIcon className="hidden size-4 in-data-[prepaint-contrast=standard]:block" />
+              <ContrastIcon className="hidden size-5 in-data-[prepaint-contrast=medium]:block" />
+              <ContrastIcon className="hidden size-6 in-data-[prepaint-contrast=high]:block" />
+            </>
+          )}
+        </TooltipTrigger>
+        <TooltipContent>
+          {isHydrated ? `Contrast: ${upperFirst(current.name)}` : 'Contrast'}
+        </TooltipContent>
+      </Tooltip>
     </>
   )
 }
