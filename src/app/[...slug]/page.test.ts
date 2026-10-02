@@ -119,3 +119,46 @@ test.describe('tabs anchor', () => {
     await expect(target).toBeVisible()
   })
 })
+
+//
+// Tabs: those of the same `syncKey` switch together, and remember the pick
+//
+
+test.describe('tabs syncKey', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('tabs of the same syncKey switch together, and remember the pick', async ({ page }) => {
+    await page.goto('/authoring/tabs')
+    await page.waitForLoadState('networkidle')
+
+    // The two of `syncKey="framework"`, the second one without Vue, and the first one of the page,
+    // without a `syncKey`
+    const allTabs = page.locator('[data-slot="tabs"]')
+    const templates = allTabs.filter({ hasText: 'Templates are JSX' })
+    const reactivity = allTabs.filter({ hasText: 'State changes re-render the component' })
+    const unsynced = allTabs.first()
+
+    await templates.getByRole('tab', { name: 'Svelte' }).click()
+    await expect(reactivity.getByRole('tab', { name: 'Svelte' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    await expect(unsynced.getByRole('tab', { name: 'React' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    // A tab the second one doesn't have: it stays where it was
+    await templates.getByRole('tab', { name: 'Vue' }).click()
+    await expect(reactivity.getByRole('tab', { name: 'Svelte' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    await page.reload()
+    await expect(templates.getByRole('tab', { name: 'Vue' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+  })
+})

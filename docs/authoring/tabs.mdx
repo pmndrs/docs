@@ -144,3 +144,95 @@ result:
 
   </TabsContent>
 </Tabs>
+
+## Synced tabs
+
+Tabs of the same `syncKey` switch together: picking a tab in one picks it in every other, on this page and on the others. The pick is remembered (in `localStorage`), after a reload and in other browser tabs.
+
+```md
+<Tabs defaultValue="react" syncKey="framework">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    Templates are JSX: markup in JavaScript.
+
+  </TabsContent>
+  <TabsContent value="vue">
+
+    Templates are HTML, in single-file components.
+
+  </TabsContent>
+  <TabsContent value="svelte">
+
+    Templates are HTML, in `.svelte` files.
+
+  </TabsContent>
+</Tabs>
+
+<Tabs defaultValue="react" syncKey="framework">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    State changes re-render the component.
+
+  </TabsContent>
+  <TabsContent value="svelte">
+
+    State changes are compiled into DOM updates.
+
+  </TabsContent>
+</Tabs>
+```
+
+result:
+
+<Tabs defaultValue="react" syncKey="framework">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="vue">Vue</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    Templates are JSX: markup in JavaScript.
+
+  </TabsContent>
+  <TabsContent value="vue">
+
+    Templates are HTML, in single-file components.
+
+  </TabsContent>
+  <TabsContent value="svelte">
+
+    Templates are HTML, in `.svelte` files.
+
+  </TabsContent>
+</Tabs>
+
+<Tabs defaultValue="react" syncKey="framework">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="svelte">Svelte</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+    State changes re-render the component.
+
+  </TabsContent>
+  <TabsContent value="svelte">
+
+    State changes are compiled into DOM updates.
+
+  </TabsContent>
+</Tabs>
+
+A `Tabs` without the picked tab stays as it is: pick Svelte above, then Vue, and the second one stays on Svelte. The pick is still Vue, for the next `Tabs` that has it. A page loaded with a pick none of its tabs have shows their `defaultValue`.
+
+The page's HTML shows `defaultValue`: the picked tab replaces it once the page's JavaScript runs. A link to a `#hash` in a hidden panel opens its tab as a click would, so it picks that tab too.
