@@ -23,8 +23,16 @@ function fullView(basePath: string, selection: Selection) {
   return `${basePath}/mcp/live${lib ? `?lib=${encodeURIComponent(lib)}` : ''}`
 }
 
-/** Every library the server knows of, and the example gallery, which requests name like one. */
-const KNOWN_LIBS = [...Object.keys(LIBS), 'examples']
+/**
+ * Every library the MCP server serves -- those with a `llms_full` dump, as in its route -- and
+ * the example gallery, which requests name like one.
+ */
+const KNOWN_LIBS = [
+  ...Object.entries(LIBS)
+    .filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
+    .map(([name]) => name),
+  'examples',
+]
 
 const STATUS_LABELS: Record<StreamStatus, string> = {
   paused: 'Paused',
