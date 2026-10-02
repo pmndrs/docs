@@ -2,6 +2,7 @@ import { GitHubIcon } from '@/components/brand-icons'
 import { Code } from '@/components/mdx/Code/Code'
 import { Gha } from '@/components/mdx/Gha/Gha'
 import { LibIcon } from '@/components/LibIcon'
+import { McpInstall } from '@/components/McpInstall/McpInstall'
 import { Badge } from '@/components/ui/badge'
 import { libs } from '@/libs'
 import { FileTextIcon } from 'lucide-react'
@@ -66,19 +67,7 @@ export default function Page() {
                 <code className="language-bash">{`/plugin marketplace add pmndrs/claude-code-plugin
 /plugin install pmndrs@pmndrs`}</code>
               </Code>
-              <details className="text-sm">
-                <summary className="cursor-pointer">Other clients (JSON config)</summary>
-                <Code className="language-json">
-                  <code className="language-json">{`{
-  "mcpServers": {
-    "pmndrs": {
-      "type": "http",
-      "url": "https://docs.pmnd.rs/api/mcp"
-    }
-  }
-}`}</code>
-                </Code>
-              </details>
+              <McpInstall />
               <p className="mt-4 text-sm leading-relaxed!">
                 Each lib also exposes its{' '}
                 <code>
