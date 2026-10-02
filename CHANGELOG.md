@@ -1,5 +1,24 @@
 # @pmndrs/docs
 
+## 4.12.0
+
+### Minor Changes
+
+- [#658](https://github.com/pmndrs/docs/pull/658) [`09f7fd3`](https://github.com/pmndrs/docs/commit/09f7fd3fc13d0f973f0465e6fa8df2ab51b70d31) Thanks [@abernier](https://github.com/abernier)! - The MCP server gains a `search_docs` tool: a query, optionally one library, and it answers with the best-matching pages -- ranked the way `npx @pmndrs/docs search` ranks them -- each with the `lib` and `path` to read it with `get_page_content`. Its tool descriptions and manifest now tell agents to search before answering, since the docs are newer than their training data.
+
+- [#653](https://github.com/pmndrs/docs/pull/653) [`9e10de8`](https://github.com/pmndrs/docs/commit/9e10de84e4aac945a5d5cda70b3f09d82a2fe236) Thanks [@abernier](https://github.com/abernier)! - A color swatch at the foot of the table of contents (of the sidebar, on narrower screens) lets the reader re-seed the site's palette with a color of their own, remembered across pages, reloads and browser tabs; picking the site's default again goes back to it.
+
+- [#653](https://github.com/pmndrs/docs/pull/653) [`9e10de8`](https://github.com/pmndrs/docs/commit/9e10de84e4aac945a5d5cda70b3f09d82a2fe236) Thanks [@abernier](https://github.com/abernier)! - A button beside that swatch switches the site between light, dark and the system's scheme, remembered across pages, reloads and browser tabs.
+
+### Patch Changes
+
+- [#654](https://github.com/pmndrs/docs/pull/654) [`9a9c3ea`](https://github.com/pmndrs/docs/commit/9a9c3ea142ae5a949e8ec7e923b3b0803e723d57) Thanks [@abernier](https://github.com/abernier)! - The live view of the MCP server's requests, on the Agents page, no longer 404s on a static
+  export. `/mcp/live` is server-only, so a static export now embeds and links to the one
+  docs.pmnd.rs serves, while `next dev` and docs.pmnd.rs keep their own, under `BASE_PATH`. It is
+  an MDX component, `<McpLiveEmbed />`.
+
+- [#659](https://github.com/pmndrs/docs/pull/659) [`333ac9d`](https://github.com/pmndrs/docs/commit/333ac9d46d41c0a38bde110cc6bb3f888f669224) Thanks [@abernier](https://github.com/abernier)! - The MCP server at `/api/mcp` now answers browser preflights and sends CORS headers, answers an empty or malformed JSON body with a 400 parse error instead of hanging until the function times out, and logs one line for every request it refuses.
+
 ## 4.11.0
 
 ### Minor Changes
