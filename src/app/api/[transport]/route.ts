@@ -6,6 +6,7 @@ import { revalidateTag } from 'next/cache'
 import { libs, type SUPPORTED_LIBRARY_NAMES } from '@/libs'
 import packageJson from '@/package.json' with { type: 'json' }
 import { assertExampleName, exampleUrl, indexUrl } from '@/utils/examples'
+import { instrument, rememberClient } from '../_mcp-events/capture'
 
 // Extract entries and library names as constants for efficiency
 // Only support libraries whose site actually publishes a /llms-full.txt dump -- see
@@ -42,6 +43,9 @@ async function fetchDocument(url: string): Promise<string> {
 
 const handler = createMcpHandler(
   (server) => {
+    // Before anything is registered: every handler below then reports to `/mcp/live`
+    instrument(server)
+
     //
     // Register manifest resource
     //
@@ -441,4 +445,13 @@ Always handle errors gracefully and consider alternative approaches when a speci
   },
 )
 
-export { handler as GET, handler as POST }
+/**
+ * The handler, after noting which client an `initialize` names -- tool calls only carry a
+ * User-Agent, see `capture.ts`.
+ */
+async function POST(request: Request) {
+  await rememberClient(request)
+  return handler(request)
+}
+
+export { handler as GET, POST }

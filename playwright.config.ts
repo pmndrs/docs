@@ -5,7 +5,8 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './src/app',
-  testIgnore: '**/route.test.ts',
+  // The page tests only: every other `*.test.ts` under src/app is a Vitest unit test
+  testMatch: '**/page.test.ts',
   use: {
     baseURL: 'http://localhost:3000',
   },
