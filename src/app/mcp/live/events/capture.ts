@@ -132,13 +132,17 @@ type Details = Pick<McpEvent, 'name' | 'lib' | 'path'>
 
 /**
  * Only identifiers are kept. A page path or example name is free text until it resolves, so it
- * is recorded only once the call succeeded -- that is, once it is known to name a real page.
+ * is recorded only once the call succeeded -- that is, once it is known to name a real page. A
+ * search query never resolves to one thing, so it is never recorded: a search is about its
+ * library, when it names one, and nothing more.
  */
 function describeTool(name: string, args: unknown, ok: boolean): Details {
   const input = (typeof args === 'object' && args !== null ? args : {}) as Record<string, unknown>
   const text = (value: unknown) => (typeof value === 'string' ? value : undefined)
 
   switch (name) {
+    case 'search_docs':
+      return { name, lib: text(input.lib) }
     case 'get_page_content':
       return { name, lib: text(input.lib), path: ok ? text(input.path) : undefined }
     case 'get_example':
