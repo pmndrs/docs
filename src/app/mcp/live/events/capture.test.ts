@@ -91,7 +91,7 @@ describe('capture', () => {
       ok: true,
     })
     expect(events[0].durationMs).toBeGreaterThanOrEqual(0)
-    expect(getEventBus().recent()).toContainEqual(events[0])
+    expect(await getEventBus().recent()).toContainEqual(events[0])
   })
 
   it('records a failed call without its free-text path', async () => {

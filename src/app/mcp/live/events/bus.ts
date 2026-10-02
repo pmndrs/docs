@@ -1,11 +1,11 @@
 /**
  * What the MCP server was asked, as a stream of small events -- for the `/mcp/live` page.
  *
- * There is no storage behind this deployment, so the only implementation keeps the last few
- * minutes in memory: each server instance sees the requests it served itself, and nothing
- * survives a cold start. That is a partial, best-effort view, and the page says so. A shared
- * backend (Redis pub/sub and a capped list, say) would replace `createMemoryEventBus` behind
- * the same `McpEventBus` interface, in this one file.
+ * Two implementations of one `McpEventBus` interface:
+ * - with `REDIS_URL` set, a Redis list and pub/sub channel (`redis-bus.ts`), which every server
+ *   instance shares: a viewer sees the requests whichever instance served them;
+ * - without it -- local development, tests -- an in-memory ring buffer, which only sees the
+ *   requests its own instance served, and loses them on a cold start.
  *
  * Server-only, and kept under `src/app/mcp/live` so it leaves the static export and the npm
  * package along with the page and the route that use it.
@@ -15,15 +15,17 @@
  */
 
 import { WINDOW_MS, type McpEvent } from '@/app/mcp/live/_components/event'
+import { createRedisEventBus } from './redis-bus'
 
-type McpEventListener = (event: McpEvent) => void
+export type McpEventListener = (event: McpEvent) => void
 
 export interface McpEventBus {
+  /** Never throws, and never makes the caller wait: an MCP request is what calls it. */
   publish(event: McpEvent): void
   /** Returns the function that unsubscribes. */
   subscribe(listener: McpEventListener): () => void
   /** The events still in the window, oldest first. */
-  recent(): McpEvent[]
+  recent(): Promise<McpEvent[]>
 }
 
 const DEFAULT_CAPACITY = 500
@@ -70,7 +72,7 @@ export function createMemoryEventBus({
       }
     },
 
-    recent() {
+    async recent() {
       const oldest = now() - maxAgeMs
       const events: McpEvent[] = []
       for (let offset = 0; offset < capacity; offset++) {
@@ -83,21 +85,28 @@ export function createMemoryEventBus({
 }
 
 // On `globalThis`, so that every route of an instance shares one bus -- and so that `next dev`
-// keeps it when it reloads a module, rather than starting an empty one beside the old.
+// keeps it when it reloads a module, rather than starting an empty one (or opening new Redis
+// connections) beside the old.
 const GLOBAL_KEY = Symbol.for('@pmndrs/docs/mcp-event-bus')
 
 type GlobalWithBus = typeof globalThis & { [GLOBAL_KEY]?: McpEventBus }
 
 export function getEventBus(): McpEventBus {
   const global = globalThis as GlobalWithBus
-  global[GLOBAL_KEY] ??= createMemoryEventBus()
+  const url = process.env.REDIS_URL
+  global[GLOBAL_KEY] ??= url
+    ? createRedisEventBus({ url, capacity: DEFAULT_CAPACITY })
+    : createMemoryEventBus()
   return global[GLOBAL_KEY]
 }
 
 let counter = 0
 
+// Tells apart the ids two instances create in the same millisecond, now that they share a bus
+const INSTANCE = Math.random().toString(36).slice(2, 8).padEnd(6, '0')
+
 /** An id that sorts by time, then by order of creation within the instance. */
 export function createEventId(ts: number) {
   counter = (counter + 1) % 1_000_000
-  return `${ts.toString(36).padStart(9, '0')}-${counter.toString(36).padStart(4, '0')}`
+  return `${ts.toString(36).padStart(9, '0')}-${counter.toString(36).padStart(4, '0')}-${INSTANCE}`
 }

@@ -4,13 +4,13 @@
  * and of the static export.
  */
 
-/** How far back the view looks: what the server's buffer keeps, and what the page draws. */
+/** How far back the view looks: what the server's bus keeps, and what the page draws. */
 export const WINDOW_MS = 15 * 60 * 1000
 
 export type McpEventKind = 'tool' | 'resource'
 
 export interface McpEvent {
-  /** Unique within an instance, increasing with time: what SSE resumes from. */
+  /** Unique across instances, increasing with time: what SSE resumes from. */
   id: string
   /** Epoch milliseconds, when the request started. */
   ts: number

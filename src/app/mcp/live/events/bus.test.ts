@@ -19,7 +19,7 @@ function event(overrides: Partial<McpEvent> = {}): McpEvent {
 }
 
 describe('createMemoryEventBus', () => {
-  it('returns what was published, oldest first', () => {
+  it('returns what was published, oldest first', async () => {
     const bus = createMemoryEventBus({ now: () => 1_000 })
     const first = event({ path: '/a' })
     const second = event({ path: '/b' })
@@ -27,19 +27,19 @@ describe('createMemoryEventBus', () => {
     bus.publish(first)
     bus.publish(second)
 
-    expect(bus.recent()).toEqual([first, second])
+    expect(await bus.recent()).toEqual([first, second])
   })
 
-  it('keeps only the last `capacity` events', () => {
+  it('keeps only the last `capacity` events', async () => {
     const bus = createMemoryEventBus({ capacity: 3, now: () => 1_000 })
     const events = Array.from({ length: 5 }, (_, index) => event({ path: `/${index}` }))
 
     events.forEach((e) => bus.publish(e))
 
-    expect(bus.recent().map(({ path }) => path)).toEqual(['/2', '/3', '/4'])
+    expect((await bus.recent()).map(({ path }) => path)).toEqual(['/2', '/3', '/4'])
   })
 
-  it('leaves out events older than `maxAgeMs`', () => {
+  it('leaves out events older than `maxAgeMs`', async () => {
     let now = 0
     const bus = createMemoryEventBus({ maxAgeMs: 100, now: () => now })
 
@@ -47,7 +47,7 @@ describe('createMemoryEventBus', () => {
     bus.publish(event({ ts: 50, path: '/new' }))
     now = 120
 
-    expect(bus.recent().map(({ path }) => path)).toEqual(['/new'])
+    expect((await bus.recent()).map(({ path }) => path)).toEqual(['/new'])
   })
 
   it('delivers to subscribers until they unsubscribe', () => {

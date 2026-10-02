@@ -198,8 +198,8 @@ export function McpLive({
       <Timeline events={visibleEvents} />
 
       <p className="text-xs text-on-surface-variant">
-        Partial live view — events from the instance serving this stream. Each server instance only
-        sees the requests it handled, and keeps the last {WINDOW_MINUTES} minutes in memory.
+        Live view of the requests to the MCP server — only the last {WINDOW_MINUTES} minutes are
+        kept.
       </p>
     </div>
   )

@@ -72,6 +72,59 @@ describe('createEventStream', () => {
     controller.abort()
   })
 
+  it('delivers what is published while the backlog is being read, once', async () => {
+    const memory = createMemoryEventBus()
+    const inBacklog = event('drei')
+    const afterBacklog = event('zustand')
+    const bus: McpEventBus = {
+      ...memory,
+      // Published while the stream reads its backlog: the first event in time to be part of it,
+      // the second not
+      async recent() {
+        memory.publish(inBacklog)
+        const events = await memory.recent()
+        memory.publish(afterBacklog)
+        return events
+      },
+    }
+
+    const controller = new AbortController()
+    const reader = createEventStream({ bus, signal: controller.signal }).getReader()
+
+    const [, backlog, live] = await readMessages(reader, 3)
+    expect(JSON.parse(backlog.split('data: ')[1])).toEqual([inBacklog])
+    expect(live).toBe(`id: ${afterBacklog.id}\nevent: mcp\ndata: ${JSON.stringify(afterBacklog)}`)
+
+    // Nothing else came in between: the next message is the next event
+    const next = event('uikit')
+    memory.publish(next)
+    expect(await readMessages(reader, 1)).toEqual([
+      `id: ${next.id}\nevent: mcp\ndata: ${JSON.stringify(next)}`,
+    ])
+
+    controller.abort()
+  })
+
+  it('lets go of the bus when aborted while the backlog is being read', async () => {
+    const unsubscribe = vi.fn()
+    let answer!: (events: McpEvent[]) => void
+    const bus: McpEventBus = {
+      publish: vi.fn(),
+      recent: () => new Promise((resolve) => (answer = resolve)),
+      subscribe: vi.fn(() => unsubscribe),
+    }
+
+    const controller = new AbortController()
+    const reader = createEventStream({ bus, signal: controller.signal }).getReader()
+    expect(await readMessages(reader, 1)).toEqual(['retry: 3000'])
+
+    controller.abort()
+    answer([event('drei')])
+
+    expect(unsubscribe).toHaveBeenCalledTimes(1)
+    expect((await reader.read()).done).toBe(true)
+  })
+
   it('sends a heartbeat', async () => {
     vi.useFakeTimers()
     const controller = new AbortController()
@@ -93,7 +146,7 @@ describe('createEventStream', () => {
     const unsubscribe = vi.fn()
     const bus: McpEventBus = {
       publish: vi.fn(),
-      recent: () => [],
+      recent: async () => [],
       subscribe: vi.fn(() => unsubscribe),
     }
 

@@ -57,16 +57,13 @@ export function createEventStream({
         }
       }
 
-      let backlog = bus.recent()
-      if (lastEventId) {
-        const seen = backlog.findIndex(({ id }) => id === lastEventId)
-        if (seen !== -1) backlog = backlog.slice(seen + 1)
-      }
-
-      send('retry: 3000\n\n')
-      send(formatBacklog(backlog))
-
-      const unsubscribe = bus.subscribe((event) => send(formatEvent(event)))
+      // Subscribed before the backlog is read, so that nothing published meanwhile falls between
+      // the two: held back until the backlog is out, then sent unless the backlog had it already.
+      let heldBack: McpEvent[] | undefined = []
+      const unsubscribe = bus.subscribe((event) => {
+        if (heldBack) heldBack.push(event)
+        else send(formatEvent(event))
+      })
       const heartbeat = setInterval(() => send(': heartbeat\n\n'), heartbeatMs)
 
       const onAbort = () => {
@@ -88,6 +85,31 @@ export function createEventStream({
 
       if (signal.aborted) onAbort()
       else signal.addEventListener('abort', onAbort)
+
+      send('retry: 3000\n\n')
+
+      const sendBacklog = async () => {
+        const recent = await bus.recent().catch((error: unknown) => {
+          console.error('Failed to read the MCP event backlog:', error)
+          return []
+        })
+        // Aborted while reading: `cleanup` has already let go of everything
+        if (closed) return
+
+        let backlog = recent
+        if (lastEventId) {
+          const seen = backlog.findIndex(({ id }) => id === lastEventId)
+          if (seen !== -1) backlog = backlog.slice(seen + 1)
+        }
+        send(formatBacklog(backlog))
+
+        // What the browser has, from this backlog or an earlier stream
+        const sent = new Set(recent.map(({ id }) => id))
+        const held = heldBack ?? []
+        heldBack = undefined
+        for (const event of held) if (!sent.has(event.id)) send(formatEvent(event))
+      }
+      void sendBacklog()
     },
 
     cancel() {
