@@ -4,7 +4,13 @@
 #
 # When building in export mode (OUTPUT=export), Next.js cannot handle Route Handlers
 # (route.ts files) as they require server runtime. This script temporarily moves the
-# /api directory during the build, then restores it afterward to preserve the source.
+# server-only parts of the app out of the way during the build, then restores them
+# afterward to preserve the source:
+#   - src/app/api       the MCP server
+#   - src/app/mcp/live  the live view of its requests, and their event stream
+#
+# Keep this list in step with `isExcluded` in src/cli/website.ts and the `!` entries of
+# `files` in package.json.
 #
 # Usage:
 #   OUTPUT=export npm run build  # Static export (GitHub Pages)
@@ -17,19 +23,21 @@ else
   IS_EXPORT=false
 fi
 
-# Move API directory if building for export
+# Move the server-only directories if building for export
 if [ "$IS_EXPORT" = "true" ]; then
   mkdir -p tmp
   mv src/app/api tmp/api-backup
+  mv src/app/mcp/live tmp/mcp-live-backup
 fi
 
 # Run Next.js build
 next build
 STATUS=$?
 
-# Restore API directory if it was moved
+# Restore them if they were moved
 if [ "$IS_EXPORT" = "true" ]; then
   mv tmp/api-backup src/app/api
+  mv tmp/mcp-live-backup src/app/mcp/live
 fi
 
 # Each page's markdown is exported under `md/` (src/app/md/[...slug]/route.ts), but belongs
