@@ -1,10 +1,17 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { after } from 'next/server'
 import type { McpEvent } from '@/app/mcp/live/_components/event'
+import {
+  getStatsStore,
+  record,
+  type McpStatsStore,
+  type StatsHit,
+} from '@/app/mcp/live/stats/store'
 import { createEventId, getEventBus, type McpEventBus } from './bus'
 
 /**
- * Turns every tool call and resource read of an MCP server into an `McpEvent` on the bus.
+ * Turns every tool call and resource read of an MCP server into an `McpEvent` on the bus, and
+ * counts it in the day's stats (`../stats/store.ts`).
  *
  * ## Which client sent it
  *
@@ -77,20 +84,34 @@ function rememberedClients(): Map<string, string | null> {
   return global[CLIENTS_KEY]
 }
 
-function isInitialize(message: unknown): message is { params: { clientInfo: { name: string } } } {
+interface Initialize {
+  params: { clientInfo: { name: string; version?: unknown } }
+}
+
+function isInitialize(message: unknown): message is Initialize {
   if (typeof message !== 'object' || message === null) return false
   const { method, params } = message as { method?: unknown; params?: { clientInfo?: unknown } }
   const clientInfo = params?.clientInfo as { name?: unknown } | undefined
   return method === 'initialize' && typeof clientInfo?.name === 'string'
 }
 
+/** Keeps the count going past the response, and off the request's path -- see `capture`. */
+function count(stats: McpStatsStore, hit: StatsHit) {
+  try {
+    after(record(stats, hit))
+  } catch (error) {
+    // Observing a request must never be what fails it
+    console.error('Failed to count MCP request:', error)
+  }
+}
+
 /**
- * Remembers the client name an `initialize` request announces, against its User-Agent. Reads a
- * clone, so the request is left for the MCP handler untouched; anything unexpected is ignored.
+ * Remembers the client name an `initialize` request announces, against its User-Agent -- and
+ * counts the handshake, by client, in the day's stats. Reads a clone, so the request is left for
+ * the MCP handler untouched; anything unexpected is ignored.
  */
-export async function rememberClient(request: Request) {
-  const userAgent = request.headers.get('user-agent')
-  if (!userAgent || !request.headers.get('content-type')?.includes('application/json')) return
+export async function rememberClient(request: Request, stats: McpStatsStore = getStatsStore()) {
+  if (!request.headers.get('content-type')?.includes('application/json')) return
 
   let body: unknown
   try {
@@ -102,11 +123,18 @@ export async function rememberClient(request: Request) {
     return
   }
 
+  const userAgent = request.headers.get('user-agent')
   for (const message of Array.isArray(body) ? body : [body]) {
     if (!isInitialize(message)) continue
-    const name = normalizeClientName(message.params.clientInfo.name)
+    const { clientInfo } = message.params
+    const name = normalizeClientName(clientInfo.name)
     if (!name) continue
 
+    const version =
+      typeof clientInfo.version === 'string' ? normalizeClientName(clientInfo.version) : undefined
+    count(stats, { kind: 'connection', client: name, version })
+
+    if (!userAgent) continue
     const clients = rememberedClients()
     const known = clients.get(userAgent)
     clients.delete(userAgent) // re-inserted last: the Map's order is the eviction order
@@ -165,8 +193,13 @@ function isErrorResult(result: unknown) {
   return typeof result === 'object' && result !== null && 'isError' in result && !!result.isError
 }
 
+function hitFor(kind: McpEvent['kind'], details: Details, ok: boolean): StatsHit {
+  return kind === 'tool' ? { kind, name: details.name, lib: details.lib, ok } : { kind }
+}
+
 function capture(
   bus: McpEventBus,
+  stats: McpStatsStore,
   kind: McpEvent['kind'],
   describe: (args: unknown[], ok: boolean) => Details,
   callback: Callback,
@@ -180,13 +213,14 @@ function capture(
     const start = performance.now()
 
     const publish = (ok: boolean) => {
+      const details = describe(args, ok)
       try {
         const published = bus.publish({
           id: createEventId(ts),
           ts,
           client: resolveClient(extra?.requestInfo?.headers),
           kind,
-          ...describe(args, ok),
+          ...details,
           durationMs: Math.round(performance.now() - start),
           ok,
         })
@@ -198,6 +232,7 @@ function capture(
         // Observing a request must never be what fails it
         console.error('Failed to publish MCP event:', error)
       }
+      count(stats, hitFor(kind, details, ok))
     }
 
     try {
@@ -213,10 +248,14 @@ function capture(
 
 /**
  * Wraps `registerTool` and `registerResource` on this server instance, so every handler
- * registered afterwards publishes an event when it runs. Call it first thing in the server's
- * initializer.
+ * registered afterwards publishes an event, and counts itself, when it runs. Call it first thing
+ * in the server's initializer.
  */
-export function instrument<T extends McpServer>(server: T, bus: McpEventBus = getEventBus()): T {
+export function instrument<T extends McpServer>(
+  server: T,
+  bus: McpEventBus = getEventBus(),
+  stats: McpStatsStore = getStatsStore(),
+): T {
   const registerTool = server.registerTool.bind(server) as unknown as (
     name: string,
     config: unknown,
@@ -235,6 +274,7 @@ export function instrument<T extends McpServer>(server: T, bus: McpEventBus = ge
       config,
       capture(
         bus,
+        stats,
         'tool',
         (args, ok) => describeTool(name, args.length > 1 ? args[0] : {}, ok),
         callback,
@@ -246,7 +286,7 @@ export function instrument<T extends McpServer>(server: T, bus: McpEventBus = ge
       name,
       uri,
       config,
-      capture(bus, 'resource', (args) => describeResource(String(args[0])), callback),
+      capture(bus, stats, 'resource', (args) => describeResource(String(args[0])), callback),
     )) as unknown as T['registerResource']
 
   return server

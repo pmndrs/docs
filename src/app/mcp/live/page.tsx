@@ -2,18 +2,20 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { McpLive } from './_components/McpLive'
+import { DailyStatsView } from './_components/DailyStats'
 import { LiveView } from './LiveView'
 
 /**
- * `/mcp/live`: what the MCP server at `/api/mcp` is being asked, as it happens.
+ * `/mcp/live`: what the MCP server at `/api/mcp` is being asked, as it happens -- and, under it,
+ * how much it was asked each of the last days (`./stats`).
  *
  * `/mcp/live?embed` is the same, compact and with no page around it, for an `<iframe>`: the
  * Agents docs page embeds it. Its background is transparent, so it takes on the page's; its theme
  * follows the page's on its own -- next-themes reads the same stored choice on the same origin,
  * and the same `prefers-color-scheme` anywhere.
  *
- * Left out of the static export and of the npm package, with its events endpoint (`./events`) and
- * along with `src/app/api` (see `next-build.sh`, `src/cli/website.ts` and the `files` of
+ * Left out of the static export and of the npm package, with its endpoints (`./events`,
+ * `./stats`) and along with `src/app/api` (see `next-build.sh`, `src/cli/website.ts` and the `files` of
  * `package.json`): it is docs.pmnd.rs's own page, beside the server it watches.
  */
 
@@ -56,6 +58,8 @@ export default async function Page({
       <Suspense>
         <LiveView basePath={basePath} />
       </Suspense>
+
+      <DailyStatsView basePath={basePath} />
     </main>
   )
 }

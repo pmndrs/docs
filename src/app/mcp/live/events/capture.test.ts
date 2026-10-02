@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { after } from 'next/server'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { dayOf, getStatsStore } from '@/app/mcp/live/stats/store'
 import { getEventBus } from './bus'
 import { clientFromUserAgent, normalizeClientName, resolveClient } from './capture'
 
@@ -72,6 +73,20 @@ const initialize = (name: string, userAgent: string) =>
     },
     userAgent,
   )
+
+/** Runs `request` and returns by how much each of today's counters moved. */
+async function counted(request: () => Promise<unknown>) {
+  const today = dayOf(Date.now())
+  const [before] = await getStatsStore().read([today])
+  await request()
+  const [after] = await getStatsStore().read([today])
+  const moved: Record<string, number> = {}
+  for (const [field, count] of Object.entries(after)) {
+    const delta = count - (before[field] ?? 0)
+    if (delta !== 0) moved[field] = delta
+  }
+  return moved
+}
 
 describe('capture', () => {
   it('publishes an event for a tool call', async () => {
@@ -171,6 +186,73 @@ describe('capture', () => {
     )
 
     expect(events[0]).toMatchObject({ client: 'python-httpx' })
+  })
+})
+
+describe('stats', () => {
+  it('counts a tool call, by tool and library', async () => {
+    const moved = await counted(() =>
+      rpc(
+        'tools/call',
+        {
+          name: 'get_page_content',
+          arguments: { lib: 'react-three-fiber', path: '/api/hooks/use-frame' },
+        },
+        'claude-code/2.0.14 (cli)',
+      ),
+    )
+
+    expect(moved).toEqual({
+      calls: 1,
+      'tool:get_page_content': 1,
+      'lib:react-three-fiber': 1,
+    })
+  })
+
+  it('counts a failed tool call as an error too', async () => {
+    const moved = await counted(() =>
+      rpc(
+        'tools/call',
+        { name: 'get_page_content', arguments: { lib: 'react-three-fiber', path: '/nowhere' } },
+        'node',
+      ),
+    )
+
+    expect(moved).toEqual({
+      calls: 1,
+      'tool:get_page_content': 1,
+      'lib:react-three-fiber': 1,
+      errors: 1,
+    })
+  })
+
+  it('counts a resource read', async () => {
+    const moved = await counted(() =>
+      rpc('resources/read', { uri: 'docs://react-three-fiber/index' }, 'Cursor/1.7.0'),
+    )
+
+    expect(moved).toEqual({ reads: 1 })
+  })
+
+  it('counts an `initialize` as a connection, by client and version', async () => {
+    const moved = await counted(() => initialize('Claude Desktop', 'node'))
+
+    expect(moved).toEqual({
+      connections: 1,
+      'client:claude-desktop': 1,
+      'clientVersion:claude-desktop/1.0.0': 1,
+    })
+  })
+
+  it('keeps the count going past the response', async () => {
+    const increment = vi.spyOn(getStatsStore(), 'increment')
+    vi.mocked(after).mockClear()
+
+    await rpc('resources/read', { uri: 'docs://pmndrs/manifest' }, 'node')
+
+    expect(increment).toHaveBeenCalledTimes(1)
+    expect(after).toHaveBeenCalledWith(increment.mock.results[0].value)
+    increment.mockRestore()
   })
 })
 
