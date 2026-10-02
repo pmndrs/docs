@@ -36,9 +36,10 @@ function notify(store: Store) {
   for (const listener of store.listeners) listener()
 }
 
-// Another tab changed it: one window listener for every key and subscriber. A `null` key is a
-// `localStorage.clear()`.
-let subscribers = 0
+// Another tab changed it: one window listener for every key, added with the first subscriber and
+// then kept, so that a cached choice never misses a change while no component shows it. A `null`
+// key is a `localStorage.clear()`.
+let listening = false
 
 function onStorage(event: StorageEvent) {
   for (const [key, store] of stores) {
@@ -56,11 +57,13 @@ function storeOf(key: string): Store {
     value: undefined,
     listeners: new Set(),
     subscribe(listener) {
-      if (subscribers++ === 0) window.addEventListener('storage', onStorage)
+      if (!listening) {
+        window.addEventListener('storage', onStorage)
+        listening = true
+      }
       created.listeners.add(listener)
       return () => {
         created.listeners.delete(listener)
-        if (--subscribers === 0) window.removeEventListener('storage', onStorage)
       }
     },
     getSnapshot() {
