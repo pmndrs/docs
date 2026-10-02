@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.13.0
+
+### Minor Changes
+
+- [#661](https://github.com/pmndrs/docs/pull/661) [`06b671f`](https://github.com/pmndrs/docs/commit/06b671fe9d1dc0c5d860aef66ab6bb1819fe8835) Thanks [@abernier](https://github.com/abernier)! - A contrast toggle next to the theme color and light/dark switches: each click cycles the palette's Material contrast level -- standard, medium, high -- remembered across pages, reloads and tabs, and shown from the first paint. Code blocks now keep their dark background at every level: they were built on the `*-fixed` roles, which Material keeps across light and dark but not across contrast levels.
+
 ## 4.12.0
 
 ### Minor Changes
