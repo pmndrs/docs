@@ -149,7 +149,7 @@ result:
 
 Tabs of the same `syncKey` switch together: picking a tab in one picks it in every other, on this page and on the others. The pick is remembered (in `localStorage`), after a reload and in other browser tabs.
 
-```md
+````md
 <Tabs defaultValue="react" syncKey="framework">
   <TabsList>
     <TabsTrigger value="react">React</TabsTrigger>
@@ -160,15 +160,42 @@ Tabs of the same `syncKey` switch together: picking a tab in one picks it in eve
 
     Templates are JSX: markup in JavaScript.
 
+    ```jsx
+    function Counter() {
+      const [count, setCount] = useState(0)
+      return <button onClick={() => setCount(count + 1)}>{count}</button>
+    }
+    ```
+
   </TabsContent>
   <TabsContent value="vue">
 
     Templates are HTML, in single-file components.
 
+    ```html
+    <script setup>
+    import { ref } from 'vue'
+
+    const count = ref(0)
+    </script>
+
+    <template>
+      <button @click="count++">{{ count }}</button>
+    </template>
+    ```
+
   </TabsContent>
   <TabsContent value="svelte">
 
     Templates are HTML, in `.svelte` files.
+
+    ```html
+    <script>
+      let count = $state(0)
+    </script>
+
+    <button onclick={() => count++}>{count}</button>
+    ```
 
   </TabsContent>
 </Tabs>
@@ -189,7 +216,7 @@ Tabs of the same `syncKey` switch together: picking a tab in one picks it in eve
 
   </TabsContent>
 </Tabs>
-```
+````
 
 result:
 
@@ -203,15 +230,42 @@ result:
 
     Templates are JSX: markup in JavaScript.
 
+    ```jsx
+    function Counter() {
+      const [count, setCount] = useState(0)
+      return <button onClick={() => setCount(count + 1)}>{count}</button>
+    }
+    ```
+
   </TabsContent>
   <TabsContent value="vue">
 
     Templates are HTML, in single-file components.
 
+    ```html
+    <script setup>
+    import { ref } from 'vue'
+
+    const count = ref(0)
+    </script>
+
+    <template>
+      <button @click="count++">{{ count }}</button>
+    </template>
+    ```
+
   </TabsContent>
   <TabsContent value="svelte">
 
     Templates are HTML, in `.svelte` files.
+
+    ```html
+    <script>
+      let count = $state(0)
+    </script>
+
+    <button onclick={() => count++}>{count}</button>
+    ```
 
   </TabsContent>
 </Tabs>
@@ -235,4 +289,10 @@ result:
 
 A `Tabs` without the picked tab stays as it is: pick Svelte above, then Vue, and the second one stays on Svelte. The pick is still Vue, for the next `Tabs` that has it. A page loaded with a pick none of its tabs have shows their `defaultValue`.
 
-The page's HTML shows `defaultValue`: the picked tab replaces it once the page's JavaScript runs. A link to a `#hash` in a hidden panel opens its tab as a click would, so it picks that tab too.
+The page's HTML shows `defaultValue`: the picked tab replaces it once the page's JavaScript runs.
+
+### Links
+
+A link to a `#hash` in a hidden panel opens its tab as a click would, so it picks that tab too.
+
+A link to a heading below synced tabs, like [this one](#links), still lands on it when the picked tab is taller or shorter than the `defaultValue` one: the page scrolls to it again once the picked tab replaces it.
