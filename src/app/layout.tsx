@@ -1,8 +1,8 @@
+import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
 import cn from '@/lib/cn'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
-import { Mtb } from 'material-theme-builder/react'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
 
@@ -137,7 +137,7 @@ export default function RootLayout({
           } as React.CSSProperties
         }
       >
-        <Mtb
+        <PrimaryColorMtb
           source={primary}
           scheme={scheme}
           contrast={contrast}
@@ -150,7 +150,7 @@ export default function RootLayout({
           ]}
         >
           <ThemeProvider attribute="class">{children}</ThemeProvider>
-        </Mtb>
+        </PrimaryColorMtb>
       </body>
     </html>
   )

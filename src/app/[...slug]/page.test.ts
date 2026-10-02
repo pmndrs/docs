@@ -1,4 +1,5 @@
 import { test, expect } from '@chromatic-com/playwright'
+import type { Page } from '@playwright/test'
 
 //
 // Test any docs/**/*.mdx page
@@ -213,5 +214,218 @@ test.describe('tabs syncKey', () => {
     expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:tabs:framework'))).toBe(
       'vue',
     )
+  })
+})
+
+//
+// Primary color: the reader's pick re-seeds the palette, and is remembered
+//
+
+// The theme controls are in the TOC column from `xl`, at the foot of the sidebar below, and in its
+// sheet below `lg`: opened here, as a reader would, once React runs (a reload closes it)
+async function showThemeControls(page: Page) {
+  const sidebarTrigger = page.getByRole('button', { name: 'Toggle Sidebar' })
+  if (!(await sidebarTrigger.isVisible())) return
+  await sidebarTrigger.click()
+  // Slid in: the controls are where they stay
+  await page
+    .getByRole('dialog')
+    .evaluate((sheet) =>
+      Promise.all(sheet.getAnimations({ subtree: true }).map((animation) => animation.finished)),
+    )
+}
+
+// The page before React runs shows no sheet: there, the server-rendered copies are checked on their
+// computed style, whether their column shows at this width or not
+function anyCopy(page: Page, name: string | RegExp) {
+  return page.getByRole('button', { name, includeHidden: true }).first()
+}
+
+function collectHydrationErrors(page: Page) {
+  const hydrationErrors: string[] = []
+  page.on('console', (message) => {
+    if (message.type() !== 'error') return
+    // The development message, and the production one (minified React errors 418 to 425)
+    if (/hydrat|Minified React error #4(1[89]|2[0-5])/i.test(message.text())) {
+      hydrationErrors.push(message.text())
+    }
+  })
+  return hydrationErrors
+}
+
+test.describe('primary color', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('a picked color re-seeds the palette, is remembered, and forgotten for the default', async ({
+    page,
+  }) => {
+    const hydrationErrors = collectHydrationErrors(page)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    // The palette `Mtb` writes, seeded with the site's default (`toHaveText` doesn't read a
+    // `<style>`'s text)
+    const palette = () => page.locator('style#mcu-styles').textContent()
+    const defaultPalette = await palette()
+    // The palette in effect, whichever `<style>` it comes from
+    const primary = () =>
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
+      )
+    const defaultPrimary = await primary()
+    const swatch = anyCopy(page, 'Theme color').locator('span')
+    const defaultSwatch = await swatch.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    )
+    const input = page.locator('input[type="color"]').filter({ visible: true })
+
+    // The page as first painted: the HTML and its inline scripts, React never running
+    const chunks = '**/_next/static/chunks/**'
+    async function reloadWithoutReact() {
+      await page.route(chunks, (route) => route.abort())
+      await page.reload()
+    }
+    async function reloadWithReact() {
+      await page.unroute(chunks)
+      await page.reload()
+      await page.waitForLoadState('networkidle')
+    }
+
+    await showThemeControls(page)
+
+    // The native picker opens where its input is: over the swatch's button, for it to open under
+    const inputBox = await input.boundingBox()
+    const buttonBox = await page.getByRole('button', { name: 'Theme color' }).boundingBox()
+    expect(inputBox && buttonBox).toBeTruthy()
+    expect(inputBox!.x).toBeGreaterThanOrEqual(buttonBox!.x)
+    expect(inputBox!.y).toBeGreaterThanOrEqual(buttonBox!.y)
+    expect(inputBox!.x + inputBox!.width).toBeLessThanOrEqual(buttonBox!.x + buttonBox!.width)
+    expect(inputBox!.y + inputBox!.height).toBeLessThanOrEqual(buttonBox!.y + buttonBox!.height)
+
+    await input.fill('#ff0000')
+    await expect.poll(palette).not.toBe(defaultPalette)
+    const pickedPalette = await palette()
+    const pickedPrimary = await primary()
+    expect(pickedPrimary).not.toBe(defaultPrimary)
+    expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBe(
+      '#ff0000',
+    )
+
+    await page.reload()
+    await expect.poll(palette).toBe(pickedPalette)
+    // Cached once the color has settled, for the next load
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null')?.color,
+        ),
+      )
+      .toBe('#ff0000')
+
+    // The pick from the first paint, the swatch included: no flash of the default palette
+    await reloadWithoutReact()
+    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary()).toBe(pickedPrimary)
+    await expect(swatch).toHaveCSS('background-color', 'rgb(255, 0, 0)')
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(pickedPalette)
+    // Once `Mtb` has the pick, only its palette is left
+    await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
+    expect(await primary()).toBe(pickedPrimary)
+
+    // Picking the site's default (`THEME_PRIMARY` of `start.sh`) forgets the pick, and its palette
+    await showThemeControls(page)
+    await input.fill('#323e48')
+    await expect.poll(palette).toBe(defaultPalette)
+    expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBeNull()
+    expect(
+      await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color:css')),
+    ).toBeNull()
+
+    // Forgotten, the default from the first paint again
+    await reloadWithoutReact()
+    expect(await primary()).toBe(defaultPrimary)
+    await expect(swatch).toHaveCSS('background-color', defaultSwatch)
+
+    await page.unroute(chunks)
+    expect(hydrationErrors).toEqual([])
+  })
+})
+
+//
+// Theme: light, dark or the system's, picked by the reader and remembered
+//
+
+test.describe('theme', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the toggle cycles system, light and dark, is remembered, and follows the system', async ({
+    page,
+  }) => {
+    const hydrationErrors = collectHydrationErrors(page)
+
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+    await showThemeControls(page)
+
+    const html = page.locator('html')
+    const name = /^Theme(:|$)/
+    const toggle = page.getByRole('button', { name })
+    const storedTheme = () => page.evaluate(() => localStorage.getItem('theme'))
+
+    // Nothing picked: the system's
+    await expect(toggle).toHaveAccessibleName('Theme: system, switch to light')
+    await expect(html).toHaveClass(/\blight\b/)
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await expect(html).toHaveClass(/\bdark\b/)
+
+    // Picked: whatever the system's
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Theme: light, switch to dark')
+    await expect(html).toHaveClass(/\blight\b/)
+    await expect(html).not.toHaveClass(/\bdark\b/)
+    expect(await storedTheme()).toBe('light')
+
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Theme: dark, switch to system')
+    await expect(html).toHaveClass(/\bdark\b/)
+    expect(await storedTheme()).toBe('dark')
+    await page.emulateMedia({ colorScheme: 'light' })
+    await expect(html).toHaveClass(/\bdark\b/)
+
+    await page.reload()
+    await page.waitForLoadState('networkidle')
+    await showThemeControls(page)
+    await expect(toggle).toHaveAccessibleName('Theme: dark, switch to system')
+    await expect(html).toHaveClass(/\bdark\b/)
+
+    // The page as first painted, React never running: the stored theme's icon already, no swap.
+    // The JS chunks only: the CSS ones hide the other icons
+    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+    await page.route(chunks, (route) => route.abort())
+    await page.reload()
+    await expect(html).toHaveClass(/\bdark\b/)
+    await expect(anyCopy(page, name).locator('.lucide-moon')).toHaveCSS('display', 'block')
+    await expect(anyCopy(page, name).locator('.lucide-sun')).toHaveCSS('display', 'none')
+    await expect(anyCopy(page, name).locator('.lucide-monitor')).toHaveCSS('display', 'none')
+    await page.unroute(chunks)
+    await page.reload()
+    await page.waitForLoadState('networkidle')
+    await showThemeControls(page)
+
+    // Back to the system's, which it follows again
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Theme: system, switch to light')
+    expect(await storedTheme()).toBe('system')
+    await expect(html).toHaveClass(/\blight\b/)
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await expect(html).toHaveClass(/\bdark\b/)
+    // Once hydrated, the button shows the theme itself
+    await expect(html).not.toHaveAttribute('data-prepaint-theme')
+
+    expect(hydrationErrors).toEqual([])
   })
 })
