@@ -10,7 +10,8 @@ type Store = {
   // Created once per key: stable, so React doesn't resubscribe on every render
   subscribe: (listener: () => void) => () => void
   getSnapshot: () => string | null
-  set: (value: string) => void
+  /** `null` removes it: back to nothing stored */
+  set: (value: string | null) => void
 }
 
 const stores = new Map<string, Store>()
@@ -24,9 +25,10 @@ function readStorage(key: string): string | null {
   }
 }
 
-function writeStorage(key: string, value: string) {
+function writeStorage(key: string, value: string | null) {
   try {
-    localStorage.setItem(key, value)
+    if (value === null) localStorage.removeItem(key)
+    else localStorage.setItem(key, value)
   } catch {
     // localStorage unavailable
   }
@@ -92,7 +94,8 @@ function getServerSnapshot() {
  * `null` when nothing is stored, and on the server and at hydration, for the HTML to match: the
  * stored choice right after. A client-side navigation renders the stored choice directly.
  *
- * Any string: the caller falls back to its default, and checks the value is one it has.
+ * Any string: the caller falls back to its default, and checks the value is one it has. Setting
+ * `null` forgets the choice: the caller's default again, here and in the other tabs.
  */
 export function useStoredChoice(key: string) {
   const store = storeOf(key)

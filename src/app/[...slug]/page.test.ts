@@ -215,3 +215,36 @@ test.describe('tabs syncKey', () => {
     )
   })
 })
+
+//
+// Primary color: the reader's pick re-seeds the palette, and is remembered
+//
+
+test.describe('primary color', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('a picked color re-seeds the palette, is remembered, and resets', async ({ page }) => {
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    // The palette `Mtb` writes, seeded with the site's default (`toHaveText` doesn't read a
+    // `<style>`'s text)
+    const palette = () => page.locator('style#mcu-styles').textContent()
+    const defaultPalette = await palette()
+
+    await page.locator('input[type="color"]').fill('#ff0000')
+    await expect.poll(palette).not.toBe(defaultPalette)
+    const pickedPalette = await palette()
+    expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBe(
+      '#ff0000',
+    )
+
+    await page.reload()
+    await expect.poll(palette).toBe(pickedPalette)
+
+    await page.getByRole('button', { name: 'Reset the theme color' }).click()
+    await expect.poll(palette).toBe(defaultPalette)
+    await expect(page.getByRole('button', { name: 'Reset the theme color' })).toBeHidden()
+    expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBeNull()
+  })
+})

@@ -9,6 +9,7 @@ import {
   LayoutSidebar,
 } from '@/components/Layout'
 import { LibsMenu } from '@/components/LibsMenu'
+import { PrimaryColorPicker } from '@/components/PrimaryColorPicker'
 import Search from '@/components/Search'
 import { SidebarNav } from '@/components/SidebarNav'
 import { SponsorCard } from '@/components/SponsorCard'
@@ -92,7 +93,7 @@ export default async function Layoutt({ params, children }: Props) {
             )}
           </React.Fragment>
         ))}
-        {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
+        <PrimaryColorPicker />
       </div>
     </div>
   )
