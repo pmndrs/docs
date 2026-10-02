@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.10.0
+
+### Minor Changes
+
+- [#648](https://github.com/pmndrs/docs/pull/648) [`50a1b31`](https://github.com/pmndrs/docs/commit/50a1b31e206ddb51062556686d8a0d4b82bebb91) Thanks [@abernier](https://github.com/abernier)! - Each site now publishes its icon at `/icon.svg`, built from `ICON`: an emoji is drawn as before,
+  and an image path (local to `MDX`) is embedded as a data URI, so the file stands on its own. The
+  favicon of every page points at it. An `ICON` path that is missing, or not an image, now fails the
+  build instead of linking to a broken favicon.
+
+  The header's libraries menu, and the cards of the docs hub, show each library's own `/icon.svg`
+  when it has no bundled icon, and a generic package icon until that site is rebuilt.
+
 ## 4.9.0
 
 ### Minor Changes
