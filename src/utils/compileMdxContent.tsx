@@ -48,6 +48,7 @@ import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
+import { rehypeMcpLiveIframe, servesMcpLive } from '@/utils/rehypeMcpLiveIframe'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import type { ComponentType } from 'react'
@@ -105,6 +106,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         remarkPlugins: [remarkGFM],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
+          rehypeMcpLiveIframe(servesMcpLive() ? process.env.BASE_PATH || '' : undefined),
           rehypeInlineFlow(['Badge']),
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),
