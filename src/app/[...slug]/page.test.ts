@@ -161,4 +161,51 @@ test.describe('tabs syncKey', () => {
       'true',
     )
   })
+
+  test('without localStorage, a pick still switches its own tabs', async ({ page }) => {
+    // localStorage blocked, e.g. by the browser's settings: nothing can be stored
+    await page.addInitScript(() => {
+      Storage.prototype.setItem = () => {
+        throw new DOMException('Blocked', 'SecurityError')
+      }
+    })
+    await page.goto('/authoring/tabs')
+    await page.waitForLoadState('networkidle')
+
+    // Only the `Tabs` clicked: the others of its `syncKey` don't follow, as documented
+    const templates = page.locator('[data-slot="tabs"]').filter({ hasText: 'Templates are JSX' })
+
+    await templates.getByRole('tab', { name: 'Svelte' }).click()
+    await expect(templates.getByRole('tab', { name: 'Svelte' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+  })
+
+  test('a stored pick a tabs has no tab for leaves it on its defaultValue', async ({ page }) => {
+    // Vue, picked on another page: the second `Tabs` of `syncKey="framework"` has no Vue tab
+    await page.addInitScript(() => {
+      localStorage.setItem('pmndrs-docs:tabs:framework', 'vue')
+    })
+    await page.goto('/authoring/tabs')
+    await page.waitForLoadState('networkidle')
+
+    const allTabs = page.locator('[data-slot="tabs"]')
+    const templates = allTabs.filter({ hasText: 'Templates are JSX' })
+    const reactivity = allTabs.filter({ hasText: 'State changes re-render the component' })
+
+    await expect(templates.getByRole('tab', { name: 'Vue' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    await expect(reactivity.getByRole('tab', { name: 'React' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    // Still stored, for the next `Tabs` that has it
+    expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:tabs:framework'))).toBe(
+      'vue',
+    )
+  })
 })
