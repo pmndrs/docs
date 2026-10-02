@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import type { McpEvent } from '@/app/mcp/live/_components/event'
 import { createEventId, createMemoryEventBus, getEventBus } from './bus'
 
@@ -50,33 +50,13 @@ describe('createMemoryEventBus', () => {
     expect((await bus.recent()).map(({ path }) => path)).toEqual(['/new'])
   })
 
-  it('delivers to subscribers until they unsubscribe', () => {
-    const bus = createMemoryEventBus()
-    const listener = vi.fn()
+  it('returns only the newest `limit` events when asked', async () => {
+    const bus = createMemoryEventBus({ now: () => 1_000 })
+    const events = Array.from({ length: 5 }, (_, index) => event({ path: `/${index}` }))
 
-    const unsubscribe = bus.subscribe(listener)
-    const delivered = event()
-    bus.publish(delivered)
-    unsubscribe()
-    bus.publish(event())
+    events.forEach((e) => bus.publish(e))
 
-    expect(listener).toHaveBeenCalledTimes(1)
-    expect(listener).toHaveBeenCalledWith(delivered)
-  })
-
-  it('keeps delivering when one subscriber throws', () => {
-    const bus = createMemoryEventBus()
-    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const healthy = vi.fn()
-
-    bus.subscribe(() => {
-      throw new Error('gone')
-    })
-    bus.subscribe(healthy)
-
-    expect(() => bus.publish(event())).not.toThrow()
-    expect(healthy).toHaveBeenCalledTimes(1)
-    error.mockRestore()
+    expect((await bus.recent(2)).map(({ path }) => path)).toEqual(['/3', '/4'])
   })
 })
 

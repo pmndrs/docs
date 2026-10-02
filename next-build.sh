@@ -7,7 +7,7 @@
 # server-only parts of the app out of the way during the build, then restores them
 # afterward to preserve the source:
 #   - src/app/api       the MCP server
-#   - src/app/mcp/live  the live view of its requests, and their event stream
+#   - src/app/mcp/live  the live view of its requests, and the endpoint it polls
 #
 # Keep this list in step with `isExcluded` in src/cli/website.ts and the `!` entries of
 # `files` in package.json.

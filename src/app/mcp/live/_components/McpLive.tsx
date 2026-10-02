@@ -56,7 +56,7 @@ const EMPTY: Selection = []
 const WINDOW_MINUTES = WINDOW_MS / 60_000
 
 interface McpLiveProps {
-  /** The app's `basePath`: the stream and the full view are served beside this page. */
+  /** The app's `basePath`: the events and the full view are served beside this page. */
   basePath: string
   /**
    * `compact` (the default) for `/mcp/live?embed`: a fixed height, and a link to the full view.
@@ -74,7 +74,7 @@ interface McpLiveProps {
  * -> library (-> page) over the window the server keeps, one particle per request as it comes in, and a
  * timeline of the last five minutes under it. Pick libraries to see their pages.
  *
- * It streams only while on screen in a visible tab.
+ * It polls only while on screen in a visible tab.
  */
 export function McpLive({
   basePath,
@@ -95,8 +95,8 @@ export function McpLive({
   const sankeyRef = useRef<SankeyHandle>(null)
   const onLive = useCallback((event: McpEvent) => sankeyRef.current?.spawn(event), [])
 
-  // Everything is streamed, and the selection filters here: changing it is then instant and
-  // animated, rather than a reconnection that would start the graph over
+  // Everything is polled, and the selection filters here: changing it is then instant and
+  // animated, rather than a new request that would start the graph over
   const { events, status } = useMcpEvents(`${basePath}/mcp/live/events`, open, onLive)
 
   const [extraRows, setExtraRows] = useState(0)
