@@ -2,7 +2,6 @@
 
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { HEX_COLOR, PRIMARY_COLOR_KEY, usePrimaryColor } from '@/hooks/usePrimaryColor'
-import { builder } from 'material-theme-builder'
 import { useMtb } from 'material-theme-builder/react'
 import { useEffect, useState } from 'react'
 
@@ -16,6 +15,12 @@ const CACHE_KEY = `${PRIMARY_COLOR_KEY}:css`
 export const PRIMARY_COLOR_PREPAINT_VAR = '--prepaint-primary-color'
 
 const STYLE_ID = 'primary-color-prepaint'
+
+// Where `Mtb` writes its palette: read back rather than computed again
+const MTB_STYLE_ID = 'mcu-styles'
+
+// Dragging in the native picker applies a palette on every move: only the last one is cached
+const CACHE_DELAY = 500
 
 type Cache = {
   color: string
@@ -84,11 +89,16 @@ export function PrimaryColorPrepaint({ signature }: { signature: string }) {
     if (!isHydrated) return
     if (isDefault) {
       writeCache(null)
-    } else if (isApplied) {
-      const css = builder(mtbConfig.source, mtbConfig).toCss()
-      writeCache({ color: mtbConfig.source, signature, css })
+      return
     }
-  }, [isHydrated, isDefault, isApplied, mtbConfig, signature])
+    if (!isApplied) return
+    const color = mtbConfig.source
+    const timeout = setTimeout(() => {
+      const css = document.getElementById(MTB_STYLE_ID)?.textContent
+      if (css) writeCache({ color, signature, css })
+    }, CACHE_DELAY)
+    return () => clearTimeout(timeout)
+  }, [isHydrated, isDefault, isApplied, mtbConfig.source, signature])
 
   // The swatch reads `primaryColor` itself once hydrated
   useEffect(() => {
