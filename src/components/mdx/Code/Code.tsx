@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCopied } from '@/hooks/useCopied'
 import { usePackageManager } from '@/hooks/usePackageManager'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import {
   isPackageManager,
   packageManagers,

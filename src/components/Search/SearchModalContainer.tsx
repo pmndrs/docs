@@ -11,7 +11,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { escape } from '@/utils/text'
 import { useRouter } from 'next/navigation'
 import { ComponentProps } from 'react'

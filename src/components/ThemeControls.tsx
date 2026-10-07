@@ -3,7 +3,7 @@ import { PrimaryColorPicker } from '@/components/PrimaryColorPicker'
 import { SchemeToggle } from '@/components/SchemeToggle'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
 /**

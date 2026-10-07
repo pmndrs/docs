@@ -5,7 +5,7 @@ import { Color } from '@/components/mdx/Color'
 import { Button } from '@/components/ui/button'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { isHexColor, usePrimaryColor } from '@/hooks/usePrimaryColor'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { useRef } from 'react'
 
 /**

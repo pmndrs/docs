@@ -1,7 +1,7 @@
 import { CodesandboxIcon } from '@/components/brand-icons'
 import { Img } from '@/components/mdx/Img'
 
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
 export type CSB = {

@@ -1,7 +1,7 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { libs as LIBS } from '@/libs'
 import { ArrowUpRightIcon } from 'lucide-react'
 import { useCallback, useMemo, useRef, useState } from 'react'

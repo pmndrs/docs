@@ -1,5 +1,5 @@
 import { CopyPage } from '@/components/CopyPage'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
 import { getData, getDocs } from '@/utils/docs'
 import { withoutTrailingSlash } from '@/utils/version'

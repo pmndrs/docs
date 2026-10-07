@@ -1,4 +1,4 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
 export function Intro({ children, className, ...props }: ComponentProps<'div'>) {

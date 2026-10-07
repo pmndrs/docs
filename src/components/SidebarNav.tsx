@@ -14,7 +14,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ChevronRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'

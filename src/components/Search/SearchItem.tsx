@@ -1,4 +1,4 @@
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { excerpt, highlight } from '@/utils/text'
 import { CornerDownLeftIcon } from 'lucide-react'
 import Link from 'next/link'
