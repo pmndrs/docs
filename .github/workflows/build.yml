@@ -60,6 +60,9 @@ on:
       theme_caution:
         type: string
         default: '#da3633'
+      theme_custom_colors:
+        type: string
+        description: 'Custom colors of the theme, `name:hex[:blend]` comma-separated, eg: `brand:#ff2d95:blend,status:#17b26a` -- each a role of the theme, `<Color role="brand" />`'
       theme_storybook:
         type: string
         default: '#ff4785'
@@ -138,6 +141,7 @@ jobs:
           THEME_IMPORTANT: '${{ inputs.theme_important }}'
           THEME_WARNING: '${{ inputs.theme_warning }}'
           THEME_CAUTION: '${{ inputs.theme_caution }}'
+          THEME_CUSTOM_COLORS: '${{ inputs.theme_custom_colors }}'
           THEME_STORYBOOK: '${{ inputs.theme_storybook }}'
           THEME_NPM: '${{ inputs.theme_npm }}'
           THEME_CHROMATIC: '${{ inputs.theme_chromatic }}'
