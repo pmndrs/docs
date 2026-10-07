@@ -1,5 +1,12 @@
 # @pmndrs/docs
 
+## 4.17.1
+
+### Patch Changes
+
+- [#672](https://github.com/pmndrs/docs/pull/672) [`96b1fd7`](https://github.com/pmndrs/docs/commit/96b1fd7825e2da2b32c1d894a8512287becc089f) Thanks [@abernier](https://github.com/abernier)! - List `design-system` in the header's libraries menu, and read it in `browse` and over MCP. Its docs
+  are built with this generator and publish a `llms-full.txt` at `pmndrs.github.io/design-system`.
+
 ## 4.17.0
 
 ### Minor Changes
