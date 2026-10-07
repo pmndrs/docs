@@ -6,10 +6,10 @@ import cn from '@/lib/cn'
 import { useEffect, type ComponentProps } from 'react'
 
 /**
- * The seeds of the palette a reader can override: `THEME_PRIMARY`, `THEME_CONTRAST` and
- * `THEME_SCHEME`
+ * The seeds of the palette a reader can override: `THEME_PRIMARY`, `THEME_CONTRAST`, `THEME_SCHEME`
+ * and `THEME_COLOR_MATCH`
  */
-type Seed = 'primaryColor' | 'contrast' | 'scheme'
+type Seed = 'primaryColor' | 'contrast' | 'scheme' | 'colorMatch'
 
 /**
  * Set on `<html>` by each seed's pre-paint script when the stored pick overrides it: the button
@@ -19,6 +19,7 @@ export const PREPAINT_OVERRIDDEN_ATTRIBUTES = {
   primaryColor: 'data-prepaint-primary-color-overridden',
   contrast: 'data-prepaint-contrast-overridden',
   scheme: 'data-prepaint-scheme-overridden',
+  colorMatch: 'data-prepaint-color-match-overridden',
 } as const satisfies Record<Seed, string>
 
 /**
@@ -41,6 +42,7 @@ const PREPAINT_OVERRIDDEN = {
   primaryColor: 'in-data-[prepaint-primary-color-overridden]:border-border',
   contrast: 'in-data-[prepaint-contrast-overridden]:border-border',
   scheme: 'in-data-[prepaint-scheme-overridden]:border-border',
+  colorMatch: 'in-data-[prepaint-color-match-overridden]:border-border',
 } as const satisfies {
   [S in Seed]: `in-data-[${Unprefixed<(typeof PREPAINT_OVERRIDDEN_ATTRIBUTES)[S]>}]:border-border`
 }

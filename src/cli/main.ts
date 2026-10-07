@@ -53,6 +53,10 @@ const websiteOptions = [
   ),
   new Option('--theme-scheme <scheme>', 'Palette scheme, e.g. "tonalSpot"').env('THEME_SCHEME'),
   new Option('--theme-contrast <contrast>', 'Palette contrast, e.g. "0"').env('THEME_CONTRAST'),
+  new Option(
+    '--theme-color-match <boolean>',
+    'Palette true to the seed color, "true" or "false"',
+  ).env('THEME_COLOR_MATCH'),
   new Option('--theme-note <color>', 'Color of the NOTE alerts').env('THEME_NOTE'),
   new Option('--theme-tip <color>', 'Color of the TIP alerts').env('THEME_TIP'),
   new Option('--theme-important <color>', 'Color of the IMPORTANT alerts').env('THEME_IMPORTANT'),

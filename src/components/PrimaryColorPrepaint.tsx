@@ -1,6 +1,7 @@
 'use client'
 
 import { PREPAINT_OVERRIDDEN_ATTRIBUTES } from '@/components/ThemeControlButton'
+import { COLOR_MATCH_KEY, useColorMatch } from '@/hooks/useColorMatch'
 import { useContrastLevel, CONTRAST_LEVEL_KEY, CONTRAST_LEVELS } from '@/hooks/useContrastLevel'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { HEX_COLOR, PRIMARY_COLOR_KEY, usePrimaryColor } from '@/hooks/usePrimaryColor'
@@ -10,7 +11,7 @@ import { useEffect, useState } from 'react'
 
 /**
  * The palette of the stored picks, as `Mtb` writes it, for the next page load to show it before
- * React runs: `{ color, contrast, scheme, signature, css }`
+ * React runs: `{ color, contrast, scheme, colorMatch, signature, css }`
  */
 const CACHE_KEY = `${PRIMARY_COLOR_KEY}:css`
 
@@ -29,10 +30,14 @@ const MTB_STYLE_ID = 'mcu-styles'
 const CACHE_DELAY = 500
 
 type Cache = {
-  /** The color, contrast and scheme the palette was made with: the reader's picks, or the defaults */
+  /**
+   * The color, contrast, scheme and color match the palette was made with: the reader's picks, or
+   * the defaults
+   */
   color: string
   contrast: number
   scheme: SchemeValue
+  colorMatch: boolean
   /** The rest of the `Mtb` config the palette was made with */
   signature: string
   css: string
@@ -57,6 +62,7 @@ type PrepaintProps = {
   defaultPrimaryColor: string
   defaultContrastLevel: number
   defaultScheme: SchemeValue
+  defaultColorMatch: boolean
 }
 
 /**
@@ -74,6 +80,7 @@ export function prepaintScript({
   defaultPrimaryColor,
   defaultContrastLevel,
   defaultScheme,
+  defaultColorMatch,
 }: PrepaintProps) {
   return `try {
   var color = localStorage.getItem(${literal(PRIMARY_COLOR_KEY)})
@@ -87,8 +94,10 @@ export function prepaintScript({
   contrast = ${literal(CONTRAST_LEVELS.map(({ value }) => String(value)))}.indexOf(contrast) === -1 ? ${literal(defaultContrastLevel)} : Number(contrast)
   var scheme = localStorage.getItem(${literal(SCHEME_KEY)})
   scheme = ${literal(SCHEMES.map(({ value }) => value))}.indexOf(scheme) === -1 ? ${literal(defaultScheme)} : scheme
+  var colorMatch = localStorage.getItem(${literal(COLOR_MATCH_KEY)})
+  colorMatch = colorMatch === 'true' ? true : colorMatch === 'false' ? false : ${literal(defaultColorMatch)}
   var cache = JSON.parse(localStorage.getItem(${literal(CACHE_KEY)}))
-  if (cache && cache.color === color && cache.contrast === contrast && cache.scheme === scheme && cache.signature === ${literal(signature)}) {
+  if (cache && cache.color === color && cache.contrast === contrast && cache.scheme === scheme && cache.colorMatch === colorMatch && cache.signature === ${literal(signature)}) {
     document.getElementById(${literal(STYLE_ID)}).textContent = cache.css
   }
 } catch (e) {}`
@@ -111,6 +120,7 @@ export function PrimaryColorPrepaint(props: PrepaintProps) {
   const [primaryColor, , isDefaultPrimaryColor] = usePrimaryColor()
   const [contrastLevel, , isDefaultContrastLevel] = useContrastLevel()
   const [scheme, , isDefaultScheme] = useScheme()
+  const [colorMatch, , isDefaultColorMatch] = useColorMatch()
   const isHydrated = useIsHydrated()
 
   // Before hydration, the picks are the defaults, as on the server, whatever is stored
@@ -118,7 +128,8 @@ export function PrimaryColorPrepaint(props: PrepaintProps) {
     isHydrated &&
     mtbConfig.source === primaryColor &&
     mtbConfig.contrast === contrastLevel &&
-    mtbConfig.scheme === scheme
+    mtbConfig.scheme === scheme &&
+    mtbConfig.colorMatch === colorMatch
 
   const [isRemoved, setIsRemoved] = useState(false)
   if (isApplied && !isRemoved) setIsRemoved(true)
@@ -128,14 +139,23 @@ export function PrimaryColorPrepaint(props: PrepaintProps) {
   useEffect(() => {
     if (!isHydrated) return
     // Nothing picked: the server's palette is the reader's
-    if (isDefaultPrimaryColor && isDefaultContrastLevel && isDefaultScheme) {
+    if (isDefaultPrimaryColor && isDefaultContrastLevel && isDefaultScheme && isDefaultColorMatch) {
       writeCache(null)
       return
     }
     if (!isApplied) return
     const timeout = setTimeout(() => {
       const css = document.getElementById(MTB_STYLE_ID)?.textContent
-      if (css) writeCache({ color: primaryColor, contrast: contrastLevel, scheme, signature, css })
+      if (css) {
+        writeCache({
+          color: primaryColor,
+          contrast: contrastLevel,
+          scheme,
+          colorMatch,
+          signature,
+          css,
+        })
+      }
     }, CACHE_DELAY)
     return () => clearTimeout(timeout)
   }, [
@@ -143,10 +163,12 @@ export function PrimaryColorPrepaint(props: PrepaintProps) {
     isDefaultPrimaryColor,
     isDefaultContrastLevel,
     isDefaultScheme,
+    isDefaultColorMatch,
     isApplied,
     primaryColor,
     contrastLevel,
     scheme,
+    colorMatch,
     signature,
   ])
 

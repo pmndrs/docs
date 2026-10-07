@@ -111,6 +111,7 @@ export default function RootLayout({
     | 'tonalSpot'
     | 'vibrant'
   const contrast = Number(process.env.THEME_CONTRAST) || 0
+  const colorMatch = process.env.THEME_COLOR_MATCH === 'true'
   const basePath = process.env.BASE_PATH || ''
 
   return (
@@ -141,6 +142,7 @@ export default function RootLayout({
           source={primary}
           scheme={scheme}
           contrast={contrast}
+          colorMatch={colorMatch}
           customColors={[
             { name: 'note', hex: note, blend: true },
             { name: 'tip', hex: tip, blend: true },

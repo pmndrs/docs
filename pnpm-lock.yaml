@@ -84,8 +84,8 @@ importers:
         specifier: ^6.3.4
         version: 6.4.0
       material-theme-builder:
-        specifier: ^5.0.0
-        version: 5.0.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
+        specifier: ^5.2.1
+        version: 5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
       mcp-handler:
         specifier: ^1.0.7
         version: 1.0.7(@modelcontextprotocol/sdk@1.25.3(hono@4.11.7)(zod@3.25.76))(next@16.3.7(@babel/core@7.28.6)(@playwright/test@1.57.0)(@types/node@25.0.9)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
@@ -430,6 +430,10 @@ packages:
 
   '@babel/runtime@7.28.6':
     resolution: {integrity: sha512-05WQkdpL9COIMz4LjTxGpPNCdlpyimKppYNoJ5Di5EUObifl8t4tuLuUBBZEpoLYOmfvIWrsp9fCl0HoPRVTdA==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.29.10':
+    resolution: {integrity: sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA==}
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.29.7':
@@ -4270,8 +4274,8 @@ packages:
       picomatch:
         optional: true
 
-  fflate@0.8.2:
-    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
@@ -4307,6 +4311,9 @@ packages:
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
+
+  flatted@3.4.4:
+    resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
@@ -5285,8 +5292,8 @@ packages:
     resolution: {integrity: sha512-d4664ahzdL1QTTvmK1iI0JsrxWeJ6gn33qkYtnPg3mcn+naBLtXSgSPOe+X2vUgtgGwaAk3eiaj7gwKjjMAq+Q==}
     deprecated: This was arguably a breaking change. Not in API, but more results can be returned. Upgrade to the next major when you are ready for that
 
-  material-theme-builder@5.0.0:
-    resolution: {integrity: sha512-Ixhl1ugmIGIQsHOpimCIjZV/FJIMTbPKKZfWonrTCUV4ZjUiVNTinfYVUjWDMbN2GzUT+rKXyp1nomGB5W129Q==}
+  material-theme-builder@5.2.1:
+    resolution: {integrity: sha512-L9jnthCxxsr0M/QW76uJDUd1ysDEoaFTdSIoc/e8zjx9MZSaiRu26mQv03+o6F3KM0EF8UfW2a8xFRU3WnL9vA==}
     hasBin: true
     peerDependencies:
       react: ^19.2.3
@@ -6796,12 +6803,20 @@ packages:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
+  tinyglobby@0.2.17:
+    resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
+    engines: {node: '>=12.0.0'}
+
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
     engines: {node: '>=14.0.0'}
 
   tinyrainbow@3.0.3:
     resolution: {integrity: sha512-PSkbLUoxOFRzJYjjxHJt9xro7D+iilgMX/C9lawzVuYiIdcihh9DXmVibBe8lmcFrRi/VzlPjBxbN7rH24q8/Q==}
+    engines: {node: '>=14.0.0'}
+
+  tinyrainbow@3.2.0:
+    resolution: {integrity: sha512-LgO3D9yZJjApUiuUfl9iFAwrtaX4+lok3wJIqttGoKCHlWUqHqbQpnxCf82L8FjgKsh4iGo78hqJwgL8F6To2A==}
     engines: {node: '>=14.0.0'}
 
   tinyspy@4.0.4:
@@ -7636,6 +7651,8 @@ snapshots:
       - supports-color
 
   '@babel/runtime@7.28.6': {}
+
+  '@babel/runtime@7.29.10': {}
 
   '@babel/runtime@7.29.7': {}
 
@@ -9599,7 +9616,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -10094,12 +10111,12 @@ snapshots:
   '@vitest/ui@4.0.18(vitest@4.0.18)':
     dependencies:
       '@vitest/utils': 4.0.18
-      fflate: 0.8.2
-      flatted: 3.3.3
+      fflate: 0.8.3
+      flatted: 3.4.4
       pathe: 2.0.3
       sirv: 3.0.2
-      tinyglobby: 0.2.15
-      tinyrainbow: 3.0.3
+      tinyglobby: 0.2.17
+      tinyrainbow: 3.2.0
       vitest: 4.0.18(@types/node@25.0.9)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.8(@types/node@25.0.9)(typescript@5.9.3))(terser@5.46.0)(yaml@2.8.2)
     optional: true
 
@@ -11861,7 +11878,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.7
 
-  fflate@0.8.2:
+  fflate@0.8.3:
     optional: true
 
   figures@6.1.0:
@@ -11907,6 +11924,9 @@ snapshots:
       keyv: 4.5.4
 
   flatted@3.3.3: {}
+
+  flatted@3.4.4:
+    optional: true
 
   for-each@0.3.5:
     dependencies:
@@ -12884,7 +12904,7 @@ snapshots:
       '@babel/runtime': 7.28.6
       remove-accents: 0.5.0
 
-  material-theme-builder@5.0.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18):
+  material-theme-builder@5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18):
     dependencies:
       '@material/material-color-utilities': 0.3.0
       commander: 14.0.3
@@ -14844,9 +14864,18 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
+  tinyglobby@0.2.17:
+    dependencies:
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
+    optional: true
+
   tinyrainbow@2.0.0: {}
 
   tinyrainbow@3.0.3: {}
+
+  tinyrainbow@3.2.0:
+    optional: true
 
   tinyspy@4.0.4: {}
 

@@ -75,6 +75,7 @@ nav: 0
 | `THEME_PRIMARY`                       | Primary accent color                                                                                                                                                     | `#323e48`                                                                                        |
 | `THEME_SCHEME`                        | Theme scheme                                                                                                                                                             | `content` or `expressive` or `fidelity` or `monochrome` or `neutral` or `tonalSpot` or `vibrant` |
 | `THEME_CONTRAST`                      | Theme contrast -- value between -1 and 1                                                                                                                                 | `0` or `-1` or `1` or `-.6`                                                                      |
+| `THEME_COLOR_MATCH`                   | Palette true to the seed color (takes precedence over the scheme)                                                                                                        | `true` or `false`                                                                                |
 | `THEME_NOTE`                          | "note" color                                                                                                                                                             | `#1f6feb`                                                                                        |
 | `THEME_TIP`                           | "tip" color                                                                                                                                                              | `#238636`                                                                                        |
 | `THEME_IMPORTANT`                     | "important" color                                                                                                                                                        | `#8957e5`                                                                                        |
@@ -94,7 +95,7 @@ nav: 0
 
 \* Required
 
-Readers can re-seed `THEME_PRIMARY`, `THEME_SCHEME` and `THEME_CONTRAST` from the theme controls in the sidebar. An overridden control is outlined, and a double-click (or Delete) brings the site's value back.
+Readers can re-seed `THEME_PRIMARY`, `THEME_SCHEME`, `THEME_CONTRAST` and `THEME_COLOR_MATCH` from the theme controls in the sidebar. An overridden control is outlined, and a double-click (or Delete) brings the site's value back.
 
 <details>
   <summary>`MDX_BASEURL`</summary>
@@ -197,6 +198,7 @@ $ (
   export THEME_PRIMARY="#323e48"
   export THEME_SCHEME="tonalSpot"
   export THEME_CONTRAST="0"
+  export THEME_COLOR_MATCH="false"
   export THEME_NOTE="#1f6feb"
   export THEME_TIP="#238636"
   export THEME_IMPORTANT="#8957e5"
@@ -252,6 +254,7 @@ $ (
   export THEME_PRIMARY="#323e48"
   export THEME_SCHEME="tonalSpot"
   export THEME_CONTRAST="0"
+  export THEME_COLOR_MATCH="false"
   export THEME_NOTE="#1f6feb"
   export THEME_TIP="#238636"
   export THEME_IMPORTANT="#8957e5"

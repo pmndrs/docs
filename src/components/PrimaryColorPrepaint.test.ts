@@ -11,6 +11,7 @@ const config = {
   defaultPrimaryColor: '#323e48',
   defaultContrastLevel: 0,
   defaultScheme: 'tonalSpot',
+  defaultColorMatch: false,
 } as const
 
 // Runs the script as the browser would, against a `localStorage` and a `document` stub
@@ -67,6 +68,7 @@ describe('PrimaryColorPrepaint prepaint', () => {
       color: '#FF0000',
       contrast: config.defaultContrastLevel,
       scheme: config.defaultScheme,
+      colorMatch: config.defaultColorMatch,
       signature: config.signature,
       css: ':root { --md-sys-color-primary: red }',
     }
@@ -79,6 +81,7 @@ describe('PrimaryColorPrepaint prepaint', () => {
       color: '#FF0000',
       contrast: config.defaultContrastLevel,
       scheme: config.defaultScheme,
+      colorMatch: config.defaultColorMatch,
       signature: 'sig-2',
       css: ':root { --md-sys-color-primary: red }',
     }

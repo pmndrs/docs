@@ -706,6 +706,123 @@ test.describe('scheme', () => {
 })
 
 //
+// Color match: the palette true to the seed color, picked by the reader and remembered
+//
+
+test.describe('color match', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the toggle flips on and off, is remembered, and forgotten for the default', async ({
+    page,
+  }) => {
+    const hydrationErrors = collectHydrationErrors(page)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const palette = () => page.locator('style#mcu-styles').textContent()
+    const defaultPalette = await palette()
+    // The palette in effect, whichever `<style>` it comes from
+    const primary = () =>
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
+      )
+    const defaultPrimary = await primary()
+    const stored = () => page.evaluate(() => localStorage.getItem('pmndrs-docs:color-match'))
+    const cache = () =>
+      page.evaluate(() =>
+        JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
+      )
+
+    const name = /^Color match(:|$)/
+    const toggle = page.getByRole('button', { name })
+    const html = page.locator('html')
+
+    // The page as first painted: the HTML and its inline scripts, React never running. The JS
+    // chunks only: the CSS ones hide the other icons
+    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+    async function reloadWithoutReact() {
+      await page.route(chunks, (route) => route.abort())
+      await page.reload()
+    }
+    async function reloadWithReact() {
+      await page.unroute(chunks)
+      await page.reload()
+      await page.waitForLoadState('networkidle')
+      await showThemeControls(page)
+    }
+
+    await showThemeControls(page)
+
+    // Nothing picked: the site's default (`THEME_COLOR_MATCH` of `start.sh`), the button not
+    // outlined
+    await expect(toggle).toHaveAccessibleName('Color match: off, switch to on')
+    await expect(toggle).not.toHaveAttribute('data-overridden')
+
+    // Overriding the default: the button says so, the palette is true to the seed color
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName(`Color match: on, switch to off${RESET_HINT}`)
+    await expect(toggle).toHaveAttribute('data-overridden', '')
+    await expect.poll(palette).not.toBe(defaultPalette)
+    const matchedPalette = await palette()
+    const matchedPrimary = await primary()
+    expect(matchedPrimary).not.toBe(defaultPrimary)
+    expect(await stored()).toBe('true')
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(matchedPalette)
+    await expect(toggle).toHaveAccessibleName(`Color match: on, switch to off${RESET_HINT}`)
+    // Cached once applied, for the next load: the default color, contrast and scheme, matched
+    await expect.poll(async () => (await cache())?.colorMatch).toBe(true)
+    expect((await cache())?.color).toBe('#323e48')
+
+    // The pick from the first paint, its icon included: no flash of the default palette
+    await reloadWithoutReact()
+    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary()).toBe(matchedPrimary)
+    await expect(anyCopy(page, name).locator('.lucide-pipette')).toHaveCSS('display', 'block')
+    await expect(anyCopy(page, name).locator('.lucide-blend')).toHaveCSS('display', 'none')
+    // Overriding the default, from the first paint too
+    await expect(html).toHaveAttribute('data-prepaint-color-match-overridden', '')
+
+    await reloadWithReact()
+    await expect.poll(palette).toBe(matchedPalette)
+    // Once `Mtb` has the pick, only its palette is left
+    await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
+    // Once hydrated, the button shows the pick, and says it overrides the default, itself
+    await expect(html).not.toHaveAttribute('data-prepaint-color-match')
+    await expect(html).not.toHaveAttribute('data-prepaint-color-match-overridden')
+    await expect(toggle).toHaveAttribute('data-overridden', '')
+
+    // Back to the site's default with a double-click: forgotten, and its palette with it (its
+    // first click is a step, to off, its second one is not)
+    await toggle.dblclick()
+    await expect(toggle).toHaveAccessibleName('Color match: off, switch to on')
+    await expect(toggle).not.toHaveAttribute('data-overridden')
+    await expect.poll(palette).toBe(defaultPalette)
+    expect(await stored()).toBeNull()
+    expect(await cache()).toBeNull()
+
+    // Flipping back to the site's default forgets the pick too
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('data-overridden', '')
+    await toggle.click()
+    await expect(toggle).toHaveAccessibleName('Color match: off, switch to on')
+    await expect(toggle).not.toHaveAttribute('data-overridden')
+    expect(await stored()).toBeNull()
+
+    // Forgotten, the default from the first paint again
+    await reloadWithoutReact()
+    expect(await primary()).toBe(defaultPrimary)
+    await expect(anyCopy(page, name).locator('.lucide-blend')).toHaveCSS('display', 'block')
+    await expect(html).not.toHaveAttribute('data-prepaint-color-match-overridden')
+
+    await page.unroute(chunks)
+    expect(hydrationErrors).toEqual([])
+  })
+})
+
+//
 // Theme: light, dark or the system's, picked by the reader and remembered
 //
 
