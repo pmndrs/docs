@@ -1,5 +1,13 @@
 # @pmndrs/docs
 
+## 4.19.0
+
+### Minor Changes
+
+- [#680](https://github.com/pmndrs/docs/pull/680) [`4dd346b`](https://github.com/pmndrs/docs/commit/4dd346bd897878ad74358c9845819f1c4b8d8962) Thanks [@abernier](https://github.com/abernier)! - A fourth theme control, Color match: on, the palette stays true to the seed color (material-theme-builder's `colorMatch`, which takes precedence over the scheme, so the scheme toggle hides while it is on); off, the color is blended into the scheme. The reader's pick overrides the site's `THEME_COLOR_MATCH`, like the other seeds: remembered across pages, reloads and tabs, shown from the first paint, outlined and reset on a double-click or Delete.
+
+- [#680](https://github.com/pmndrs/docs/pull/680) [`4dd346b`](https://github.com/pmndrs/docs/commit/4dd346bd897878ad74358c9845819f1c4b8d8962) Thanks [@abernier](https://github.com/abernier)! - The theme controls show which seed the reader overrode, and bring it back on a double-click or Delete: the color swatch, the contrast and the scheme buttons are outlined once their pick differs from the site's `THEME_PRIMARY`, `THEME_CONTRAST` or `THEME_SCHEME` (from the first paint, no flash on reload), and a double-click, or Delete on the focused button, forgets the pick. Their accessible name and tooltip say so.
+
 ## 4.18.0
 
 ### Minor Changes
