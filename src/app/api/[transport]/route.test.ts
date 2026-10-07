@@ -207,6 +207,7 @@ describe('MCP Route Handler', () => {
         'react-three-jolt',
         'sky',
         'denoiser',
+        'design-system',
       ])
     })
 
