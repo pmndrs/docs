@@ -14,6 +14,7 @@ import {
   SparklesIcon,
   TargetIcon,
 } from 'lucide-react'
+import { useMtb } from 'material-theme-builder/react'
 import { useEffect } from 'react'
 
 const ICONS = {
@@ -46,10 +47,15 @@ function prepaintScript(defaultScheme: string) {
  * The Material scheme of the site's palette, from tonal spot to neutral: each click goes to the
  * next one. Remembered across pages, reloads and tabs (see `useScheme`). Picking the site's default
  * again forgets the choice.
+ *
+ * Not shown on a site with `THEME_COLOR_MATCH`: `colorMatch` takes precedence over `scheme` in
+ * material-theme-builder (Material Theme Builder has no scheme selector, Color match off is tonal
+ * spot and on is content), so a click would change nothing.
  */
 export function SchemeToggle({ className }: { className?: string }) {
   const [scheme, setScheme] = useScheme()
   const isHydrated = useIsHydrated()
+  const { mtbConfig } = useMtb()
   const current = schemeOf(scheme)
   const next = SCHEMES[(SCHEMES.indexOf(current) + 1) % SCHEMES.length]
 
@@ -57,6 +63,9 @@ export function SchemeToggle({ className }: { className?: string }) {
   useEffect(() => {
     if (isHydrated) document.documentElement.removeAttribute(PREPAINT_ATTRIBUTE)
   }, [isHydrated])
+
+  // Set at build time: the same on the server and the client
+  if (mtbConfig.colorMatch) return null
 
   const Icon = ICONS[current.value]
 

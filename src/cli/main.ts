@@ -62,6 +62,24 @@ const websiteOptions = [
     '--theme-custom-colors <list>',
     'Custom colors of the theme, `name:hex[:blend]` comma-separated, e.g. "brand:#ff2d95:blend,status:#17b26a"',
   ).env('THEME_CUSTOM_COLORS'),
+  new Option(
+    '--theme-color-match <boolean>',
+    '"true" to render each core and custom color true to its own input (Color match), over --theme-scheme',
+  ).env('THEME_COLOR_MATCH'),
+  new Option('--theme-secondary <color>', 'Secondary color, instead of the derived one').env(
+    'THEME_SECONDARY',
+  ),
+  new Option('--theme-tertiary <color>', 'Tertiary color, instead of the derived one').env(
+    'THEME_TERTIARY',
+  ),
+  new Option('--theme-neutral <color>', 'Neutral color (surfaces), instead of the derived one').env(
+    'THEME_NEUTRAL',
+  ),
+  new Option(
+    '--theme-neutral-variant <color>',
+    'Neutral variant color (tinted surfaces, outlines), instead of the derived one',
+  ).env('THEME_NEUTRAL_VARIANT'),
+  new Option('--theme-error <color>', 'Error color, instead of the default red').env('THEME_ERROR'),
   new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
   new Option('--theme-npm <color>', 'Color of the npm badges').env('THEME_NPM'),
   new Option('--theme-chromatic <color>', 'Color of the chromatic badges').env('THEME_CHROMATIC'),

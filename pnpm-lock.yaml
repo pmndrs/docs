@@ -87,8 +87,8 @@ importers:
         specifier: ^6.3.4
         version: 6.4.0
       material-theme-builder:
-        specifier: ^5.0.0
-        version: 5.0.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
+        specifier: ^5.2.1
+        version: 5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
       mcp-handler:
         specifier: ^1.0.7
         version: 1.0.7(@modelcontextprotocol/sdk@1.25.3(hono@4.11.7)(zod@3.25.76))(next@16.3.7(@babel/core@7.28.6)(@playwright/test@1.57.0)(@types/node@25.0.9)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
@@ -5288,8 +5288,8 @@ packages:
     resolution: {integrity: sha512-d4664ahzdL1QTTvmK1iI0JsrxWeJ6gn33qkYtnPg3mcn+naBLtXSgSPOe+X2vUgtgGwaAk3eiaj7gwKjjMAq+Q==}
     deprecated: This was arguably a breaking change. Not in API, but more results can be returned. Upgrade to the next major when you are ready for that
 
-  material-theme-builder@5.0.0:
-    resolution: {integrity: sha512-Ixhl1ugmIGIQsHOpimCIjZV/FJIMTbPKKZfWonrTCUV4ZjUiVNTinfYVUjWDMbN2GzUT+rKXyp1nomGB5W129Q==}
+  material-theme-builder@5.2.1:
+    resolution: {integrity: sha512-L9jnthCxxsr0M/QW76uJDUd1ysDEoaFTdSIoc/e8zjx9MZSaiRu26mQv03+o6F3KM0EF8UfW2a8xFRU3WnL9vA==}
     hasBin: true
     peerDependencies:
       react: ^19.2.3
@@ -12887,7 +12887,7 @@ snapshots:
       '@babel/runtime': 7.28.6
       remove-accents: 0.5.0
 
-  material-theme-builder@5.0.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18):
+  material-theme-builder@5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18):
     dependencies:
       '@material/material-color-utilities': 0.3.0
       commander: 14.0.3
