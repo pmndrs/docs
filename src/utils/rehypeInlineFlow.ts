@@ -24,7 +24,8 @@ import { visit } from 'unist-util-visit'
 // block` beats a badge's `inline-flex` utility), and they stack. Inside another component,
 // MDX drops the newline between them, and they touch. Any component listed in `names` is
 // inline content, though, like a link: a run of them becomes the paragraph markdown would
-// have made of it, with them as text elements and a space between them.
+// have made of it, with them as text elements and a space between them — except inside a
+// component listed in `except`, which lays them out itself.
 //
 
 function isInlineFlow(
@@ -89,11 +90,28 @@ function wrapInlineFlows(parent: Root | Parent, names: string[]) {
   parent.children = children as typeof parent.children
 }
 
+/**
+ * A component whose children are the inline components as cells of its own, not text: a
+ * `ColorGroup` lays its `Color`s out in a grid, no paragraph wanted there.
+ */
+function isExcepted(node: Root | Parent, except: string[]) {
+  return (
+    node.type === 'mdxJsxFlowElement' &&
+    'name' in node &&
+    typeof node.name === 'string' &&
+    except.includes(node.name)
+  )
+}
+
 // https://unifiedjs.com/learn/guide/create-a-rehype-plugin/
-export function rehypeInlineFlow(names: string[]) {
+export function rehypeInlineFlow(names: string[], { except = [] }: { except?: string[] } = {}) {
   return () => (tree: Root) => {
     visit(tree, function (node) {
-      if ('children' in node && node.children.some((child) => isInlineFlow(child, names)))
+      if (
+        'children' in node &&
+        !isExcepted(node, except) &&
+        node.children.some((child) => isInlineFlow(child, names))
+      )
         wrapInlineFlows(node, names)
     })
   }
