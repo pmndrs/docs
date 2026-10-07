@@ -170,9 +170,8 @@ export const Sizes: Story = {
   ),
 }
 
-const accents = ['primary', 'secondary', 'tertiary', 'error']
-// The accents with a fixed family (`error` has none)
-const fixed = ['primary', 'secondary', 'tertiary']
+// The three accents; `error` is laid out apart, in its own column
+const accents = ['primary', 'secondary', 'tertiary']
 const surfaces = ['surface-dim', 'surface', 'surface-bright']
 const surfaceContainers = [
   'surface-container-lowest',
@@ -200,75 +199,77 @@ const tones = [
 ]
 
 /**
- * The scheme poster: the roles of the current scheme, light or dark depending on the ancestor.
+ * The scheme poster, the doc page's poster: material-theme-builder's grid, three accents wide and
+ * the error column, light or dark depending on the ancestor.
  */
 function Scheme() {
   return (
-    <div className="grid gap-2">
-      <div className="grid grid-cols-4 gap-2">
-        {accents.map((accent) => (
-          <ColorGroup key={accent} orientation="vertical">
-            <Color role={accent} variant="cell" />
-            <Color role={`on-${accent}`} variant="on" />
+    <div className="grid grid-cols-[3fr_1fr] gap-2">
+      <ColorGroup>
+        {accents.map((role) => (
+          <ColorGroup key={role} orientation="vertical">
+            <Color role={role} variant="cell" />
+            <Color role={`on-${role}`} variant="on" />
+            <Color role={`${role}-container`} variant="cell" />
+            <Color role={`on-${role}-container`} variant="on" />
           </ColorGroup>
         ))}
-      </div>
-      <div className="grid grid-cols-4 gap-2">
-        {accents.map((accent) => (
-          <ColorGroup key={accent} orientation="vertical">
-            <Color role={`${accent}-container`} variant="cell" />
-            <Color role={`on-${accent}-container`} variant="on" />
-          </ColorGroup>
-        ))}
-      </div>
-      <div className="grid grid-cols-4 gap-2">
-        {fixed.map((accent) => (
-          <ColorGroup key={accent} orientation="vertical">
+      </ColorGroup>
+      <ColorGroup orientation="vertical">
+        <Color role="error" variant="cell" />
+        <Color role="on-error" variant="on" />
+        <Color role="error-container" variant="cell" />
+        <Color role="on-error-container" variant="on" />
+      </ColorGroup>
+      <ColorGroup>
+        {accents.map((role) => (
+          <ColorGroup key={role} orientation="vertical">
             <ColorGroup>
-              <Color role={`${accent}-fixed`} variant="cell" />
-              <Color role={`${accent}-fixed-dim`} variant="cell" />
+              <Color role={`${role}-fixed`} variant="cell" />
+              <Color role={`${role}-fixed-dim`} variant="cell" />
             </ColorGroup>
-            <Color role={`on-${accent}-fixed`} variant="on" />
-            <Color role={`on-${accent}-fixed-variant`} variant="on" />
+            <Color role={`on-${role}-fixed`} variant="on" />
+            <Color role={`on-${role}-fixed-variant`} variant="on" />
           </ColorGroup>
         ))}
-      </div>
-      <div className="grid grid-cols-4 gap-2">
-        <ColorGroup orientation="vertical" className="col-span-3">
-          <ColorGroup>
-            {surfaces.map((role) => (
-              <Color key={role} role={role} variant="cell" />
-            ))}
-          </ColorGroup>
-          <ColorGroup>
-            {surfaceContainers.map((role) => (
-              <Color key={role} role={role} variant="cell" size="sm" />
-            ))}
-          </ColorGroup>
-          <ColorGroup>
-            {onSurfaces.map((role) => (
-              <Color key={role} role={role} variant="on" />
-            ))}
-          </ColorGroup>
+      </ColorGroup>
+      <div />
+      <ColorGroup orientation="vertical">
+        <ColorGroup>
+          {surfaces.map((role) => (
+            <Color key={role} role={role} variant="cell" />
+          ))}
         </ColorGroup>
-        <ColorGroup orientation="vertical">
-          <Color role="inverse-surface" variant="cell" />
-          <Color role="inverse-on-surface" variant="on" />
-          <Color role="inverse-primary" variant="on" />
-          <ColorGroup>
-            <Color role="scrim" variant="on" />
-            <Color role="shadow" variant="on" />
+        <ColorGroup>
+          {surfaceContainers.map((role) => (
+            <Color key={role} role={role} variant="cell" />
+          ))}
+        </ColorGroup>
+        <ColorGroup>
+          {onSurfaces.map((role) => (
+            <Color key={role} role={role} variant="on" />
+          ))}
+        </ColorGroup>
+      </ColorGroup>
+      <ColorGroup orientation="vertical">
+        <Color role="inverse-surface" variant="cell" />
+        <Color role="inverse-on-surface" variant="on" />
+        <Color role="inverse-primary" variant="on" />
+        <ColorGroup>
+          <Color role="scrim" variant="on" />
+          <Color role="shadow" variant="on" />
+        </ColorGroup>
+      </ColorGroup>
+      <ColorGroup orientation="vertical" className="col-span-2">
+        {customColors.map((color) => (
+          <ColorGroup key={color}>
+            <Color role={color} variant="cell" />
+            <Color role={`on-${color}`} variant="cell" />
+            <Color role={`${color}-container`} variant="cell" />
+            <Color role={`on-${color}-container`} variant="cell" />
           </ColorGroup>
-        </ColorGroup>
-      </div>
-      {customColors.map((color) => (
-        <ColorGroup key={color}>
-          <Color role={color} variant="cell" size="sm" />
-          <Color role={`on-${color}`} variant="cell" size="sm" />
-          <Color role={`${color}-container`} variant="cell" size="sm" />
-          <Color role={`on-${color}-container`} variant="cell" size="sm" />
-        </ColorGroup>
-      ))}
+        ))}
+      </ColorGroup>
     </div>
   )
 }
@@ -308,7 +309,7 @@ function Shades() {
  */
 export const Poster: Story = {
   render: () => (
-    <div className="grid gap-6 [&_[data-slot=color-group]]:my-0">
+    <div className="grid gap-6">
       <div className="rounded-xl bg-surface p-6 text-on-surface">
         <h2 className="mb-4 text-lg font-medium">Light scheme</h2>
         <Scheme />

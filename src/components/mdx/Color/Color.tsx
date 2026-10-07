@@ -18,14 +18,16 @@ const colorGroupVariants = cva(
   // `grid!`: as a direct child of the page (`.post-container > *`, globals.css), the group would
   // be made `display: block` otherwise, its columns stacked.
   //
-  // `my-4`: a block in the flow of the page, spaced as the other blocks are (`Details`, `Gha`).
+  // `my-4` only as a direct child of the page (`.post-container > &`): a block in the flow of the
+  // page, spaced as the other blocks are (`Details`, `Gha`) — nowhere else, so a wrapper laying
+  // groups out, or a group nesting one, needs no reset.
   //
   // `gap-px`: a hairline of the page between the cells, as on Material's scheme poster.
   //
-  // The block is the one rounded and spaced: a cell in it loses its rounding and its square ratio
-  // (it fills its cell of the grid), a nested group (a row of the block) its rounding and margins —
-  // either would round where it meets its siblings. `overflow-hidden` clips.
-  'my-4 grid! auto-cols-fr gap-px overflow-hidden rounded-lg [&_[data-slot=color]]:aspect-auto [&_[data-slot=color]]:m-0 [&_[data-slot=color]]:rounded-none [&>[data-slot=color-group]]:m-0 [&>[data-slot=color-group]]:rounded-none',
+  // The block is the one rounded: a cell in it loses its rounding and its square ratio (it fills
+  // its cell of the grid), a nested group (a row of the block) its rounding — either would round
+  // where it meets its siblings. `overflow-hidden` clips.
+  '[.post-container>&]:my-4 grid! auto-cols-fr gap-px overflow-hidden rounded-lg [&_[data-slot=color]]:aspect-auto [&_[data-slot=color]]:rounded-none [&>[data-slot=color-group]]:rounded-none',
   {
     variants: {
       orientation: {
@@ -50,9 +52,10 @@ const colorGroupVariants = cva(
  * - `orientation`: `horizontal` (the default), the children side by side in columns of equal
  *   width, each as tall as the group; `vertical`, stacked, each as wide as the group.
  *
- * The rounding and the margins are the block's (`overflow-hidden`): a cell loses its rounding
- * and its square ratio in a group, a nested group its rounding and margins — a row of the block,
- * it would otherwise round where it meets its siblings.
+ * The rounding is the block's (`overflow-hidden`): a cell loses its rounding and its square
+ * ratio in a group, a nested group its rounding — a row of the block, it would otherwise round
+ * where it meets its siblings. The margins are the page's: a group is spaced as a block of the
+ * page only as a direct child of it, so a wrapper laying groups out needs no reset.
  */
 export function ColorGroup({
   orientation = 'horizontal',
@@ -158,6 +161,7 @@ type ColorProps = ComponentProps<'span'> &
      * A color role of the theme, in kebab-case: `primary`, `on-primary-fixed-variant`,
      * `surface-container-high`, or a custom color, `tip`, `on-tip-container`. Its
      * `--md-sys-color-<role>` variable is the background, the role in Title Case the label.
+     * Shadows the ARIA `role` attribute, which the component sets itself (`img` for a pill).
      */
     role?: string
     /**
@@ -179,7 +183,9 @@ type ColorProps = ComponentProps<'span'> &
  * - `role`: a color role of the theme, its background — and, through `inkOf`, its text color
  * - `ink`: the text color, as a role; or as any CSS color along with `color`
  * - `color`: any CSS color as the background, for a color that is not a role of the theme
- * - `variant`: `pill` (the default), a disc inline in text, no label (the role is its `title`) —
+ * - `variant`: `pill` (the default), a disc inline in text, no label: the label is its `title` and
+ *   its accessible name (`role="img"`), or the disc is decorative (`aria-hidden`) with neither
+ *   `role` nor `children` —
  *   the theme-color swatch of the site's controls too, see `PrimaryColorPicker`; `cell` and `on`, the cells of a
  *   `ColorGroup`, a rounded square of `size` and the strip, as tall as its label, of the role that
  *   goes on the cell above it. A cell says so explicitly, as a `Button` carries its `variant` in a
@@ -205,11 +211,24 @@ export function Color({
       ? { backgroundColor: colorOf(role), color: colorOf(ink ?? inkOf(role)) }
       : {}
 
+  // The label: `children` when it is a string, else the role in Title Case. A pill carries it as
+  // its `title` and accessible name, a cell or a strip shows it.
+  const label = typeof children === 'string' ? children : role ? titleCase(role) : undefined
+
+  // A pill is an image of its label — or, with no label (a `color`-only disc, the picker's
+  // swatch), decorative: whatever contains it names it.
+  const pillA11y = isPill
+    ? label
+      ? { role: 'img', 'aria-label': label }
+      : { 'aria-hidden': true }
+    : {}
+
   return (
     <span
       data-slot="color"
-      title={role}
+      title={label}
       {...props}
+      {...pillA11y}
       style={{ ...colors, ...style }}
       className={cn(colorVariants({ variant, size }), className)}
     >

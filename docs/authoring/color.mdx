@@ -114,7 +114,7 @@ result:
 The two compose into material-theme-builder's [scheme poster](https://main--695eb517cb602e59b4cc045c.chromatic.com/?path=/story/mtb--custom-colors-color-match-st), of the theme of this site, in the scheme of the toggle: its grid, three accents wide and the error column, a group in each cell.
 
 ```md
-<div className="grid! grid-cols-[3fr_1fr] gap-2 [&_[data-slot=color-group]]:my-0">
+<div className="grid! grid-cols-[3fr_1fr] gap-2">
   <ColorGroup>
     {['primary', 'secondary', 'tertiary'].map((role) => (
       <ColorGroup key={role} orientation="vertical">
@@ -188,7 +188,7 @@ The two compose into material-theme-builder's [scheme poster](https://main--695e
 
 result:
 
-<div className="grid! grid-cols-[3fr_1fr] gap-2 [&_[data-slot=color-group]]:my-0">
+<div className="grid! grid-cols-[3fr_1fr] gap-2">
   <ColorGroup>
     {['primary', 'secondary', 'tertiary'].map((role) => (
       <ColorGroup key={role} orientation="vertical">
