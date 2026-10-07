@@ -1,13 +1,16 @@
 'use client'
 
+import { PREPAINT_HIDDEN_WHILE_ON } from '@/components/ColorMatchToggle'
 import {
   PREPAINT_OVERRIDDEN_ATTRIBUTES,
   RESET_HINT,
   ThemeControlButton,
 } from '@/components/ThemeControlButton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useColorMatch } from '@/hooks/useColorMatch'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { SCHEME_KEY, SCHEMES, schemeOf, useScheme } from '@/hooks/useScheme'
+import { cn } from '@/lib/utils'
 import { upperFirst } from 'lodash-es'
 import {
   DramaIcon,
@@ -38,6 +41,8 @@ const PREPAINT_ATTRIBUTE = 'data-prepaint-scheme'
 /**
  * The script run while the HTML is parsed, before the button, `defaultScheme` being the site's
  * default. What isn't one of the schemes is the default; another one overrides it
+ *
+ * @param defaultScheme The site's own scheme, `THEME_SCHEME`
  */
 export function prepaintScript(defaultScheme: string) {
   const values = SCHEMES.map(({ value }) => value)
@@ -55,9 +60,15 @@ export function prepaintScript(defaultScheme: string) {
  * The Material scheme of the site's palette, from tonal spot to neutral: each click goes to the
  * next one. Remembered across pages, reloads and tabs (see `useScheme`). Picking the site's default
  * again, or double-clicking (or Delete on the focused button), forgets the choice.
+ *
+ * Not shown while color match is on, the site's or the reader's (see `ColorMatchToggle`):
+ * `colorMatch` takes precedence over `scheme` in material-theme-builder (Material Theme Builder has
+ * no scheme selector, Color match off is tonal spot and on is content), so a click would change
+ * nothing. The reader's scheme stays stored, and applies again once color match is off.
  */
 export function SchemeToggle({ className }: { className?: string }) {
   const [scheme, setScheme, isDefault, reset] = useScheme()
+  const [colorMatch] = useColorMatch()
   const isHydrated = useIsHydrated()
   const current = schemeOf(scheme)
   const next = SCHEMES[(SCHEMES.indexOf(current) + 1) % SCHEMES.length]
@@ -67,7 +78,9 @@ export function SchemeToggle({ className }: { className?: string }) {
     if (isHydrated) document.documentElement.removeAttribute(PREPAINT_ATTRIBUTE)
   }, [isHydrated])
 
-  // TODO(color-match): hide while color match is on
+  // Once hydrated, `colorMatch` is the reader's. Until then it is the site's default, as on the
+  // server: the button is rendered either way, the pre-paint attribute hides it (see `className`)
+  if (isHydrated && colorMatch) return null
 
   const Icon = ICONS[current.value]
 
@@ -85,7 +98,8 @@ export function SchemeToggle({ className }: { className?: string }) {
               overridden={!isDefault}
               onReset={reset}
               aria-label={isHydrated ? `Scheme: ${current.name}, switch to ${next.name}` : 'Scheme'}
-              className={className}
+              // Hidden from the first paint when the stored color match is on
+              className={cn(PREPAINT_HIDDEN_WHILE_ON, className)}
               onClick={() => setScheme(next.value)}
             />
           }

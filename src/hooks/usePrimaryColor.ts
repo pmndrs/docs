@@ -4,15 +4,22 @@ import { createRequiredContext } from '@/lib/createRequiredContext'
 /** Where the pick is stored: read before the first paint too, by `PrimaryColorPrepaint` */
 export const PRIMARY_COLOR_KEY = 'pmndrs-docs:primary-color'
 
-// The site's own seed color, `THEME_PRIMARY`: only the server knows it, `PrimaryColorMtb` passes
-// it down
 const [useDefaultPrimaryColor, DefaultPrimaryColorProvider] = createRequiredContext<string>()
 
+/**
+ * The site's own seed color, `THEME_PRIMARY`: only the server knows it, `PrimaryColorMtb` passes
+ * it down
+ */
 export { DefaultPrimaryColorProvider }
 
-// What `<input type="color">` gives, and the only form it takes back
+/** What `<input type="color">` gives, and the only form it takes back */
 export const HEX_COLOR = /^#[0-9a-f]{6}$/i
 
+/**
+ * Whether `value` is a six-digit hex color, the one form `HEX_COLOR` accepts
+ *
+ * @param value - the candidate, `null` when nothing is stored
+ */
 export function isHexColor(value: string | null): value is string {
   return value !== null && HEX_COLOR.test(value)
 }

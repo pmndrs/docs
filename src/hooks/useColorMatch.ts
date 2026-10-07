@@ -4,13 +4,19 @@ import { createRequiredContext } from '@/lib/createRequiredContext'
 /** Where the pick is stored: read before the first paint too, by `PrimaryColorPrepaint` */
 export const COLOR_MATCH_KEY = 'pmndrs-docs:color-match'
 
-// The site's own color match, `THEME_COLOR_MATCH`: only the server knows it, `PrimaryColorMtb`
-// passes it down
 const [useDefaultColorMatch, DefaultColorMatchProvider] = createRequiredContext<boolean>()
 
+/**
+ * The site's own color match, `THEME_COLOR_MATCH`: only the server knows it, `PrimaryColorMtb`
+ * passes it down
+ */
 export { DefaultColorMatchProvider }
 
-/** The color match stored as `stored`, `null` for anything but `'true'` or `'false'` */
+/**
+ * The color match stored as `stored`, `null` for anything but `'true'` or `'false'`
+ *
+ * @param stored - the raw stored value, `null` when nothing is stored
+ */
 export function parseColorMatch(stored: string | null) {
   if (stored === 'true') return true
   if (stored === 'false') return false

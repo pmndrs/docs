@@ -60,7 +60,7 @@ type Props = Omit<ComponentProps<typeof Button>, 'variant' | 'size' | 'onDoubleC
  * An icon button of `ThemeControls`, for one seed of the palette: a ghost button, outlined once the
  * reader overrode the seed (`data-overridden`), and from the first paint when its pre-paint script
  * found the pick stored. Its accessible name then says how to come back: a double-click (its second
- * click is not a step), or Delete (or Backspace) on the focused button.
+ * click is not a step), or Delete on the focused button.
  */
 export function ThemeControlButton({
   seed,
@@ -94,6 +94,8 @@ export function ThemeControlButton({
       }}
       onDoubleClick={onReset}
       onKeyDown={(event) => {
+        // Both keys: on a Mac keyboard the key labelled "delete" sends Backspace, so "Delete" in
+        // `RESET_HINT` reads right for both
         if (event.key === 'Delete' || event.key === 'Backspace') {
           event.preventDefault()
           onReset()

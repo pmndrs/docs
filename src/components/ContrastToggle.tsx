@@ -30,6 +30,8 @@ const PREPAINT_ATTRIBUTE = 'data-prepaint-contrast'
 /**
  * The script run while the HTML is parsed, before the button, `defaultLevelName` being the site's
  * default. What isn't one of the levels is the default's; another one overrides it
+ *
+ * @param defaultLevelName - the name of the site's default level, one of `CONTRAST_LEVELS`
  */
 export function prepaintScript(defaultLevelName: string) {
   const values = CONTRAST_LEVELS.map(({ value }) => String(value))

@@ -241,6 +241,39 @@ function anyCopy(page: Page, name: string | RegExp) {
   return page.getByRole('button', { name, includeHidden: true }).first()
 }
 
+// The palette `Mtb` writes (`toHaveText` doesn't read a `<style>`'s text)
+function palette(page: Page) {
+  return page.locator('style#mcu-styles').textContent()
+}
+
+// The palette in effect, whichever `<style>` it comes from
+function primary(page: Page) {
+  return page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
+  )
+}
+
+// The palette cached once applied, for the next load: the seeds it was built from
+function cache(page: Page) {
+  return page.evaluate(() =>
+    JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
+  )
+}
+
+// The page as first painted: the HTML and its inline scripts, React never running. The JS chunks
+// only: the CSS ones hide the other icons
+const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+async function reloadWithoutReact(page: Page) {
+  await page.route(chunks, (route) => route.abort())
+  await page.reload()
+}
+async function reloadWithReact(page: Page) {
+  await page.unroute(chunks)
+  await page.reload()
+  await page.waitForLoadState('networkidle')
+  await showThemeControls(page)
+}
+
 function collectHydrationErrors(page: Page) {
   const hydrationErrors: string[] = []
   page.on('console', (message) => {
@@ -400,38 +433,14 @@ test.describe('contrast', () => {
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
 
-    const palette = () => page.locator('style#mcu-styles').textContent()
-    const defaultPalette = await palette()
-    // The palette in effect, whichever `<style>` it comes from
-    const primary = () =>
-      page.evaluate(() =>
-        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
-      )
-    const defaultPrimary = await primary()
+    const defaultPalette = await palette(page)
+    const defaultPrimary = await primary(page)
     const storedLevel = () =>
       page.evaluate(() => localStorage.getItem('pmndrs-docs:contrast-level'))
-    const cache = () =>
-      page.evaluate(() =>
-        JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
-      )
 
     const name = /^Contrast(:|$)/
     const toggle = page.getByRole('button', { name })
     const html = page.locator('html')
-
-    // The page as first painted: the HTML and its inline scripts, React never running. The JS
-    // chunks only: the CSS ones hide the other icons
-    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
-    async function reloadWithoutReact() {
-      await page.route(chunks, (route) => route.abort())
-      await page.reload()
-    }
-    async function reloadWithReact() {
-      await page.unroute(chunks)
-      await page.reload()
-      await page.waitForLoadState('networkidle')
-      await showThemeControls(page)
-    }
 
     await showThemeControls(page)
 
@@ -443,29 +452,29 @@ test.describe('contrast', () => {
     await toggle.click()
     await expect(toggle).toHaveAccessibleName(`Contrast: medium, switch to high${RESET_HINT}`)
     await expect(toggle).toHaveAttribute('data-overridden', '')
-    await expect.poll(palette).not.toBe(defaultPalette)
-    const mediumPalette = await palette()
+    await expect.poll(() => palette(page)).not.toBe(defaultPalette)
+    const mediumPalette = await palette(page)
     expect(await storedLevel()).toBe('0.5')
 
     await toggle.click()
     await expect(toggle).toHaveAccessibleName(`Contrast: high, switch to standard${RESET_HINT}`)
-    await expect.poll(palette).not.toBe(mediumPalette)
-    const highPalette = await palette()
-    const highPrimary = await primary()
+    await expect.poll(() => palette(page)).not.toBe(mediumPalette)
+    const highPalette = await palette(page)
+    const highPrimary = await primary(page)
     expect(highPrimary).not.toBe(defaultPrimary)
     expect(await storedLevel()).toBe('1')
 
-    await reloadWithReact()
-    await expect.poll(palette).toBe(highPalette)
+    await reloadWithReact(page)
+    await expect.poll(() => palette(page)).toBe(highPalette)
     await expect(toggle).toHaveAccessibleName(`Contrast: high, switch to standard${RESET_HINT}`)
     // Cached once applied, for the next load: the default color, at this level
-    await expect.poll(async () => (await cache())?.contrast).toBe(1)
-    expect((await cache())?.color).toBe('#323e48')
+    await expect.poll(async () => (await cache(page))?.contrast).toBe(1)
+    expect((await cache(page))?.color).toBe('#323e48')
 
     // The level from the first paint, its icon included: no flash of the default palette
-    await reloadWithoutReact()
-    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
-    expect(await primary()).toBe(highPrimary)
+    await reloadWithoutReact(page)
+    expect(await palette(page)).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary(page)).toBe(highPrimary)
     await expect(anyCopy(page, name).locator('.lucide-contrast.size-6')).toHaveCSS(
       'display',
       'block',
@@ -481,8 +490,8 @@ test.describe('contrast', () => {
     // Overriding the default, from the first paint too
     await expect(html).toHaveAttribute('data-prepaint-contrast-overridden', '')
 
-    await reloadWithReact()
-    await expect.poll(palette).toBe(highPalette)
+    await reloadWithReact(page)
+    await expect.poll(() => palette(page)).toBe(highPalette)
     // Once `Mtb` has the level, only its palette is left
     await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
     // Once hydrated, the button shows the level, and says it overrides the default, itself
@@ -494,24 +503,24 @@ test.describe('contrast', () => {
     await page.locator('input[type="color"]').filter({ visible: true }).fill('#ff0000')
     await expect
       .poll(async () => {
-        const { color, contrast } = (await cache()) ?? {}
+        const { color, contrast } = (await cache(page)) ?? {}
         return { color, contrast }
       })
       .toEqual({ color: '#ff0000', contrast: 1 })
-    const pickedPrimary = await primary()
-    await reloadWithoutReact()
-    expect(await primary()).toBe(pickedPrimary)
-    await reloadWithReact()
+    const pickedPrimary = await primary(page)
+    await reloadWithoutReact(page)
+    expect(await primary(page)).toBe(pickedPrimary)
+    await reloadWithReact(page)
     await page.locator('input[type="color"]').filter({ visible: true }).fill('#323e48')
-    await expect.poll(async () => (await cache())?.color).toBe('#323e48')
+    await expect.poll(async () => (await cache(page))?.color).toBe('#323e48')
 
     // Back to the site's default: forgotten, and its palette with it
     await toggle.click()
     await expect(toggle).toHaveAccessibleName('Contrast: standard, switch to medium')
     await expect(toggle).not.toHaveAttribute('data-overridden')
-    await expect.poll(palette).toBe(defaultPalette)
+    await expect.poll(() => palette(page)).toBe(defaultPalette)
     expect(await storedLevel()).toBeNull()
-    expect(await cache()).toBeNull()
+    expect(await cache(page)).toBeNull()
 
     // A double-click, from any level: the default too, forgotten (its first click is a step, to
     // high here, its second one is not)
@@ -520,9 +529,9 @@ test.describe('contrast', () => {
     await toggle.dblclick()
     await expect(toggle).toHaveAccessibleName('Contrast: standard, switch to medium')
     await expect(toggle).not.toHaveAttribute('data-overridden')
-    await expect.poll(palette).toBe(defaultPalette)
+    await expect.poll(() => palette(page)).toBe(defaultPalette)
     expect(await storedLevel()).toBeNull()
-    expect(await cache()).toBeNull()
+    expect(await cache(page)).toBeNull()
 
     // Delete on the focused button, the same, without a mouse
     await toggle.click()
@@ -534,8 +543,8 @@ test.describe('contrast', () => {
     expect(await storedLevel()).toBeNull()
 
     // Forgotten, the default from the first paint again
-    await reloadWithoutReact()
-    expect(await primary()).toBe(defaultPrimary)
+    await reloadWithoutReact(page)
+    expect(await primary(page)).toBe(defaultPrimary)
     await expect(anyCopy(page, name).locator('.lucide-contrast.size-4')).toHaveCSS(
       'display',
       'block',
@@ -562,37 +571,13 @@ test.describe('scheme', () => {
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
 
-    const palette = () => page.locator('style#mcu-styles').textContent()
-    const defaultPalette = await palette()
-    // The palette in effect, whichever `<style>` it comes from
-    const primary = () =>
-      page.evaluate(() =>
-        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
-      )
-    const defaultPrimary = await primary()
+    const defaultPalette = await palette(page)
+    const defaultPrimary = await primary(page)
     const storedScheme = () => page.evaluate(() => localStorage.getItem('pmndrs-docs:scheme'))
-    const cache = () =>
-      page.evaluate(() =>
-        JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
-      )
 
     const name = /^Scheme(:|$)/
     const toggle = page.getByRole('button', { name })
     const html = page.locator('html')
-
-    // The page as first painted: the HTML and its inline scripts, React never running. The JS
-    // chunks only: the CSS ones hide the other icons
-    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
-    async function reloadWithoutReact() {
-      await page.route(chunks, (route) => route.abort())
-      await page.reload()
-    }
-    async function reloadWithReact() {
-      await page.unroute(chunks)
-      await page.reload()
-      await page.waitForLoadState('networkidle')
-      await showThemeControls(page)
-    }
 
     await showThemeControls(page)
 
@@ -619,8 +604,8 @@ test.describe('scheme', () => {
         `Scheme: ${label}, switch to ${nextLabel}${RESET_HINT}`,
       )
       await expect(toggle).toHaveAttribute('data-overridden', '')
-      await expect.poll(palette).not.toBe(previousPalette)
-      previousPalette = (await palette())!
+      await expect.poll(() => palette(page)).not.toBe(previousPalette)
+      previousPalette = (await palette(page))!
       expect(await storedScheme()).toBe(value)
     }
 
@@ -628,34 +613,34 @@ test.describe('scheme', () => {
     await toggle.click()
     await expect(toggle).toHaveAccessibleName('Scheme: tonal spot, switch to vibrant')
     await expect(toggle).not.toHaveAttribute('data-overridden')
-    await expect.poll(palette).toBe(defaultPalette)
+    await expect.poll(() => palette(page)).toBe(defaultPalette)
     expect(await storedScheme()).toBeNull()
     await toggle.click()
     await expect(toggle).toHaveAccessibleName(`Scheme: vibrant, switch to expressive${RESET_HINT}`)
-    await expect.poll(palette).not.toBe(defaultPalette)
-    const vibrantPalette = await palette()
-    const vibrantPrimary = await primary()
+    await expect.poll(() => palette(page)).not.toBe(defaultPalette)
+    const vibrantPalette = await palette(page)
+    const vibrantPrimary = await primary(page)
     expect(vibrantPrimary).not.toBe(defaultPrimary)
 
-    await reloadWithReact()
-    await expect.poll(palette).toBe(vibrantPalette)
+    await reloadWithReact(page)
+    await expect.poll(() => palette(page)).toBe(vibrantPalette)
     await expect(toggle).toHaveAccessibleName(`Scheme: vibrant, switch to expressive${RESET_HINT}`)
     // Cached once applied, for the next load: the default color and contrast, in this scheme
-    await expect.poll(async () => (await cache())?.scheme).toBe('vibrant')
-    expect((await cache())?.color).toBe('#323e48')
-    expect((await cache())?.contrast).toBe(0)
+    await expect.poll(async () => (await cache(page))?.scheme).toBe('vibrant')
+    expect((await cache(page))?.color).toBe('#323e48')
+    expect((await cache(page))?.contrast).toBe(0)
 
     // The scheme from the first paint, its icon included: no flash of the default palette
-    await reloadWithoutReact()
-    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
-    expect(await primary()).toBe(vibrantPrimary)
+    await reloadWithoutReact(page)
+    expect(await palette(page)).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary(page)).toBe(vibrantPrimary)
     await expect(anyCopy(page, name).locator('.lucide-sparkles')).toHaveCSS('display', 'block')
     await expect(anyCopy(page, name).locator('.lucide-palette')).toHaveCSS('display', 'none')
     // Overriding the default, from the first paint too
     await expect(html).toHaveAttribute('data-prepaint-scheme-overridden', '')
 
-    await reloadWithReact()
-    await expect.poll(palette).toBe(vibrantPalette)
+    await reloadWithReact(page)
+    await expect.poll(() => palette(page)).toBe(vibrantPalette)
     // Once `Mtb` has the scheme, only its palette is left
     await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
     // Once hydrated, the button shows the scheme, and says it overrides the default, itself
@@ -670,33 +655,33 @@ test.describe('scheme', () => {
     await expect(contrastToggle).toHaveAccessibleName(
       `Contrast: high, switch to standard${RESET_HINT}`,
     )
-    await expect.poll(palette).not.toBe(vibrantPalette)
+    await expect.poll(() => palette(page)).not.toBe(vibrantPalette)
     await expect
       .poll(async () => {
-        const { contrast, scheme } = (await cache()) ?? {}
+        const { contrast, scheme } = (await cache(page)) ?? {}
         return { contrast, scheme }
       })
       .toEqual({ contrast: 1, scheme: 'vibrant' })
-    const bothPrimary = await primary()
-    await reloadWithoutReact()
-    expect(await primary()).toBe(bothPrimary)
-    await reloadWithReact()
+    const bothPrimary = await primary(page)
+    await reloadWithoutReact(page)
+    expect(await primary(page)).toBe(bothPrimary)
+    await reloadWithReact(page)
     await contrastToggle.click()
     await expect(contrastToggle).toHaveAccessibleName('Contrast: standard, switch to medium')
-    await expect.poll(async () => (await cache())?.contrast).toBe(0)
+    await expect.poll(async () => (await cache(page))?.contrast).toBe(0)
 
     // Back to the site's default with a double-click, from vibrant: forgotten, and its palette with
     // it (its first click is a step, to expressive, its second one is not)
     await toggle.dblclick()
     await expect(toggle).toHaveAccessibleName('Scheme: tonal spot, switch to vibrant')
     await expect(toggle).not.toHaveAttribute('data-overridden')
-    await expect.poll(palette).toBe(defaultPalette)
+    await expect.poll(() => palette(page)).toBe(defaultPalette)
     expect(await storedScheme()).toBeNull()
-    expect(await cache()).toBeNull()
+    expect(await cache(page)).toBeNull()
 
     // Forgotten, the default from the first paint again
-    await reloadWithoutReact()
-    expect(await primary()).toBe(defaultPrimary)
+    await reloadWithoutReact(page)
+    expect(await primary(page)).toBe(defaultPrimary)
     await expect(anyCopy(page, name).locator('.lucide-palette')).toHaveCSS('display', 'block')
     await expect(html).not.toHaveAttribute('data-prepaint-scheme-overridden')
 
@@ -720,37 +705,13 @@ test.describe('color match', () => {
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
 
-    const palette = () => page.locator('style#mcu-styles').textContent()
-    const defaultPalette = await palette()
-    // The palette in effect, whichever `<style>` it comes from
-    const primary = () =>
-      page.evaluate(() =>
-        getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
-      )
-    const defaultPrimary = await primary()
+    const defaultPalette = await palette(page)
+    const defaultPrimary = await primary(page)
     const stored = () => page.evaluate(() => localStorage.getItem('pmndrs-docs:color-match'))
-    const cache = () =>
-      page.evaluate(() =>
-        JSON.parse(localStorage.getItem('pmndrs-docs:primary-color:css') ?? 'null'),
-      )
 
     const name = /^Color match(:|$)/
     const toggle = page.getByRole('button', { name })
     const html = page.locator('html')
-
-    // The page as first painted: the HTML and its inline scripts, React never running. The JS
-    // chunks only: the CSS ones hide the other icons
-    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
-    async function reloadWithoutReact() {
-      await page.route(chunks, (route) => route.abort())
-      await page.reload()
-    }
-    async function reloadWithReact() {
-      await page.unroute(chunks)
-      await page.reload()
-      await page.waitForLoadState('networkidle')
-      await showThemeControls(page)
-    }
 
     await showThemeControls(page)
 
@@ -763,30 +724,30 @@ test.describe('color match', () => {
     await toggle.click()
     await expect(toggle).toHaveAccessibleName(`Color match: on, switch to off${RESET_HINT}`)
     await expect(toggle).toHaveAttribute('data-overridden', '')
-    await expect.poll(palette).not.toBe(defaultPalette)
-    const matchedPalette = await palette()
-    const matchedPrimary = await primary()
+    await expect.poll(() => palette(page)).not.toBe(defaultPalette)
+    const matchedPalette = await palette(page)
+    const matchedPrimary = await primary(page)
     expect(matchedPrimary).not.toBe(defaultPrimary)
     expect(await stored()).toBe('true')
 
-    await reloadWithReact()
-    await expect.poll(palette).toBe(matchedPalette)
+    await reloadWithReact(page)
+    await expect.poll(() => palette(page)).toBe(matchedPalette)
     await expect(toggle).toHaveAccessibleName(`Color match: on, switch to off${RESET_HINT}`)
     // Cached once applied, for the next load: the default color, contrast and scheme, matched
-    await expect.poll(async () => (await cache())?.colorMatch).toBe(true)
-    expect((await cache())?.color).toBe('#323e48')
+    await expect.poll(async () => (await cache(page))?.colorMatch).toBe(true)
+    expect((await cache(page))?.color).toBe('#323e48')
 
     // The pick from the first paint, its icon included: no flash of the default palette
-    await reloadWithoutReact()
-    expect(await palette()).toBe(defaultPalette) // the server's, React didn't replace it
-    expect(await primary()).toBe(matchedPrimary)
+    await reloadWithoutReact(page)
+    expect(await palette(page)).toBe(defaultPalette) // the server's, React didn't replace it
+    expect(await primary(page)).toBe(matchedPrimary)
     await expect(anyCopy(page, name).locator('.lucide-pipette')).toHaveCSS('display', 'block')
     await expect(anyCopy(page, name).locator('.lucide-blend')).toHaveCSS('display', 'none')
     // Overriding the default, from the first paint too
     await expect(html).toHaveAttribute('data-prepaint-color-match-overridden', '')
 
-    await reloadWithReact()
-    await expect.poll(palette).toBe(matchedPalette)
+    await reloadWithReact(page)
+    await expect.poll(() => palette(page)).toBe(matchedPalette)
     // Once `Mtb` has the pick, only its palette is left
     await expect(page.locator('style#primary-color-prepaint')).toHaveCount(0)
     // Once hydrated, the button shows the pick, and says it overrides the default, itself
@@ -799,9 +760,9 @@ test.describe('color match', () => {
     await toggle.dblclick()
     await expect(toggle).toHaveAccessibleName('Color match: off, switch to on')
     await expect(toggle).not.toHaveAttribute('data-overridden')
-    await expect.poll(palette).toBe(defaultPalette)
+    await expect.poll(() => palette(page)).toBe(defaultPalette)
     expect(await stored()).toBeNull()
-    expect(await cache()).toBeNull()
+    expect(await cache(page)).toBeNull()
 
     // Flipping back to the site's default forgets the pick too
     await toggle.click()
@@ -812,10 +773,56 @@ test.describe('color match', () => {
     expect(await stored()).toBeNull()
 
     // Forgotten, the default from the first paint again
-    await reloadWithoutReact()
-    expect(await primary()).toBe(defaultPrimary)
+    await reloadWithoutReact(page)
+    expect(await primary(page)).toBe(defaultPrimary)
     await expect(anyCopy(page, name).locator('.lucide-blend')).toHaveCSS('display', 'block')
     await expect(html).not.toHaveAttribute('data-prepaint-color-match-overridden')
+
+    await page.unroute(chunks)
+    expect(hydrationErrors).toEqual([])
+  })
+
+  test('while on, the scheme toggle is hidden, from the first paint', async ({ page }) => {
+    const hydrationErrors = collectHydrationErrors(page)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const toggle = page.getByRole('button', { name: /^Color match(:|$)/ })
+    const schemeName = /^Scheme(:|$)/
+    const schemeToggle = page.getByRole('button', { name: schemeName })
+    // Every copy, hidden or not
+    const schemeToggles = page.getByRole('button', { name: schemeName, includeHidden: true })
+    const html = page.locator('html')
+
+    await showThemeControls(page)
+
+    // Off: the scheme toggle is there
+    await expect(toggle).not.toHaveAttribute('data-overridden')
+    await expect(schemeToggle).toBeVisible()
+
+    // On: not in the page, `colorMatch` taking precedence over `scheme` in material-theme-builder
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('data-overridden', '')
+    await expect(schemeToggles).toHaveCount(0)
+
+    // From the first paint too: the server-rendered button is there, the pre-paint attribute hides it
+    await reloadWithoutReact(page)
+    await expect(html).toHaveAttribute('data-prepaint-color-match', 'on')
+    await expect(anyCopy(page, schemeName)).toHaveCSS('display', 'none')
+
+    // Hydrated, the pick remembered: not in the page again
+    await reloadWithReact(page)
+    await expect(toggle).toHaveAttribute('data-overridden', '')
+    await expect(schemeToggles).toHaveCount(0)
+
+    // Off again: back, hydrated and from the first paint
+    await toggle.click()
+    await expect(toggle).not.toHaveAttribute('data-overridden')
+    await expect(schemeToggle).toBeVisible()
+    await reloadWithoutReact(page)
+    await expect(html).toHaveAttribute('data-prepaint-color-match', 'off')
+    await expect(anyCopy(page, schemeName)).not.toHaveCSS('display', 'none')
 
     await page.unroute(chunks)
     expect(hydrationErrors).toEqual([])
@@ -870,9 +877,7 @@ test.describe('theme', () => {
     await expect(toggle).toHaveAccessibleName('Theme: dark, switch to system')
     await expect(html).toHaveClass(/\bdark\b/)
 
-    // The page as first painted, React never running: the stored theme's icon already, no swap.
-    // The JS chunks only: the CSS ones hide the other icons
-    const chunks = /\/_next\/static\/chunks\/.*\.js(\?|$)/
+    // The page as first painted, React never running: the stored theme's icon already, no swap
     await page.route(chunks, (route) => route.abort())
     await page.reload()
     await expect(html).toHaveClass(/\bdark\b/)

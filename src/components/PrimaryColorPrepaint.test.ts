@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { PRIMARY_COLOR_PREPAINT_VAR, prepaintScript } from './PrimaryColorPrepaint'
 import { PREPAINT_OVERRIDDEN_ATTRIBUTES } from './ThemeControlButton'
+import { COLOR_MATCH_KEY } from '@/hooks/useColorMatch'
 import { PRIMARY_COLOR_KEY } from '@/hooks/usePrimaryColor'
 
 const OVERRIDDEN = PREPAINT_OVERRIDDEN_ATTRIBUTES.primaryColor
@@ -63,29 +64,59 @@ describe('PrimaryColorPrepaint prepaint', () => {
     expect(css).toBe('')
   })
 
+  // A palette made for the stored color and the defaults of `config`
+  const cache = {
+    color: '#FF0000',
+    contrast: config.defaultContrastLevel,
+    scheme: config.defaultScheme,
+    colorMatch: config.defaultColorMatch,
+    signature: config.signature,
+    css: ':root { --md-sys-color-primary: red }',
+  }
+
   it('applies the cached palette made for the stored picks and this config', () => {
-    const cache = {
-      color: '#FF0000',
-      contrast: config.defaultContrastLevel,
-      scheme: config.defaultScheme,
-      colorMatch: config.defaultColorMatch,
-      signature: config.signature,
-      css: ':root { --md-sys-color-primary: red }',
-    }
     const { css } = run({ [PRIMARY_COLOR_KEY]: '#FF0000', [CACHE_KEY]: JSON.stringify(cache) })
     expect(css).toBe(cache.css)
   })
 
+  it('applies the cached palette made for the stored color match', () => {
+    const { css } = run({
+      [PRIMARY_COLOR_KEY]: '#FF0000',
+      [COLOR_MATCH_KEY]: 'true',
+      [CACHE_KEY]: JSON.stringify({ ...cache, colorMatch: true }),
+    })
+    expect(css).toBe(cache.css)
+  })
+
   it('leaves a palette cached for another config alone', () => {
-    const cache = {
-      color: '#FF0000',
-      contrast: config.defaultContrastLevel,
-      scheme: config.defaultScheme,
-      colorMatch: config.defaultColorMatch,
-      signature: 'sig-2',
-      css: ':root { --md-sys-color-primary: red }',
-    }
-    const { css } = run({ [PRIMARY_COLOR_KEY]: '#FF0000', [CACHE_KEY]: JSON.stringify(cache) })
+    const { css } = run({
+      [PRIMARY_COLOR_KEY]: '#FF0000',
+      [CACHE_KEY]: JSON.stringify({ ...cache, signature: 'sig-2' }),
+    })
+    expect(css).toBe('')
+  })
+
+  it('leaves a palette cached for another color match alone', () => {
+    const { css } = run({
+      [PRIMARY_COLOR_KEY]: '#FF0000',
+      [CACHE_KEY]: JSON.stringify({ ...cache, colorMatch: true }),
+    })
+    expect(css).toBe('')
+  })
+
+  it('leaves a palette cached for another contrast alone', () => {
+    const { css } = run({
+      [PRIMARY_COLOR_KEY]: '#FF0000',
+      [CACHE_KEY]: JSON.stringify({ ...cache, contrast: 1 }),
+    })
+    expect(css).toBe('')
+  })
+
+  it('leaves a palette cached for another scheme alone', () => {
+    const { css } = run({
+      [PRIMARY_COLOR_KEY]: '#FF0000',
+      [CACHE_KEY]: JSON.stringify({ ...cache, scheme: 'vibrant' }),
+    })
     expect(css).toBe('')
   })
 })
