@@ -1,5 +1,5 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
