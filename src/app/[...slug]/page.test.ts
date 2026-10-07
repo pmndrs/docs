@@ -253,6 +253,9 @@ function collectHydrationErrors(page: Page) {
   return hydrationErrors
 }
 
+// What a theme control's accessible name ends with once the reader overrode its seed
+const RESET_HINT = ', double-click or Delete to reset'
+
 test.describe('primary color', () => {
   test.use({ disableAutoSnapshot: true })
 
@@ -318,7 +321,7 @@ test.describe('primary color', () => {
       '#ff0000',
     )
     // Overriding the default: the swatch says so
-    await expect(button).toHaveAccessibleName('Theme color, double-click to reset')
+    await expect(button).toHaveAccessibleName(`Theme color${RESET_HINT}`)
     await expect(button).toHaveAttribute('data-overridden', '')
 
     await page.reload()
@@ -438,18 +441,14 @@ test.describe('contrast', () => {
 
     // Overriding the default: the button says so
     await toggle.click()
-    await expect(toggle).toHaveAccessibleName(
-      'Contrast: medium, switch to high, double-click to reset',
-    )
+    await expect(toggle).toHaveAccessibleName(`Contrast: medium, switch to high${RESET_HINT}`)
     await expect(toggle).toHaveAttribute('data-overridden', '')
     await expect.poll(palette).not.toBe(defaultPalette)
     const mediumPalette = await palette()
     expect(await storedLevel()).toBe('0.5')
 
     await toggle.click()
-    await expect(toggle).toHaveAccessibleName(
-      'Contrast: high, switch to standard, double-click to reset',
-    )
+    await expect(toggle).toHaveAccessibleName(`Contrast: high, switch to standard${RESET_HINT}`)
     await expect.poll(palette).not.toBe(mediumPalette)
     const highPalette = await palette()
     const highPrimary = await primary()
@@ -458,9 +457,7 @@ test.describe('contrast', () => {
 
     await reloadWithReact()
     await expect.poll(palette).toBe(highPalette)
-    await expect(toggle).toHaveAccessibleName(
-      'Contrast: high, switch to standard, double-click to reset',
-    )
+    await expect(toggle).toHaveAccessibleName(`Contrast: high, switch to standard${RESET_HINT}`)
     // Cached once applied, for the next load: the default color, at this level
     await expect.poll(async () => (await cache())?.contrast).toBe(1)
     expect((await cache())?.color).toBe('#323e48')
@@ -526,6 +523,15 @@ test.describe('contrast', () => {
     await expect.poll(palette).toBe(defaultPalette)
     expect(await storedLevel()).toBeNull()
     expect(await cache()).toBeNull()
+
+    // Delete on the focused button, the same, without a mouse
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('data-overridden', '')
+    await toggle.focus()
+    await page.keyboard.press('Delete')
+    await expect(toggle).toHaveAccessibleName('Contrast: standard, switch to medium')
+    await expect(toggle).not.toHaveAttribute('data-overridden')
+    expect(await storedLevel()).toBeNull()
 
     // Forgotten, the default from the first paint again
     await reloadWithoutReact()
@@ -610,7 +616,7 @@ test.describe('scheme', () => {
       await toggle.click()
       // Overriding the default: the button says so
       await expect(toggle).toHaveAccessibleName(
-        `Scheme: ${label}, switch to ${nextLabel}, double-click to reset`,
+        `Scheme: ${label}, switch to ${nextLabel}${RESET_HINT}`,
       )
       await expect(toggle).toHaveAttribute('data-overridden', '')
       await expect.poll(palette).not.toBe(previousPalette)
@@ -625,9 +631,7 @@ test.describe('scheme', () => {
     await expect.poll(palette).toBe(defaultPalette)
     expect(await storedScheme()).toBeNull()
     await toggle.click()
-    await expect(toggle).toHaveAccessibleName(
-      'Scheme: vibrant, switch to expressive, double-click to reset',
-    )
+    await expect(toggle).toHaveAccessibleName(`Scheme: vibrant, switch to expressive${RESET_HINT}`)
     await expect.poll(palette).not.toBe(defaultPalette)
     const vibrantPalette = await palette()
     const vibrantPrimary = await primary()
@@ -635,9 +639,7 @@ test.describe('scheme', () => {
 
     await reloadWithReact()
     await expect.poll(palette).toBe(vibrantPalette)
-    await expect(toggle).toHaveAccessibleName(
-      'Scheme: vibrant, switch to expressive, double-click to reset',
-    )
+    await expect(toggle).toHaveAccessibleName(`Scheme: vibrant, switch to expressive${RESET_HINT}`)
     // Cached once applied, for the next load: the default color and contrast, in this scheme
     await expect.poll(async () => (await cache())?.scheme).toBe('vibrant')
     expect((await cache())?.color).toBe('#323e48')
@@ -666,7 +668,7 @@ test.describe('scheme', () => {
     await contrastToggle.click()
     await contrastToggle.click()
     await expect(contrastToggle).toHaveAccessibleName(
-      'Contrast: high, switch to standard, double-click to reset',
+      `Contrast: high, switch to standard${RESET_HINT}`,
     )
     await expect.poll(palette).not.toBe(vibrantPalette)
     await expect

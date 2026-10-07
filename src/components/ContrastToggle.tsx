@@ -27,9 +27,11 @@ const ICON_SIZES = {
 /** Set on `<html>` to the stored level before the first paint: the button shows it until hydrated */
 const PREPAINT_ATTRIBUTE = 'data-prepaint-contrast'
 
-// Run while the HTML is parsed, before the button. What isn't one of the levels is the default's;
-// another one overrides it
-function prepaintScript(defaultLevelName: string) {
+/**
+ * The script run while the HTML is parsed, before the button, `defaultLevelName` being the site's
+ * default. What isn't one of the levels is the default's; another one overrides it
+ */
+export function prepaintScript(defaultLevelName: string) {
   const values = CONTRAST_LEVELS.map(({ value }) => String(value))
   const names = CONTRAST_LEVELS.map(({ name }) => name)
   return `try {
@@ -45,7 +47,7 @@ function prepaintScript(defaultLevelName: string) {
 /**
  * The contrast of the site's palette, standard, medium or high: each click goes to the next one.
  * Remembered across pages, reloads and tabs (see `useContrastLevel`). Picking the site's default
- * again, or double-clicking, forgets the choice.
+ * again, or double-clicking (or Delete on the focused button), forgets the choice.
  */
 export function ContrastToggle({ className }: { className?: string }) {
   const [contrastLevel, setContrastLevel, isDefault, reset] = useContrastLevel()
@@ -70,9 +72,7 @@ export function ContrastToggle({ className }: { className?: string }) {
               overridden={!isDefault}
               onReset={reset}
               aria-label={
-                isHydrated
-                  ? `Contrast: ${current.name}, switch to ${next.name}${isDefault ? '' : RESET_HINT}`
-                  : 'Contrast'
+                isHydrated ? `Contrast: ${current.name}, switch to ${next.name}` : 'Contrast'
               }
               className={className}
               onClick={() => setContrastLevel(next.value)}

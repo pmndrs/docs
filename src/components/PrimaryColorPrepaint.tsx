@@ -66,8 +66,10 @@ type PrepaintProps = {
  *
  * What isn't picked is the default, as for `Mtb`: the cache was made with it too, and a change of
  * the site's default no longer matches it.
+ *
+ * Exported for its unit test only.
  */
-function prepaintScript({
+export function prepaintScript({
   signature,
   defaultPrimaryColor,
   defaultContrastLevel,

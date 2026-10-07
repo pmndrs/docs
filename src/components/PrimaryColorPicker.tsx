@@ -2,7 +2,7 @@
 
 import { PRIMARY_COLOR_PREPAINT_VAR } from '@/components/PrimaryColorPrepaint'
 import { Color } from '@/components/mdx/Color'
-import { RESET_HINT, ThemeControlButton } from '@/components/ThemeControlButton'
+import { ThemeControlButton } from '@/components/ThemeControlButton'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { isHexColor, usePrimaryColor } from '@/hooks/usePrimaryColor'
 import cn from '@/lib/cn'
@@ -11,7 +11,7 @@ import { useRef } from 'react'
 /**
  * A swatch of the color seeding the site's palette, opening the browser's color picker to pick
  * another one: remembered across pages, reloads and tabs (see `usePrimaryColor`). Picking the
- * site's default again, or double-clicking, forgets the choice.
+ * site's default again, or double-clicking (or Delete on the focused swatch), forgets the choice.
  */
 export function PrimaryColorPicker({ className }: { className?: string }) {
   const [primaryColor, setPrimaryColor, isDefault, reset] = usePrimaryColor()
@@ -30,7 +30,7 @@ export function PrimaryColorPicker({ className }: { className?: string }) {
         seed="primaryColor"
         overridden={!isDefault}
         onReset={reset}
-        aria-label={`Theme color${isDefault ? '' : RESET_HINT}`}
+        aria-label="Theme color"
         onClick={() => inputRef.current?.click()}
       >
         <Color color={swatchColor} size="sm" />

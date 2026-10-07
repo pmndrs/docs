@@ -5,8 +5,11 @@ import { useIsHydrated } from '@/hooks/useIsHydrated'
 import cn from '@/lib/cn'
 import { useEffect, type ComponentProps } from 'react'
 
-/** The seeds of the palette a reader can override: `THEME_PRIMARY`, `THEME_CONTRAST`, `THEME_SCHEME` */
-export type Seed = 'primaryColor' | 'contrast' | 'scheme'
+/**
+ * The seeds of the palette a reader can override: `THEME_PRIMARY`, `THEME_CONTRAST` and
+ * `THEME_SCHEME`
+ */
+type Seed = 'primaryColor' | 'contrast' | 'scheme'
 
 /**
  * Set on `<html>` by each seed's pre-paint script when the stored pick overrides it: the button
@@ -18,37 +21,52 @@ export const PREPAINT_OVERRIDDEN_ATTRIBUTES = {
   scheme: 'data-prepaint-scheme-overridden',
 } as const satisfies Record<Seed, string>
 
-/** For the button's accessible name and tooltip, once the reader overrode the seed */
-export const RESET_HINT = ', double-click to reset'
+/**
+ * Appended to the button's accessible name, and to its tooltip, once the reader overrode the seed:
+ * the two ways back
+ */
+export const RESET_HINT = ', double-click or Delete to reset'
 
-/** The overridden look, once hydrated: `data-overridden` on the button */
+// The overridden look, once hydrated: `data-overridden` on the button. Not a `Button` variant: a
+// variant is picked at render, while the first-paint outline comes from the pre-paint attribute
+// on `<html>`, through a selector; and `outline` would change the background too
 const OVERRIDDEN = 'data-overridden:border-border'
 
-// The same look from the pre-paint attribute: spelled out, for Tailwind to see each class
+// The attribute without its `data-` prefix, as the `in-data-[...]` variant spells it
+type Unprefixed<T> = T extends `data-${infer Name}` ? Name : never
+
+// The same look from the pre-paint attribute. Tailwind needs the classes spelled out; the type
+// keeps them in step with the attributes
 const PREPAINT_OVERRIDDEN = {
   primaryColor: 'in-data-[prepaint-primary-color-overridden]:border-border',
   contrast: 'in-data-[prepaint-contrast-overridden]:border-border',
   scheme: 'in-data-[prepaint-scheme-overridden]:border-border',
-} as const satisfies Record<Seed, string>
+} as const satisfies {
+  [S in Seed]: `in-data-[${Unprefixed<(typeof PREPAINT_OVERRIDDEN_ATTRIBUTES)[S]>}]:border-border`
+}
 
-type Props = Omit<ComponentProps<typeof Button>, 'variant' | 'size'> & {
+type Props = Omit<ComponentProps<typeof Button>, 'variant' | 'size' | 'onDoubleClick'> & {
+  /** The seed the button is for: picks the pre-paint attribute it removes once hydrated */
   seed: Seed
   /** The reader overrode the seed: `false` until hydrated, as on the server */
   overridden: boolean
-  /** Back to the seed: a double-click */
+  /** Back to the seed: a double-click, or Delete on the focused button */
   onReset: () => void
 }
 
 /**
  * An icon button of `ThemeControls`, for one seed of the palette: a ghost button, outlined once the
  * reader overrode the seed (`data-overridden`), and from the first paint when its pre-paint script
- * found the pick stored. A double-click brings the seed back; its second click is not a step.
+ * found the pick stored. Its accessible name then says how to come back: a double-click (its second
+ * click is not a step), or Delete (or Backspace) on the focused button.
  */
 export function ThemeControlButton({
   seed,
   overridden,
   onReset,
   onClick,
+  onKeyDown,
+  'aria-label': ariaLabel,
   className,
   ...props
 }: Props) {
@@ -64,13 +82,23 @@ export function ThemeControlButton({
       variant="ghost"
       size="icon"
       data-overridden={overridden ? '' : undefined}
+      aria-label={overridden ? `${ariaLabel}${RESET_HINT}` : ariaLabel}
       className={cn(OVERRIDDEN, PREPAINT_OVERRIDDEN[seed], className)}
       onClick={(event) => {
-        // The second click of a double-click is the reset's
+        // The second click of a double-click is the reset's: not a step, which would write the
+        // store, recompute the palette (a flash) and, for the swatch, open the native picker again
         if (event.detail === 2) return
         onClick?.(event)
       }}
       onDoubleClick={onReset}
+      onKeyDown={(event) => {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+          event.preventDefault()
+          onReset()
+          return
+        }
+        onKeyDown?.(event)
+      }}
       {...props}
     />
   )

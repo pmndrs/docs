@@ -35,9 +35,11 @@ const ICONS = {
 /** Set on `<html>` to the stored scheme before the first paint: the button shows it until hydrated */
 const PREPAINT_ATTRIBUTE = 'data-prepaint-scheme'
 
-// Run while the HTML is parsed, before the button. What isn't one of the schemes is the default;
-// another one overrides it
-function prepaintScript(defaultScheme: string) {
+/**
+ * The script run while the HTML is parsed, before the button, `defaultScheme` being the site's
+ * default. What isn't one of the schemes is the default; another one overrides it
+ */
+export function prepaintScript(defaultScheme: string) {
   const values = SCHEMES.map(({ value }) => value)
   return `try {
   var scheme = localStorage.getItem(${JSON.stringify(SCHEME_KEY)})
@@ -52,7 +54,7 @@ function prepaintScript(defaultScheme: string) {
 /**
  * The Material scheme of the site's palette, from tonal spot to neutral: each click goes to the
  * next one. Remembered across pages, reloads and tabs (see `useScheme`). Picking the site's default
- * again, or double-clicking, forgets the choice.
+ * again, or double-clicking (or Delete on the focused button), forgets the choice.
  */
 export function SchemeToggle({ className }: { className?: string }) {
   const [scheme, setScheme, isDefault, reset] = useScheme()
@@ -80,11 +82,7 @@ export function SchemeToggle({ className }: { className?: string }) {
               seed="scheme"
               overridden={!isDefault}
               onReset={reset}
-              aria-label={
-                isHydrated
-                  ? `Scheme: ${current.name}, switch to ${next.name}${isDefault ? '' : RESET_HINT}`
-                  : 'Scheme'
-              }
+              aria-label={isHydrated ? `Scheme: ${current.name}, switch to ${next.name}` : 'Scheme'}
               className={className}
               onClick={() => setScheme(next.value)}
             />
