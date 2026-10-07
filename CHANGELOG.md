@@ -1,5 +1,13 @@
 # @pmndrs/docs
 
+## 4.16.0
+
+### Minor Changes
+
+- [#668](https://github.com/pmndrs/docs/pull/668) [`86e3422`](https://github.com/pmndrs/docs/commit/86e3422fc55cdaedb2a417ef8857f4471e38634b) Thanks [@abernier](https://github.com/abernier)! - feat: `Color` and `ColorGroup`, MDX swatches of the theme's color roles
+
+  A `Color` is a swatch of a Material color role (or any CSS color): inline, a disc by default, or a cell with the role's name on it. A `ColorGroup` fuses cells into one rounded block, horizontal or vertical, nesting as Material's scheme poster does. The theme-color picker reuses the disc.
+
 ## 4.15.0
 
 ### Minor Changes
