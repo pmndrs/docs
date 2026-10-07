@@ -26,6 +26,7 @@ export DISCORD=https://discord.com/channels/740090768164651008/12643280041722553
 export THEME_PRIMARY="#323e48"
 export THEME_SCHEME="tonalSpot"
 export THEME_CONTRAST="0"
+export THEME_COLOR_MATCH="false"
 export THEME_NOTE="#1f6feb"
 export THEME_TIP="#238636"
 export THEME_IMPORTANT="#8957e5"

@@ -13,13 +13,19 @@ export const CONTRAST_LEVELS = [
 
 export type ContrastLevel = (typeof CONTRAST_LEVELS)[number]
 
-// The site's own contrast, `THEME_CONTRAST`: only the server knows it, `PrimaryColorMtb` passes it
-// down
 const [useDefaultContrastLevel, DefaultContrastLevelProvider] = createRequiredContext<number>()
 
+/**
+ * The site's own contrast, `THEME_CONTRAST`: only the server knows it, `PrimaryColorMtb` passes it
+ * down
+ */
 export { DefaultContrastLevelProvider }
 
-/** The level stored as `stored`, `null` for anything but one of `CONTRAST_LEVELS` */
+/**
+ * The level stored as `stored`, `null` for anything but one of `CONTRAST_LEVELS`
+ *
+ * @param stored - the raw stored value, `null` when nothing is stored
+ */
 export function parseContrastLevel(stored: string | null) {
   const level = CONTRAST_LEVELS.find(({ value }) => String(value) === stored)
   return level ? level.value : null
@@ -27,6 +33,8 @@ export function parseContrastLevel(stored: string | null) {
 
 /**
  * The level of `contrast`, or the nearest one: the site's default can be any contrast from -1 to 1
+ *
+ * @param contrast - a Material contrast, from -1 to 1
  */
 export function contrastLevelOf(contrast: number): ContrastLevel {
   let nearest: ContrastLevel = CONTRAST_LEVELS[0]
@@ -41,8 +49,8 @@ export function contrastLevelOf(contrast: number): ContrastLevel {
  * otherwise: one choice for the whole page, remembered across pages, reloads and tabs (see
  * `useStoredChoice`).
  *
- * Picking the default forgets the choice: a later change of the site's default then reaches the
- * reader too.
+ * Picking the default, or `reset`, forgets the choice: a later change of the site's default then
+ * reaches the reader too.
  */
 export function useContrastLevel() {
   const defaultContrastLevel = useDefaultContrastLevel()
@@ -54,5 +62,10 @@ export function useContrastLevel() {
     setStored(contrast === defaultContrastLevel ? null : String(contrast))
   }
 
-  return [contrastLevel, setContrastLevel, isDefault] as const
+  // The site's default again: nothing stored
+  function reset() {
+    setStored(null)
+  }
+
+  return [contrastLevel, setContrastLevel, isDefault, reset] as const
 }

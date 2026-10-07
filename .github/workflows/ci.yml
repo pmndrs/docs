@@ -176,6 +176,7 @@ jobs:
             --build-env THEME_PRIMARY="#323e48" \
             --build-env THEME_SCHEME="tonalSpot" \
             --build-env THEME_CONTRAST="0" \
+            --build-env THEME_COLOR_MATCH="false" \
             --build-env THEME_NOTE="#1f6feb" \
             --build-env THEME_TIP="#238636" \
             --build-env THEME_IMPORTANT="#8957e5" \
