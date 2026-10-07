@@ -158,6 +158,15 @@ export const libs = {
     llms_full: true,
     pmndrs_docs: true,
   },
+  'design-system': {
+    title: 'design-system',
+    docs_url: 'https://pmndrs.github.io/design-system',
+    github: 'https://github.com/pmndrs/design-system',
+    description:
+      'The shared pmndrs colour layer (Material Design 3) and the poimandres shadcn preset',
+    llms_full: true,
+    pmndrs_docs: true,
+  },
 } as const satisfies Record<string, Library>
 
 export type SUPPORTED_LIBRARY_NAMES = keyof typeof libs

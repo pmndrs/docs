@@ -1,7 +1,7 @@
 'use client'
 
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { SearchIcon } from 'lucide-react'
 import { ComponentProps, useEffect, useState } from 'react'
 

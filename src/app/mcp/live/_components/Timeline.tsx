@@ -1,7 +1,7 @@
 'use client'
 
 import type { McpEvent } from './event'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 
 const SPAN_MS = 5 * 60 * 1000

@@ -1,5 +1,7 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
+import { parseCustomColors } from '@/utils/custom-colors'
+import { parseThemeColor, parseThemeFlag } from '@/utils/theme-seeds'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
@@ -111,8 +113,38 @@ export default function RootLayout({
     | 'tonalSpot'
     | 'vibrant'
   const contrast = Number(process.env.THEME_CONTRAST) || 0
-  const colorMatch = process.env.THEME_COLOR_MATCH === 'true'
   const basePath = process.env.BASE_PATH || ''
+
+  // The other seeds of the palette, each optional: the core colors a site overrides instead of
+  // letting the primary derive them, and its color match — each core and custom color then
+  // rendered true to its own input (its content variant), as Material Theme Builder's "Color
+  // match" does, which makes `scheme` moot (see `SchemeToggle`). Parsed at build time: a value
+  // that is not a hex color fails the build, with its reason.
+  const colorMatch = parseThemeFlag('COLOR_MATCH', process.env.THEME_COLOR_MATCH)
+  const secondary = parseThemeColor('SECONDARY', process.env.THEME_SECONDARY)
+  const tertiary = parseThemeColor('TERTIARY', process.env.THEME_TERTIARY)
+  const neutral = parseThemeColor('NEUTRAL', process.env.THEME_NEUTRAL)
+  const neutralVariant = parseThemeColor('NEUTRAL_VARIANT', process.env.THEME_NEUTRAL_VARIANT)
+  const error = parseThemeColor('ERROR', process.env.THEME_ERROR)
+
+  // The alert colors, blended with the primary — and after them the site's own, from
+  // `THEME_CUSTOM_COLORS`: roles of the theme too (`<Color role="brand" />`, `bg-brand`), so they
+  // follow the scheme, contrast and primary the reader picks. Parsed at build time: a malformed
+  // entry fails the build, with its reason.
+  const builtInColors = [
+    { name: 'note', hex: note, blend: true },
+    { name: 'tip', hex: tip, blend: true },
+    { name: 'important', hex: important, blend: true },
+    { name: 'warning', hex: warning, blend: true },
+    { name: 'caution', hex: caution, blend: true },
+  ]
+  const customColors = [
+    ...builtInColors,
+    ...parseCustomColors(
+      process.env.THEME_CUSTOM_COLORS,
+      builtInColors.map((color) => color.name),
+    ),
+  ]
 
   return (
     <html
@@ -143,13 +175,12 @@ export default function RootLayout({
           scheme={scheme}
           contrast={contrast}
           colorMatch={colorMatch}
-          customColors={[
-            { name: 'note', hex: note, blend: true },
-            { name: 'tip', hex: tip, blend: true },
-            { name: 'important', hex: important, blend: true },
-            { name: 'warning', hex: warning, blend: true },
-            { name: 'caution', hex: caution, blend: true },
-          ]}
+          secondary={secondary}
+          tertiary={tertiary}
+          neutral={neutral}
+          neutralVariant={neutralVariant}
+          error={error}
+          customColors={customColors}
         >
           <ThemeProvider attribute="class">{children}</ThemeProvider>
         </PrimaryColorMtb>

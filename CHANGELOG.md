@@ -1,5 +1,36 @@
 # @pmndrs/docs
 
+## 4.18.0
+
+### Minor Changes
+
+- [#678](https://github.com/pmndrs/docs/pull/678) [`27474e2`](https://github.com/pmndrs/docs/commit/27474e2a07101f1dffe06354f9594309eb2a2e0d) Thanks [@abernier](https://github.com/abernier)! - feat: `THEME_COLOR_MATCH`, `THEME_SECONDARY`, `THEME_TERTIARY`, `THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT`, `THEME_ERROR` -- the other seeds of the site's palette
+
+  Workflow inputs `theme_color_match`, `theme_secondary`, `theme_tertiary`, `theme_neutral`, `theme_neutral_variant`, `theme_error`, CLI `--theme-color-match`, `--theme-secondary`… Each core color `<Mtb>` lets a site override is now reachable instead of derived from the primary alone, and `THEME_COLOR_MATCH="true"` is Material Theme Builder's "Color match": each core and custom color rendered true to its own input, which takes precedence over `THEME_SCHEME` (the scheme toggle is then not shown). A site built from a material-theme-builder seed that uses them, as pmndrs/design-system's, gets the palette it ships rather than a tonal spot approximation of it. A value that is not a hex color fails the build with its reason. material-theme-builder bumped to 5.2.1, where `colorMatch` is implemented.
+
+## 4.17.2
+
+### Patch Changes
+
+- [#676](https://github.com/pmndrs/docs/pull/676) [`8616d62`](https://github.com/pmndrs/docs/commit/8616d625c3b41ef53ce6dc056cef5d9b021220de) Thanks [@abernier](https://github.com/abernier)! - Pin `@codemirror/language` to 6.12.4. Its 6.13.0 imports `@codemirror/streamparser` without
+  declaring it, so every `npx @pmndrs/docs build` on a fresh runner died with
+  `ERR_MODULE_NOT_FOUND`. Drop the pin once an upstream release declares the dependency.
+
+## 4.17.1
+
+### Patch Changes
+
+- [#672](https://github.com/pmndrs/docs/pull/672) [`96b1fd7`](https://github.com/pmndrs/docs/commit/96b1fd7825e2da2b32c1d894a8512287becc089f) Thanks [@abernier](https://github.com/abernier)! - List `design-system` in the header's libraries menu, and read it in `browse` and over MCP. Its docs
+  are built with this generator and publish a `llms-full.txt` at `pmndrs.github.io/design-system`.
+
+## 4.17.0
+
+### Minor Changes
+
+- [#673](https://github.com/pmndrs/docs/pull/673) [`204af0f`](https://github.com/pmndrs/docs/commit/204af0f6a5d312ca6092303470b5cdf81d22af1e) Thanks [@abernier](https://github.com/abernier)! - feat: `THEME_CUSTOM_COLORS`, a site's own custom colors as roles of the theme
+
+  `THEME_CUSTOM_COLORS` (workflow input `theme_custom_colors`, CLI `--theme-custom-colors`) takes `name:hex[:blend]` entries, comma-separated, e.g. `brand:#ff2d95:blend,status:#17b26a`: each is a custom color of `<Mtb>` next to the built-in `note`, `tip`…, so `<Color role="brand" />` and `bg-brand` follow the scheme, contrast and primary the reader picks instead of a hex pasted in the page. A malformed entry, or a built-in name, fails the build with its reason.
+
 ## 4.16.0
 
 ### Minor Changes

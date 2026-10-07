@@ -1,5 +1,5 @@
 import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps, CSSProperties } from 'react'
 
 //

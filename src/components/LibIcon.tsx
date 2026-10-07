@@ -1,6 +1,6 @@
 'use client'
 
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { libs, type Library } from '@/libs'
 import { libsIcons } from '@/libs-icons'
 import { PackageIcon } from 'lucide-react'

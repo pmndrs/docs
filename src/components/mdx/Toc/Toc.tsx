@@ -1,7 +1,7 @@
 'use client'
 
 import type { DocToC } from '@/app/[...slug]/DocsContext'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { ComponentProps, useEffect, useMemo, useState } from 'react'
 import { withDepth } from './withDepth'
 

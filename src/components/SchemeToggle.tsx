@@ -67,6 +67,8 @@ export function SchemeToggle({ className }: { className?: string }) {
     if (isHydrated) document.documentElement.removeAttribute(PREPAINT_ATTRIBUTE)
   }, [isHydrated])
 
+  // TODO(color-match): hide while color match is on
+
   const Icon = ICONS[current.value]
 
   return (

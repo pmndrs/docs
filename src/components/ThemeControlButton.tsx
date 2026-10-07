@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
-import cn from '@/lib/cn'
+import { cn } from '@/lib/utils'
 import { useEffect, type ComponentProps } from 'react'
 
 /**
