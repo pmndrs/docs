@@ -60,6 +60,13 @@ main :target {
   &.sandpack {
     @apply xl:max-w-none;
   }
+
+  /* A `ColorGroup` (`registry/color`) is a grid, not the block the rule above makes it, and in the
+   * flow of the page it is spaced as the other blocks are (`Details`, `Gha`). Here rather than in
+   * the component: it is distributed, and has no `.post-container` to know about. */
+  &[data-slot='color-group'] {
+    @apply my-4 grid;
+  }
 }
 
 mark {

@@ -17,6 +17,22 @@
         }
       ],
       "docs": "Renders on stock shadcn tokens apart from `bg-surface-dim`, which is why it depends on `pmndrs/design-system/md3` — MD3 has a surface role shadcn has no equivalent for. Installing it without that dependency resolved leaves the panel with no background at all, and Tailwind reports nothing."
+    },
+    {
+      "name": "color",
+      "type": "registry:block",
+      "title": "Color",
+      "description": "Swatches of the theme's Material 3 color roles, as Material's scheme poster shows them. `Color` is a disc inline in text, or a cell with the role's name on it in the ink Material pairs with it; `ColorGroup` fuses cells into one rounded block, horizontal or vertical, nesting as rows. Takes any role in kebab-case (`primary`, `on-tertiary-fixed-variant`, a custom color), or any CSS color.",
+      "author": "pmndrs",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["pmndrs/design-system/md3#v0.4.0"],
+      "files": [
+        {
+          "path": "registry/color/color.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "docs": "Every swatch is painted from `--md-sys-color-<role>`, which is why it depends on `pmndrs/design-system/md3`: that layer defines those variables, and they are the whole of what this block shows. Without it every swatch is transparent, and nothing reports it. The baked palette `md3` brings has the Material roles only: a custom color (`note`, `tip`…) renders once your own palette defines it — compute it from `md3-base` with `customColors`, as `lib/md3.ts` describes. A group has no margin of its own: space it from the page."
     }
   ]
 }
