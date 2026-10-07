@@ -5,6 +5,8 @@
 // primary like any other role, instead of a hex pasted in the page.
 //
 
+import { HEX } from './theme-seeds'
+
 /** One custom color, as `<Mtb>` takes it in its `customColors`. */
 export type CustomColor = {
   name: string
@@ -14,8 +16,6 @@ export type CustomColor = {
 
 // kebab-case, the way a role is named in MDX (`<Color role="brand-alt" />`)
 const NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
-// 3, 6 or 8 hex digits, the forms `argbFromHex` reads
-const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
 /**
  * Parses `THEME_CUSTOM_COLORS`: entries of `name:hex[:blend]`, separated by commas, spaces or
