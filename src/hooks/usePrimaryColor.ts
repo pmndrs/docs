@@ -21,8 +21,8 @@ export function isHexColor(value: string | null): value is string {
  * The color the reader picked to seed the site's Material palette, the site's default otherwise:
  * one choice for the whole page, remembered across pages, reloads and tabs (see `useStoredChoice`).
  *
- * Picking the default forgets the choice: a later change of the site's default then reaches the
- * reader too.
+ * Picking the default, or `reset`, forgets the choice: a later change of the site's default then
+ * reaches the reader too.
  */
 export function usePrimaryColor() {
   const defaultPrimaryColor = useDefaultPrimaryColor()
@@ -35,5 +35,10 @@ export function usePrimaryColor() {
     setStored(isDefaultColor ? null : color)
   }
 
-  return [primaryColor, setPrimaryColor, isDefault] as const
+  // The site's default again: nothing stored
+  function reset() {
+    setStored(null)
+  }
+
+  return [primaryColor, setPrimaryColor, isDefault, reset] as const
 }

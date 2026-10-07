@@ -1,6 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import {
+  PREPAINT_OVERRIDDEN_ATTRIBUTES,
+  RESET_HINT,
+  ThemeControlButton,
+} from '@/components/ThemeControlButton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   CONTRAST_LEVEL_KEY,
@@ -23,13 +27,16 @@ const ICON_SIZES = {
 /** Set on `<html>` to the stored level before the first paint: the button shows it until hydrated */
 const PREPAINT_ATTRIBUTE = 'data-prepaint-contrast'
 
-// Run while the HTML is parsed, before the button. What isn't one of the levels is the default's
+// Run while the HTML is parsed, before the button. What isn't one of the levels is the default's;
+// another one overrides it
 function prepaintScript(defaultLevelName: string) {
   const values = CONTRAST_LEVELS.map(({ value }) => String(value))
   const names = CONTRAST_LEVELS.map(({ name }) => name)
   return `try {
   var index = ${JSON.stringify(values)}.indexOf(localStorage.getItem(${JSON.stringify(CONTRAST_LEVEL_KEY)}))
-  document.documentElement.setAttribute(${JSON.stringify(PREPAINT_ATTRIBUTE)}, index === -1 ? ${JSON.stringify(defaultLevelName)} : ${JSON.stringify(names)}[index])
+  var name = index === -1 ? ${JSON.stringify(defaultLevelName)} : ${JSON.stringify(names)}[index]
+  document.documentElement.setAttribute(${JSON.stringify(PREPAINT_ATTRIBUTE)}, name)
+  if (name !== ${JSON.stringify(defaultLevelName)}) document.documentElement.setAttribute(${JSON.stringify(PREPAINT_OVERRIDDEN_ATTRIBUTES.contrast)}, '')
 } catch (e) {
   document.documentElement.setAttribute(${JSON.stringify(PREPAINT_ATTRIBUTE)}, ${JSON.stringify(defaultLevelName)})
 }`
@@ -38,10 +45,10 @@ function prepaintScript(defaultLevelName: string) {
 /**
  * The contrast of the site's palette, standard, medium or high: each click goes to the next one.
  * Remembered across pages, reloads and tabs (see `useContrastLevel`). Picking the site's default
- * again forgets the choice.
+ * again, or double-clicking, forgets the choice.
  */
 export function ContrastToggle({ className }: { className?: string }) {
-  const [contrastLevel, setContrastLevel] = useContrastLevel()
+  const [contrastLevel, setContrastLevel, isDefault, reset] = useContrastLevel()
   const isHydrated = useIsHydrated()
   const current = contrastLevelOf(contrastLevel)
   const next = CONTRAST_LEVELS[(CONTRAST_LEVELS.indexOf(current) + 1) % CONTRAST_LEVELS.length]
@@ -58,11 +65,14 @@ export function ContrastToggle({ className }: { className?: string }) {
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button
-              variant="ghost"
-              size="icon"
+            <ThemeControlButton
+              seed="contrast"
+              overridden={!isDefault}
+              onReset={reset}
               aria-label={
-                isHydrated ? `Contrast: ${current.name}, switch to ${next.name}` : 'Contrast'
+                isHydrated
+                  ? `Contrast: ${current.name}, switch to ${next.name}${isDefault ? '' : RESET_HINT}`
+                  : 'Contrast'
               }
               className={className}
               onClick={() => setContrastLevel(next.value)}
@@ -82,7 +92,9 @@ export function ContrastToggle({ className }: { className?: string }) {
           )}
         </TooltipTrigger>
         <TooltipContent>
-          {isHydrated ? `Contrast: ${upperFirst(current.name)}` : 'Contrast'}
+          {isHydrated
+            ? `Contrast: ${upperFirst(current.name)}${isDefault ? '' : RESET_HINT}`
+            : 'Contrast'}
         </TooltipContent>
       </Tooltip>
     </>

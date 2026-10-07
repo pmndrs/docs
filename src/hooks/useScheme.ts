@@ -43,8 +43,8 @@ export function schemeOf(value: SchemeValue): Scheme {
  * The scheme the reader picked for the site's Material palette, the site's default otherwise: one
  * choice for the whole page, remembered across pages, reloads and tabs (see `useStoredChoice`).
  *
- * Picking the default forgets the choice: a later change of the site's default then reaches the
- * reader too.
+ * Picking the default, or `reset`, forgets the choice: a later change of the site's default then
+ * reaches the reader too.
  */
 export function useScheme() {
   const defaultScheme = useDefaultScheme()
@@ -56,5 +56,10 @@ export function useScheme() {
     setStored(value === defaultScheme ? null : value)
   }
 
-  return [scheme, setScheme, isDefault] as const
+  // The site's default again: nothing stored
+  function reset() {
+    setStored(null)
+  }
+
+  return [scheme, setScheme, isDefault, reset] as const
 }

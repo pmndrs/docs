@@ -1,5 +1,6 @@
 'use client'
 
+import { PREPAINT_OVERRIDDEN_ATTRIBUTES } from '@/components/ThemeControlButton'
 import { useContrastLevel, CONTRAST_LEVEL_KEY, CONTRAST_LEVELS } from '@/hooks/useContrastLevel'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { HEX_COLOR, PRIMARY_COLOR_KEY, usePrimaryColor } from '@/hooks/usePrimaryColor'
@@ -13,7 +14,10 @@ import { useEffect, useState } from 'react'
  */
 const CACHE_KEY = `${PRIMARY_COLOR_KEY}:css`
 
-/** Set on `<html>` to the stored pick before the first paint: the swatch shows it until hydrated */
+/**
+ * Set on `<html>` to the stored pick before the first paint: the swatch shows it until hydrated. When
+ * it overrides the site's default, `PREPAINT_OVERRIDDEN_ATTRIBUTES.primaryColor` too
+ */
 export const PRIMARY_COLOR_PREPAINT_VAR = '--prepaint-primary-color'
 
 const STYLE_ID = 'primary-color-prepaint'
@@ -73,6 +77,7 @@ function prepaintScript({
   var color = localStorage.getItem(${literal(PRIMARY_COLOR_KEY)})
   if (${HEX_COLOR}.test(color)) {
     document.documentElement.style.setProperty(${literal(PRIMARY_COLOR_PREPAINT_VAR)}, color)
+    if (color.toLowerCase() !== ${literal(defaultPrimaryColor.toLowerCase())}) document.documentElement.setAttribute(${literal(PREPAINT_OVERRIDDEN_ATTRIBUTES.primaryColor)}, '')
   } else {
     color = ${literal(defaultPrimaryColor)}
   }

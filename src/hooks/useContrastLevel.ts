@@ -41,8 +41,8 @@ export function contrastLevelOf(contrast: number): ContrastLevel {
  * otherwise: one choice for the whole page, remembered across pages, reloads and tabs (see
  * `useStoredChoice`).
  *
- * Picking the default forgets the choice: a later change of the site's default then reaches the
- * reader too.
+ * Picking the default, or `reset`, forgets the choice: a later change of the site's default then
+ * reaches the reader too.
  */
 export function useContrastLevel() {
   const defaultContrastLevel = useDefaultContrastLevel()
@@ -54,5 +54,10 @@ export function useContrastLevel() {
     setStored(contrast === defaultContrastLevel ? null : String(contrast))
   }
 
-  return [contrastLevel, setContrastLevel, isDefault] as const
+  // The site's default again: nothing stored
+  function reset() {
+    setStored(null)
+  }
+
+  return [contrastLevel, setContrastLevel, isDefault, reset] as const
 }

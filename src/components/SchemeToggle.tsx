@@ -1,6 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import {
+  PREPAINT_OVERRIDDEN_ATTRIBUTES,
+  RESET_HINT,
+  ThemeControlButton,
+} from '@/components/ThemeControlButton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { SCHEME_KEY, SCHEMES, schemeOf, useScheme } from '@/hooks/useScheme'
@@ -31,12 +35,15 @@ const ICONS = {
 /** Set on `<html>` to the stored scheme before the first paint: the button shows it until hydrated */
 const PREPAINT_ATTRIBUTE = 'data-prepaint-scheme'
 
-// Run while the HTML is parsed, before the button. What isn't one of the schemes is the default
+// Run while the HTML is parsed, before the button. What isn't one of the schemes is the default;
+// another one overrides it
 function prepaintScript(defaultScheme: string) {
   const values = SCHEMES.map(({ value }) => value)
   return `try {
   var scheme = localStorage.getItem(${JSON.stringify(SCHEME_KEY)})
-  document.documentElement.setAttribute(${JSON.stringify(PREPAINT_ATTRIBUTE)}, ${JSON.stringify(values)}.indexOf(scheme) === -1 ? ${JSON.stringify(defaultScheme)} : scheme)
+  if (${JSON.stringify(values)}.indexOf(scheme) === -1) scheme = ${JSON.stringify(defaultScheme)}
+  document.documentElement.setAttribute(${JSON.stringify(PREPAINT_ATTRIBUTE)}, scheme)
+  if (scheme !== ${JSON.stringify(defaultScheme)}) document.documentElement.setAttribute(${JSON.stringify(PREPAINT_OVERRIDDEN_ATTRIBUTES.scheme)}, '')
 } catch (e) {
   document.documentElement.setAttribute(${JSON.stringify(PREPAINT_ATTRIBUTE)}, ${JSON.stringify(defaultScheme)})
 }`
@@ -45,10 +52,10 @@ function prepaintScript(defaultScheme: string) {
 /**
  * The Material scheme of the site's palette, from tonal spot to neutral: each click goes to the
  * next one. Remembered across pages, reloads and tabs (see `useScheme`). Picking the site's default
- * again forgets the choice.
+ * again, or double-clicking, forgets the choice.
  */
 export function SchemeToggle({ className }: { className?: string }) {
-  const [scheme, setScheme] = useScheme()
+  const [scheme, setScheme, isDefault, reset] = useScheme()
   const isHydrated = useIsHydrated()
   const current = schemeOf(scheme)
   const next = SCHEMES[(SCHEMES.indexOf(current) + 1) % SCHEMES.length]
@@ -69,10 +76,15 @@ export function SchemeToggle({ className }: { className?: string }) {
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={isHydrated ? `Scheme: ${current.name}, switch to ${next.name}` : 'Scheme'}
+            <ThemeControlButton
+              seed="scheme"
+              overridden={!isDefault}
+              onReset={reset}
+              aria-label={
+                isHydrated
+                  ? `Scheme: ${current.name}, switch to ${next.name}${isDefault ? '' : RESET_HINT}`
+                  : 'Scheme'
+              }
               className={className}
               onClick={() => setScheme(next.value)}
             />
@@ -94,7 +106,9 @@ export function SchemeToggle({ className }: { className?: string }) {
             </>
           )}
         </TooltipTrigger>
-        <TooltipContent>{isHydrated ? upperFirst(current.name) : 'Scheme'}</TooltipContent>
+        <TooltipContent>
+          {isHydrated ? `${upperFirst(current.name)}${isDefault ? '' : RESET_HINT}` : 'Scheme'}
+        </TooltipContent>
       </Tooltip>
     </>
   )
