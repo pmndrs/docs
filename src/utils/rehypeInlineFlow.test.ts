@@ -7,8 +7,11 @@ import { rehypeInlineFlow } from './rehypeInlineFlow'
 async function render(source: string) {
   const { content } = await compileMDX({
     source,
-    options: { mdxOptions: { rehypePlugins: [rehypeInlineFlow(['Badge'])] } },
+    options: {
+      mdxOptions: { rehypePlugins: [rehypeInlineFlow(['Badge'], { except: ['Group'] })] },
+    },
     components: {
+      Group: ({ children }: { children: ReactNode }) => createElement('section', {}, children),
       Badge: ({
         href,
         color,
@@ -60,6 +63,12 @@ describe('rehypeInlineFlow', () => {
   it('does so inside other components too', async () => {
     expect(await render('<div>\n<Badge>a</Badge>\n<Badge>b</Badge>\n</div>')).toBe(
       '<div><p><mark>a</mark> <mark>b</mark></p></div>',
+    )
+  })
+
+  it('leaves them as they are inside an excepted component', async () => {
+    expect(await render('<Group>\n<Badge>a</Badge>\n<Badge>b</Badge>\n</Group>')).toBe(
+      '<section><mark>a</mark><mark>b</mark></section>',
     )
   })
 

@@ -1,0 +1,260 @@
+---
+title: "`Color`"
+description: Swatches of the theme's color roles
+sourcecode: docs/authoring/color.mdx
+nav: 18
+---
+
+<Intro>
+  Shows a color role of the theme as a swatch, as Material's scheme poster does.
+</Intro>
+
+## Usage
+
+A `Color` is a swatch of a role, the role in kebab-case: a disc of its color, the role as its tooltip.
+
+```md
+<Color role="primary" />
+```
+
+result:
+
+<Color role="primary" />
+
+The role is any Material role of the theme, `primary`, `surface-container-high`, `on-tertiary-fixed-variant`… or one of its custom colors (see `THEME_*` in [configuration](/getting-started/introduction#configuration)). A color is inline, like a badge: colors on consecutive lines make one row, and a color sits in a sentence too.
+
+```md
+<Color role="note" />
+<Color role="tip" />
+<Color role="important" />
+<Color role="warning" />
+<Color role="caution" />
+```
+
+result:
+
+<Color role="note" />
+<Color role="tip" />
+<Color role="important" />
+<Color role="warning" />
+<Color role="caution" />
+
+`size` sets the diameter, `sm`, `md` (the default) or `lg`.
+
+## Cells
+
+`variant="cell"` makes it a cell, a rounded square of `size` with the role's name on it in the color Material pairs it with, as on Material's scheme poster. The label is the role in Title Case; `children` replaces it. `ink` picks another text role.
+
+```md
+<Color role="inverse-primary" variant="cell" />
+```
+
+result:
+
+<Color role="inverse-primary" variant="cell" />
+
+## Groups
+
+A `ColorGroup` fuses cells into one rounded block, `horizontal` (side by side, the default) or `vertical` (stacked), each cell filling its column. In a group, a cell says so, `variant="cell"`, or `variant="on"` for the strip of the role that goes on it:
+
+```md
+<ColorGroup orientation="vertical">
+  <Color role="primary" variant="cell" />
+  <Color role="on-primary" variant="on" />
+</ColorGroup>
+```
+
+result:
+
+<ColorGroup orientation="vertical">
+  <Color role="primary" variant="cell" />
+  <Color role="on-primary" variant="on" />
+</ColorGroup>
+
+Groups nest, a horizontal one as a row of a vertical one:
+
+```md
+<ColorGroup orientation="vertical">
+  <ColorGroup>
+    <Color role="secondary-fixed" variant="cell" size="lg" />
+    <Color role="secondary-fixed-dim" variant="cell" size="lg" />
+  </ColorGroup>
+  <Color role="on-secondary-fixed" variant="on" />
+  <Color role="on-secondary-fixed-variant" variant="on" />
+</ColorGroup>
+```
+
+result:
+
+<ColorGroup orientation="vertical">
+  <ColorGroup>
+    <Color role="secondary-fixed" variant="cell" size="lg" />
+    <Color role="secondary-fixed-dim" variant="cell" size="lg" />
+  </ColorGroup>
+  <Color role="on-secondary-fixed" variant="on" />
+  <Color role="on-secondary-fixed-variant" variant="on" />
+</ColorGroup>
+
+## Any color
+
+`color` takes any CSS color as is, for one that is not a role of the theme, e.g. a brand color; `ink` is then any CSS color too, white by default:
+
+```md
+<Color color="var(--brand-storybook)" />
+<Color color="#cb3837" variant="cell">npm</Color>
+```
+
+result:
+
+<Color color="var(--brand-storybook)" />
+<Color color="#cb3837" variant="cell">npm</Color>
+
+## Poster
+
+The two compose into material-theme-builder's [scheme poster](https://main--695eb517cb602e59b4cc045c.chromatic.com/?path=/story/mtb--custom-colors-color-match-st), of the theme of this site, in the scheme of the toggle: its grid, three accents wide and the error column, a group in each cell.
+
+```md
+<div className="grid! grid-cols-[3fr_1fr] gap-2">
+  <ColorGroup>
+    {['primary', 'secondary', 'tertiary'].map((role) => (
+      <ColorGroup key={role} orientation="vertical">
+        <Color role={role} variant="cell" />
+        <Color role={`on-${role}`} variant="on" />
+        <Color role={`${role}-container`} variant="cell" />
+        <Color role={`on-${role}-container`} variant="on" />
+      </ColorGroup>
+    ))}
+  </ColorGroup>
+  <ColorGroup orientation="vertical">
+    <Color role="error" variant="cell" />
+    <Color role="on-error" variant="on" />
+    <Color role="error-container" variant="cell" />
+    <Color role="on-error-container" variant="on" />
+  </ColorGroup>
+  <ColorGroup>
+    {['primary', 'secondary', 'tertiary'].map((role) => (
+      <ColorGroup key={role} orientation="vertical">
+        <ColorGroup>
+          <Color role={`${role}-fixed`} variant="cell" />
+          <Color role={`${role}-fixed-dim`} variant="cell" />
+        </ColorGroup>
+        <Color role={`on-${role}-fixed`} variant="on" />
+        <Color role={`on-${role}-fixed-variant`} variant="on" />
+      </ColorGroup>
+    ))}
+  </ColorGroup>
+  <div />
+  <ColorGroup orientation="vertical">
+    <ColorGroup>
+      <Color role="surface-dim" variant="cell" />
+      <Color role="surface" variant="cell" />
+      <Color role="surface-bright" variant="cell" />
+    </ColorGroup>
+    <ColorGroup>
+      <Color role="surface-container-lowest" variant="cell" />
+      <Color role="surface-container-low" variant="cell" />
+      <Color role="surface-container" variant="cell" />
+      <Color role="surface-container-high" variant="cell" />
+      <Color role="surface-container-highest" variant="cell" />
+    </ColorGroup>
+    <ColorGroup>
+      <Color role="on-surface" variant="on" />
+      <Color role="on-surface-variant" variant="on" />
+      <Color role="outline" variant="on" />
+      <Color role="outline-variant" variant="on" />
+    </ColorGroup>
+  </ColorGroup>
+  <ColorGroup orientation="vertical">
+    <Color role="inverse-surface" variant="cell" />
+    <Color role="inverse-on-surface" variant="on" />
+    <Color role="inverse-primary" variant="on" />
+    <ColorGroup>
+      <Color role="scrim" variant="on" />
+      <Color role="shadow" variant="on" />
+    </ColorGroup>
+  </ColorGroup>
+  <ColorGroup orientation="vertical" className="col-span-2">
+    {['note', 'tip', 'important', 'warning', 'caution'].map((color) => (
+      <ColorGroup key={color}>
+        <Color role={color} variant="cell" />
+        <Color role={`on-${color}`} variant="cell" />
+        <Color role={`${color}-container`} variant="cell" />
+        <Color role={`on-${color}-container`} variant="cell" />
+      </ColorGroup>
+    ))}
+  </ColorGroup>
+</div>
+```
+
+result:
+
+<div className="grid! grid-cols-[3fr_1fr] gap-2">
+  <ColorGroup>
+    {['primary', 'secondary', 'tertiary'].map((role) => (
+      <ColorGroup key={role} orientation="vertical">
+        <Color role={role} variant="cell" />
+        <Color role={`on-${role}`} variant="on" />
+        <Color role={`${role}-container`} variant="cell" />
+        <Color role={`on-${role}-container`} variant="on" />
+      </ColorGroup>
+    ))}
+  </ColorGroup>
+  <ColorGroup orientation="vertical">
+    <Color role="error" variant="cell" />
+    <Color role="on-error" variant="on" />
+    <Color role="error-container" variant="cell" />
+    <Color role="on-error-container" variant="on" />
+  </ColorGroup>
+  <ColorGroup>
+    {['primary', 'secondary', 'tertiary'].map((role) => (
+      <ColorGroup key={role} orientation="vertical">
+        <ColorGroup>
+          <Color role={`${role}-fixed`} variant="cell" />
+          <Color role={`${role}-fixed-dim`} variant="cell" />
+        </ColorGroup>
+        <Color role={`on-${role}-fixed`} variant="on" />
+        <Color role={`on-${role}-fixed-variant`} variant="on" />
+      </ColorGroup>
+    ))}
+  </ColorGroup>
+  <div />
+  <ColorGroup orientation="vertical">
+    <ColorGroup>
+      <Color role="surface-dim" variant="cell" />
+      <Color role="surface" variant="cell" />
+      <Color role="surface-bright" variant="cell" />
+    </ColorGroup>
+    <ColorGroup>
+      <Color role="surface-container-lowest" variant="cell" />
+      <Color role="surface-container-low" variant="cell" />
+      <Color role="surface-container" variant="cell" />
+      <Color role="surface-container-high" variant="cell" />
+      <Color role="surface-container-highest" variant="cell" />
+    </ColorGroup>
+    <ColorGroup>
+      <Color role="on-surface" variant="on" />
+      <Color role="on-surface-variant" variant="on" />
+      <Color role="outline" variant="on" />
+      <Color role="outline-variant" variant="on" />
+    </ColorGroup>
+  </ColorGroup>
+  <ColorGroup orientation="vertical">
+    <Color role="inverse-surface" variant="cell" />
+    <Color role="inverse-on-surface" variant="on" />
+    <Color role="inverse-primary" variant="on" />
+    <ColorGroup>
+      <Color role="scrim" variant="on" />
+      <Color role="shadow" variant="on" />
+    </ColorGroup>
+  </ColorGroup>
+  <ColorGroup orientation="vertical" className="col-span-2">
+    {['note', 'tip', 'important', 'warning', 'caution'].map((color) => (
+      <ColorGroup key={color}>
+        <Color role={color} variant="cell" />
+        <Color role={`on-${color}`} variant="cell" />
+        <Color role={`${color}-container`} variant="cell" />
+        <Color role={`on-${color}-container`} variant="cell" />
+      </ColorGroup>
+    ))}
+  </ColorGroup>
+</div>

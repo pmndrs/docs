@@ -25,6 +25,7 @@ import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { rehypePackageManagers } from '@/components/mdx/Code/rehypePackageManagers'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { Color, ColorGroup } from '@/components/mdx/Color'
 import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { Entries, type Entry } from '@/components/mdx/Entries'
@@ -106,7 +107,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         remarkPlugins: [remarkGFM],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
-          rehypeInlineFlow(['Badge']),
+          rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),
           rehypeDetails,
@@ -125,6 +126,8 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
       ...{
         Badge,
         Code,
+        Color,
+        ColorGroup,
         Details,
         Entries,
         Gha,

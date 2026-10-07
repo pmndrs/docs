@@ -12,6 +12,15 @@
       "runtimeExecutable": "./start.sh",
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "storybook",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "storybook",
+        "--no-open"
+      ],
+      "port": 6006
     }
   ]
 }

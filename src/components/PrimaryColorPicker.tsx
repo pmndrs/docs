@@ -1,6 +1,7 @@
 'use client'
 
 import { PRIMARY_COLOR_PREPAINT_VAR } from '@/components/PrimaryColorPrepaint'
+import { Color } from '@/components/mdx/Color'
 import { Button } from '@/components/ui/button'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { isHexColor, usePrimaryColor } from '@/hooks/usePrimaryColor'
@@ -31,7 +32,7 @@ export function PrimaryColorPicker({ className }: { className?: string }) {
         aria-label="Theme color"
         onClick={() => inputRef.current?.click()}
       >
-        <span className="size-4 rounded-full border" style={{ backgroundColor: swatchColor }} />
+        <Color color={swatchColor} size="sm" />
       </Button>
       <input
         ref={inputRef}
