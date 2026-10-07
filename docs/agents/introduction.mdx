@@ -22,6 +22,8 @@ These URLs are linked in the HTML header as:
 
 ## MCP Server
 
+<McpLiveEmbed />
+
 `llms-full.txt` is a whole documentation site in one file — too big to paste into an agent for a one-line question. So [docs.pmnd.rs](https://docs.pmnd.rs) also exposes it as an [MCP](https://modelcontextprotocol.io) server, which lets an agent read a table of contents first, then fetch the one page it needs.
 
 One endpoint for all libraries, over streamable HTTP: `https://docs.pmnd.rs/api/mcp`. It exposes:
@@ -93,7 +95,7 @@ An example is a snapshot, not a spec: it pins its own versions, `get_example` re
 > /plugin install pmndrs@pmndrs
 > ```
 
-For other clients, see the JSON config in the [MCP-server](https://docs.pmnd.rs) box on the home page. To poke at it by hand — see the resources, call the tool, read the raw JSON-RPC — run the official inspector:
+For other clients, see the JSON config in the [MCP-server](https://docs.pmnd.rs) box on the home page. The server is also published to the official [MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.pmndrs/docs) as `io.github.pmndrs/docs`, from the [`server.json`](https://github.com/pmndrs/docs/blob/main/server.json) at the root of this repository, so clients that browse the registry find it there. To poke at it by hand — see the resources, call the tool, read the raw JSON-RPC — run the official inspector:
 
 ```sh
 $ HOST=127.0.0.1 npx -y @modelcontextprotocol/inspector

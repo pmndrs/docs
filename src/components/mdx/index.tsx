@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
-
-const MARKDOWN_REGEX = /\.mdx?/
+import { linkProps } from './Link/linkProps'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 function Heading({ id, Tag, ...props }: { id?: string; Tag: Hn } & ComponentProps<Hn>) {
@@ -56,11 +55,11 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
 )
 
 export const table = (props: ComponentProps<'table'>) => (
-  <div className="my-8 overflow-auto rounded-lg border border-outline-variant">
-    <table
-      className="bg-surface-container-low min-w-full divide-y divide-outline-variant"
-      {...props}
-    />
+  <div className="my-8 overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low">
+    {/* The fade masks the scroller and everything it paints: the frame stays on the outer div */}
+    <div className="overflow-x-auto scroll-fade-x no-scrollbar">
+      <table className="min-w-full divide-y divide-outline-variant" {...props} />
+    </div>
   </div>
 )
 
@@ -78,20 +77,20 @@ export const td = (props: ComponentProps<'td'>) => (
   <td className="px-6 py-4 text-sm first:font-medium" {...props} />
 )
 
-export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => {
-  const isAnchor = href?.startsWith('https://')
-  target = isAnchor ? '_blank' : target
-  rel = isAnchor ? 'noopener noreferrer' : rel
-  href = isAnchor ? href : href?.replace(MARKDOWN_REGEX, '')
+export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => (
+  <a
+    {...props}
+    {...linkProps(href, target, rel)}
+    className={cn(className, 'text-primary [&_code]:text-primary')}
+  />
+)
 
-  return (
-    <a {...props} href={href} target={target} rel={rel} className={cn(className, 'text-primary')} />
-  )
-}
-
+// The text role goes with the background role: inherited, the parent's text can be meant for
+// another background (on-primary-container, in the sidebar's current page) and vanish on this one
+// at high contrast.
 export const code = (props: ComponentProps<'code'>) => (
   <code
-    className="bg-surface-container-high rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
+    className="bg-surface-container-high text-on-surface rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
     {...props}
   />
 )

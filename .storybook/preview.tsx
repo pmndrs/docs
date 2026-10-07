@@ -23,8 +23,8 @@ const preview: Preview = {
     // roles, that takes `--background` and `--primary` down with it: components
     // render colourless, silently, and Chromatic baselines them that way.
     //
-    // `<Mtb>` is the client component the app deliberately avoids. Here it is
-    // the right tool: Storybook is a browser, and there is no build to hook.
+    // The app mounts `<Mtb>` there (through `PrimaryColorMtb`, which adds the
+    // reader's picks); the stories get the same palette, at its defaults.
     (Story) => (
       <Mtb {...docsMtb}>
         <Story />

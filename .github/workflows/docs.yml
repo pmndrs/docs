@@ -17,11 +17,16 @@ jobs:
       id-token: write
     uses: pmndrs/docs/.github/workflows/build.yml@main
     with:
+      # Whatever is published, rather than a version number this repository would have to keep
+      # in step with itself. Our own site is then built by exactly what consumers install —
+      # a broken release shows up here before anyone downstream moves to it.
+      version: 'latest'
+      # Skips the moving major tag (`v4`), which `git describe` would otherwise prefer on a release
+      # commit -- as in ci.yml.
+      tag_match: 'v*.*.*'
       mdx: 'docs'
       libname: 'Poimandres'
       libname_short: 'pmndrs'
-      libname_dotsuffix_label: 'docs'
-      libname_dotsuffix_href: 'https://pmnd.rs'
       home_redirect: '/getting-started/introduction'
       icon: '🖨️'
       logo: 'gutenberg.jpg'

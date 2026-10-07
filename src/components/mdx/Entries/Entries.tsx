@@ -1,13 +1,15 @@
 import { ComponentProps, Fragment, ReactElement } from 'react'
 
+import { CodesandboxIcon } from '@/components/brand-icons'
 import { groupBy } from 'lodash-es'
-import { Codesandbox } from '../Codesandbox'
+import { Img } from '../Img'
+import { sandboxUrl, type Box } from '../Codesandbox'
 
 export type Entry = {
   title: ReactElement
   url: string
   slug: string[]
-  boxes: string[]
+  boxes: Box[]
 }
 
 export async function Entries({
@@ -32,13 +34,24 @@ export async function Entries({
                       {title}
                     </a>
                     <span className="inline-flex gap-1">
-                      {boxes.map((id) => (
-                        <Codesandbox
-                          key={id}
-                          id={id}
-                          className="inline-block"
-                          imgProps={{ className: 'h-[1em] w-auto rounded-[1px]' }}
-                        />
+                      {boxes.map(({ id, img }, i) => (
+                        <a
+                          key={i} // a page may show the same sandbox twice
+                          href={sandboxUrl(id)}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`CodeSandbox ${id}`}
+                          className="inline-flex items-center"
+                        >
+                          {img ? (
+                            <Img src={img} className="h-[1em] w-auto rounded-[1px]" />
+                          ) : (
+                            <CodesandboxIcon
+                              className="size-[1em] text-on-surface-variant"
+                              aria-hidden
+                            />
+                          )}
+                        </a>
                       ))}
                     </span>
                   </li>

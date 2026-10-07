@@ -1,3 +1,4 @@
+import { CodesandboxIcon } from '@/components/brand-icons'
 import { Img } from '@/components/mdx/Img'
 
 import { cn } from '@/lib/utils'
@@ -6,6 +7,12 @@ import { ComponentProps } from 'react'
 export type CSB = {
   id: string
   title?: string
+  /**
+   * Preview image: a path relative to the page (resolved like an `<img src>`), or a full URL.
+   * Without one, a placeholder stands in: CodeSandbox no longer serves sandbox screenshots.
+   */
+  img?: string
+  /** @deprecated Use `img` */
   screenshot_url?: string
   description?: string
   tags?: string[]
@@ -13,24 +20,24 @@ export type CSB = {
 
 type CodesandboxProps = CSB & {
   embed?: boolean
-} & ComponentProps<'a'> & {
-    imgProps?: ComponentProps<'img'>
-  }
+} & ComponentProps<'a'>
+
+export function sandboxUrl(id: string) {
+  return `https://codesandbox.io/s/${id}`
+}
 
 export function Codesandbox({
   id,
   title,
   description,
+  img,
   screenshot_url,
   tags = [],
   //
   embed = false,
   className,
-  imgProps: { className: imgClassName } = {},
 }: CodesandboxProps) {
-  // Auto-generate screenshot_url from id if not provided
-  const screenshotUrl =
-    screenshot_url || `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`
+  const src = img ?? screenshot_url
 
   return (
     <>
@@ -44,18 +51,19 @@ export function Codesandbox({
         />
       ) : (
         <a
-          href={`https://codesandbox.io/s/${id}`}
+          href={sandboxUrl(id)}
           target="_blank"
           rel="noreferrer"
+          aria-label={title || `CodeSandbox ${id}`}
           className={cn('mb-2 block', className)}
         >
-          <Img
-            src={screenshotUrl}
-            alt={title || ''}
-            width={1763}
-            height={926}
-            className={cn('aspect-video object-cover', imgClassName)}
-          />
+          {src ? (
+            <Img src={src} alt={title || ''} className="aspect-video w-full object-cover" />
+          ) : (
+            <span className="flex aspect-video w-full items-center justify-center rounded-lg bg-surface-container text-on-surface-variant">
+              <CodesandboxIcon className="size-12" aria-hidden />
+            </span>
+          )}
         </a>
       )}
 

@@ -6,3 +6,12 @@
 # Generated files
 next-env.d.ts
 pnpm-lock.yaml
+# Vendored agent skills (`pnpm dlx skills add`), kept byte-identical to upstream
+# so skills-lock.json's hash still matches
+.agents
+
+# Agent scratch space, incl. worktrees (whole checkouts of the repo)
+.claude
+
+# `shadcn/tailwind.css`, vendored verbatim so it diffs cleanly against the next release
+src/app/shadcn-tailwind.css

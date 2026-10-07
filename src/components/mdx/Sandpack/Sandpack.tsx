@@ -12,6 +12,7 @@ import {
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { pinThreeForSandpack } from './pinThree'
 import { SandpackCodeViewer } from './SandpackCodeViewer'
 
 import { ComponentProps } from 'react'
@@ -73,7 +74,7 @@ export const Sandpack = async ({
   const _files = folder ? await getSandpackFiles(folder, props.files) : props.files
 
   const pkgDeps = folder ? getSandpackDependencies(folder) : null
-  const dependencies = pkgDeps ?? props.customSetup?.dependencies
+  const dependencies = pinThreeForSandpack(pkgDeps ?? props.customSetup?.dependencies)
   const customSetup = {
     ...props.customSetup,
     dependencies,

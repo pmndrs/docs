@@ -1,8 +1,21 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+/* `shadcn/tailwind.css`, vendored rather than imported from the package: the website is built
+ * with this package's `dependencies` only (see `src/cli/website.ts`), and `shadcn` is a CLI
+ * worth ~70 MB, kept in `devDependencies`. The ui/ components need its variants (`data-selected:`
+ * on cmdk's `"true"`/`"false"`, not on the bare attribute) and `no-scrollbar`. A `shadcn apply` or
+ * `init` writes `@import "shadcn/tailwind.css"` back: replace it with this line again, after
+ * refreshing the copy from `node_modules/shadcn/dist/tailwind.css`. */
+@import './shadcn-tailwind.css';
 /* shadcn's variables, pointed at the M3 roles. Selectors are doubled, so it
  * outranks the `:root` and `.dark` blocks below wherever it lands. */
 @import 'material-theme-builder/shadcn.css';
+
+/* The docs are scanned for utility classes too: `className=` in an `.mdx` file is ordinary
+ * authoring. Tailwind would otherwise only find them when the folder happens to sit inside
+ * the project root — true of a build run from this repo, not of one run from the CLI, which
+ * is handed a folder from anywhere and stages it here. */
+@source '../../docs/**/*.{md,mdx}';
 
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
  * roles of each custom colour named here. */
@@ -13,28 +26,6 @@
 @theme {
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-inconsolata), monospace;
-
-  /* Keyframes */
-  --animate-collapsible-down: collapsible-down var(--collapsible-down-duration, 0s) ease-out;
-  --animate-collapsible-up: collapsible-up var(--collapsible-up-duration, 0s) ease-out;
-}
-
-@keyframes collapsible-down {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--radix-collapsible-content-height);
-  }
-}
-
-@keyframes collapsible-up {
-  from {
-    height: var(--radix-collapsible-content-height);
-  }
-  to {
-    height: 0;
-  }
 }
 
 /* Custom base styles */
@@ -44,8 +35,13 @@
   @apply [--rgrid-g:--spacing(4)] lg:[--rgrid-g:--spacing(12)];
   @apply [--header-height:--spacing(16)];
 
+  /*
+   * Smooth for in-page jumps only: Next turns it off during route transitions because <html> carries
+   * `data-scroll-behavior="smooth"`. The padding keeps scroll targets clear of the sticky header,
+   * and Next reads it too, to tell a page top hidden under the header from one in view.
+   */
   scroll-behavior: smooth;
-  scroll-margin-top: var(--header-height);
+  scroll-padding-top: var(--header-height);
   font-size: 17px;
 }
 
@@ -53,43 +49,9 @@ body {
   font-optical-sizing: auto;
 }
 
-/* Custom grid utilities for layout */
-@utility grid-areas-layout-1col {
-  grid-template-areas:
-    'h h'
-    'm m';
-}
-
-@utility grid-areas-layout-2cols {
-  grid-template-areas:
-    'h h'
-    'n m';
-}
-
-@utility grid-areas-layout-3cols {
-  grid-template-areas:
-    'h h h'
-    'n m t';
-}
-
-@utility grid-in-h {
-  grid-area: h;
-}
-
-@utility grid-in-m {
-  grid-area: m;
-}
-
-@utility grid-in-n {
-  grid-area: n;
-}
-
-@utility grid-in-t {
-  grid-area: t;
-}
-
+/* On top of the root's `scroll-padding-top`, which already clears the header. */
 main :target {
-  @apply scroll-m-[calc(var(--header-height)+(--spacing(4)))];
+  @apply scroll-mt-4;
 }
 
 .post-container > * {
@@ -124,16 +86,27 @@ pre[class*='language-'] {
 
 /* Code blocks */
 pre[class*='language-'] {
-  --comment: #a6accd;
-  --punctuation: #e4f0fb;
-  --property: #e4f0fb;
-  --boolean: #5de4c7;
-  --string: #5de4c7;
-  --operator: #add7ff;
-  --function: #5de4c7;
-  --keyword: #add7ff;
-  --literal: #fffac2;
-  --falsy: #f087bd;
+  /*
+   * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
+   * the same in light and dark: the code block background is always dark (see Code.tsx).
+   * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
+   * strings and functions 120 degrees apart), with its own lightness and chroma, so the
+   * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
+   * near-neutral, like the plain code text (see Code.tsx).
+   */
+  --seed: var(--md-ref-palette-primary-80);
+  --keyword: oklch(from var(--seed) 0.78 0.15 h);
+  --operator: var(--keyword);
+  --literal: oklch(from var(--seed) 0.86 0.13 calc(h + 60));
+  --boolean: var(--literal);
+  --string: oklch(from var(--seed) 0.84 0.13 calc(h + 120));
+  --property: oklch(from var(--seed) 0.86 0.06 calc(h + 180));
+  --function: oklch(from var(--seed) 0.8 0.14 calc(h + 240));
+  --comment: var(--md-ref-palette-neutral-variant-60);
+  --punctuation: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
+  /* Diffs keep their meaning (green, red) rather than following the seed */
+  --inserted: var(--md-ref-palette-tip-80);
+  --deleted: var(--md-ref-palette-caution-80);
   --linenumber-border-width: --spacing(1);
   --pad: --spacing(6);
 }
@@ -162,8 +135,7 @@ pre[class*='language-'] {
 .token.property,
 .token.tag,
 .token.constant,
-.token.symbol,
-.token.deleted {
+.token.symbol {
   color: var(--property);
 }
 
@@ -176,8 +148,7 @@ pre[class*='language-'] {
 .token.attr-value,
 .token.string,
 .token.char,
-.token.builtin,
-.token.inserted {
+.token.builtin {
   color: var(--string);
 }
 
@@ -206,8 +177,12 @@ pre[class*='language-'] {
   color: var(--literal);
 }
 
+.token.inserted {
+  color: var(--inserted);
+}
+
 .token.deleted {
-  color: var(--falsy);
+  color: var(--deleted);
 }
 
 .token.important,
@@ -241,16 +216,17 @@ pre[class*='language-'] {
   @apply -mx-(--pad) px-(--pad);
 }
 
+/* Tonal palette tones, not sys roles: the code block background is the same dark in both modes */
 .code-line.inserted {
-  @apply bg-tip-container/30;
+  @apply bg-(--md-ref-palette-tip-30)/50;
 }
 .code-line.deleted {
-  @apply bg-error-container/30;
+  @apply bg-(--md-ref-palette-caution-30)/50;
 }
 
 .highlight-line {
   border-left: var(--linenumber-border-width) solid; /* Set highlight accent border color */
-  @apply -mx-(--pad) border-l-inverse-surface/50 bg-inverse-surface/10;
+  @apply -mx-(--pad) border-l-(--md-ref-palette-neutral-90)/50 bg-(--md-ref-palette-neutral-90)/10;
 }
 
 .line-number::before {
@@ -277,8 +253,6 @@ pre[class*='language-'] {
  * by hand would come back on every future CLI run. Change colours through the
  * theme, not here.
  */
-
-@plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -322,9 +296,10 @@ pre[class*='language-'] {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --font-heading: var(--font-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -399,4 +374,13 @@ pre[class*='language-'] {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* The docs sidebar sits on the page's own surface, its current page in primary-container, as the
+ * nav it replaced did. On `data-sidebar="sidebar"`, which both the desktop panel and the mobile
+ * sheet carry: the sheet is portalled out of the layout, where no className of ours reaches it. */
+[data-sidebar='sidebar'] {
+  --sidebar: var(--background);
+  --sidebar-accent: var(--md-sys-color-primary-container);
+  --sidebar-accent-foreground: var(--md-sys-color-on-primary-container);
 }

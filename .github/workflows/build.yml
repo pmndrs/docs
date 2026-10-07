@@ -12,12 +12,14 @@ on:
         type: string
       libname_short:
         type: string
+      # Deprecated: the header no longer has a ".docs" suffix. Still declared so that existing
+      # callers passing them do not fail, but ignored.
       libname_dotsuffix_label:
         type: string
-        default: 'docs'
+        description: 'Deprecated and ignored: the header no longer has a ".docs" suffix.'
       libname_dotsuffix_href:
         type: string
-        default: 'https://docs.pmnd.rs'
+        description: 'Deprecated and ignored: the header no longer has a ".docs" suffix.'
       home_redirect:
         required: true
         type: string
@@ -35,8 +37,9 @@ on:
       discord:
         type: string
       # Left empty on purpose: the pmndrs defaults live in src/lib/md3.ts, installed
-      # from pmndrs/design-system. Set one of these only to override the seed for a
-      # site — an empty value falls through to the shared default.
+      # from pmndrs/design-system (the alert colours in src/lib/mtb.ts, the brand
+      # colours in src/app/layout.tsx). Set one of these only to override them for a
+      # site — an empty value falls through to the default.
       theme_primary:
         type: string
         default: ''
@@ -61,17 +64,52 @@ on:
       theme_caution:
         type: string
         default: ''
-      docker_tag:
+      theme_storybook:
         type: string
-        default: '3'
-        description: 'Docker image tag for ghcr.io/pmndrs/docs'
+        default: ''
+      theme_npm:
+        type: string
+        default: ''
+      theme_chromatic:
+        type: string
+        default: ''
+      version:
+        type: string
+        default: '4'
+        description: 'npm version or range of @pmndrs/docs to build with'
+      lib_version:
+        type: string
+        description: 'Version label in the sidebar footer, overriding the one read from git, eg: `v1.2.3`'
+      tag_match:
+        type: string
+        description: 'Glob narrowing the tags the version label is read from (`git describe --tags --match`), eg: `v*.*.*` or `leva@*`'
+      version_url_template:
+        type: string
+        description: 'Opt-in branch switcher: full public URL of a branch deployment (base path included), with a `{branch}` placeholder, eg: `https://mylib-git-{branch:vercel}-myteam.vercel.app`'
+      version_production_branch:
+        type: string
+        description: 'Branch deployed at the site URL itself (default: the repository default branch)'
+      version_production_url:
+        type: string
+        description: 'Public URL of the production branch deployment (default: the site URL)'
+      version_branches:
+        type: string
+        description: 'Regex of the branches the switcher offers, replacing the default exclusion of `dependabot/`, `renovate/` and `changeset-release/`'
+      version_branches_list:
+        type: string
+        description: 'Explicit list of the branches the switcher offers (comma or space separated), instead of the remote branches'
 
 jobs:
   build-job:
     runs-on: ubuntu-latest
 
     steps:
+      # Full history and tags for the version label (`git describe --tags`), but blobless: past
+      # file contents are not fetched, only the checked-out commit's
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
       - id: configurepages
         uses: actions/configure-pages@v6
         with:
@@ -79,47 +117,14 @@ jobs:
       # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-of-setting-an-output-parameter
       - id: set-base-path
         run: echo "BASE_PATH=${{ inputs.base_path || steps.configurepages.outputs.base_path }}" >> "$GITHUB_OUTPUT"
-      - run: |
-          set -ex
-
-          docker run --rm --init \
-            -v "./$MDX":/app/docs \
-            -e MDX \
-            -e NEXT_PUBLIC_LIBNAME \
-            -e NEXT_PUBLIC_LIBNAME_SHORT \
-            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
-            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
-            -e BASE_PATH \
-            -e DIST_DIR \
-            -e OUTPUT \
-            -e HOME_REDIRECT \
-            -e MDX_BASEURL \
-            -e SOURCECODE_BASEURL \
-            -e EDIT_BASEURL \
-            -e NEXT_PUBLIC_URL \
-            -e ICON \
-            -e LOGO \
-            -e GITHUB \
-            -e DISCORD \
-            -e THEME_PRIMARY \
-            -e THEME_SCHEME \
-            -e THEME_CONTRAST \
-            -e THEME_NOTE \
-            -e THEME_TIP \
-            -e THEME_IMPORTANT \
-            -e THEME_WARNING \
-            -e THEME_CAUTION \
-            -e CONTRIBUTORS_PAT \
-            ghcr.io/pmndrs/docs:${{ inputs.docker_tag }} pnpm run build
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npx -y @pmndrs/docs@${{ inputs.version }} build "${{ inputs.mdx }}" out --format website
         env:
-          MDX: ${{ inputs.mdx }}
           NEXT_PUBLIC_LIBNAME: ${{ inputs.libname }}
           NEXT_PUBLIC_LIBNAME_SHORT: ${{ inputs.libname_short }}
-          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: ${{ inputs.libname_dotsuffix_label }}
-          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: ${{ inputs.libname_dotsuffix_href }}
           BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
-          DIST_DIR: '${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}'
-          OUTPUT: 'export'
           HOME_REDIRECT: ${{ inputs.home_redirect }}
           MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.head_ref || github.ref_name }}/${{ inputs.mdx }}'
           SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}'
@@ -137,8 +142,18 @@ jobs:
           THEME_IMPORTANT: '${{ inputs.theme_important }}'
           THEME_WARNING: '${{ inputs.theme_warning }}'
           THEME_CAUTION: '${{ inputs.theme_caution }}'
+          THEME_STORYBOOK: '${{ inputs.theme_storybook }}'
+          THEME_NPM: '${{ inputs.theme_npm }}'
+          THEME_CHROMATIC: '${{ inputs.theme_chromatic }}'
           CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
+          LIB_VERSION: '${{ inputs.lib_version }}'
+          TAG_MATCH: '${{ inputs.tag_match }}'
+          VERSION_URL_TEMPLATE: '${{ inputs.version_url_template }}'
+          VERSION_PRODUCTION_BRANCH: '${{ inputs.version_production_branch || github.event.repository.default_branch }}'
+          VERSION_PRODUCTION_URL: '${{ inputs.version_production_url }}'
+          VERSION_BRANCHES: '${{ inputs.version_branches }}'
+          VERSION_BRANCHES_LIST: '${{ inputs.version_branches_list }}'
 
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: ${{ inputs.mdx }}/out${{ steps.set-base-path.outputs.BASE_PATH }}
+          path: out

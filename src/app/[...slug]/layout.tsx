@@ -1,16 +1,28 @@
 import * as React from 'react'
 
-import { Layout, LayoutAside, LayoutContent, LayoutHeader, LayoutNav } from '@/components/Layout'
-import { Nav } from '@/components/Nav'
+import {
+  Layout,
+  LayoutAside,
+  LayoutBody,
+  LayoutContent,
+  LayoutHeader,
+  LayoutSidebar,
+} from '@/components/Layout'
+import { LibsMenu } from '@/components/LibsMenu'
 import Search from '@/components/Search'
+import { SidebarNav } from '@/components/SidebarNav'
+import { SponsorCard } from '@/components/SponsorCard'
+import { ThemeControls } from '@/components/ThemeControls'
+import { VersionBanner } from '@/components/VersionBanner'
+import { VersionSwitcher } from '@/components/VersionSwitcher'
+import { SidebarFooter, SidebarTrigger } from '@/components/ui/sidebar'
+import { DiscordIcon, GitHubIcon } from '@/components/brand-icons'
 import { Toc } from '@/components/mdx/Toc'
 import { cn } from '@/lib/utils'
 import { getData } from '@/utils/docs'
+import { formatStars, getStars } from '@/utils/github'
 import Link from 'next/link'
-import { PiDiscordLogoLight } from 'react-icons/pi'
-import { VscGithubAlt } from 'react-icons/vsc'
 import { DocsContext } from './DocsContext'
-import { Menu } from './Menu'
 
 export type Props = {
   params: Promise<{ slug: string[] }>
@@ -28,61 +40,59 @@ export default async function Layoutt({ params, children }: Props) {
   const previousPage = currentPageIndex > 0 && docs[currentPageIndex - 1]
   const nextPage = currentPageIndex < docs.length - 1 && docs[currentPageIndex + 1]
 
+  const githubStars = process.env.GITHUB ? await getStars(process.env.GITHUB) : undefined
+
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
   const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
-  const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL
-  const NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF = process.env.NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF
 
-  const nav = <Nav docs={docs} asPath={asPath} collapsible />
+  // Only what the nav reads crosses to the client, not each page's rendered content.
+  const navDocs = docs.map(({ slug, url, title }) => ({ slug, url, title }))
+  const nav = <SidebarNav docs={navDocs} asPath={asPath} />
   const header = (
     <div className="flex h-(--header-height) items-center gap-(--rgrid-m) px-(--rgrid-m)">
-      <div className="flex items-center">
-        <Link href="/" aria-label={`${NEXT_PUBLIC_LIBNAME} Docs`}>
-          <span className="font-bold">
-            {NEXT_PUBLIC_LIBNAME_SHORT && (
-              <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
-            )}
-            <span className={cn(NEXT_PUBLIC_LIBNAME_SHORT ? 'hidden' : undefined, 'lg:inline')}>
-              {NEXT_PUBLIC_LIBNAME}
-            </span>
+      <LibsMenu siteUrl={process.env.NEXT_PUBLIC_URL}>
+        <span className="font-bold">
+          {NEXT_PUBLIC_LIBNAME_SHORT && (
+            <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
+          )}
+          <span className={cn(NEXT_PUBLIC_LIBNAME_SHORT ? 'hidden' : undefined, 'lg:inline')}>
+            {NEXT_PUBLIC_LIBNAME}
           </span>
-        </Link>
-        {NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL ? (
-          <span className="font-normal">
-            .
-            {NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF ? (
-              <a href={NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF}>{NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL}</a>
-            ) : (
-              NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL
-            )}
-          </span>
-        ) : null}
-      </div>
+        </span>
+      </LibsMenu>
 
       <Search className="grow" />
+      <SidebarTrigger className="lg:hidden" />
 
       <div className="flex">
         {[
-          { href: process.env.GITHUB, icon: <VscGithubAlt /> },
-          { href: process.env.DISCORD, icon: <PiDiscordLogoLight /> },
-        ].map(({ href, icon }, index) => (
+          {
+            href: process.env.GITHUB,
+            label: 'GitHub',
+            icon: <GitHubIcon size="1em" />,
+            count: githubStars !== undefined ? formatStars(githubStars) : undefined,
+          },
+          { href: process.env.DISCORD, label: 'Discord', icon: <DiscordIcon size="1em" /> },
+        ].map(({ href, label, icon, count }, index) => (
           <React.Fragment key={index}>
             {href && (
               <Link
                 href={href}
-                className={cn('hidden size-9 items-center justify-center lg:flex')}
+                aria-label={label}
+                className={cn(
+                  'hidden h-9 min-w-9 items-center justify-center gap-1.5 lg:flex',
+                  count && 'px-2',
+                )}
                 target="_blank"
               >
                 {icon}
+                {count && (
+                  <span className="text-xs text-on-surface-variant tabular-nums">{count}</span>
+                )}
               </Link>
             )}
           </React.Fragment>
         ))}
-        {/* <ToggleTheme className="hidden size-9 items-center justify-center sm:flex" /> */}
-
-        <Menu className="z-100 bg-surface absolute inset-0 top-(--header-height) h-[calc(100dvh-var(--header-height))] w-full overflow-auto lg:hidden">
-          <Nav docs={docs} asPath={asPath} collapsible={false} />
-        </Menu>
       </div>
     </div>
   )
@@ -172,17 +182,32 @@ export default async function Layoutt({ params, children }: Props) {
     <>
       <DocsContext value={{ docs, doc }}>
         <Layout className="[--side-w:--spacing(72)]">
-          <LayoutHeader className="z-10 border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
+          <LayoutHeader className="border-b border-outline-variant/50 bg-surface/95 backdrop-blur-xl">
             {header}
           </LayoutHeader>
-          <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
-            <article className="post-container">
-              {children}
-              {footer}
-            </article>
-          </LayoutContent>
-          <LayoutNav className="pt-8">{nav}</LayoutNav>
-          <LayoutAside className="pt-8">{toc}</LayoutAside>
+          <LayoutBody>
+            <LayoutSidebar>
+              {nav}
+              <SidebarFooter className="flex-row items-center">
+                <VersionSwitcher />
+                {/* Where the TOC column is hidden: below `xl` */}
+                <ThemeControls className="ml-auto shrink-0 xl:hidden" />
+              </SidebarFooter>
+            </LayoutSidebar>
+            <LayoutContent className="lg:mr-(--rgrid-m) xl:mr-0">
+              <article className="post-container">
+                <VersionBanner className="mt-8" />
+                {children}
+                {footer}
+              </article>
+            </LayoutContent>
+            <LayoutAside className="flex-col pt-8 xl:flex">
+              {toc}
+              <SponsorCard className="mt-8 mr-(--rgrid-m)" />
+              {/* At the foot of the column, and of the viewport while a long TOC scrolls under it */}
+              <ThemeControls className="sticky top-full mt-auto justify-end bg-surface py-4 pr-(--rgrid-m)" />
+            </LayoutAside>
+          </LayoutBody>
         </Layout>
       </DocsContext>
     </>

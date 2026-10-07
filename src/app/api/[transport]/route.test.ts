@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach, vi, beforeEach } from 'vitest'
 import { setupServer } from 'msw/node'
-import { http, HttpResponse } from 'msw'
-import { libs } from '@/app/page'
+import { delay, http, HttpResponse } from 'msw'
+import { libs } from '@/libs'
 
 // Mock Next.js headers before importing the route
 vi.mock('next/headers', () => ({
@@ -191,30 +191,32 @@ describe('MCP Route Handler', () => {
 
   describe('Library Filtering', () => {
     it('should expose exactly the libraries flagged with llms_full', async () => {
-      const { libs } = await import('@/app/page')
+      const { libs } = await import('@/libs')
 
       const exposed = Object.entries(libs)
         .filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
         .map(([libname]) => libname)
 
-      expect(exposed).toEqual(['react-three-fiber', 'drei', 'zustand', 'docs'])
+      expect(exposed).toEqual([
+        'react-three-fiber',
+        'drei',
+        'zustand',
+        'a11y',
+        'react-postprocessing',
+        'docs',
+        'react-three-jolt',
+        'sky',
+        'denoiser',
+      ])
     })
 
     it('should exclude pmndrs.github.io libraries that publish no llms-full.txt', async () => {
-      const { libs } = await import('@/app/page')
+      const { libs } = await import('@/libs')
 
-      // Regression: these are hosted on pmndrs.github.io but are not built with this
-      // generator, so `${docs_url}/llms-full.txt` 404s. Selecting on the host alone
+      // Regression: these are hosted on pmndrs.github.io but are not flagged as shipping
+      // `${docs_url}/llms-full.txt` (missing, or not vetted yet). Selecting on the host alone
       // used to expose them with a silently empty index.
-      for (const libname of [
-        'a11y',
-        'react-postprocessing',
-        'uikit',
-        'xr',
-        'prai',
-        'viverse',
-        'leva',
-      ] as const) {
+      for (const libname of ['uikit', 'xr', 'prai', 'viverse', 'leva'] as const) {
         const lib = libs[libname]
         expect(lib.docs_url).toContain('pmndrs.github.io')
         expect('llms_full' in lib && lib.llms_full).toBeFalsy()
@@ -222,7 +224,7 @@ describe('MCP Route Handler', () => {
     })
 
     it('should exclude libraries documented outside pmndrs', async () => {
-      const { libs } = await import('@/app/page')
+      const { libs } = await import('@/libs')
 
       for (const libname of ['react-spring', 'jotai', 'valtio'] as const) {
         expect('llms_full' in libs[libname] && libs[libname].llms_full).toBeFalsy()
@@ -512,6 +514,157 @@ Content with &lt;special&gt; characters &amp; symbols.
     })
   })
 
+  describe('search_docs Tool', () => {
+    async function rpc(method: string, params: unknown) {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+        }),
+      )
+      return response.text()
+    }
+
+    const searchDocs = (args: Record<string, unknown>) =>
+      rpc('tools/call', { name: 'search_docs', arguments: args })
+
+    /** The `lib="..." path="..."` pairs of the hits, in the order they were listed. */
+    function hits(body: string) {
+      // The text comes back JSON-encoded inside the response, so its quotes are escaped
+      return [...body.matchAll(/lib=\\"([^\\]+)\\" path=\\"([^\\]+)\\"/g)].map(([, lib, path]) => ({
+        lib,
+        path,
+      }))
+    }
+
+    it('ranks the page whose title is the term first, and says how to read it', async () => {
+      const body = await searchDocs({ query: 'useFrame', lib: 'react-three-fiber' })
+
+      expect(hits(body)).toEqual([{ lib: 'react-three-fiber', path: '/api/hooks/use-frame' }])
+      expect(body).toContain('useFrame Hook')
+      expect(body).toContain('get_page_content(lib, path)')
+      expect(body).not.toContain('MCP server error')
+    })
+
+    it('ranks a title match above a body mention', async () => {
+      // "performance" is in the title of one page, and only in a body line of none
+      // other; "guide" is in the body of one. Together they order the whole fixture.
+      const body = await searchDocs({ query: 'performance', lib: 'zustand' })
+
+      expect(hits(body)[0]).toEqual({ lib: 'zustand', path: '/advanced/performance' })
+    })
+
+    it('searches every library without a lib, and only that one with it', async () => {
+      const everywhere = hits(await searchDocs({ query: 'getting started' }))
+      const libsHit = new Set(everywhere.map((hit) => hit.lib))
+      expect(libsHit.size).toBeGreaterThan(1)
+      expect(everywhere.every((hit) => hit.path === '/getting-started')).toBe(true)
+
+      const inZustand = hits(await searchDocs({ query: 'getting started', lib: 'zustand' }))
+      expect(inZustand).toEqual([{ lib: 'zustand', path: '/getting-started' }])
+    })
+
+    it('caps the list at ten hits, and says how many there were', async () => {
+      // Every mocked library has the same three pages, so a term all three contain
+      // matches 3 x (number of libraries) pages
+      const body = await searchDocs({ query: 'e' })
+
+      expect(hits(body)).toHaveLength(10)
+      expect(body).toMatch(/Top 10 of \d+ pages/)
+    })
+
+    it('answers an empty result with a message, not an error', async () => {
+      const body = await searchDocs({ query: 'nosuchthing', lib: 'drei' })
+
+      expect(hits(body)).toEqual([])
+      expect(body).toContain('No page matches')
+      expect(body).toContain('nosuchthing')
+      expect(body).not.toContain('"isError":true')
+    })
+
+    it('rejects a library the server does not serve', async () => {
+      // No msw handler exists for react-spring, and the server runs with
+      // onUnhandledRequest: 'error' -- so the rejection has to come from the schema
+      const body = await searchDocs({ query: 'spring', lib: 'react-spring' })
+
+      expect(body).toMatch(/invalid/i)
+      expect(hits(body)).toEqual([])
+    })
+
+    it('rejects an empty query', async () => {
+      const body = await searchDocs({ query: '   ', lib: 'drei' })
+
+      expect(body).toMatch(/invalid|too_small|at least 1/i)
+      expect(hits(body)).toEqual([])
+    })
+
+    it('goes on without a library whose dump cannot be read, and says so', async () => {
+      server.use(
+        http.get(`${libs.drei.docs_url}/llms-full.txt`, () => {
+          return new HttpResponse('Not Found', { status: 404 })
+        }),
+      )
+
+      const body = await searchDocs({ query: 'getting started' })
+
+      expect(hits(body).some((hit) => hit.lib === 'zustand')).toBe(true)
+      expect(hits(body).some((hit) => hit.lib === 'drei')).toBe(false)
+      expect(body).toContain('Not searched, could not be read: drei')
+      expect(body).not.toContain('"isError":true')
+    })
+
+    it('fails when the one library asked for cannot be read', async () => {
+      server.use(
+        http.get(`${libs.drei.docs_url}/llms-full.txt`, () => {
+          return new HttpResponse('Not Found', { status: 404 })
+        }),
+      )
+
+      const body = await searchDocs({ query: 'getting started', lib: 'drei' })
+
+      expect(body).toContain('"isError":true')
+      expect(body).toContain('Failed to fetch')
+    })
+
+    it('annotates every tool as a read-only, idempotent, closed-world one', async () => {
+      const body = await rpc('tools/list', {})
+      const { result } = JSON.parse(body.replace(/^.*?data: /s, '').split('\n')[0]) as {
+        result: {
+          tools: { name: string; title?: string; annotations?: Record<string, boolean> }[]
+        }
+      }
+
+      expect(result.tools.map((tool) => tool.name)).toEqual([
+        'search_docs',
+        'get_page_content',
+        'get_example',
+      ])
+      for (const tool of result.tools) {
+        expect(tool.title, tool.name).toBeTruthy()
+        expect(tool.annotations, tool.name).toEqual({
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        })
+      }
+    })
+
+    it('lists search_docs first, with a description that says to call it first', async () => {
+      const body = await rpc('tools/list', {})
+
+      expect(body.indexOf('"search_docs"')).toBeGreaterThan(-1)
+      expect(body.indexOf('"search_docs"')).toBeLessThan(body.indexOf('"get_page_content"'))
+      expect(body).toContain('Call this FIRST')
+      expect(body).toContain('newer than your training data')
+    })
+  })
+
   describe('Examples', () => {
     async function call(method: string, params: unknown) {
       const { POST } = await import('./route')
@@ -573,6 +726,189 @@ Content with &lt;special&gt; characters &amp; symbols.
 
       expect(body).toContain('Failed to fetch')
       expect(body).not.toContain('"text":""')
+    })
+    it('fails with a tool error, rather than hanging, when the catalog does not answer', async () => {
+      // The upstream timeout, cut short so the test does not wait the real one out
+      const timeout = AbortSignal.timeout.bind(AbortSignal)
+      const shortened = vi.spyOn(AbortSignal, 'timeout').mockImplementation(() => timeout(20))
+      server.use(
+        http.get('https://pmndrs.github.io/examples/examples/caustics.md', async () => {
+          await delay('infinite')
+          return HttpResponse.text(mockExample)
+        }),
+      )
+
+      try {
+        const body = await call('tools/call', {
+          name: 'get_example',
+          arguments: { name: 'caustics' },
+        })
+
+        expect(body).toContain('"isError":true')
+        expect(body).toContain(
+          'Timed out after 10s fetching https://pmndrs.github.io/examples/examples/caustics.md',
+        )
+      } finally {
+        shortened.mockRestore()
+      }
+    })
+  })
+
+  describe('CORS', () => {
+    const corsHeaders = {
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET, POST, OPTIONS',
+      'access-control-allow-headers':
+        'Content-Type, Accept, Authorization, Mcp-Session-Id, MCP-Protocol-Version, Last-Event-ID',
+      'access-control-expose-headers': 'Mcp-Session-Id, MCP-Protocol-Version',
+      'access-control-max-age': '86400',
+    }
+
+    it('answers a preflight with 204 and the CORS headers', async () => {
+      // Regression: without an OPTIONS export, Next answered the preflight itself, with no
+      // Access-Control headers, and a browser-based client was refused without a word.
+      const { OPTIONS } = await import('./route')
+      const response = OPTIONS()
+
+      expect(response.status).toBe(204)
+      for (const [name, value] of Object.entries(corsHeaders)) {
+        expect(response.headers.get(name)).toBe(value)
+      }
+    })
+
+    it('carries Access-Control-Allow-Origin on a successful POST', async () => {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+        }),
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.headers.get('access-control-allow-origin')).toBe('*')
+    })
+  })
+
+  describe('Refused requests', () => {
+    let warn: ReturnType<typeof vi.spyOn>
+    beforeEach(() => {
+      warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+    afterEach(() => {
+      warn.mockRestore()
+    })
+
+    it('answers a malformed JSON body with a 400 parse error, at once', async () => {
+      // Regression: mcp-handler parsed the body itself and, on a broken one, threw where
+      // nothing caught it -- the response was never written, and in production the function
+      // ran until Vercel timed it out. Here this test would hit its timeout.
+      const { POST } = await import('./route')
+      const started = Date.now()
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: '{"jsonrpc":',
+        }),
+      )
+
+      expect(Date.now() - started).toBeLessThan(1000)
+      expect(response.status).toBe(400)
+      expect(response.headers.get('access-control-allow-origin')).toBe('*')
+      expect(await response.json()).toEqual({
+        jsonrpc: '2.0',
+        error: { code: -32700, message: 'Parse error' },
+        id: null,
+      })
+    })
+
+    it('answers an empty body with the same 400', async () => {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+        }),
+      )
+
+      expect(response.status).toBe(400)
+      expect(await response.json()).toMatchObject({ error: { code: -32700 } })
+    })
+
+    it('logs one warn line, with the reason, when the handler refuses a request', async () => {
+      // Valid JSON, but not a JSON-RPC message: the SDK answers 400, and that answer is what
+      // the line is for -- it is the only trace of why a client is being refused.
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+            'User-Agent': 'diag-400/0.1',
+            'MCP-Protocol-Version': '2025-11-25',
+          },
+          body: JSON.stringify({ hello: 'world' }),
+        }),
+      )
+
+      expect(response.status).toBe(400)
+      expect(warn).toHaveBeenCalledTimes(1)
+      const [label, line] = warn.mock.calls[0]
+      expect(label).toBe('MCP request refused')
+      expect(JSON.parse(line as string)).toMatchObject({
+        status: 400,
+        methods: [null],
+        userAgent: 'diag-400/0.1',
+        protocolVersion: '2025-11-25',
+        response: expect.stringContaining('-32700'),
+      })
+      // The client still gets the body the handler wrote: logging read a clone
+      expect(await response.text()).toContain('-32700')
+    })
+
+    it('logs nothing for a request the handler accepts', async () => {
+      const { POST } = await import('./route')
+      const response = await POST(
+        new Request('https://docs.pmnd.rs/api/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+          },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+        }),
+      )
+
+      expect(response.status).toBe(200)
+      expect(warn).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('SSE transport', () => {
+    it('answers /api/sse with a 404 instead of hanging', async () => {
+      // Regression: with SSE enabled, mcp-handler reaches for Redis on this endpoint,
+      // throws for want of a URL, and never ends the response -- in production the
+      // function ran until Vercel killed it. Here this test would hit its timeout.
+      const { GET } = await import('./route')
+      const response = await GET(
+        new Request('https://docs.pmnd.rs/api/sse', {
+          headers: { Accept: 'text/event-stream' },
+        }),
+      )
+
+      expect(response.status).toBe(404)
     })
   })
 })

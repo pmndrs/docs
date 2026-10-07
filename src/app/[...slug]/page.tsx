@@ -1,9 +1,17 @@
+import { CopyPage } from '@/components/CopyPage'
 import { cn } from '@/lib/utils'
+import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
 import { getData, getDocs } from '@/utils/docs'
+import { withoutTrailingSlash } from '@/utils/version'
 
 export type Props = {
   params: Promise<{ slug: string[] }>
 }
+
+// Only the pages `generateStaticParams` lists exist; any other path is a 404. Rendered on demand
+// instead, a path such as `/.well-known/oauth-authorization-server` (what MCP clients probe) threw
+// a 500: `MDX` is only set at build time on Vercel, and a doc that does not exist throws anyway.
+export const dynamicParams = false
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
@@ -35,10 +43,34 @@ export default async function Page({ params }: Props) {
 
   const { doc } = await getData(...slug) // [ 'getting-started', 'introduction' ]
 
+  // Paths on this site, absolute when the build knows its public URL -- which already includes
+  // the base path, as in `llms-full.txt`. The markdown is the page URL plus `.md`, served by
+  // `src/app/md/[...slug]/route.ts`.
+  const { NEXT_PUBLIC_URL, NEXT_PUBLIC_LIBNAME, BASE_PATH } = process.env
+  const markdownUrl = `${BASE_PATH || ''}${doc.url}.md`
+  const pageUrl = `${BASE_PATH || ''}${doc.url}`
+  const absolutePageUrl = NEXT_PUBLIC_URL
+    ? `${withoutTrailingSlash(NEXT_PUBLIC_URL)}${doc.url}`
+    : undefined
+  const command = cliCommand(resolveLibKey({ url: NEXT_PUBLIC_URL, basePath: BASE_PATH }), doc.url)
+
   return (
     <>
       <header className={cn('mb-6 mt-8 border-b', 'border-outline-variant/50')}>
-        <h1 className="mb-2 text-5xl font-bold tracking-tighter">{doc.title}</h1>
+        <div className="mb-2 flex items-start gap-4">
+          <h1 className="min-w-0 text-5xl font-bold tracking-tighter">{doc.title}</h1>
+          {/* Whatever the title leaves, but never less than the icon-only buttons: `CopyPage`
+              collapses its label through a container query on this width */}
+          <div className="@container mt-2 flex min-w-16 flex-1 justify-end">
+            <CopyPage
+              markdownUrl={markdownUrl}
+              pageUrl={pageUrl}
+              absolutePageUrl={absolutePageUrl}
+              libname={NEXT_PUBLIC_LIBNAME}
+              command={command}
+            />
+          </div>
+        </div>
         {doc.description && (
           <div className={cn('my-2 text-base leading-5', 'text-on-surface-variant/50')}>
             {doc.description}

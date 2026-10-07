@@ -1,3 +1,4 @@
+import type { Root } from 'hast'
 import { describe, it, expect } from 'vitest'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
@@ -129,6 +130,40 @@ describe('rehypeLink', () => {
       const html = '<a href="/docs">Link</a>'
       const result = await processHtml(html, 'base')
       expect(result).toBe('<a href="base/docs">Link</a>')
+    })
+  })
+
+  describe('JSX links', () => {
+    // `<Badge href="/docs">Docs</Badge>`, as MDX parses it
+    function jsxLink(name: string, href: string): Root {
+      return {
+        type: 'root',
+        children: [
+          {
+            type: 'mdxJsxFlowElement',
+            name,
+            attributes: [{ type: 'mdxJsxAttribute', name: 'href', value: href }],
+            children: [],
+          },
+        ],
+      }
+    }
+
+    function hrefOf(tree: Root) {
+      const [node] = tree.children
+      return node.type === 'mdxJsxFlowElement' ? node.attributes[0].value : undefined
+    }
+
+    it('prepends BASE_PATH to the href of a Badge', () => {
+      const tree = jsxLink('Badge', '/docs')
+      rehypeLink(BASE_PATH)()(tree)
+      expect(hrefOf(tree)).toBe(`${BASE_PATH}/docs`)
+    })
+
+    it('leaves the href of another component unchanged', () => {
+      const tree = jsxLink('Img', '/docs')
+      rehypeLink(BASE_PATH)()(tree)
+      expect(hrefOf(tree)).toBe('/docs')
     })
   })
 

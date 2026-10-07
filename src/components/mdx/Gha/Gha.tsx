@@ -1,41 +1,45 @@
 import { cn } from '@/lib/utils'
+import {
+  InfoIcon,
+  LightbulbIcon,
+  MessageSquareWarningIcon,
+  OctagonAlertIcon,
+  TriangleAlertIcon,
+  type LucideIcon,
+} from 'lucide-react'
 import { ReactNode } from 'react'
-import { BiCommentError } from 'react-icons/bi'
-import { CgInfo } from 'react-icons/cg'
-import { HiOutlineLightBulb } from 'react-icons/hi2'
-import { PiSealWarning, PiWarning } from 'react-icons/pi'
 
 import { p as P } from '@/components/mdx'
 
 type Style = {
-  icon: React.ComponentType
+  icon: LucideIcon
   label: string
   bg: string
 }
 
 const styles: Record<string, Style> = {
   NOTE: {
-    icon: CgInfo,
+    icon: InfoIcon,
     label: 'Note',
     bg: 'bg-note-container',
   },
   TIP: {
-    icon: HiOutlineLightBulb,
+    icon: LightbulbIcon,
     label: 'Tip',
     bg: 'bg-tip-container',
   },
   IMPORTANT: {
-    icon: BiCommentError,
+    icon: MessageSquareWarningIcon,
     label: 'Important',
     bg: 'bg-important-container',
   },
   WARNING: {
-    icon: PiWarning,
+    icon: TriangleAlertIcon,
     label: 'Warning',
     bg: 'bg-warning-container',
   },
   CAUTION: {
-    icon: PiSealWarning,
+    icon: OctagonAlertIcon,
     label: 'Caution',
     bg: 'bg-caution-container',
   },
@@ -64,7 +68,7 @@ export function Gha({
   return (
     <div className={cn('my-6 overflow-clip rounded-lg px-6 py-2', bg)}>
       <div className="my-4 flex items-center gap-2 text-lg font-semibold">
-        <Icon />
+        <Icon size="1em" />
         {label}
       </div>
       {children}

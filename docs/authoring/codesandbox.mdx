@@ -9,6 +9,34 @@ nav: 9
   Embed live CodeSandbox examples.
 </Intro>
 
+Give the sandbox a preview image with `img`. Like an [`<img src>`](img), it can be relative to
+the article:
+
+```text {2}
+|-- authoring
+|   |-- codesandbox.mdx  <= relative to this article
+|   `-- cell-fracture.webp
+```
+
+```md
+<Codesandbox id="3rjsl" title="Cell fracture" img="cell-fracture.webp" />
+```
+
+result:
+
+<Codesandbox id="3rjsl" title="Cell fracture" img="cell-fracture.webp" />
+
+> [!TIP]
+> A relative `img` gets its dimensions added automatically, just as a relative [`Img`](img) does.
+> A full URL (`img="https://…"`) works too, as is.
+
+The same image is the page's thumb in the [`Entries`](entries) listing.
+
+## Without `img`
+
+CodeSandbox no longer serves screenshots of sandboxes, so without `img` a placeholder stands in,
+still linking to the sandbox:
+
 ```md
 <Codesandbox id="3rjsl" title="Cell fracture" />
 ```
@@ -16,3 +44,17 @@ nav: 9
 result:
 
 <Codesandbox id="3rjsl" title="Cell fracture" />
+
+> [!NOTE]
+> `screenshot_url` is the former name of `img`. It still works, but is deprecated.
+
+## Props
+
+| Prop          | Type       | Description                                                             |
+| ------------- | ---------- | ----------------------------------------------------------------------- |
+| `id`          | `string`   | Sandbox id, e.g. `3rjsl` for `https://codesandbox.io/s/3rjsl`           |
+| `title`       | `string`   | Caption under the preview                                               |
+| `img`         | `string`   | Preview image: relative to the article, or a full URL                   |
+| `description` | `string`   | Text under the title                                                    |
+| `tags`        | `string[]` | Tags under the title, e.g. `tags={["physics", "rapier"]}`               |
+| `embed`       | `boolean`  | Embeds the live sandbox in an `iframe` instead of linking to it         |

@@ -19,9 +19,13 @@ import {
   tr,
   ul,
 } from '@/components/mdx'
+import { Badge } from '@/components/mdx/Badge'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
+import { rehypePackageManagers } from '@/components/mdx/Code/rehypePackageManagers'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
+import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
+import { Color, ColorGroup } from '@/components/mdx/Color'
 import { Details } from '@/components/mdx/Details'
 import { rehypeDetails } from '@/components/mdx/Details/rehypeDetails'
 import { Entries, type Entry } from '@/components/mdx/Entries'
@@ -34,17 +38,21 @@ import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { Intro } from '@/components/mdx/Intro'
 import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
 import { Keypoints, KeypointsItem } from '@/registry/keypoints/keypoints'
+import { McpLiveEmbed } from '@/components/mdx/McpLiveEmbed'
 import { Mermaid } from '@/components/mdx/Mermaid'
 import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { Backers, Contributors } from '@/components/mdx/People'
 import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
+import { Step, Steps } from '@/components/mdx/Steps'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
-import { Toc } from '@/components/mdx/Toc'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
+import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
+import type { ComponentType } from 'react'
 import { dirname } from 'node:path'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
@@ -54,41 +62,59 @@ import remarkGFM from 'remark-gfm'
  * This ensures consistent MDX rendering everywhere.
  */
 
+export type CompileMdxContentOptions = {
+  /** Relative file path, e.g. "/getting-started/tutorials/store.mdx" */
+  relFilePath: string
+  /** Absolute file path, against which `Sandpack folder=` is resolved */
+  absoluteFilePath: string
+  /** Base URL for resolving MDX URLs */
+  baseUrl?: string
+  /** Document title, for the ToC */
+  title: string
+  /** Document URL, for the ToC */
+  url: string
+  /** Populated with the ToC entries found while compiling */
+  tableOfContents: DocToC[]
+  /** All doc entries, for the `Entries` component */
+  entries: Entry[]
+  /** Components overriding the defaults, e.g. a visible `h1` outside the website */
+  components?: Record<string, ComponentType<any>>
+}
+
 /**
  * Compiles MDX content with full options (2nd pass).
  *
- * @param source - The MDX source content to compile
- * @param relFilePath - Relative file path (e.g., "/getting-started/tutorials/store.mdx")
- * @param absoluteFilePath - Absolute file path for Sandpack resolution
- * @param baseUrl - Base URL for resolving MDX URLs
- * @param title - Document title for ToC
- * @param url - Document URL for ToC
- * @param tableOfContents - Array to populate with ToC entries
- * @param entries - All doc entries for the Entries component
  * @returns Compiled MDX result with content JSX
  */
-export async function compileMdxContent(
-  source: string,
-  relFilePath: string,
-  absoluteFilePath: string,
-  baseUrl: string | undefined,
-  title: string,
-  url: string,
-  tableOfContents: DocToC[],
-  entries: Entry[],
-) {
+export async function compileMdxContent(source: string, options: CompileMdxContentOptions) {
+  const {
+    relFilePath,
+    absoluteFilePath,
+    baseUrl,
+    title,
+    url,
+    tableOfContents,
+    entries,
+    components,
+  } = options
+
   return await compileMDX({
     source,
     options: {
+      // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
+      blockJS: false,
       mdxOptions: {
         remarkPlugins: [remarkGFM],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
+          rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
           rehypeImg(relFilePath, baseUrl),
+          rehypeCodesandbox(relFilePath, baseUrl),
           rehypeDetails,
           rehypeSummary,
           rehypeGha,
           rehypeMermaid(),
+          rehypePackageManagers(),
           rehypePrismPlus,
           rehypeCode(),
           rehypeToc(tableOfContents, url, title),
@@ -98,7 +124,10 @@ export async function compileMdxContent(
     },
     components: {
       ...{
+        Badge,
         Code,
+        Color,
+        ColorGroup,
         Details,
         Entries,
         Gha,
@@ -110,10 +139,16 @@ export async function compileMdxContent(
         KeypointsItem,
         Contributors,
         Backers,
+        McpLiveEmbed,
         Mermaid,
         Sandpack,
+        Step,
+        Steps,
         Summary,
-        Toc,
+        Tabs,
+        TabsList,
+        TabsTrigger,
+        TabsContent,
         h1,
         h2,
         h3,
@@ -137,6 +172,7 @@ export async function compileMdxContent(
       },
       Codesandbox: (props) => <Codesandbox {...props} />,
       Entries: () => <Entries items={entries} />,
+      ...components,
     },
   })
 }
@@ -154,6 +190,8 @@ export async function compileMdxFrontmatter(source: string) {
   return await compileMDX({
     source: `<>${source}</>`, // hack: wrap in fragment to avoid <p> wrapping
     options: {
+      // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
+      blockJS: false,
       mdxOptions: {
         remarkPlugins: [remarkGFM],
         rehypePlugins: [rehypeLink(process.env.BASE_PATH)],

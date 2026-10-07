@@ -1,6 +1,6 @@
-import Icon from '@/components/Icon'
 import { cn } from '@/lib/utils'
-import { highlight } from '@/utils/text'
+import { excerpt, highlight } from '@/utils/text'
+import { CornerDownLeftIcon } from 'lucide-react'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
 import sanitizeHtml from 'sanitize-html'
@@ -47,19 +47,18 @@ function SearchItem({
               __html: highlight(sanitizeAllHtmlButMark(result.title), search),
             }}
           />
-          <div className="block pt-2 text-sm text-on-surface-variant/50">
+          <div className="mt-2 line-clamp-3 text-sm text-on-surface-variant/50">
             <span
               dangerouslySetInnerHTML={{
-                __html: highlight(sanitizeAllHtmlButMark(result.content), search),
+                __html: highlight(sanitizeAllHtmlButMark(excerpt(result.content, search)), search),
               }}
             />
           </div>
         </div>
         {result.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
         ) : (
-          <Icon icon="enter" />
+          <CornerDownLeftIcon />
         )}
       </div>
     </Link>
