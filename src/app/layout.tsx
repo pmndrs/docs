@@ -1,5 +1,6 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
 import { cn } from '@/lib/utils'
+import { parseCustomColors } from '@/utils/custom-colors'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
@@ -113,6 +114,25 @@ export default function RootLayout({
   const contrast = Number(process.env.THEME_CONTRAST) || 0
   const basePath = process.env.BASE_PATH || ''
 
+  // The alert colors, blended with the primary — and after them the site's own, from
+  // `THEME_CUSTOM_COLORS`: roles of the theme too (`<Color role="brand" />`, `bg-brand`), so they
+  // follow the scheme, contrast and primary the reader picks. Parsed at build time: a malformed
+  // entry fails the build, with its reason.
+  const builtInColors = [
+    { name: 'note', hex: note, blend: true },
+    { name: 'tip', hex: tip, blend: true },
+    { name: 'important', hex: important, blend: true },
+    { name: 'warning', hex: warning, blend: true },
+    { name: 'caution', hex: caution, blend: true },
+  ]
+  const customColors = [
+    ...builtInColors,
+    ...parseCustomColors(
+      process.env.THEME_CUSTOM_COLORS,
+      builtInColors.map((color) => color.name),
+    ),
+  ]
+
   return (
     <html
       lang="en"
@@ -141,13 +161,7 @@ export default function RootLayout({
           source={primary}
           scheme={scheme}
           contrast={contrast}
-          customColors={[
-            { name: 'note', hex: note, blend: true },
-            { name: 'tip', hex: tip, blend: true },
-            { name: 'important', hex: important, blend: true },
-            { name: 'warning', hex: warning, blend: true },
-            { name: 'caution', hex: caution, blend: true },
-          ]}
+          customColors={customColors}
         >
           <ThemeProvider attribute="class">{children}</ThemeProvider>
         </PrimaryColorMtb>
