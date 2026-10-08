@@ -2,4 +2,4 @@
 '@pmndrs/docs': patch
 ---
 
-Underline links in MDX content, so they no longer rely on colour alone: with a palette that puts `primary` next to the body text (design-system's lime seed makes it white in dark mode), they were invisible.
+Underline links in MDX content, so they no longer rely on colour alone: a palette can bring `primary` within a hair of the body text (design-system's lime seed with color match makes it white in dark mode, next to a near-white `on-surface`).

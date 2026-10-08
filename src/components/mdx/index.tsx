@@ -78,15 +78,15 @@ export const td = (props: ComponentProps<'td'>) => (
 )
 
 // Underlined, not told apart by colour alone (WCAG 1.4.1): a palette can bring `primary` within a
-// hair of the body text — a lime seed puts it at white in dark mode, next to a near-white
-// `on-surface`.
+// hair of the body text — a lime seed with color match puts it at white in dark mode, next to a
+// near-white `on-surface`.
 export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'>) => (
   <a
     {...props}
     {...linkProps(href, target, rel)}
     className={cn(
-      className,
       'text-primary underline underline-offset-3 hover:decoration-2 [&_code]:text-primary',
+      className,
     )}
   />
 )

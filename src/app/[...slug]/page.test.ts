@@ -46,6 +46,35 @@ for (const pagePath of pages) {
 }
 
 //
+// Links: underlined in the prose, not told apart by colour alone (WCAG 1.4.1) — a palette can bring
+// `primary` within a hair of the body text. The headings' self-links are not
+//
+
+test.describe('links', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('a link in the prose is underlined, a heading self-link is not', async ({ page }) => {
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const article = page.getByRole('article')
+    // Not a `Badge`: a link too, in the page's first paragraph, but a chip, not prose
+    const proseLink = article
+      .getByRole('paragraph')
+      .getByRole('link')
+      .and(page.locator(':not([data-slot="badge"])'))
+      .first()
+    const headingLink = article
+      .getByRole('link')
+      .filter({ has: page.getByRole('heading') })
+      .first()
+
+    await expect(proseLink).toHaveCSS('text-decoration-line', 'underline')
+    await expect(headingLink).toHaveCSS('text-decoration-line', 'none')
+  })
+})
+
+//
 // Tabs: a link to an element in a hidden panel opens its tab
 //
 
