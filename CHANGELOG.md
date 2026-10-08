@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.19.1
+
+### Patch Changes
+
+- [#682](https://github.com/pmndrs/docs/pull/682) [`f061d62`](https://github.com/pmndrs/docs/commit/f061d62c9cdff5f8513b9738e455f7c77ed29079) Thanks [@abernier](https://github.com/abernier)! - Underline links in MDX content, so they no longer rely on colour alone: a palette can bring `primary` within a hair of the body text (design-system's lime seed with color match makes it white in dark mode, next to a near-white `on-surface`).
+
 ## 4.19.0
 
 ### Minor Changes
