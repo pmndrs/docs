@@ -169,7 +169,20 @@ const surfaceContainers = [
 ]
 const onSurfaces = ['on-surface', 'on-surface-variant', 'outline', 'outline-variant']
 // The custom colors the preview gives `<Mtb>` (`docsMtb`)
-const customColors = ['note', 'tip', 'important', 'warning', 'caution']
+const customColors = [
+  'lime',
+  'teal',
+  'cyan',
+  'purple',
+  'red',
+  'orange',
+  'yellow',
+  'note',
+  'tip',
+  'important',
+  'warning',
+  'caution',
+]
 const palettes = [
   'primary',
   'secondary',

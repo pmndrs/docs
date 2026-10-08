@@ -7,7 +7,7 @@ import type { ComponentProps, CSSProperties } from 'react'
 // role's color, its name on it in the color of what goes on it. The colors are the
 // `--md-sys-color-*` variables of the Material 3 colour layer (`pmndrs/design-system/md3`, or an
 // `<Mtb>` of material-theme-builder): its roles, and any custom color given to the palette,
-// `note`, `tip`…, with no change here.
+// `lime`, `note`…, with no change here.
 //
 // Two dumb pieces, composed in MDX: a `Color` is a swatch — a disc inline in text, like a badge, or
 // a cell — and a `ColorGroup` fuses cells into one rounded block. Laying blocks side by side is the

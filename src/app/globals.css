@@ -18,9 +18,11 @@
 @source '../../docs/**/*.{md,mdx}';
 
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
- * roles of each custom colour named here. */
+ * roles of each custom colour named here: the seven pmndrs ones (`src/lib/md3.ts`),
+ * then our alert colours (`src/lib/mtb.ts`). */
 @plugin 'material-theme-builder/tailwind' {
-  custom-colors: note, tip, important, warning, caution;
+  custom-colors:
+    lime, teal, cyan, purple, red, orange, yellow, note, tip, important, warning, caution;
 }
 
 @theme {
