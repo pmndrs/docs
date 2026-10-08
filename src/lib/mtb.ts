@@ -1,4 +1,6 @@
 import { pmndrsMtb } from '@/lib/md3'
+import { parseCustomColors } from '@/utils/custom-colors'
+import { parseThemeColor, parseThemeFlag } from '@/utils/theme-seeds'
 import type { MtbConfig } from 'material-theme-builder'
 
 /**
@@ -23,12 +25,36 @@ const alertColors = [
 ]
 
 /**
- * The theme this site mounts: the pmndrs seed, plus our alert colours.
+ * The site's own custom colours, from `THEME_CUSTOM_COLORS`: roles of the theme
+ * too (`<Color role="brand" />`), so they follow the scheme, contrast and primary
+ * the reader picks. Parsed at build time: a malformed entry fails the build, with
+ * its reason.
+ */
+const siteColors = parseCustomColors(
+  process.env.THEME_CUSTOM_COLORS,
+  alertColors.map((color) => color.name),
+)
+
+/**
+ * The theme this site mounts: the pmndrs seed, the other seeds a site may give
+ * (`THEME_COLOR_MATCH`, `THEME_SECONDARY`, `THEME_TERTIARY`, `THEME_NEUTRAL`,
+ * `THEME_NEUTRAL_VARIANT`, `THEME_ERROR`), our alert colours, and the site's own.
+ *
+ * Each seed is optional: unset, the primary derives it. Color match renders each
+ * core and custom colour true to its own input, as Material Theme Builder's
+ * "Color match" does, which makes `scheme` moot (see `SchemeToggle`). Parsed at
+ * build time: a value that is not a hex colour fails the build, with its reason.
  *
  * Spread rather than edited, so `src/lib/md3.ts` stays a verbatim copy of the
  * installed item and re-installing it is a clean overwrite.
  */
 export const docsMtb = {
   ...pmndrsMtb,
-  customColors: alertColors,
+  colorMatch: parseThemeFlag('COLOR_MATCH', process.env.THEME_COLOR_MATCH),
+  secondary: parseThemeColor('SECONDARY', process.env.THEME_SECONDARY),
+  tertiary: parseThemeColor('TERTIARY', process.env.THEME_TERTIARY),
+  neutral: parseThemeColor('NEUTRAL', process.env.THEME_NEUTRAL),
+  neutralVariant: parseThemeColor('NEUTRAL_VARIANT', process.env.THEME_NEUTRAL_VARIANT),
+  error: parseThemeColor('ERROR', process.env.THEME_ERROR),
+  customColors: [...alertColors, ...siteColors],
 } satisfies MtbConfig

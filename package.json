@@ -1,6 +1,6 @@
 {
   "name": "@pmndrs/docs",
-  "version": "4.16.0",
+  "version": "4.19.0",
   "type": "module",
   "bin": {
     "pmndrs-docs": "bin/pmndrs-docs.mjs"
@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@codemirror/language": "6.12.4",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@fontsource/inconsolata": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
@@ -70,7 +71,7 @@
     "lodash-es": "^4.17.21",
     "lucide-react": "^1.49.0",
     "match-sorter": "^6.3.4",
-    "material-theme-builder": "^5.0.0",
+    "material-theme-builder": "^5.2.1",
     "mcp-handler": "^1.0.7",
     "mermaid": "^11.12.2",
     "next": "^16.3.7",

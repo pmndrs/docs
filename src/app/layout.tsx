@@ -122,7 +122,8 @@ export default function RootLayout({
           } as React.CSSProperties
         }
       >
-        {/* The pmndrs seed and our alert colours (`docsMtb`), reseeded by whatever the reader picks
+        {/* The pmndrs seed, the site's own seeds and custom colours, and our alert colours
+            (`docsMtb`), reseeded by whatever the reader picks
             (see `PrimaryColorPicker`): the one place `--md-sys-color-*` is defined. A client
             component, since the palette follows those picks live; the server's HTML still carries
             the default one */}

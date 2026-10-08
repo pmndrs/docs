@@ -23,18 +23,28 @@ export const SCHEMES = [
 
 export type Scheme = (typeof SCHEMES)[number]
 
-// The site's own scheme, `THEME_SCHEME`: only the server knows it, `PrimaryColorMtb` passes it down
 const [useDefaultScheme, DefaultSchemeProvider] = createRequiredContext<SchemeValue>()
 
+/**
+ * The site's own scheme, `THEME_SCHEME`: only the server knows it, `PrimaryColorMtb` passes it down
+ */
 export { DefaultSchemeProvider }
 
-/** The scheme stored as `stored`, `null` for anything but one of `SCHEMES` */
+/**
+ * The scheme stored as `stored`, `null` for anything but one of `SCHEMES`
+ *
+ * @param stored - the raw stored value, `null` when nothing is stored
+ */
 export function parseScheme(stored: string | null) {
   const scheme = SCHEMES.find(({ value }) => value === stored)
   return scheme ? scheme.value : null
 }
 
-/** The scheme of `value`, the first one for a value it doesn't know */
+/**
+ * The scheme of `value`, the first one for a value it doesn't know
+ *
+ * @param value - the scheme value to look up
+ */
 export function schemeOf(value: SchemeValue): Scheme {
   return SCHEMES.find((scheme) => scheme.value === value) ?? SCHEMES[0]
 }
@@ -43,8 +53,8 @@ export function schemeOf(value: SchemeValue): Scheme {
  * The scheme the reader picked for the site's Material palette, the site's default otherwise: one
  * choice for the whole page, remembered across pages, reloads and tabs (see `useStoredChoice`).
  *
- * Picking the default forgets the choice: a later change of the site's default then reaches the
- * reader too.
+ * Picking the default, or `reset`, forgets the choice: a later change of the site's default then
+ * reaches the reader too.
  */
 export function useScheme() {
   const defaultScheme = useDefaultScheme()
@@ -56,5 +66,10 @@ export function useScheme() {
     setStored(value === defaultScheme ? null : value)
   }
 
-  return [scheme, setScheme, isDefault] as const
+  // The site's default again: nothing stored
+  function reset() {
+    setStored(null)
+  }
+
+  return [scheme, setScheme, isDefault, reset] as const
 }
