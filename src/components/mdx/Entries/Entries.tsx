@@ -1,6 +1,7 @@
 import { ComponentProps, Fragment, ReactElement } from 'react'
 
 import { CodesandboxIcon } from '@/components/brand-icons'
+import { a as Link } from '@/components/mdx'
 import { groupBy } from 'lodash-es'
 import { Img } from '../Img'
 import { sandboxUrl, type Box } from '../Codesandbox'
@@ -30,9 +31,7 @@ export async function Entries({
               <ul className="text-sm">
                 {entries?.map(({ title, url, boxes }) => (
                   <li key={url} className="flex gap-1">
-                    <a href={url} className="text-primary">
-                      {title}
-                    </a>
+                    <Link href={url}>{title}</Link>
                     <span className="inline-flex gap-1">
                       {boxes.map(({ id, img }, i) => (
                         <a
