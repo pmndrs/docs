@@ -96,7 +96,7 @@ export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'
 // at high contrast.
 // The corner is not a radius token, on purpose: inline code sits in text of any size (a paragraph,
 // a heading, a table cell), and `.25em` keeps it in proportion with the letters, where a fixed step
-// of the scale (`sm` is 6.4px) would round a small chip in body text into a pill and look square in
+// of the scale (`sm` is 6.375px) would round a small chip in body text into a pill and look square in
 // an h1. The 4px floor keeps it visibly rounded in the smallest text.
 export const code = (props: ComponentProps<'code'>) => (
   <code

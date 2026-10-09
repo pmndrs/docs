@@ -960,35 +960,29 @@ test.describe('theme', () => {
 })
 
 //
-// Radius: the luma preset's scale (pmndrs/design-system's own preset, `b1VlIttI`), every step a
-// multiple of `--radius`, so that the corners here are the ones a consumer of the design system gets
+// Radius: the corners a reader sees are the design system's, the luma preset's scale
+// (pmndrs/design-system's own preset, `b1VlIttI`): every step a multiple of `--radius`
 //
 
 test.describe('radius', () => {
   test.use({ disableAutoSnapshot: true })
 
-  test('the radius scale is multiplicative, as luma writes it, on a 0.625rem base', async ({
-    page,
-  }) => {
+  test("the corners follow the design-system preset's radius scale", async ({ page }) => {
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
 
-    // As the minified stylesheet declares it: `.625rem`
-    const radius = await page.evaluate(() =>
-      getComputedStyle(document.documentElement).getPropertyValue('--radius').trim(),
-    )
-    expect(radius).toMatch(/^0?\.625rem$/)
-
-    // What a reader's browser computes, through what the stylesheet actually ships. Not the
-    // `--radius-*` variables: Tailwind only emits the theme variables it finds a use of, and with
-    // `@theme inline` it writes their values into the utilities instead, so `--radius-2xl` and up
-    // are absent from the page (`-sm` to `-xl` show up only because a story's source text names
-    // them). Not a `rounded-*` probe for every step either: Tailwind only generates the utilities
-    // the sources use, and nothing uses `rounded-sm` as a class. So each step is read off a probe
-    // that the site's own CSS styles with it: a `<mark>` (`@apply rounded-sm` in globals.css) for
-    // `sm`, the `rounded-*` utility, which the ui/ components use, for the others. A step that loses
-    // its last user fails here rather than passing on a 0px probe.
-    // The expected pixels follow from the 17px root: 0.625rem = 10.625px, times luma's factor
+    // What a reader's browser computes, through what the stylesheet actually ships, rather than the
+    // `--radius-*` variables: Tailwind only emits the theme variables it finds named in the sources,
+    // and with `@theme inline` it writes their values into the utilities instead, so which of them
+    // a page declares depends on what some file happens to name (Sandpack.css, a story's sample
+    // CSS), not on its corners.
+    // Not a `rounded-*` probe for every step either: Tailwind only generates the utilities the
+    // sources use, and nothing uses `rounded-sm` as a class. So each step is read off a probe that
+    // the site's own CSS styles with it: a `<mark>` (`@apply rounded-sm` in globals.css) for `sm`,
+    // the `rounded-*` utility, which the ui/ components use, for the others. A step that loses its
+    // last user fails here rather than passing on a 0px probe.
+    // The expected pixels are the spec: the 17px root makes the 0.625rem base 10.625px, times
+    // luma's factor
     const expected = {
       sm: 6.375, // ×0.6
       md: 8.5, // ×0.8
@@ -1032,9 +1026,10 @@ test.describe('fonts', () => {
     await page.waitForLoadState('networkidle')
 
     const article = page.getByRole('article')
-    // The first family is the one asked for; the rest are `next/font`'s metric-matched fallback
-    // and the generic family
-    const inconsolata = /^"?Inconsolata"?,/
+    // The first family is the one asked for. Inconsolata's fallback is the generic monospace
+    // (`layout.tsx`), so code stays monospace before the font loads or if it fails to; Inter's is
+    // `next/font`'s metric-matched face
+    const inconsolata = /^"?Inconsolata"?,.*\bmonospace$/
     const inter = /^"?Inter"?,/
 
     await expect(article.locator('pre').first()).toHaveCSS('font-family', inconsolata)

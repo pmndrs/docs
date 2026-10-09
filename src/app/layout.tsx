@@ -20,8 +20,18 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 // (`pnpm exec shadcn add pmndrs/design-system/font-mono#v0.6.0`). Its variable is `--font-mono`
 // itself, which `globals.css` hands to the `font-mono` utility and to `code, kbd, samp, pre`;
 // Sandpack reads it too. The item writes no `subsets`, which `next/font/google` requires to
-// preload the font: `latin`, as for Inter
-const inconsolata = Inconsolata({ subsets: ['latin'], variable: '--font-mono' })
+// preload the font: `latin`, as for Inter.
+// Nor can it write a fallback: the `registry:font` schema has no field for one, so the site adds
+// it. Left to itself, `next/font` falls back on an `Inconsolata Fallback` face, Arial resized to
+// Inconsolata's metrics, and on no generic family: code would be set proportional until the font
+// loads, or for good if it fails to. `adjustFontFallback: false` drops that face, and the fallback
+// is the platform's monospace
+const inconsolata = Inconsolata({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  adjustFontFallback: false,
+  fallback: ['ui-monospace', 'monospace'],
+})
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME

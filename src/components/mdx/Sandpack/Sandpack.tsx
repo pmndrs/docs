@@ -104,9 +104,8 @@ export const Sandpack = async ({
         customSetup={customSetup}
         options={options}
         // The frame's corners are a code block's (`rounded-lg` in Code.tsx), so the two read as one
-        // family in the prose. This was Tailwind v3's `borderRadius.lg` (0.5rem) once, frozen into a
-        // literal when the config went away; the token keeps it on the design system's scale.
-        // Sandpack also derives its inner corners (tabs, buttons) from it, halving it for some.
+        // family in the prose, on the design system's scale. Sandpack also derives its inner corners
+        // (tabs, buttons) from it, halving it for some.
         // Naming `--radius-lg` here is also what makes Tailwind emit it: it only declares the theme
         // variables it finds named in the sources.
         // @ts-ignore
