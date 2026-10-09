@@ -1084,18 +1084,9 @@ function backdrop(locator: Locator) {
 
 const alerts = ['note', 'tip', 'important', 'warning', 'caution']
 
-// The alert colours pmndrs/design-system's `md3-base` ships (GitHub's), which no `THEME_*` here
-// overrides: the roles the pmndrs seed makes of them
-const designSystemAlerts = builder(pmndrsMtb.source, {
-  ...pmndrsMtb,
-  customColors: [
-    { name: 'note', hex: '#1F6FEB', blend: true },
-    { name: 'tip', hex: '#238636', blend: true },
-    { name: 'important', hex: '#8957E5', blend: true },
-    { name: 'warning', hex: '#D29922', blend: true },
-    { name: 'caution', hex: '#DA3633', blend: true },
-  ],
-})
+// The roles the design system's palette makes of its alert colours (`src/lib/md3.ts`, a verbatim
+// copy of `md3-base`), which no `THEME_*` here overrides
+const designSystemPalette = builder(pmndrsMtb.source, pmndrsMtb)
 const hex = (argb: number) => `#${(argb & 0xffffff).toString(16).padStart(6, '0')}`
 
 test.describe('docs-only colours', () => {
@@ -1109,8 +1100,8 @@ test.describe('docs-only colours', () => {
 
       const colors =
         colorScheme === 'light'
-          ? designSystemAlerts.mergedColorsLight
-          : designSystemAlerts.mergedColorsDark
+          ? designSystemPalette.mergedColorsLight
+          : designSystemPalette.mergedColorsDark
       for (const alert of alerts) {
         for (const [role, key] of [
           [alert, alert],
