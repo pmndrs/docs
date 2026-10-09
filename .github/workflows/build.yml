@@ -36,36 +36,45 @@ on:
         type: string
       discord:
         type: string
+      # Left empty on purpose: the pmndrs defaults live in src/lib/md3.ts, installed
+      # from pmndrs/design-system (the alert colours in src/lib/mtb.ts, the badge
+      # colours in src/app/layout.tsx). Set one of these only to override them for a
+      # site — an empty value falls through to the default.
+      #
+      # Unset, the palette is the pmndrs one: the lime `#CAF543` under color match,
+      # on the pmndrs neutral, neutral variant and error seeds. A site may set its own
+      # primary, or any seed: the ones it leaves unset stay the pmndrs ones.
       theme_primary:
         type: string
-        default: '#323e48'
+        default: ''
+        description: 'Seed color of the palette, instead of the pmndrs lime `#CAF543`, eg: `#323e48`'
       theme_scheme:
         type: string
-        default: 'tonalSpot'
+        default: ''
       theme_contrast:
         type: string
-        default: '0'
+        default: ''
       theme_note:
         type: string
-        default: '#1f6feb'
+        default: ''
       theme_tip:
         type: string
-        default: '#238636'
+        default: ''
       theme_important:
         type: string
-        default: '#8957e5'
+        default: ''
       theme_warning:
         type: string
-        default: '#d29922'
+        default: ''
       theme_caution:
         type: string
-        default: '#da3633'
+        default: ''
       theme_custom_colors:
         type: string
         description: 'Custom colors of the theme, `name:hex[:blend]` comma-separated, eg: `brand:#ff2d95:blend,status:#17b26a` -- each a role of the theme, `<Color role="brand" />`'
       theme_color_match:
         type: string
-        description: '`true` to render each core and custom color true to its own input (Material Theme Builder''s "Color match"), which then takes precedence over `theme_scheme`'
+        description: '`false` to tone each core and custom color down to `theme_scheme`, instead of rendering it true to its own input (Material Theme Builder''s "Color match", on by default)'
       theme_secondary:
         type: string
         description: 'Secondary color of the palette, instead of the one derived from the primary, eg: `#B03A3A`'
@@ -74,22 +83,22 @@ on:
         description: 'Tertiary color of the palette, instead of the one derived from the primary'
       theme_neutral:
         type: string
-        description: 'Neutral color of the palette (the surfaces), instead of the one derived from the primary, eg: `#c1b793`'
+        description: 'Neutral color of the palette (the surfaces), instead of the pmndrs warm grey `#c1b793`'
       theme_neutral_variant:
         type: string
-        description: 'Neutral variant color of the palette (the tinted surfaces, outlines), instead of the one derived from the primary'
+        description: 'Neutral variant color of the palette (the tinted surfaces, outlines), instead of the pmndrs `#495720`'
       theme_error:
         type: string
-        description: 'Error color of the palette, instead of the default red, eg: `#FF4980`'
+        description: 'Error color of the palette, instead of the pmndrs red `#FF4980`'
       theme_storybook:
         type: string
-        default: '#ff4785'
+        default: ''
       theme_npm:
         type: string
-        default: '#cb3837'
+        default: ''
       theme_chromatic:
         type: string
-        default: '#fc521f'
+        default: ''
       version:
         type: string
         default: '4'

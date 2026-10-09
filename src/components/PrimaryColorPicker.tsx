@@ -1,7 +1,7 @@
 'use client'
 
 import { PRIMARY_COLOR_PREPAINT_VAR } from '@/components/PrimaryColorPrepaint'
-import { Color } from '@/components/mdx/Color'
+import { Color } from '@/registry/color/color'
 import { ThemeControlButton } from '@/components/ThemeControlButton'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { isHexColor, usePrimaryColor } from '@/hooks/usePrimaryColor'

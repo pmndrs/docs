@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { Mtb } from 'material-theme-builder/react'
 import type { CSSProperties } from 'react'
 
-import { ColorGroup, Color } from './Color'
-import { allModes } from '../../../../.storybook/modes'
+import { allModes } from '../../.storybook/modes'
+import { ColorGroup, Color } from './color'
 
 const meta = {
   component: ColorGroup,
@@ -16,33 +15,21 @@ const meta = {
     },
   },
   decorators: [
-    // The theme the website builds in `src/app/layout.tsx`, with its default colors: the
-    // swatches are its tokens, the custom colors included, and its brand colors as is.
+    // The palette is the preview's (`docsMtb`, the website's theme at its defaults, custom colors
+    // included); this adds the website's brand colors, as is, and a surface to read the swatches on.
     (Story) => (
-      <Mtb
-        source="#323e48"
-        scheme="tonalSpot"
-        customColors={[
-          { name: 'note', hex: '#1f6feb', blend: true },
-          { name: 'tip', hex: '#238636', blend: true },
-          { name: 'important', hex: '#8957e5', blend: true },
-          { name: 'warning', hex: '#d29922', blend: true },
-          { name: 'caution', hex: '#da3633', blend: true },
-        ]}
+      <div
+        className="bg-surface p-8 text-on-surface"
+        style={
+          {
+            '--brand-storybook': '#ff4785',
+            '--brand-npm': '#cb3837',
+            '--brand-chromatic': '#fc521f',
+          } as CSSProperties
+        }
       >
-        <div
-          className="bg-surface p-8 text-on-surface"
-          style={
-            {
-              '--brand-storybook': '#ff4785',
-              '--brand-npm': '#cb3837',
-              '--brand-chromatic': '#fc521f',
-            } as CSSProperties
-          }
-        >
-          <Story />
-        </div>
-      </Mtb>
+        <Story />
+      </div>
     ),
   ],
 } satisfies Meta<typeof ColorGroup>
@@ -181,8 +168,21 @@ const surfaceContainers = [
   'surface-container-highest',
 ]
 const onSurfaces = ['on-surface', 'on-surface-variant', 'outline', 'outline-variant']
-// The custom colors the meta decorator gives `<Mtb>`
-const customColors = ['note', 'tip', 'important', 'warning', 'caution']
+// The custom colors the preview gives `<Mtb>` (`docsMtb`)
+const customColors = [
+  'lime',
+  'teal',
+  'cyan',
+  'purple',
+  'red',
+  'orange',
+  'yellow',
+  'note',
+  'tip',
+  'important',
+  'warning',
+  'caution',
+]
 const palettes = [
   'primary',
   'secondary',

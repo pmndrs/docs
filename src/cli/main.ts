@@ -48,9 +48,10 @@ const websiteOptions = [
   new Option('--logo <path>', 'Logo path or URL').env('LOGO'),
   new Option('--github <url>', 'GitHub URL').env('GITHUB'),
   new Option('--discord <url>', 'Discord URL').env('DISCORD'),
-  new Option('--theme-primary <color>', 'Seed color of the palette, e.g. "#323e48"').env(
-    'THEME_PRIMARY',
-  ),
+  new Option(
+    '--theme-primary <color>',
+    'Seed color of the palette, instead of the pmndrs lime, e.g. "#323e48"',
+  ).env('THEME_PRIMARY'),
   new Option('--theme-scheme <scheme>', 'Palette scheme, e.g. "tonalSpot"').env('THEME_SCHEME'),
   new Option('--theme-contrast <contrast>', 'Palette contrast, e.g. "0"').env('THEME_CONTRAST'),
   new Option('--theme-note <color>', 'Color of the NOTE alerts').env('THEME_NOTE'),
@@ -64,7 +65,7 @@ const websiteOptions = [
   ).env('THEME_CUSTOM_COLORS'),
   new Option(
     '--theme-color-match <boolean>',
-    '"true" to render each core and custom color true to its own input (Color match), over --theme-scheme',
+    '"false" to tone each core and custom color down to --theme-scheme, instead of rendering it true to its own input (Color match, on by default)',
   ).env('THEME_COLOR_MATCH'),
   new Option('--theme-secondary <color>', 'Secondary color, instead of the derived one').env(
     'THEME_SECONDARY',
@@ -72,14 +73,14 @@ const websiteOptions = [
   new Option('--theme-tertiary <color>', 'Tertiary color, instead of the derived one').env(
     'THEME_TERTIARY',
   ),
-  new Option('--theme-neutral <color>', 'Neutral color (surfaces), instead of the derived one').env(
+  new Option('--theme-neutral <color>', 'Neutral color (surfaces), instead of the pmndrs one').env(
     'THEME_NEUTRAL',
   ),
   new Option(
     '--theme-neutral-variant <color>',
-    'Neutral variant color (tinted surfaces, outlines), instead of the derived one',
+    'Neutral variant color (tinted surfaces, outlines), instead of the pmndrs one',
   ).env('THEME_NEUTRAL_VARIANT'),
-  new Option('--theme-error <color>', 'Error color, instead of the default red').env('THEME_ERROR'),
+  new Option('--theme-error <color>', 'Error color, instead of the pmndrs red').env('THEME_ERROR'),
   new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
   new Option('--theme-npm <color>', 'Color of the npm badges').env('THEME_NPM'),
   new Option('--theme-chromatic <color>', 'Color of the chromatic badges').env('THEME_CHROMATIC'),

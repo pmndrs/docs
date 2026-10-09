@@ -7,6 +7,14 @@ export default defineConfig({
   testDir: './src/app',
   // The page tests only: every other `*.test.ts` under src/app is a Vitest unit test
   testMatch: '**/page.test.ts',
+  // Chromatic is the visual assertion, not Playwright: no baseline is committed, and
+  // `toHaveScreenshot` only serves to wait for a settled page before the capture. Rewriting
+  // every screenshot means it never fails on a pixel difference, so the same run is green
+  // locally and in CI; it still fails when the page never settles (no two consecutive stable
+  // screenshots) within its timeout.
+  // The setting is global: it would rewrite, and so pass, any `toMatchSnapshot` or
+  // `toMatchAriaSnapshot` too. Do not add such assertions under this config
+  updateSnapshots: 'all',
   use: {
     baseURL: 'http://localhost:3000',
   },
