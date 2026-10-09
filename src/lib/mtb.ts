@@ -1,6 +1,6 @@
 import { pmndrsMtb } from '@/lib/md3'
 import { parseCustomColors } from '@/utils/custom-colors'
-import { parseThemeColor, parseThemeFlag, parseThemeSeed } from '@/utils/theme-seeds'
+import { parseThemeColor, parseThemeFlag } from '@/utils/theme-seeds'
 import type { MtbConfig } from 'material-theme-builder'
 
 /**
@@ -49,9 +49,8 @@ const pmndrsColors = pmndrsMtb.customColors.filter(
  *
  * The pmndrs seed already reads `THEME_PRIMARY`, `THEME_CONTRAST`,
  * `THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT` and `THEME_ERROR`; the last three
- * are read again here, to fail the build, with a reason, on a value that is not
- * a hex colour, and to take `auto`: no seed, so the primary derives that colour
- * (see `parseThemeSeed`). The rest is this generator's:
+ * are read again here only to fail the build, with a reason, on a value that is
+ * not a hex colour. The rest is this generator's:
  *
  * - `THEME_COLOR_MATCH`: on in the pmndrs seed, `false` turns it off — each
  *   colour is then toned down to `THEME_SCHEME` instead of staying true to its
@@ -69,12 +68,10 @@ export const docsMtb = {
   scheme: (process.env.THEME_SCHEME || undefined) as MtbConfig['scheme'],
   secondary: parseThemeColor('SECONDARY', process.env.THEME_SECONDARY),
   tertiary: parseThemeColor('TERTIARY', process.env.THEME_TERTIARY),
-  neutral: parseThemeSeed('NEUTRAL', process.env.THEME_NEUTRAL, pmndrsMtb.neutral),
-  neutralVariant: parseThemeSeed(
-    'NEUTRAL_VARIANT',
-    process.env.THEME_NEUTRAL_VARIANT,
+  neutral: parseThemeColor('NEUTRAL', process.env.THEME_NEUTRAL) ?? pmndrsMtb.neutral,
+  neutralVariant:
+    parseThemeColor('NEUTRAL_VARIANT', process.env.THEME_NEUTRAL_VARIANT) ??
     pmndrsMtb.neutralVariant,
-  ),
-  error: parseThemeSeed('ERROR', process.env.THEME_ERROR, pmndrsMtb.error),
+  error: parseThemeColor('ERROR', process.env.THEME_ERROR) ?? pmndrsMtb.error,
   customColors: [...pmndrsColors, ...alertColors, ...siteColors],
 } satisfies MtbConfig

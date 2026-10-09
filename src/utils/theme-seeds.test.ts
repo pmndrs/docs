@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseThemeColor, parseThemeFlag, parseThemeSeed } from './theme-seeds'
+import { parseThemeColor, parseThemeFlag } from './theme-seeds'
 
 describe('parseThemeColor', () => {
   it('reads a hex color of 3, 6 or 8 digits', () => {
@@ -39,28 +39,5 @@ describe('parseThemeFlag', () => {
       'THEME_COLOR_MATCH: "1" is not `true` or `false`',
     )
     expect(() => parseThemeFlag('COLOR_MATCH', 'yes')).toThrow('THEME_COLOR_MATCH: "yes"')
-  })
-})
-
-describe('parseThemeSeed', () => {
-  it('gives the pmndrs seed for nothing', () => {
-    expect(parseThemeSeed('NEUTRAL', undefined, '#c1b793')).toBe('#c1b793')
-    expect(parseThemeSeed('NEUTRAL', '', '#c1b793')).toBe('#c1b793')
-  })
-
-  it('reads a hex color instead', () => {
-    expect(parseThemeSeed('NEUTRAL', '#808080', '#c1b793')).toBe('#808080')
-  })
-
-  // No seed: material-theme-builder derives the color from the primary
-  it('gives undefined for `auto`', () => {
-    expect(parseThemeSeed('NEUTRAL', 'auto', '#c1b793')).toBeUndefined()
-  })
-
-  it('throws on anything else, naming the variable', () => {
-    expect(() => parseThemeSeed('ERROR', 'red', '#FF4980')).toThrow(
-      'THEME_ERROR: "red" is not a hex color (e.g. `#ff2d95`) or `auto`',
-    )
-    expect(() => parseThemeSeed('ERROR', 'Auto', '#FF4980')).toThrow('THEME_ERROR: "Auto"')
   })
 })

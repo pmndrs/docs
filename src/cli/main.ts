@@ -73,18 +73,14 @@ const websiteOptions = [
   new Option('--theme-tertiary <color>', 'Tertiary color, instead of the derived one').env(
     'THEME_TERTIARY',
   ),
-  new Option(
-    '--theme-neutral <color>',
-    'Neutral color (surfaces), instead of the pmndrs one; "auto" derives it from the primary',
-  ).env('THEME_NEUTRAL'),
+  new Option('--theme-neutral <color>', 'Neutral color (surfaces), instead of the pmndrs one').env(
+    'THEME_NEUTRAL',
+  ),
   new Option(
     '--theme-neutral-variant <color>',
-    'Neutral variant color (tinted surfaces, outlines), instead of the pmndrs one; "auto" derives it from the primary',
+    'Neutral variant color (tinted surfaces, outlines), instead of the pmndrs one',
   ).env('THEME_NEUTRAL_VARIANT'),
-  new Option(
-    '--theme-error <color>',
-    'Error color, instead of the pmndrs red; "auto" for Material\'s default error',
-  ).env('THEME_ERROR'),
+  new Option('--theme-error <color>', 'Error color, instead of the pmndrs red').env('THEME_ERROR'),
   new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
   new Option('--theme-npm <color>', 'Color of the npm badges').env('THEME_NPM'),
   new Option('--theme-chromatic <color>', 'Color of the chromatic badges').env('THEME_CHROMATIC'),
