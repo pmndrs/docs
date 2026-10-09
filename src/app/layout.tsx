@@ -3,37 +3,25 @@ import { docsMtb } from '@/lib/mtb'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { Inter } from 'next/font/google'
-import localFont from 'next/font/local'
+import { Inconsolata, Inter } from 'next/font/google'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
+
+// Both typefaces come from pmndrs/design-system, through `next/font/google`, which downloads them
+// at build time and serves them from the site, so a reader's browser never asks Google for them.
+// `next/font` sets each variable on `<html>`, and `globals.css` hands it to Tailwind's utility.
+
 // Inter as the preset `b1VlIttI` writes it (`pnpm exec shadcn init --preset b1VlIttI`), the
-// design system's own: `next/font/google` downloads it at build time and serves it from the
-// site, so a reader's browser never asks Google for it. Its variable is `--font-sans` itself,
-// which `globals.css` hands to the `font-sans` utility and `--font-heading`
+// design system's own. Its variable is `--font-sans` itself, which `globals.css` hands to the
+// `font-sans` utility and `--font-heading`
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
-const inconsolata = localFont({
-  src: [
-    {
-      path: '../fonts/inconsolata/inconsolata-latin-400-normal.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inconsolata/inconsolata-latin-600-normal.woff2',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inconsolata/inconsolata-latin-700-normal.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  display: 'swap',
-  variable: '--font-inconsolata',
-})
+// Inconsolata as the design system's `font-mono` item writes it
+// (`pnpm exec shadcn add pmndrs/design-system/font-mono#v0.6.0`). Its variable is `--font-mono`
+// itself, which `globals.css` hands to the `font-mono` utility and to `code, kbd, samp, pre`;
+// Sandpack reads it too. The item writes no `subsets`, which `next/font/google` requires to
+// preload the font: `latin`, as for Inter
+const inconsolata = Inconsolata({ subsets: ['latin'], variable: '--font-mono' })
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME

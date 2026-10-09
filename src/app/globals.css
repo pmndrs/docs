@@ -25,12 +25,6 @@
     lime, teal, cyan, purple, red, orange, yellow, note, tip, important, warning, caution;
 }
 
-/* `--font-sans` is not here: the preset declares it in `@theme inline` below, as the variable
- * `next/font/google` sets on `<html>` for Inter (see `layout.tsx`). */
-@theme {
-  --font-mono: var(--font-inconsolata), monospace;
-}
-
 /* Custom base styles */
 
 :root {
@@ -351,6 +345,9 @@ pre[class*='language-'] {
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  /* Written by pmndrs/design-system's `font-mono` item: the variable `next/font/google` sets on
+   * `<html>` for Inconsolata (see `layout.tsx`), as `--font-sans` above is for Inter */
+  --font-mono: var(--font-mono);
 }
 
 .dark {
@@ -396,6 +393,13 @@ pre[class*='language-'] {
   }
   html {
     @apply font-sans;
+  }
+  /* Also from `font-mono`: code-like elements only, so that the prose keeps its sans font */
+  code,
+  kbd,
+  samp,
+  pre {
+    @apply font-mono;
   }
 }
 
