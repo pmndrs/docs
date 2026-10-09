@@ -1,5 +1,7 @@
+import { pmndrsMtb } from '@/lib/md3'
 import { test, expect } from '@chromatic-com/playwright'
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
+import { builder } from 'material-theme-builder'
 
 //
 // Test any docs/**/*.mdx page
@@ -1047,5 +1049,255 @@ test.describe('fonts', () => {
       .first()
     await expect(paragraph).toHaveCSS('font-family', inter)
     await expect(paragraph).not.toHaveCSS('font-family', /Inconsolata|monospace/)
+  })
+})
+
+//
+// Docs-only colours: the components whose colours the site picks itself (rather than through a
+// `ui/` component) draw them from the MD3 roles. Read off what a reader's browser computes, against
+// the role resolved in the same page
+//
+
+// The colour a reader's browser computes for `value` (a role's `var()`), in the format of a computed
+// `color` or `background-color`
+function resolveColor(page: Page, value: string) {
+  return page.evaluate((value) => {
+    const probe = document.createElement('div')
+    probe.style.color = value
+    document.body.append(probe)
+    const color = getComputedStyle(probe).color
+    probe.remove()
+    return color
+  }, value)
+}
+
+// The background a reader sees behind an element: its own, or its nearest ancestor's that has one
+function backdrop(locator: Locator) {
+  return locator.evaluate((element) => {
+    for (let node: Element | null = element; node; node = node.parentElement) {
+      const background = getComputedStyle(node).backgroundColor
+      if (background !== 'rgba(0, 0, 0, 0)') return background
+    }
+    return null
+  })
+}
+
+// The WCAG contrast ratio of an element's text against what is behind it: its own background and its
+// ancestors', composited down to the first opaque one
+function contrast(locator: Locator) {
+  return locator.evaluate((element) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1
+    const context = canvas.getContext('2d', { willReadFrequently: true })!
+    const rgba = (color: string) => {
+      context.clearRect(0, 0, 1, 1)
+      context.fillStyle = color
+      context.fillRect(0, 0, 1, 1)
+      const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data
+      return [r, g, b, a / 255]
+    }
+    const over = (top: number[], bottom: number[]) => [
+      ...[0, 1, 2].map((i) => top[i] * top[3] + bottom[i] * (1 - top[3])),
+      1,
+    ]
+    const layers = []
+    for (let node: Element | null = element; node; node = node.parentElement) {
+      const background = rgba(getComputedStyle(node).backgroundColor)
+      if (background[3] > 0) layers.push(background)
+      if (background[3] >= 1) break
+    }
+    const background = layers.reduceRight((bottom, top) => over(top, bottom), [255, 255, 255, 1])
+    const text = over(rgba(getComputedStyle(element).color), background)
+    const luminance = (color: number[]) => {
+      const [r, g, b] = color.slice(0, 3).map((value) => {
+        value /= 255
+        return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+      })
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    }
+    const [lighter, darker] = [luminance(text), luminance(background)].sort((a, b) => b - a)
+    return (lighter + 0.05) / (darker + 0.05)
+  })
+}
+
+const alerts = ['note', 'tip', 'important', 'warning', 'caution']
+
+// The roles the design system's palette makes of its alert colours (`src/lib/md3.ts`, a verbatim
+// copy of `md3-base`), which no `THEME_*` here overrides
+const designSystemPalette = builder(pmndrsMtb.source, pmndrsMtb)
+const hex = (argb: number) => `#${(argb & 0xffffff).toString(16).padStart(6, '0')}`
+
+test.describe('docs-only colours', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`the alert roles are the design system's defaults, ${colorScheme}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/gha')
+      await page.waitForLoadState('networkidle')
+
+      const colors =
+        colorScheme === 'light'
+          ? designSystemPalette.mergedColorsLight
+          : designSystemPalette.mergedColorsDark
+      for (const alert of alerts) {
+        for (const [role, key] of [
+          [alert, alert],
+          [`${alert}-container`, `${alert}Container`],
+        ]) {
+          const value = await page.evaluate(
+            (role) =>
+              getComputedStyle(document.documentElement).getPropertyValue(`--md-sys-color-${role}`),
+            role,
+          )
+          expect(value.toLowerCase(), role).toBe(hex(colors[key]))
+        }
+      }
+    })
+  }
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`a GitHub alert's text is in the on-container role of its background, ${colorScheme}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/gha')
+      await page.waitForLoadState('networkidle')
+
+      for (const alert of alerts) {
+        const text = page
+          .locator(`[data-slot="gha"][data-keyword="${alert}"]`)
+          .first()
+          .getByRole('paragraph')
+          .first()
+        await expect(text, alert).toHaveCSS(
+          'color',
+          await resolveColor(page, `var(--md-sys-color-on-${alert}-container)`),
+        )
+      }
+    })
+  }
+
+  test("a link in a GitHub alert, a footnote ref included, is in the alert's text role", async ({
+    page,
+  }) => {
+    // Not `networkidle`: the previews keep fetching from CodeSandbox. Its NOTE has a link, a TIP a
+    // footnote ref
+    await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+
+    const alertsWithLinks = page
+      .locator('[data-slot="gha"]')
+      .filter({ has: page.getByRole('link') })
+    await expect(alertsWithLinks.first()).toBeVisible()
+    for (const alert of await alertsWithLinks.all()) {
+      const keyword = await alert.getAttribute('data-keyword')
+      const expected = await resolveColor(page, `var(--md-sys-color-on-${keyword}-container)`)
+      for (const link of await alert.getByRole('link').all()) {
+        await expect(link, keyword!).toHaveCSS('color', expected)
+      }
+    }
+  })
+
+  test('a link that paints its own surface keeps its own text colour in a GitHub alert', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+
+    // The MCP-server Tip's install links: buttons, on `primary`
+    const installLink = page
+      .locator('[data-slot="gha"][data-keyword="tip"]')
+      .locator('a[data-slot="button"]')
+      .first()
+    await expect(installLink).toHaveCSS(
+      'color',
+      await resolveColor(page, 'var(--primary-foreground)'),
+    )
+  })
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`what an alert holds, and a Mermaid edge label, reads at 4.5:1, ${colorScheme}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme })
+
+      // Inline code in an alert, in a link: its own chip, with its own text role
+      await page.goto('/authoring/img')
+      await page.waitForLoadState('networkidle')
+      const code = page.locator('[data-slot="gha"] code').first()
+      expect(await contrast(code)).toBeGreaterThanOrEqual(4.5)
+
+      // A table in an alert, its striped rows included: its own surfaces, with their text role
+      await page.goto('/agents/introduction')
+      await page.waitForLoadState('networkidle')
+      const cells = page.locator('[data-slot="gha"] td')
+      await expect(cells.first()).toBeAttached()
+      for (const cell of await cells.all()) {
+        expect(await contrast(cell)).toBeGreaterThanOrEqual(4.5)
+      }
+
+      // The MCP-server Tip's tabs, the active one and the others
+      await page.goto('/')
+      await page.waitForLoadState('networkidle')
+      const tabs = page.locator('[data-slot="gha"] [data-slot="tabs-trigger"]')
+      await expect(tabs.first()).toBeAttached()
+      for (const tab of await tabs.all()) {
+        expect(await contrast(tab)).toBeGreaterThanOrEqual(4.5)
+      }
+
+      // A flowchart edge label ("Yes"), on the line, over the page
+      await page.goto('/authoring/mermaid')
+      await page.waitForLoadState('networkidle')
+      const edgeLabel = page
+        .locator('[data-slot="mermaid"] .edgeLabel p')
+        .filter({ hasText: /\S/ })
+        .first()
+      await expect(edgeLabel).toBeAttached()
+      expect(await contrast(edgeLabel)).toBeGreaterThanOrEqual(4.5)
+    })
+  }
+
+  test('a Sandpack editor is coloured like a code block', async ({ page }) => {
+    await page.goto('/authoring/code')
+    await page.waitForLoadState('networkidle')
+    const codeKeyword = page.getByRole('article').locator('pre .token.keyword').first()
+    const keywordColor = await codeKeyword.evaluate((element) => getComputedStyle(element).color)
+    const codeBackground = await backdrop(codeKeyword)
+
+    // Not `networkidle`: the previews keep fetching from CodeSandbox
+    await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+    const sandpackKeyword = page.locator('.sp-code-editor .sp-syntax-keyword').first()
+
+    await expect(sandpackKeyword).toHaveCSS('color', keywordColor)
+    // Polled: Sandpack remounts its editor once it has loaded, and a detached node computes no style
+    await expect.poll(() => backdrop(sandpackKeyword)).toBe(codeBackground)
+  })
+
+  test('a Mermaid diagram is drawn in the palette, and follows the theme and the picked color', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.goto('/authoring/mermaid')
+    await page.waitForLoadState('networkidle')
+
+    // The flowchart's first node: Mermaid's `base` theme fills it with `primaryColor`
+    const node = page.locator('[data-slot="mermaid"] .node rect').first()
+    const primaryContainer = () => resolveColor(page, 'var(--md-sys-color-primary-container)')
+
+    await expect(node).toHaveCSS('fill', await primaryContainer())
+
+    // Through the theme toggle, as a reader switches: system (light), then light, then dark
+    await showThemeControls(page)
+    const toggle = page.getByRole('button', { name: /^Theme(:|$)/ })
+    await toggle.click()
+    await toggle.click()
+    await expect(page.locator('html')).toHaveClass(/\bdark\b/)
+    const darkPrimaryContainer = await primaryContainer()
+    await expect(node).toHaveCSS('fill', darkPrimaryContainer)
+
+    // A picked color re-seeds the palette, and the diagram with it
+    await page.locator('input[type="color"]').filter({ visible: true }).fill('#ff0000')
+    await expect.poll(primaryContainer).not.toBe(darkPrimaryContainer)
+    await expect(node).toHaveCSS('fill', await primaryContainer())
   })
 })

@@ -52,6 +52,49 @@ async function getSandpackFiles(
   }, {} as SandpackFiles)
 }
 
+/**
+ * Coloured like a code block (`Code`), from the code colours in globals.css: the same snippet reads
+ * the same in an editor and in a code block next to it. The editor sits on the code background, in
+ * light and dark alike, since the syntax ramp is tuned for it.
+ *
+ * Its surfaces and foregrounds (tabs, buttons, the caret) are the code colours too, and primary.
+ * Its error and warning colours are the dark scheme's tones of the error and warning palettes: left
+ * out, Sandpack would pick its light defaults, as it can't tell a `var()` surface is dark (a pale
+ * error line behind the light code text).
+ *
+ * The syntax keys follow the prism mapping in globals.css.
+ */
+const sandpackTheme = {
+  colors: {
+    surface1: 'var(--code-background)',
+    surface2: 'var(--code-surface-2)',
+    surface3: 'var(--code-surface-3)',
+    disabled: 'var(--comment)',
+    base: 'var(--code-text)',
+    clickable: 'var(--code-clickable)',
+    hover: 'var(--code-text)',
+    accent: 'var(--md-ref-palette-primary-80)',
+    error: 'var(--md-ref-palette-error-80)',
+    errorSurface: 'var(--md-ref-palette-error-30)',
+    warning: 'var(--md-ref-palette-warning-80)',
+    warningSurface: 'var(--md-ref-palette-warning-30)',
+  },
+  syntax: {
+    plain: 'var(--code-text)',
+    comment: 'var(--comment)',
+    keyword: 'var(--keyword)',
+    definition: 'var(--function)',
+    punctuation: 'var(--punctuation)',
+    property: 'var(--property)',
+    tag: 'var(--property)',
+    static: 'var(--boolean)',
+    string: 'var(--string)',
+  },
+  font: {
+    mono: 'var(--font-mono)',
+  },
+} satisfies SandpackProviderProps['theme']
+
 // https://sandpack.codesandbox.io/docs/getting-started/usage
 export const Sandpack = async ({
   className,
@@ -90,16 +133,7 @@ export const Sandpack = async ({
     <div className={cn(className, 'sandpack')}>
       <SandpackProvider
         {...props}
-        theme={{
-          colors: {
-            surface1: 'var(--md-sys-color-surface-container-low)',
-            surface2: 'var(--md-sys-color-surface-container)',
-            surface3: 'var(--md-sys-color-surface-container-high)',
-          },
-          font: {
-            mono: 'var(--font-mono)',
-          },
-        }}
+        theme={sandpackTheme}
         files={_files}
         customSetup={customSetup}
         options={options}

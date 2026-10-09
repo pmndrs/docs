@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { Mtb } from 'material-theme-builder/react'
 import { Fragment, type CSSProperties } from 'react'
 
 import { Badge, type BadgeColor } from './Badge'
@@ -16,32 +15,20 @@ const meta = {
     },
   },
   decorators: [
-    // The theme the website builds in `src/app/layout.tsx`, with its default colors: the
-    // badge colors are its tokens, and its brand colors.
+    // The site's palette comes from the preview (`docsMtb`, as `src/app/layout.tsx` mounts it); the
+    // brand colors, which `<Mtb>` doesn't carry, as the layout sets them
     (Story) => (
-      <Mtb
-        source="#323e48"
-        scheme="tonalSpot"
-        customColors={[
-          { name: 'note', hex: '#1f6feb', blend: true },
-          { name: 'tip', hex: '#238636', blend: true },
-          { name: 'important', hex: '#8957e5', blend: true },
-          { name: 'warning', hex: '#d29922', blend: true },
-          { name: 'caution', hex: '#da3633', blend: true },
-        ]}
+      <div
+        style={
+          {
+            '--brand-storybook': '#ff4785',
+            '--brand-npm': '#cb3837',
+            '--brand-chromatic': '#fc521f',
+          } as CSSProperties
+        }
       >
-        <div
-          style={
-            {
-              '--brand-storybook': '#ff4785',
-              '--brand-npm': '#cb3837',
-              '--brand-chromatic': '#fc521f',
-            } as CSSProperties
-          }
-        >
-          <Story />
-        </div>
-      </Mtb>
+        <Story />
+      </div>
     ),
   ],
 } satisfies Meta<typeof Badge>

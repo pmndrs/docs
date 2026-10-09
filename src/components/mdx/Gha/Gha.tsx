@@ -14,34 +14,36 @@ import { p as P } from '@/components/mdx'
 type Style = {
   icon: LucideIcon
   label: string
-  bg: string
+  /** The alert's `-container` role, with its `on-…-container` text role: the pair MD3 guarantees the
+   * contrast of, in light and dark, at every contrast level */
+  colors: string
 }
 
 const styles: Record<string, Style> = {
   NOTE: {
     icon: InfoIcon,
     label: 'Note',
-    bg: 'bg-note-container',
+    colors: 'bg-note-container text-on-note-container',
   },
   TIP: {
     icon: LightbulbIcon,
     label: 'Tip',
-    bg: 'bg-tip-container',
+    colors: 'bg-tip-container text-on-tip-container',
   },
   IMPORTANT: {
     icon: MessageSquareWarningIcon,
     label: 'Important',
-    bg: 'bg-important-container',
+    colors: 'bg-important-container text-on-important-container',
   },
   WARNING: {
     icon: TriangleAlertIcon,
     label: 'Warning',
-    bg: 'bg-warning-container',
+    colors: 'bg-warning-container text-on-warning-container',
   },
   CAUTION: {
     icon: OctagonAlertIcon,
     label: 'Caution',
-    bg: 'bg-caution-container',
+    colors: 'bg-caution-container text-on-caution-container',
   },
 }
 
@@ -56,7 +58,7 @@ export function Gha({
 }) {
   if (!keyword || !(keyword in styles)) keyword = 'NOTE' // default to "NOTE"
 
-  const { icon, label: defaultLabel, bg } = styles[keyword]
+  const { icon, label: defaultLabel, colors } = styles[keyword]
   const label = title ?? defaultLabel
   const Icon = icon
 
@@ -66,7 +68,12 @@ export function Gha({
   }
 
   return (
-    <div className={cn('my-6 overflow-clip rounded-lg px-6 py-2', bg)}>
+    <div
+      data-slot="gha"
+      data-keyword={keyword.toLowerCase()}
+      // What it holds is drawn on its container too: see `[data-slot='gha']` in globals.css
+      className={cn('my-6 overflow-clip rounded-lg px-6 py-2', colors)}
+    >
       <div className="my-4 flex items-center gap-2 text-lg font-semibold">
         <Icon size="1em" />
         {label}

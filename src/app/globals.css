@@ -18,8 +18,8 @@
 @source '../../docs/**/*.{md,mdx}';
 
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
- * roles of each custom colour named here: the seven pmndrs ones (`src/lib/md3.ts`),
- * then our alert colours (`src/lib/mtb.ts`). */
+ * roles of each custom colour named here: the seven pmndrs ones, then the five alert ones, all
+ * from the design system (`src/lib/md3.ts`). */
 @plugin 'material-theme-builder/tailwind' {
   custom-colors:
     lime, teal, cyan, purple, red, orange, yellow, note, tip, important, warning, caution;
@@ -66,6 +66,32 @@ main :target {
   }
 }
 
+/*
+ * Inside a GitHub alert (`Gha`), as MD3 pairs them: each surface carries its own `on-` role. What
+ * has no surface of its own sits on the alert's container, in its text colour
+ * (`on-<alert>-container`); what paints a surface (an inline code chip, a table, a button) keeps it,
+ * with its own text role, as anywhere else.
+ *
+ * Unlayered, so it outranks the utilities those elements carry.
+ */
+[data-slot='gha'] {
+  /* Prose links, footnote refs included, still underlined: the site's `primary` can all but
+   * vanish on an alert's container. Not a component's link, which paints its own surface (a
+   * button, a badge: a `data-slot`); and only the link's own text, not an inline code chip in it */
+  & a:not([data-slot]) {
+    color: inherit;
+  }
+
+  /* Tabs: no surface of their own, so the alert's text, the active one told by its indicator */
+  & [data-slot='tabs-list'],
+  & [data-slot='tabs-trigger'] {
+    color: inherit;
+  }
+  & [data-slot='tabs-trigger']::after {
+    background-color: currentColor;
+  }
+}
+
 mark {
   @apply -m-(--pad) rounded-sm p-(--pad) [--pad:0.05rem];
 }
@@ -88,16 +114,31 @@ pre[class*='language-'] {
   hyphens: none;
 }
 
-/* Code blocks */
-pre[class*='language-'] {
-  /*
-   * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
-   * the same in light and dark: the code block background is always dark (see Code.tsx).
-   * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
-   * strings and functions 120 degrees apart), with its own lightness and chroma, so the
-   * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
-   * near-neutral, like the plain code text (see Code.tsx).
-   */
+/*
+ * Code colours: the code block's background, text and syntax ramp. On the root rather than on the
+ * code block, so that whatever draws code takes them too: Sandpack's editor maps its theme onto
+ * them (see Sandpack.tsx), and reads the same as a code block.
+ *
+ * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
+ * the same in light and dark: the code block background is always dark.
+ * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
+ * strings and functions 120 degrees apart), with its own lightness and chroma, so the
+ * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
+ * near-neutral, like the plain code text.
+ *
+ * The background and text are tones of the primary palette rather than the `*-fixed` roles: those
+ * are fixed across light and dark, not across contrast levels, which move them, up to flipping the
+ * pair (a white background at high contrast). Tones 10 and 90 are what `on-primary-fixed` and
+ * `primary-fixed` are at the standard contrast.
+ */
+:root {
+  --code-background: oklch(from var(--md-ref-palette-primary-10) l calc(c * 0.2) h);
+  --code-text: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
+  /* Above the background, for what draws a code editor around the code (Sandpack.tsx): two
+   * surfaces (borders, the active line and buttons), and a dimmer text (tabs, icons) */
+  --code-surface-2: oklch(from var(--md-ref-palette-primary-15) l calc(c * 0.2) h);
+  --code-surface-3: oklch(from var(--md-ref-palette-primary-20) l calc(c * 0.2) h);
+  --code-clickable: oklch(from var(--md-ref-palette-primary-70) l calc(c * 0.2) h);
   --seed: var(--md-ref-palette-primary-80);
   --keyword: oklch(from var(--seed) 0.78 0.15 h);
   --operator: var(--keyword);
@@ -111,6 +152,10 @@ pre[class*='language-'] {
   /* Diffs keep their meaning (green, red) rather than following the seed */
   --inserted: var(--md-ref-palette-tip-80);
   --deleted: var(--md-ref-palette-caution-80);
+}
+
+/* Code blocks */
+pre[class*='language-'] {
   --linenumber-border-width: --spacing(1);
   --pad: --spacing(6);
 }

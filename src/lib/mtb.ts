@@ -4,25 +4,15 @@ import { parseThemeColor, parseThemeFlag } from '@/utils/theme-seeds'
 import type { MtbConfig } from 'material-theme-builder'
 
 /**
- * GitHub's alert palette, the colours `rehype-github-alerts` renders.
- *
- * These are ours, not the design system's: nothing outside this generator draws
- * markdown alerts, and the hexes are GitHub's rather than poimandres'. The design
- * system owns the seed; this owns what the seed has no M3 role for.
- *
- * `blend: true` harmonizes each one against that seed, so they shift with the
- * theme instead of sitting on top of it.
+ * The five alert roles, GitHub's alert palette: `pmndrsMtb` ships them (from
+ * pmndrs/design-system's `md3-base`), with their `THEME_NOTE`…`THEME_CAUTION`
+ * overrides. Named here as the colours `THEME_CUSTOM_COLORS` may not redefine:
+ * `THEME_<NAME>` is the way to change one.
  *
  * Name each one in the `@plugin 'material-theme-builder/tailwind'` block in
  * globals.css, and the package emits the Tailwind utilities for it.
  */
-const alertColors = [
-  { name: 'note', hex: process.env.THEME_NOTE || '#1f6feb', blend: true },
-  { name: 'tip', hex: process.env.THEME_TIP || '#238636', blend: true },
-  { name: 'important', hex: process.env.THEME_IMPORTANT || '#8957e5', blend: true },
-  { name: 'warning', hex: process.env.THEME_WARNING || '#d29922', blend: true },
-  { name: 'caution', hex: process.env.THEME_CAUTION || '#da3633', blend: true },
-]
+const alertNames = ['note', 'tip', 'important', 'warning', 'caution']
 
 /**
  * The site's own custom colours, from `THEME_CUSTOM_COLORS`: roles of the theme
@@ -30,22 +20,21 @@ const alertColors = [
  * the reader picks. Parsed at build time: a malformed entry fails the build, with
  * its reason.
  */
-const siteColors = parseCustomColors(
-  process.env.THEME_CUSTOM_COLORS,
-  alertColors.map((color) => color.name),
-)
+const siteColors = parseCustomColors(process.env.THEME_CUSTOM_COLORS, alertNames)
 
 /**
- * The seven pmndrs colours (`lime`, `teal`…), less any the site redefines under
- * the same name: its own `THEME_CUSTOM_COLORS` entry wins.
+ * The pmndrs colours, in their order: the seven brand ones (`lime`, `teal`…),
+ * then the five alerts. Less any brand colour the site redefines under the same
+ * name: its own `THEME_CUSTOM_COLORS` entry wins. Never an alert: `siteColors`
+ * refuses their names.
  */
 const pmndrsColors = pmndrsMtb.customColors.filter(
   (color) => !siteColors.some((siteColor) => siteColor.name === color.name),
 )
 
 /**
- * The theme this site mounts: the pmndrs seed, whatever of it the site
- * overrides, our alert colours and the site's own.
+ * The theme this site mounts: the pmndrs seed and colours (alerts included),
+ * whatever of them the site overrides, and the site's own colours.
  *
  * The pmndrs seed already reads `THEME_PRIMARY`, `THEME_CONTRAST`,
  * `THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT` and `THEME_ERROR`; the last three
@@ -73,5 +62,5 @@ export const docsMtb = {
     parseThemeColor('NEUTRAL_VARIANT', process.env.THEME_NEUTRAL_VARIANT) ??
     pmndrsMtb.neutralVariant,
   error: parseThemeColor('ERROR', process.env.THEME_ERROR) ?? pmndrsMtb.error,
-  customColors: [...pmndrsColors, ...alertColors, ...siteColors],
+  customColors: [...pmndrsColors, ...siteColors],
 } satisfies MtbConfig

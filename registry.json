@@ -9,7 +9,7 @@
       "title": "Keypoints",
       "description": "A titled panel listing the main points an article covers — one bullet per `KeypointsItem`. Usually sits right after the intro.",
       "author": "pmndrs",
-      "registryDependencies": ["pmndrs/design-system/theme#v0.6.0"],
+      "registryDependencies": ["pmndrs/design-system/theme#v0.8.0"],
       "files": [
         {
           "path": "registry/keypoints/keypoints.tsx",
@@ -25,7 +25,7 @@
       "description": "Swatches of the theme's Material 3 color roles, as Material's scheme poster shows them. `Color` is a disc inline in text, or a cell with the role's name on it in the ink Material pairs with it; `ColorGroup` fuses cells into one rounded block, horizontal or vertical, nesting as rows. Takes any role in kebab-case (`primary`, `on-tertiary-fixed-variant`, a custom color), or any CSS color.",
       "author": "pmndrs",
       "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["pmndrs/design-system/theme#v0.6.0"],
+      "registryDependencies": ["pmndrs/design-system/theme#v0.8.0"],
       "files": [
         {
           "path": "registry/color/color.tsx",
