@@ -202,13 +202,15 @@ jobs:
       # URL `VERSION_URL_TEMPLATE` links its branch to, and re-point it on every push. Production
       # needs none: `main` is docs.pmnd.rs.
       #
-      # Not fatal: a branch name too long for a 63-character hostname label cannot get its alias,
-      # and that is no reason to fail the pull request.
+      # The hostname is the template's, expanded for this branch by the same function as the
+      # switcher's links: a long branch is cut and hashed to fit its 63-character label.
+      #
+      # Not fatal: an alias failing is no reason to fail the pull request.
       - name: Alias the preview to its branch URL
-        if: github.event_name != 'push' && steps.version.outputs.slug != ''
+        if: github.event_name != 'push' && steps.version.outputs.hostname != ''
         continue-on-error: true
         run: |
           npx -y vercel alias set "${{ steps.vercel-deploy.outputs.deployment_url }}" \
-            "docs-git-${{ steps.version.outputs.slug }}-pmndrs.vercel.app" \
+            "${{ steps.version.outputs.hostname }}" \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=pmndrs
