@@ -1121,4 +1121,32 @@ test.describe('docs-only colours', () => {
     await expect(sandpackKeyword).toHaveCSS('color', keywordColor)
     expect(await backdrop(sandpackKeyword)).toBe(codeBackground)
   })
+
+  test('a Mermaid diagram is drawn in the palette, and follows the theme and the picked color', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.goto('/authoring/mermaid')
+    await page.waitForLoadState('networkidle')
+
+    // The flowchart's first node: Mermaid's `base` theme fills it with `primaryColor`
+    const node = page.locator('[data-slot="mermaid"] .node rect').first()
+    const primaryContainer = () => resolveColor(page, 'var(--md-sys-color-primary-container)')
+
+    await expect(node).toHaveCSS('fill', await primaryContainer())
+
+    // Through the theme toggle, as a reader switches: system (light), then light, then dark
+    await showThemeControls(page)
+    const toggle = page.getByRole('button', { name: /^Theme(:|$)/ })
+    await toggle.click()
+    await toggle.click()
+    await expect(page.locator('html')).toHaveClass(/\bdark\b/)
+    const darkPrimaryContainer = await primaryContainer()
+    await expect(node).toHaveCSS('fill', darkPrimaryContainer)
+
+    // A picked color re-seeds the palette, and the diagram with it
+    await page.locator('input[type="color"]').filter({ visible: true }).fill('#ff0000')
+    await expect.poll(primaryContainer).not.toBe(darkPrimaryContainer)
+    await expect(node).toHaveCSS('fill', await primaryContainer())
+  })
 })

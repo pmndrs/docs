@@ -1,5 +1,7 @@
 'use client'
 
+import { useMtb } from 'material-theme-builder/react'
+import type { MermaidConfig } from 'mermaid'
 import { useTheme } from 'next-themes'
 import { useEffect, useRef } from 'react'
 
@@ -27,22 +29,65 @@ function preventMermaidBlockStringifyCrash() {
   Object.defineProperty(html, 'toJSON', { value: () => ({}), configurable: true })
 }
 
+/**
+ * Mermaid's `base` theme, fed with the MD3 roles in effect: the containers for the shapes, surface
+ * and outline for the background, lines and borders, `error` for error states. The rest Mermaid
+ * derives from them.
+ *
+ * Read off the document's computed style rather than passed as `var()`: Mermaid computes colours
+ * from them (with khroma), which needs actual values. The palette defines its roles as hexes.
+ */
+function themeVariables(darkMode: boolean): MermaidConfig['themeVariables'] {
+  const style = getComputedStyle(document.documentElement)
+  const role = (name: string) => style.getPropertyValue(`--md-sys-color-${name}`).trim()
+
+  return {
+    darkMode,
+    background: role('surface'),
+    textColor: role('on-surface'),
+    lineColor: role('outline'),
+    primaryColor: role('primary-container'),
+    primaryTextColor: role('on-primary-container'),
+    primaryBorderColor: role('outline'),
+    secondaryColor: role('secondary-container'),
+    secondaryTextColor: role('on-secondary-container'),
+    secondaryBorderColor: role('outline'),
+    tertiaryColor: role('tertiary-container'),
+    tertiaryTextColor: role('on-tertiary-container'),
+    tertiaryBorderColor: role('outline'),
+    // Notes otherwise stay Mermaid's own yellow
+    noteBkgColor: role('tertiary-container'),
+    noteTextColor: role('on-tertiary-container'),
+    noteBorderColor: role('outline'),
+    errorBkgColor: role('error'),
+    errorTextColor: role('on-error'),
+  }
+}
+
 export function Mermaid({ chart }: MermaidProps) {
   const ref = useRef<HTMLDivElement>(null)
   const { resolvedTheme } = useTheme()
+  // The palette in effect: a new one whenever the reader re-seeds it (see `PrimaryColorMtb`), in
+  // the commit that writes its `<style>`
+  const { mtbConfig } = useMtb()
 
   useEffect(() => {
     if (!ref.current) return
+    // A newer render supersedes this one
+    let isCancelled = false
 
     const renderDiagram = async () => {
       try {
         const mermaid = (await import('mermaid')).default
+        if (isCancelled) return
         preventMermaidBlockStringifyCrash()
 
-        // Initialize with theme-aware configuration
+        // Read once the import has settled, not when the effect runs: `next-themes` sets the `dark`
+        // class in its own effect, which runs after this one, its child's
         mermaid.initialize({
           startOnLoad: false,
-          theme: resolvedTheme === 'dark' ? 'dark' : 'default',
+          theme: 'base',
+          themeVariables: themeVariables(resolvedTheme === 'dark'),
           securityLevel: 'loose',
         })
 
@@ -57,19 +102,23 @@ export function Mermaid({ chart }: MermaidProps) {
         // Render the diagram
         const { svg } = await mermaid.render(id, chart)
 
-        if (ref.current) {
+        if (ref.current && !isCancelled) {
           ref.current.innerHTML = svg
         }
       } catch (error) {
         console.error('Failed to render Mermaid diagram:', error)
-        if (ref.current) {
-          ref.current.innerHTML = `<pre style="color: red;">Error rendering diagram: ${error instanceof Error ? error.message : 'Unknown error'}</pre>`
+        if (ref.current && !isCancelled) {
+          ref.current.innerHTML = `<pre style="color: var(--md-sys-color-error);">Error rendering diagram: ${error instanceof Error ? error.message : 'Unknown error'}</pre>`
         }
       }
     }
 
     renderDiagram()
-  }, [chart, resolvedTheme])
 
-  return <div ref={ref} className="my-8 flex justify-center" />
+    return () => {
+      isCancelled = true
+    }
+  }, [chart, resolvedTheme, mtbConfig])
+
+  return <div ref={ref} data-slot="mermaid" className="my-8 flex justify-center" />
 }
