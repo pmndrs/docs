@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import { createHash } from 'node:crypto'
 import {
   assertValidUrlTemplate,
   expandUrlTemplate,
+  genericBranchLabelPart,
   slugifyBranch,
   slugifyBranchVercel,
 } from './slugify-branch'
@@ -18,6 +20,49 @@ describe('slugifyBranch', () => {
 
   it('trims hyphens at both ends', () => {
     expect(slugifyBranch('/-feat/x_')).toBe('feat-x')
+  })
+})
+
+describe('genericBranchLabelPart', () => {
+  const prefix = 'design-system-git-'
+  const suffix = '-pmndrs'
+
+  it('is the plain slug when the label fits in 63 characters', async () => {
+    expect(await genericBranchLabelPart('feat/Switcher', prefix, suffix)).toBe('feat-switcher')
+    // 18 + 38 + 7 = 63: right at the limit
+    const branch = 'a'.repeat(38)
+    expect(await genericBranchLabelPart(branch, prefix, suffix)).toBe(branch)
+  })
+
+  it('truncates a long slug and appends the first 6 hex characters of sha256(branch)', async () => {
+    // Real: this branch made a 64-character label, which Vercel refused as an alias
+    const branch = 'claude/pages-shadcn-tailwind-prep-98d23c'
+    const hash6 = createHash('sha256').update(branch).digest('hex').slice(0, 6)
+    const part = await genericBranchLabelPart(branch, prefix, suffix)
+
+    expect(part).toBe(`claude-pages-shadcn-tailwind-pr-${hash6}`)
+    expect(`${prefix}${part}${suffix}`).toHaveLength(63)
+  })
+
+  it('drops the hyphens the cut leaves at the end of the slug', async () => {
+    // 2 characters less room: the cut falls right after `tailwind-`
+    const branch = 'claude/pages-shadcn-tailwind-prep-xyz'
+    const hash6 = createHash('sha256').update(branch).digest('hex').slice(0, 6)
+    expect(await genericBranchLabelPart(branch, `${prefix}xx`, suffix)).toBe(
+      `claude-pages-shadcn-tailwind-${hash6}`,
+    )
+  })
+
+  it('tells apart two long branches that share their beginning', async () => {
+    const a = await genericBranchLabelPart(`feat/${'x'.repeat(60)}-a`, prefix, suffix)
+    const b = await genericBranchLabelPart(`feat/${'x'.repeat(60)}-b`, prefix, suffix)
+    expect(a).not.toBe(b)
+  })
+
+  it('throws when the rest of the label leaves no room for the hash', async () => {
+    await expect(genericBranchLabelPart('feat/x', 'a'.repeat(60), '')).rejects.toThrow(
+      '63-character',
+    )
   })
 })
 
@@ -43,6 +88,23 @@ describe('expandUrlTemplate', () => {
     ).toBe('https://docs-git-feat-switcher-pmndrs.vercel.app')
     expect(await expandUrlTemplate('https://{branch:generic}.example.com', 'feat/x')).toBe(
       'https://feat-x.example.com',
+    )
+  })
+
+  it('keeps a {branch} hostname label within 63 characters', async () => {
+    const url = await expandUrlTemplate(
+      'https://design-system-git-{branch}-pmndrs.vercel.app/design-system',
+      'claude/pages-shadcn-tailwind-prep-98d23c',
+    )
+    const [label] = new URL(url).hostname.split('.')
+    expect(label).toHaveLength(63)
+    expect(label).toMatch(/^design-system-git-claude-pages-shadcn-tailwind-pr-[0-9a-f]{6}-pmndrs$/)
+  })
+
+  it('leaves a long {branch} outside the hostname whole', async () => {
+    const branch = `feat/${'x'.repeat(80)}`
+    expect(await expandUrlTemplate('https://example.com/{branch}/', branch)).toBe(
+      `https://example.com/${slugifyBranch(branch)}/`,
     )
   })
 

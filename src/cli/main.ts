@@ -1,6 +1,6 @@
 import { version } from '@/package.json'
 import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
-import { assertValidUrlTemplate } from '@/utils/slugify-branch'
+import { assertValidUrlTemplate, expandUrlTemplate } from '@/utils/slugify-branch'
 import { Command, Option, type OptionValues } from 'commander'
 import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
@@ -12,6 +12,12 @@ import { fragmentComponents, renderFragment, renderToHtml } from './render'
 import * as gitInfo from './git-info'
 import { resolveVersionEnv } from './version-env'
 import { buildWebsite } from './website'
+
+/** A website option, which `version-url` takes too. */
+const versionUrlTemplateOption = new Option(
+  '--version-url-template <url>',
+  'Full public URL of a branch deployment, base path included, e.g. "https://docs-git-{branch}-pmndrs.vercel.app"; enables the version switcher',
+).env('VERSION_URL_TEMPLATE')
 
 /**
  * The website options — the ones that describe *a site* rather than what to compile.
@@ -90,10 +96,7 @@ const websiteOptions = [
   new Option('--tag-match <glob>', 'Tags the version is described from, e.g. "leva@*"').env(
     'TAG_MATCH',
   ),
-  new Option(
-    '--version-url-template <url>',
-    'Full public URL of a branch deployment, base path included, e.g. "https://docs-git-{branch}-pmndrs.vercel.app"; enables the version switcher',
-  ).env('VERSION_URL_TEMPLATE'),
+  versionUrlTemplateOption,
   new Option(
     '--version-production-branch <branch>',
     'Branch served at --version-production-url, the others at --version-url-template (default: "main")',
@@ -380,6 +383,43 @@ Nothing found exits 1.
   )
   .action(runSearch)
 
+//
+// version-url -- where the version switcher links the branch being built
+//
+
+async function runVersionUrl(opts: OptionValues) {
+  const template: string | undefined = opts.versionUrlTemplate
+  if (!template)
+    throw new Error('version-url needs --version-url-template (or VERSION_URL_TEMPLATE)')
+
+  const branch: string | undefined = opts.branch ?? gitInfo.getCurrentBranch()
+  if (!branch) throw new Error('version-url could not tell the branch: pass --branch')
+
+  const url = await expandUrlTemplate(template, branch)
+  process.stdout.write(`${opts.hostname ? new URL(url).hostname : url}\n`)
+}
+
+const versionUrl = new Command('version-url')
+  .description('Print the URL the version switcher links a branch to: the alias of its deployment')
+  .addOption(versionUrlTemplateOption)
+  .addOption(
+    new Option('--branch <branch>', 'Branch to expand the template for (default: the current one)'),
+  )
+  .addOption(new Option('--hostname', 'Print the hostname alone, e.g. for `vercel alias set`'))
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ pmndrs-docs version-url --version-url-template 'https://docs-git-{branch}-pmndrs.vercel.app'
+  $ VERSION_URL_TEMPLATE='https://docs-git-{branch}-pmndrs.vercel.app' pmndrs-docs version-url --hostname
+
+The same expansion as the switcher's links, so an alias set to it is the URL the switcher leads to
+-- a long branch included, whose slug is cut and hashed to fit its 63-character hostname label.
+The current branch is read like \`build\` reads it: from the CI's variables, else from git.
+`,
+  )
+  .action(runVersionUrl)
+
 const program = new Command()
   .name('pmndrs-docs')
   .description('Compile pmndrs-flavored MDX — Gha, Code, Sandpack, Mermaid, Keypoints…')
@@ -389,6 +429,7 @@ const program = new Command()
   .addCommand(browse, { isDefault: true })
   .addCommand(searchCommand)
   .addCommand(build)
+  .addCommand(versionUrl)
 
 export async function main(argv: string[]) {
   await program.parseAsync(argv, { from: 'user' })

@@ -165,6 +165,8 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 | `{branch:vercel}` | `feat-darkmode`          | Vercel Git integration | `https://mylib-git-{branch:vercel}-myteam.vercel.app` |
 | `{branch:raw}`    | `feat%2FDark_mode`       | a path or query string | `https://example.com/preview?branch={branch:raw}`     |
 
+- A hostname label holds 63 characters at most. When a long branch would overflow it, `{branch:vercel}` follows Vercel's own truncation, and `{branch}` keeps its slug's first `63 - (rest of the label) - 7` characters, drops a trailing `-`, and appends `-` and the first 6 hex characters of the branch name's SHA-256 (`printf %s "$branch" | sha256sum | cut -c1-6`): eg. `claude/pages-shadcn-tailwind-prep-98d23c` in `https://design-system-git-{branch}-pmndrs.vercel.app` becomes `design-system-git-claude-pages-shadcn-tailwind-pr-2675d4-pmndrs`. Outside the hostname, `{branch}` is never cut. To alias a deployment there, `pmndrs-docs version-url` prints the URL (`--hostname`: the hostname alone), or see the reusable workflow's [`version_hostname` output](/github-actions/introduction#version-switcher).
+
 - `VERSION_PRODUCTION_BRANCH` leads to `VERSION_PRODUCTION_URL`; every other branch shows a banner linking to production.
 - Branches: the remote's, minus `dependabot/`, `renovate/`, `changeset-release/`. `VERSION_BRANCHES` replaces that filter, `VERSION_BRANCHES_LIST` the whole list. Read at build time.
 

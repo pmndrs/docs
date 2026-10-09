@@ -50,3 +50,23 @@ uses: pmndrs/docs/.github/workflows/build.yml@v4
     tag_match: 'leva@*'
     version_url_template: 'https://leva-git-{branch:vercel}-pmndrs.vercel.app'
 ```
+
+With `version_url_template`, the workflow outputs where the switcher links the branch being built: `version_url`, and its hostname, `version_hostname` -- a long branch already cut and hashed to fit the hostname label. A deployment the Git integration does not make needs that alias set, eg. for a `vercel deploy` in a later job:
+
+```yml title=".github/workflows/docs.yml"
+jobs:
+  build:
+    uses: pmndrs/docs/.github/workflows/build.yml@v4
+    with:
+      # ...
+      version_url_template: 'https://mylib-git-{branch}-myteam.vercel.app'
+
+  vercel:
+    needs: build
+    steps:
+      # ... `vercel deploy`, its URL in `steps.vercel-deploy.outputs.url`
+      - run: npx -y vercel alias set "$DEPLOYMENT" "$ALIAS" --token="$VERCEL_TOKEN" --scope=myteam
+        env:
+          DEPLOYMENT: ${{ steps.vercel-deploy.outputs.url }}
+          ALIAS: ${{ needs.build.outputs.version_hostname }}
+```

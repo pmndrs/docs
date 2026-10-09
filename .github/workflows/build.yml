@@ -124,10 +124,20 @@ on:
       version_branches_list:
         type: string
         description: 'Explicit list of the branches the switcher offers (comma or space separated), instead of the remote branches'
+    outputs:
+      version_url:
+        description: 'With `version_url_template`: the URL the switcher links the branch being built to, eg. to alias its deployment there'
+        value: ${{ jobs.build-job.outputs.version_url }}
+      version_hostname:
+        description: 'With `version_url_template`: the hostname of `version_url`, the alias to set (`vercel alias set <deployment> <version_hostname>`)'
+        value: ${{ jobs.build-job.outputs.version_hostname }}
 
 jobs:
   build-job:
     runs-on: ubuntu-latest
+    outputs:
+      version_url: ${{ steps.version-url.outputs.url }}
+      version_hostname: ${{ steps.version-url.outputs.hostname }}
 
     steps:
       # Full history and tags for the version label (`git describe --tags`), but blobless: past
@@ -186,6 +196,19 @@ jobs:
           VERSION_PRODUCTION_URL: '${{ inputs.version_production_url }}'
           VERSION_BRANCHES: '${{ inputs.version_branches }}'
           VERSION_BRANCHES_LIST: '${{ inputs.version_branches_list }}'
+
+      # Where the switcher links this branch, for a caller that deploys it there itself: the same
+      # expansion as the switcher's, a long branch cut and hashed to fit its hostname label -- so
+      # the caller's alias step need not reimplement it.
+      - id: version-url
+        if: inputs.version_url_template != ''
+        run: |
+          url=$(npx -y @pmndrs/docs@${{ inputs.version }} version-url)
+          hostname=$(npx -y @pmndrs/docs@${{ inputs.version }} version-url --hostname)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "hostname=$hostname" >> "$GITHUB_OUTPUT"
+        env:
+          VERSION_URL_TEMPLATE: '${{ inputs.version_url_template }}'
 
       - uses: actions/upload-pages-artifact@v5
         with:
