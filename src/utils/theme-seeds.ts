@@ -2,7 +2,7 @@
 // The seeds of the site's theme beyond its primary: the core colors `<Mtb>` lets a site override
 // (`THEME_SECONDARY`, `THEME_TERTIARY`, `THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT`, `THEME_ERROR`)
 // and its color match (`THEME_COLOR_MATCH`), read from the environment at build time -- each
-// optional, so a site that sets none keeps the palette the primary alone makes.
+// optional: a site that sets none gets the pmndrs seeds (see `src/lib/mtb.ts`).
 //
 
 // 3, 6 or 8 hex digits, the forms `argbFromHex` reads

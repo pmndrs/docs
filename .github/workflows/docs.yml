@@ -31,14 +31,6 @@ jobs:
       icon: '🖨️'
       logo: 'gutenberg.jpg'
       github: 'https://github.com/pmndrs/docs'
-      theme_primary: '#323e48'
-      theme_scheme: 'tonalSpot'
-      theme_contrast: '0'
-      theme_note: '#1f6feb'
-      theme_tip: '#238636'
-      theme_important: '#8957e5'
-      theme_warning: '#d29922'
-      theme_caution: '#da3633'
 
   deploy:
     needs: build

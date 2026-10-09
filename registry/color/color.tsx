@@ -5,9 +5,9 @@ import type { ComponentProps, CSSProperties } from 'react'
 //
 // Swatches of the theme's color roles, as Material's scheme poster shows them: a cell of the
 // role's color, its name on it in the color of what goes on it. The colors are the
-// `--md-sys-color-*` variables `<Mtb>` writes (see `src/app/layout.tsx`): the Material 3 roles,
-// and the custom colors the layout passes it, `note`, `tip`… — any other custom color given to
-// `<Mtb>` works too, with no change here.
+// `--md-sys-color-*` variables of the Material 3 colour layer (`pmndrs/design-system/md3`, or an
+// `<Mtb>` of material-theme-builder): its roles, and any custom color given to the palette,
+// `lime`, `note`…, with no change here.
 //
 // Two dumb pieces, composed in MDX: a `Color` is a swatch — a disc inline in text, like a badge, or
 // a cell — and a `ColorGroup` fuses cells into one rounded block. Laying blocks side by side is the
@@ -15,11 +15,7 @@ import type { ComponentProps, CSSProperties } from 'react'
 //
 
 const colorGroupVariants = cva(
-  // `grid!`: as a direct child of the page (`.post-container > *`, globals.css), the group would
-  // be made `display: block` otherwise, its columns stacked.
-  //
-  // `my-4` only as a direct child of the page (`.post-container > &`): a block in the flow of the
-  // page, spaced as the other blocks are (`Details`, `Gha`) — nowhere else, so a wrapper laying
+  // No margin: spacing a group in the flow of a page is the page's business, so a wrapper laying
   // groups out, or a group nesting one, needs no reset.
   //
   // `gap-px`: a hairline of the page between the cells, as on Material's scheme poster.
@@ -27,7 +23,7 @@ const colorGroupVariants = cva(
   // The block is the one rounded: a cell in it loses its rounding and its square ratio (it fills
   // its cell of the grid), a nested group (a row of the block) its rounding — either would round
   // where it meets its siblings. `overflow-hidden` clips.
-  '[.post-container>&]:my-4 grid! auto-cols-fr gap-px overflow-hidden rounded-lg [&_[data-slot=color]]:aspect-auto [&_[data-slot=color]]:rounded-none [&>[data-slot=color-group]]:rounded-none',
+  'grid auto-cols-fr gap-px overflow-hidden rounded-lg [&_[data-slot=color]]:aspect-auto [&_[data-slot=color]]:rounded-none [&>[data-slot=color-group]]:rounded-none',
   {
     variants: {
       orientation: {
@@ -54,8 +50,8 @@ const colorGroupVariants = cva(
  *
  * The rounding is the block's (`overflow-hidden`): a cell loses its rounding and its square
  * ratio in a group, a nested group its rounding — a row of the block, it would otherwise round
- * where it meets its siblings. The margins are the page's: a group is spaced as a block of the
- * page only as a direct child of it, so a wrapper laying groups out needs no reset.
+ * where it meets its siblings. The margins are the page's: a group has none, so a wrapper laying
+ * groups out needs no reset.
  */
 export function ColorGroup({
   orientation = 'horizontal',
@@ -185,8 +181,7 @@ type ColorProps = ComponentProps<'span'> &
  * - `color`: any CSS color as the background, for a color that is not a role of the theme
  * - `variant`: `pill` (the default), a disc inline in text, no label: the label is its `title` and
  *   its accessible name (`role="img"`), or the disc is decorative (`aria-hidden`) with neither
- *   `role` nor `children` —
- *   the theme-color swatch of the site's controls too, see `PrimaryColorPicker`; `cell` and `on`, the cells of a
+ *   `role` nor `children`, e.g. the swatch of a color picker; `cell` and `on`, the cells of a
  *   `ColorGroup`, a rounded square of `size` and the strip, as tall as its label, of the role that
  *   goes on the cell above it. A cell says so explicitly, as a `Button` carries its `variant` in a
  *   `ButtonGroup`.

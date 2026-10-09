@@ -18,9 +18,11 @@
 @source '../../docs/**/*.{md,mdx}';
 
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
- * roles of each custom colour named here. */
+ * roles of each custom colour named here: the seven pmndrs ones (`src/lib/md3.ts`),
+ * then our alert colours (`src/lib/mtb.ts`). */
 @plugin 'material-theme-builder/tailwind' {
-  custom-colors: note, tip, important, warning, caution;
+  custom-colors:
+    lime, teal, cyan, purple, red, orange, yellow, note, tip, important, warning, caution;
 }
 
 @theme {
@@ -59,6 +61,13 @@ main :target {
 
   &.sandpack {
     @apply xl:max-w-none;
+  }
+
+  /* A `ColorGroup` (`registry/color`) is a grid, not the block the rule above makes it, and in the
+   * flow of the page it is spaced as the other blocks are (`Details`, `Gha`). Here rather than in
+   * the component: it is distributed, and has no `.post-container` to know about. */
+  &[data-slot='color-group'] {
+    @apply my-4 grid;
   }
 }
 
@@ -257,17 +266,16 @@ pre[class*='language-'] {
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.511 0.096 186.391);
+  --primary-foreground: oklch(0.984 0.014 180.72);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
@@ -276,15 +284,16 @@ pre[class*='language-'] {
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: oklch(0.855 0.138 181.071);
+  --chart-2: oklch(0.704 0.14 182.503);
+  --chart-3: oklch(0.6 0.118 184.704);
+  --chart-4: oklch(0.511 0.096 186.391);
+  --chart-5: oklch(0.437 0.078 188.216);
+  --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.6 0.118 184.704);
+  --sidebar-primary-foreground: oklch(0.984 0.014 180.72);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
@@ -340,9 +349,9 @@ pre[class*='language-'] {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary: oklch(0.437 0.078 188.216);
+  --primary-foreground: oklch(0.984 0.014 180.72);
+  --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
@@ -352,15 +361,15 @@ pre[class*='language-'] {
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: oklch(0.855 0.138 181.071);
+  --chart-2: oklch(0.704 0.14 182.503);
+  --chart-3: oklch(0.6 0.118 184.704);
+  --chart-4: oklch(0.511 0.096 186.391);
+  --chart-5: oklch(0.437 0.078 188.216);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.704 0.14 182.503);
+  --sidebar-primary-foreground: oklch(0.277 0.046 192.524);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);

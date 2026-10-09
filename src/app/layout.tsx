@@ -1,7 +1,5 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
-import { cn } from '@/lib/utils'
-import { parseCustomColors } from '@/utils/custom-colors'
-import { parseThemeColor, parseThemeFlag } from '@/utils/theme-seeds'
+import { docsMtb } from '@/lib/mtb'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
@@ -95,56 +93,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const primary = process.env.THEME_PRIMARY || '#323e48'
-  const note = process.env.THEME_NOTE || '#1f6feb'
-  const tip = process.env.THEME_TIP || '#238636'
-  const important = process.env.THEME_IMPORTANT || '#8957e5'
-  const warning = process.env.THEME_WARNING || '#d29922'
-  const caution = process.env.THEME_CAUTION || '#da3633'
   const storybook = process.env.THEME_STORYBOOK || '#ff4785'
   const npm = process.env.THEME_NPM || '#cb3837'
   const chromatic = process.env.THEME_CHROMATIC || '#fc521f'
-  const scheme = (process.env.THEME_SCHEME || 'tonalSpot') as
-    | 'content'
-    | 'expressive'
-    | 'fidelity'
-    | 'monochrome'
-    | 'neutral'
-    | 'tonalSpot'
-    | 'vibrant'
-  const contrast = Number(process.env.THEME_CONTRAST) || 0
   const basePath = process.env.BASE_PATH || ''
-
-  // The other seeds of the palette, each optional: the core colors a site overrides instead of
-  // letting the primary derive them, and its color match — each core and custom color then
-  // rendered true to its own input (its content variant), as Material Theme Builder's "Color
-  // match" does, which makes `scheme` moot (see `SchemeToggle`). Parsed at build time: a value
-  // that is not a hex color fails the build, with its reason.
-  const colorMatch = parseThemeFlag('COLOR_MATCH', process.env.THEME_COLOR_MATCH)
-  const secondary = parseThemeColor('SECONDARY', process.env.THEME_SECONDARY)
-  const tertiary = parseThemeColor('TERTIARY', process.env.THEME_TERTIARY)
-  const neutral = parseThemeColor('NEUTRAL', process.env.THEME_NEUTRAL)
-  const neutralVariant = parseThemeColor('NEUTRAL_VARIANT', process.env.THEME_NEUTRAL_VARIANT)
-  const error = parseThemeColor('ERROR', process.env.THEME_ERROR)
-
-  // The alert colors, blended with the primary — and after them the site's own, from
-  // `THEME_CUSTOM_COLORS`: roles of the theme too (`<Color role="brand" />`, `bg-brand`), so they
-  // follow the scheme, contrast and primary the reader picks. Parsed at build time: a malformed
-  // entry fails the build, with its reason.
-  const builtInColors = [
-    { name: 'note', hex: note, blend: true },
-    { name: 'tip', hex: tip, blend: true },
-    { name: 'important', hex: important, blend: true },
-    { name: 'warning', hex: warning, blend: true },
-    { name: 'caution', hex: caution, blend: true },
-  ]
-  const customColors = [
-    ...builtInColors,
-    ...parseCustomColors(
-      process.env.THEME_CUSTOM_COLORS,
-      builtInColors.map((color) => color.name),
-    ),
-  ]
 
   return (
     <html
@@ -170,18 +122,12 @@ export default function RootLayout({
           } as React.CSSProperties
         }
       >
-        <PrimaryColorMtb
-          source={primary}
-          scheme={scheme}
-          contrast={contrast}
-          colorMatch={colorMatch}
-          secondary={secondary}
-          tertiary={tertiary}
-          neutral={neutral}
-          neutralVariant={neutralVariant}
-          error={error}
-          customColors={customColors}
-        >
+        {/* The pmndrs seed, the site's own seeds and custom colours, and our alert colours
+            (`docsMtb`), reseeded by whatever the reader picks
+            (see `PrimaryColorPicker`): the one place `--md-sys-color-*` is defined. A client
+            component, since the palette follows those picks live; the server's HTML still carries
+            the default one */}
+        <PrimaryColorMtb {...docsMtb}>
           <ThemeProvider attribute="class">{children}</ThemeProvider>
         </PrimaryColorMtb>
       </body>
