@@ -37,9 +37,9 @@ on:
       discord:
         type: string
       # Left empty on purpose: the pmndrs defaults live in src/lib/md3.ts, installed
-      # from pmndrs/design-system (the alert colours in src/lib/mtb.ts, the badge
-      # colours in src/app/layout.tsx). Set one of these only to override them for a
-      # site — an empty value falls through to the default.
+      # from pmndrs/design-system, the alert colours included (the badge colours are
+      # in src/app/layout.tsx). Set one of these only to override them for a site —
+      # an empty value falls through to the default.
       #
       # Unset, the palette is the pmndrs one: the lime `#CAF543` under color match,
       # on the pmndrs neutral, neutral variant and error seeds. A site may set its own

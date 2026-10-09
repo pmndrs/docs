@@ -60,11 +60,25 @@ const websiteOptions = [
   ).env('THEME_PRIMARY'),
   new Option('--theme-scheme <scheme>', 'Palette scheme, e.g. "tonalSpot"').env('THEME_SCHEME'),
   new Option('--theme-contrast <contrast>', 'Palette contrast, e.g. "0"').env('THEME_CONTRAST'),
-  new Option('--theme-note <color>', 'Color of the NOTE alerts').env('THEME_NOTE'),
-  new Option('--theme-tip <color>', 'Color of the TIP alerts').env('THEME_TIP'),
-  new Option('--theme-important <color>', 'Color of the IMPORTANT alerts').env('THEME_IMPORTANT'),
-  new Option('--theme-warning <color>', 'Color of the WARNING alerts').env('THEME_WARNING'),
-  new Option('--theme-caution <color>', 'Color of the CAUTION alerts').env('THEME_CAUTION'),
+  new Option(
+    '--theme-note <color>',
+    "Color of the NOTE alerts, instead of the design system's",
+  ).env('THEME_NOTE'),
+  new Option('--theme-tip <color>', "Color of the TIP alerts, instead of the design system's").env(
+    'THEME_TIP',
+  ),
+  new Option(
+    '--theme-important <color>',
+    "Color of the IMPORTANT alerts, instead of the design system's",
+  ).env('THEME_IMPORTANT'),
+  new Option(
+    '--theme-warning <color>',
+    "Color of the WARNING alerts, instead of the design system's",
+  ).env('THEME_WARNING'),
+  new Option(
+    '--theme-caution <color>',
+    "Color of the CAUTION alerts, instead of the design system's",
+  ).env('THEME_CAUTION'),
   new Option(
     '--theme-custom-colors <list>',
     'Custom colors of the theme, `name:hex[:blend]` comma-separated, e.g. "brand:#ff2d95:blend,status:#17b26a"',
