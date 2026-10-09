@@ -61,7 +61,21 @@ function themeVariables(darkMode: boolean) {
     noteBorderColor: role('outline'),
     errorBkgColor: role('error'),
     errorTextColor: role('on-error'),
+    // Edge labels sit on the lines, over the page: a surface, with its text, rather than a container
+    // (see `themeCSS`)
+    edgeLabelBackground: role('surface-container'),
   } satisfies MermaidConfig['themeVariables']
+}
+
+/**
+ * The edge labels' text: Mermaid sets it in the node text colour (`on-primary-container`), with no
+ * variable of its own, so it would read poorly on the surface they sit on.
+ */
+function themeCSS() {
+  const onSurface = getComputedStyle(document.documentElement)
+    .getPropertyValue('--md-sys-color-on-surface')
+    .trim()
+  return `.edgeLabel, .edgeLabel * { color: ${onSurface}; } .edgeLabel text { fill: ${onSurface}; }`
 }
 
 export function Mermaid({ chart }: MermaidProps) {
@@ -88,6 +102,7 @@ export function Mermaid({ chart }: MermaidProps) {
           startOnLoad: false,
           theme: 'base',
           themeVariables: themeVariables(resolvedTheme === 'dark'),
+          themeCSS: themeCSS(),
           securityLevel: 'loose',
         })
 
