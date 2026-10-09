@@ -37,7 +37,7 @@ function preventMermaidBlockStringifyCrash() {
  * Read off the document's computed style rather than passed as `var()`: Mermaid computes colours
  * from them (with khroma), which needs actual values. The palette defines its roles as hexes.
  */
-function themeVariables(darkMode: boolean): MermaidConfig['themeVariables'] {
+function themeVariables(darkMode: boolean) {
   const style = getComputedStyle(document.documentElement)
   const role = (name: string) => style.getPropertyValue(`--md-sys-color-${name}`).trim()
 
@@ -61,7 +61,7 @@ function themeVariables(darkMode: boolean): MermaidConfig['themeVariables'] {
     noteBorderColor: role('outline'),
     errorBkgColor: role('error'),
     errorTextColor: role('on-error'),
-  }
+  } satisfies MermaidConfig['themeVariables']
 }
 
 export function Mermaid({ chart }: MermaidProps) {
@@ -108,7 +108,7 @@ export function Mermaid({ chart }: MermaidProps) {
       } catch (error) {
         console.error('Failed to render Mermaid diagram:', error)
         if (ref.current && !isCancelled) {
-          ref.current.innerHTML = `<pre style="color: var(--md-sys-color-error);">Error rendering diagram: ${error instanceof Error ? error.message : 'Unknown error'}</pre>`
+          ref.current.innerHTML = `<pre class="text-error">Error rendering diagram: ${error instanceof Error ? error.message : 'Unknown error'}</pre>`
         }
       }
     }
@@ -118,6 +118,8 @@ export function Mermaid({ chart }: MermaidProps) {
     return () => {
       isCancelled = true
     }
+    // `mtbConfig` is not read here: it changes with the palette, for the roles to be read again
+    // from the computed style
   }, [chart, resolvedTheme, mtbConfig])
 
   return <div ref={ref} data-slot="mermaid" className="my-8 flex justify-center" />
