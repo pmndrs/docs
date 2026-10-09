@@ -1,7 +1,14 @@
+/* The decorator classes the `filesDecorators` example in docs/authoring/sandpack.mdx uses.
+ *
+ * A highlighted line is the site's `mark` at the scale of a line, so it takes the same token
+ * (`rounded-sm` in globals.css). Naming `--radius-sm` here is enough for Tailwind to emit it. */
 .highlight {
   background: #1ea7fd2b;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
+/* Not a token: a widget outlines a few characters inside a line of code, and its 2px stays with
+ * the text it frames, as inline code's em-relative corner does. The scale starts at 6.4px (`sm`),
+ * which would turn a box a line tall into a lozenge around a word. */
 .widget {
   border: 1px solid #1ea7fd;
   border-radius: 2px;
