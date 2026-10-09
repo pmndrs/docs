@@ -1140,6 +1140,26 @@ test.describe('docs-only colours', () => {
     })
   }
 
+  test("a link in a GitHub alert, a footnote ref included, is in the alert's text role", async ({
+    page,
+  }) => {
+    // Not `networkidle`: the previews keep fetching from CodeSandbox. Its NOTE has a link, a TIP a
+    // footnote ref
+    await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+
+    const alertsWithLinks = page
+      .locator('[data-slot="gha"]')
+      .filter({ has: page.getByRole('link') })
+    await expect(alertsWithLinks.first()).toBeVisible()
+    for (const alert of await alertsWithLinks.all()) {
+      const keyword = await alert.getAttribute('data-keyword')
+      const expected = await resolveColor(page, `var(--md-sys-color-on-${keyword}-container)`)
+      for (const link of await alert.getByRole('link').all()) {
+        await expect(link, keyword!).toHaveCSS('color', expected)
+      }
+    }
+  })
+
   test('a Sandpack editor is coloured like a code block', async ({ page }) => {
     await page.goto('/authoring/code')
     await page.waitForLoadState('networkidle')

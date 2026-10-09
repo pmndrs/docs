@@ -71,7 +71,12 @@ export function Gha({
     <div
       data-slot="gha"
       data-keyword={keyword.toLowerCase()}
-      className={cn('my-6 overflow-clip rounded-lg px-6 py-2', colors)}
+      // Links (footnote refs included) in the alert's text colour, still underlined: the site's
+      // `primary` can all but vanish on an alert's container
+      className={cn(
+        'my-6 overflow-clip rounded-lg px-6 py-2 [&_a]:text-current [&_a_code]:text-current',
+        colors,
+      )}
     >
       <div className="my-4 flex items-center gap-2 text-lg font-semibold">
         <Icon size="1em" />
