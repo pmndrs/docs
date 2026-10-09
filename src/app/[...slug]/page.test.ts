@@ -958,3 +958,61 @@ test.describe('theme', () => {
     expect(hydrationErrors).toEqual([])
   })
 })
+
+//
+// Radius: the luma preset's scale (pmndrs/design-system's own preset, `b1VlIttI`), every step a
+// multiple of `--radius`, so that the corners here are the ones a consumer of the design system gets
+//
+
+test.describe('radius', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the radius scale is multiplicative, as luma writes it, on a 0.625rem base', async ({
+    page,
+  }) => {
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    // As the minified stylesheet declares it: `.625rem`
+    const radius = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--radius').trim(),
+    )
+    expect(radius).toMatch(/^0?\.625rem$/)
+
+    // What a reader's browser computes, through what the stylesheet actually ships. Not the
+    // `--radius-*` variables: Tailwind only emits the theme variables it finds a use of, and with
+    // `@theme inline` it writes their values into the utilities instead, so `--radius-2xl` and up
+    // are absent from the page (`-sm` to `-xl` show up only because a story's source text names
+    // them). Not a `rounded-*` probe for every step either: Tailwind only generates the utilities
+    // the sources use, and nothing uses `rounded-sm` as a class. So each step is read off a probe
+    // that the site's own CSS styles with it: a `<mark>` (`@apply rounded-sm` in globals.css) for
+    // `sm`, the `rounded-*` utility, which the ui/ components use, for the others. A step that loses
+    // its last user fails here rather than passing on a 0px probe.
+    // The expected pixels follow from the 17px root: 0.625rem = 10.625px, times luma's factor
+    const expected = {
+      sm: 6.375, // ×0.6
+      md: 8.5, // ×0.8
+      lg: 10.625, // ×1
+      xl: 14.875, // ×1.4
+      '2xl': 19.125, // ×1.8
+      '3xl': 23.375, // ×2.2
+      '4xl': 27.625, // ×2.6
+    }
+    const computed = await page.evaluate((steps) => {
+      return Object.fromEntries(
+        steps.map((step) => {
+          const probe = document.createElement(step === 'sm' ? 'mark' : 'div')
+          if (step !== 'sm') probe.className = `rounded-${step}`
+          document.body.append(probe)
+          const value = parseFloat(getComputedStyle(probe).borderTopLeftRadius)
+          probe.remove()
+          return [step, value]
+        }),
+      )
+    }, Object.keys(expected))
+
+    for (const [step, px] of Object.entries(expected)) {
+      expect(computed[step], `--radius-${step}`).toBeCloseTo(px, 2)
+    }
+  })
+})
