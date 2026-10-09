@@ -1,5 +1,7 @@
+import { pmndrsMtb } from '@/lib/md3'
 import { test, expect } from '@chromatic-com/playwright'
 import type { Locator, Page } from '@playwright/test'
+import { builder } from 'material-theme-builder'
 
 //
 // Test any docs/**/*.mdx page
@@ -1082,8 +1084,48 @@ function backdrop(locator: Locator) {
 
 const alerts = ['note', 'tip', 'important', 'warning', 'caution']
 
+// The alert colours pmndrs/design-system's `md3-base` ships (GitHub's), which no `THEME_*` here
+// overrides: the roles the pmndrs seed makes of them
+const designSystemAlerts = builder(pmndrsMtb.source, {
+  ...pmndrsMtb,
+  customColors: [
+    { name: 'note', hex: '#1F6FEB', blend: true },
+    { name: 'tip', hex: '#238636', blend: true },
+    { name: 'important', hex: '#8957E5', blend: true },
+    { name: 'warning', hex: '#D29922', blend: true },
+    { name: 'caution', hex: '#DA3633', blend: true },
+  ],
+})
+const hex = (argb: number) => `#${(argb & 0xffffff).toString(16).padStart(6, '0')}`
+
 test.describe('docs-only colours', () => {
   test.use({ disableAutoSnapshot: true })
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`the alert roles are the design system's defaults, ${colorScheme}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/gha')
+      await page.waitForLoadState('networkidle')
+
+      const colors =
+        colorScheme === 'light'
+          ? designSystemAlerts.mergedColorsLight
+          : designSystemAlerts.mergedColorsDark
+      for (const alert of alerts) {
+        for (const [role, key] of [
+          [alert, alert],
+          [`${alert}-container`, `${alert}Container`],
+        ]) {
+          const value = await page.evaluate(
+            (role) =>
+              getComputedStyle(document.documentElement).getPropertyValue(`--md-sys-color-${role}`),
+            role,
+          )
+          expect(value.toLowerCase(), role).toBe(hex(colors[key]))
+        }
+      }
+    })
+  }
 
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`a GitHub alert's text is in the on-container role of its background, ${colorScheme}`, async ({

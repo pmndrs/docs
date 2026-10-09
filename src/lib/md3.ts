@@ -13,33 +13,34 @@ import type { MtbConfig } from 'material-theme-builder'
  * Read from a React Server Component (a Next.js root layout, typically): the
  * non-`NEXT_PUBLIC_` vars below are only substituted on the server.
  *
- * Need colours M3 has no role for — alert levels, a status palette? Extend this
- * rather than editing it, so the next update of this item stays a clean
- * overwrite:
+ * Need a colour M3 has no role for — a status, a category? Extend this rather
+ * than editing it, so the next update of this item stays a clean overwrite:
  *
  * ```ts
  * export const myMtb = {
  *   ...pmndrsMtb,
- *   customColors: [{ name: 'note', hex: '#1f6feb', blend: true }],
+ *   customColors: [...pmndrsMtb.customColors, { name: 'pending', hex: '#8250DF', blend: true }],
  * } satisfies MtbConfig
  * ```
  *
- * `blend: true` harmonizes them against the seed above, so they stay yours and
- * still belong to the pmndrs palette. That `customColors` replaces the seven
- * shipped below; spread `...pmndrsMtb.customColors` into it to keep them.
- * Then name them in the `@plugin` line this item added to your CSS. It is
- * installed in statement form (`@plugin '...';`); give it a body — that is
- * all the wiring there is:
+ * Append to `...pmndrsMtb.customColors` rather than writing the array afresh:
+ * `customColors` replaces the defaults as a whole, so a bare list drops the
+ * brand colours and the alert roles shipped below. `blend: true` harmonizes
+ * yours against the seed above, so they stay yours and still belong to the
+ * pmndrs palette. Then name them in the `@plugin` line this item added to your
+ * CSS. It is installed in statement form (`@plugin '...';`); give it a body —
+ * that is all the wiring there is:
  *
  * ```css
  * @plugin "material-theme-builder/tailwind" {
- *   custom-colors: note;
+ *   custom-colors: pending;
  * }
  * ```
  *
- * Four roles follow (`bg-note`, `text-on-note`, `bg-note-container`,
- * `text-on-note-container`) and eleven shades (`bg-note-50` … `bg-note-950`).
- * The name is used verbatim, so `myColor` stays `bg-myColor`.
+ * Four roles follow (`bg-pending`, `text-on-pending`, `bg-pending-container`,
+ * `text-on-pending-container`) and eleven shades (`bg-pending-50` …
+ * `bg-pending-950`). The name is used verbatim, so `myColor` stays
+ * `bg-myColor`.
  */
 export const pmndrsMtb = {
   /** poimandres lime — the primary (also exposed as `lime` below). */
@@ -81,6 +82,9 @@ export const pmndrsMtb = {
    *
    * Secondary and tertiary are intentionally unused — MD3 still generates them
    * (there's no flag to disable them), but these take their place.
+   *
+   * The order is part of the contract: the generated CSS follows it, so a new
+   * colour goes at the end.
    */
   customColors: [
     { name: 'lime', hex: '#CAF543', blend: false },
@@ -90,5 +94,18 @@ export const pmndrsMtb = {
     { name: 'red', hex: '#FF4980', blend: false },
     { name: 'orange', hex: '#FFC043', blend: false },
     { name: 'yellow', hex: '#EBFF0F', blend: false },
+    /*
+     * The five alert roles: `bg-note`, `text-on-tip`, `bg-warning-container`,
+     * `bg-caution-500`, … for GitHub alerts, hints, badges and statuses.
+     *
+     * They keep GitHub's alert hues, so a reader recognises them at a glance.
+     * `blend: true` pulls them toward the seed, so they sit in any library's
+     * palette, reseeded or not. Each one is overridable, like the seed.
+     */
+    { name: 'note', hex: process.env.THEME_NOTE || '#1F6FEB', blend: true },
+    { name: 'tip', hex: process.env.THEME_TIP || '#238636', blend: true },
+    { name: 'important', hex: process.env.THEME_IMPORTANT || '#8957E5', blend: true },
+    { name: 'warning', hex: process.env.THEME_WARNING || '#D29922', blend: true },
+    { name: 'caution', hex: process.env.THEME_CAUTION || '#DA3633', blend: true },
   ],
 } satisfies MtbConfig
