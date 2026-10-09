@@ -1049,3 +1049,50 @@ test.describe('fonts', () => {
     await expect(paragraph).not.toHaveCSS('font-family', /Inconsolata|monospace/)
   })
 })
+
+//
+// Docs-only colours: the components whose colours the site picks itself (rather than through a
+// `ui/` component) draw them from the MD3 roles. Read off what a reader's browser computes, against
+// the role resolved in the same page
+//
+
+// The colour a reader's browser computes for `value` (a role's `var()`), in the format of a computed
+// `color` or `background-color`
+function resolveColor(page: Page, value: string) {
+  return page.evaluate((value) => {
+    const probe = document.createElement('div')
+    probe.style.color = value
+    document.body.append(probe)
+    const color = getComputedStyle(probe).color
+    probe.remove()
+    return color
+  }, value)
+}
+
+const alerts = ['note', 'tip', 'important', 'warning', 'caution']
+
+test.describe('docs-only colours', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`a GitHub alert's text is in the on-container role of its background, ${colorScheme}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/gha')
+      await page.waitForLoadState('networkidle')
+
+      for (const alert of alerts) {
+        const text = page
+          .locator(`[data-slot="gha"][data-keyword="${alert}"]`)
+          .first()
+          .getByRole('paragraph')
+          .first()
+        await expect(text, alert).toHaveCSS(
+          'color',
+          await resolveColor(page, `var(--md-sys-color-on-${alert}-container)`),
+        )
+      }
+    })
+  }
+})
