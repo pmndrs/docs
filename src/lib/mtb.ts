@@ -25,13 +25,11 @@ const siteColors = parseCustomColors(process.env.THEME_CUSTOM_COLORS, alertNames
 /**
  * The pmndrs colours, in their order: the seven brand ones (`lime`, `teal`…),
  * then the five alerts. Less any brand colour the site redefines under the same
- * name: its own `THEME_CUSTOM_COLORS` entry wins. Never an alert: those are
- * reserved, and stay where the design system puts them.
+ * name: its own `THEME_CUSTOM_COLORS` entry wins. Never an alert: `siteColors`
+ * refuses their names.
  */
 const pmndrsColors = pmndrsMtb.customColors.filter(
-  (color) =>
-    alertNames.includes(color.name) ||
-    !siteColors.some((siteColor) => siteColor.name === color.name),
+  (color) => !siteColors.some((siteColor) => siteColor.name === color.name),
 )
 
 /**
