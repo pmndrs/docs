@@ -71,13 +71,8 @@ export function Gha({
     <div
       data-slot="gha"
       data-keyword={keyword.toLowerCase()}
-      // Prose links (footnote refs included) in the alert's text colour, still underlined: the
-      // site's `primary` can all but vanish on an alert's container. Not a component's link, which
-      // paints its own surface (a button, a badge: a `data-slot`)
-      className={cn(
-        'my-6 overflow-clip rounded-lg px-6 py-2 [&_a:not([data-slot])]:text-current [&_a:not([data-slot])_code]:text-current',
-        colors,
-      )}
+      // What it holds is drawn on its container too: see `[data-slot='gha']` in globals.css
+      className={cn('my-6 overflow-clip rounded-lg px-6 py-2', colors)}
     >
       <div className="my-4 flex items-center gap-2 text-lg font-semibold">
         <Icon size="1em" />

@@ -66,6 +66,60 @@ main :target {
   }
 }
 
+/*
+ * Inside a GitHub alert (`Gha`), everything is drawn on the alert's container, in its text colour:
+ * `on-<alert>-container`, a pair MD3 holds at 4.5:1 and barely more. So an element that paints its
+ * own neutral surface, with its own text, takes the alert's text and keeps the container: no tint
+ * of it either, which toward the text would take the pair under 4.5:1. It marks itself with a rule
+ * in the text colour instead.
+ *
+ * Unlayered, so it outranks the utilities those elements carry. Left alone: a component link that
+ * paints its own surface and text (a button, a badge, marked by a `data-slot`), and a code block,
+ * on its own dark background.
+ */
+[data-slot='gha'] {
+  --gha-rule: color-mix(in oklab, currentColor 40%, transparent);
+
+  /* Prose links, footnote refs included, still underlined: the site's `primary` can all but
+   * vanish on an alert's container */
+  & a:not([data-slot]) {
+    color: inherit;
+  }
+
+  /* Inline code, in a link too */
+  & code:not(pre code) {
+    color: inherit;
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--gha-rule);
+  }
+
+  /* Tables: no striped rows, rules in the text colour */
+  & [data-slot='table'] {
+    background-color: transparent;
+    border-color: var(--gha-rule);
+
+    & :is(table, thead, tbody, tr, th, td) {
+      color: inherit;
+      background-color: transparent;
+      border-color: var(--gha-rule);
+    }
+  }
+
+  /* Tabs: every tab in the text colour, the active one told by its underline (and a rule around it,
+   * for the pill variant) rather than a dimmer text for the others */
+  & [data-slot='tabs-list'],
+  & [data-slot='tabs-trigger'] {
+    color: inherit;
+    background-color: transparent;
+  }
+  & [data-slot='tabs-trigger']::after {
+    background-color: currentColor;
+  }
+  & [data-slot='tabs-list']:not([data-variant='line']) [data-slot='tabs-trigger'][data-active] {
+    box-shadow: inset 0 0 0 1px var(--gha-rule);
+  }
+}
+
 mark {
   @apply -m-(--pad) rounded-sm p-(--pad) [--pad:0.05rem];
 }

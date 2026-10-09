@@ -1082,6 +1082,44 @@ function backdrop(locator: Locator) {
   })
 }
 
+// The WCAG contrast ratio of an element's text against what is behind it: its own background and its
+// ancestors', composited down to the first opaque one
+function contrast(locator: Locator) {
+  return locator.evaluate((element) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1
+    const context = canvas.getContext('2d', { willReadFrequently: true })!
+    const rgba = (color: string) => {
+      context.clearRect(0, 0, 1, 1)
+      context.fillStyle = color
+      context.fillRect(0, 0, 1, 1)
+      const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data
+      return [r, g, b, a / 255]
+    }
+    const over = (top: number[], bottom: number[]) => [
+      ...[0, 1, 2].map((i) => top[i] * top[3] + bottom[i] * (1 - top[3])),
+      1,
+    ]
+    const layers = []
+    for (let node: Element | null = element; node; node = node.parentElement) {
+      const background = rgba(getComputedStyle(node).backgroundColor)
+      if (background[3] > 0) layers.push(background)
+      if (background[3] >= 1) break
+    }
+    const background = layers.reduceRight((bottom, top) => over(top, bottom), [255, 255, 255, 1])
+    const text = over(rgba(getComputedStyle(element).color), background)
+    const luminance = (color: number[]) => {
+      const [r, g, b] = color.slice(0, 3).map((value) => {
+        value /= 255
+        return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+      })
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    }
+    const [lighter, darker] = [luminance(text), luminance(background)].sort((a, b) => b - a)
+    return (lighter + 0.05) / (darker + 0.05)
+  })
+}
+
 const alerts = ['note', 'tip', 'important', 'warning', 'caution']
 
 // The roles the design system's palette makes of its alert colours (`src/lib/md3.ts`, a verbatim
@@ -1176,6 +1214,39 @@ test.describe('docs-only colours', () => {
       await resolveColor(page, 'var(--primary-foreground)'),
     )
   })
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`what an alert holds, and a Mermaid edge label, reads at 4.5:1, ${colorScheme}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme })
+
+      // Inline code in an alert, in a link
+      await page.goto('/authoring/img')
+      await page.waitForLoadState('networkidle')
+      const code = page.locator('[data-slot="gha"] code').first()
+      expect(await contrast(code)).toBeGreaterThanOrEqual(4.5)
+
+      // The MCP-server Tip's tabs, the active one and the others
+      await page.goto('/')
+      await page.waitForLoadState('networkidle')
+      const tabs = page.locator('[data-slot="gha"] [data-slot="tabs-trigger"]')
+      await expect(tabs.first()).toBeAttached()
+      for (const tab of await tabs.all()) {
+        expect(await contrast(tab)).toBeGreaterThanOrEqual(4.5)
+      }
+
+      // A flowchart edge label ("Yes"), on the line, over the page
+      await page.goto('/authoring/mermaid')
+      await page.waitForLoadState('networkidle')
+      const edgeLabel = page
+        .locator('[data-slot="mermaid"] .edgeLabel p')
+        .filter({ hasText: /\S/ })
+        .first()
+      await expect(edgeLabel).toBeAttached()
+      expect(await contrast(edgeLabel)).toBeGreaterThanOrEqual(4.5)
+    })
+  }
 
   test('a Sandpack editor is coloured like a code block', async ({ page }) => {
     await page.goto('/authoring/code')
