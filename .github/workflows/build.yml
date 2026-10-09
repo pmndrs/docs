@@ -40,9 +40,16 @@ on:
       # from pmndrs/design-system (the alert colours in src/lib/mtb.ts, the badge
       # colours in src/app/layout.tsx). Set one of these only to override them for a
       # site — an empty value falls through to the default.
+      #
+      # Unset, the palette is the pmndrs one: the lime `#CAF543` under color match,
+      # on the pmndrs neutral, neutral variant and error seeds. To keep the palette
+      # a primary alone makes (pmndrs/docs < 4.20, e.g. `#323e48` under `tonalSpot`):
+      # `theme_color_match: 'false'` and `auto` for `theme_neutral`,
+      # `theme_neutral_variant` and `theme_error` (see docs/getting-started/introduction.mdx).
       theme_primary:
         type: string
         default: ''
+        description: 'Seed color of the palette, instead of the pmndrs lime `#CAF543`, eg: `#323e48`'
       theme_scheme:
         type: string
         default: ''
@@ -78,13 +85,13 @@ on:
         description: 'Tertiary color of the palette, instead of the one derived from the primary'
       theme_neutral:
         type: string
-        description: 'Neutral color of the palette (the surfaces), instead of the pmndrs warm grey `#c1b793`'
+        description: 'Neutral color of the palette (the surfaces), instead of the pmndrs warm grey `#c1b793` -- `auto` derives it from the primary'
       theme_neutral_variant:
         type: string
-        description: 'Neutral variant color of the palette (the tinted surfaces, outlines), instead of the pmndrs `#495720`'
+        description: 'Neutral variant color of the palette (the tinted surfaces, outlines), instead of the pmndrs `#495720` -- `auto` derives it from the primary'
       theme_error:
         type: string
-        description: 'Error color of the palette, instead of the pmndrs red `#FF4980`'
+        description: "Error color of the palette, instead of the pmndrs red `#FF4980` -- `auto` for Material's default error"
       theme_storybook:
         type: string
         default: ''

@@ -84,9 +84,9 @@ nav: 0
 | `THEME_COLOR_MATCH`                   | Each core and custom color rendered true to its own input (Material Theme Builder's "Color match"), on unless `false`: it takes precedence over `THEME_SCHEME`, readers can toggle it from the sidebar, and the scheme toggle is hidden while color match is on | `true` or `false`                                                                                |
 | `THEME_SECONDARY`                     | Secondary color, instead of the one derived from the primary                                                                                                             | `#B03A3A`                                                                                        |
 | `THEME_TERTIARY`                      | Tertiary color, instead of the one derived from the primary                                                                                                              | `#7D5260`                                                                                        |
-| `THEME_NEUTRAL`                       | Neutral color (the surfaces), instead of the pmndrs warm grey `#c1b793`                                                                                                  | `#c1b793`                                                                                        |
-| `THEME_NEUTRAL_VARIANT`               | Neutral variant color (the tinted surfaces, outlines), instead of the pmndrs `#495720`                                                                                   | `#495720`                                                                                        |
-| `THEME_ERROR`                         | Error color, instead of the pmndrs red `#FF4980`                                                                                                                         | `#FF4980`                                                                                        |
+| `THEME_NEUTRAL`                       | Neutral color (the surfaces), instead of the pmndrs warm grey `#c1b793` -- `auto` derives it from the primary (see [keep your previous look](#keep-your-previous-look)) | `#c1b793` or `auto`                                                                              |
+| `THEME_NEUTRAL_VARIANT`               | Neutral variant color (the tinted surfaces, outlines), instead of the pmndrs `#495720` -- `auto` derives it from the primary                                             | `#495720` or `auto`                                                                              |
+| `THEME_ERROR`                         | Error color, instead of the pmndrs red `#FF4980` -- `auto` for Material's default error                                                                                  | `#FF4980` or `auto`                                                                              |
 | `THEME_STORYBOOK`                     | "storybook" color                                                                                                                                                        | `#ff4785`                                                                                        |
 | `THEME_NPM`                           | "npm" color                                                                                                                                                              | `#cb3837`                                                                                        |
 | `THEME_CHROMATIC`                     | "chromatic" color                                                                                                                                                        | `#fc521f`                                                                                        |
@@ -141,8 +141,37 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 > [!NOTE]
 > - [Material Color](https://www.youtube.com/playlist?list=PLsoLz-E4Os4WWkrvRuQ7BJuVF-WfOyfWT) for more information
 > - The defaults are [pmndrs/design-system](https://github.com/pmndrs/design-system)'s palette: the lime `#CAF543` under color match, a warm grey neutral, and seven colors every site gets as custom colors, `lime`, `teal`, `cyan`, `purple`, `red`, `orange` and `yellow` (`<Color role="teal" />`).
-> - `THEME_PRIMARY` is the seed: the secondary and tertiary colors are derived from it, unless the site gives its own (`THEME_SECONDARY`, `THEME_TERTIARY`). The neutral, neutral variant and error colors are the pmndrs ones, unless the site gives its own (`THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT`, `THEME_ERROR`).
+> - `THEME_PRIMARY` is the seed: the secondary and tertiary colors are derived from it, unless the site gives its own (`THEME_SECONDARY`, `THEME_TERTIARY`). The neutral, neutral variant and error colors are the pmndrs ones, unless the site gives its own (`THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT`, `THEME_ERROR`), or `auto` to derive them from the primary too, as Material Theme Builder does.
 > - `THEME_COLOR_MATCH` (on unless `"false"`) is [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/)'s "Color match - Stay true to my color inputs": each core and custom color keeps its input's chroma instead of being toned down to the scheme's, so `THEME_SCHEME` is ignored and the scheme toggle is hidden while color match is on. Readers can toggle color match from the sidebar. A custom color with `:blend` is still harmonized first.
+
+#### Keep your previous look
+
+Up to v4.19, a site's palette was the one its primary alone made (`#323e48` under `tonalSpot` by default). Since v4.20 the defaults are the pmndrs palette, so a site that pinned only its primary now gets it under color match, on the pmndrs neutrals. To keep the previous look exactly, pin color match off and let the primary derive the neutrals and the error color again:
+
+```yml title=".github/workflows/docs.yml (reusable workflow)"
+uses: pmndrs/docs/.github/workflows/build.yml@v4
+with:
+  theme_primary: '#323e48' # yours
+  theme_scheme: 'tonalSpot'
+  theme_color_match: 'false'
+  theme_neutral: 'auto'
+  theme_neutral_variant: 'auto'
+  theme_error: 'auto'
+```
+
+or, for a workflow that sets the environment itself:
+
+```yml title=".github/workflows/docs.yml (env)"
+env:
+  THEME_PRIMARY: '#323e48' # yours
+  THEME_SCHEME: 'tonalSpot'
+  THEME_COLOR_MATCH: 'false'
+  THEME_NEUTRAL: 'auto'
+  THEME_NEUTRAL_VARIANT: 'auto'
+  THEME_ERROR: 'auto'
+```
+
+The palette is then the v4.19 one, variable for variable. The alert colors are unchanged, so their `THEME_NOTE`… pins can stay or go. What is new either way: the seven pmndrs colors (`--md-sys-color-lime`… and their `bg-lime`… utilities), which nothing renders unless a page asks for one (`<Color role="teal" />`).
 
 </details>
 

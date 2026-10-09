@@ -2,7 +2,7 @@
 // The seeds of the site's theme beyond its primary: the core colors `<Mtb>` lets a site override
 // (`THEME_SECONDARY`, `THEME_TERTIARY`, `THEME_NEUTRAL`, `THEME_NEUTRAL_VARIANT`, `THEME_ERROR`)
 // and its color match (`THEME_COLOR_MATCH`), read from the environment at build time -- each
-// optional, so a site that sets none keeps the palette the primary alone makes.
+// optional: a site that sets none gets the pmndrs seeds (see `src/lib/mtb.ts`).
 //
 
 // 3, 6 or 8 hex digits, the forms `argbFromHex` reads
@@ -19,6 +19,29 @@ export function parseThemeColor(name: string, value = ''): string | undefined {
   if (value === '') return undefined
   if (!HEX.test(value)) {
     throw new Error(`THEME_${name}: "${value}" is not a hex color (e.g. \`#ff2d95\`)`)
+  }
+  return value
+}
+
+/**
+ * Reads `THEME_<name>` as a core color the pmndrs seed has a value for (`THEME_NEUTRAL`,
+ * `THEME_NEUTRAL_VARIANT`, `THEME_ERROR`): `pmndrsSeed` when unset or empty, a hex color as
+ * `parseThemeColor` reads it, or `auto` for no seed at all -- `undefined`, which leaves
+ * material-theme-builder to derive that color from the primary, as Material Theme Builder does
+ * when it is given none. `auto` is how a site pinning its own primary keeps the palette that
+ * primary alone makes.
+ *
+ * Throws on anything else, with the variable's name.
+ */
+export function parseThemeSeed(
+  name: string,
+  value: string | undefined,
+  pmndrsSeed: string,
+): string | undefined {
+  if (!value) return pmndrsSeed
+  if (value === 'auto') return undefined
+  if (!HEX.test(value)) {
+    throw new Error(`THEME_${name}: "${value}" is not a hex color (e.g. \`#ff2d95\`) or \`auto\``)
   }
   return value
 }
