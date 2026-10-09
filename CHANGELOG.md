@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.22.0
+
+### Minor Changes
+
+- [#692](https://github.com/pmndrs/docs/pull/692) [`c1e006b`](https://github.com/pmndrs/docs/commit/c1e006b849f24af9e0e85fc45b3e73a1a86d0992) Thanks [@abernier](https://github.com/abernier)! - Take the shadcn preset and the typefaces from `pmndrs/design-system` too (#689). The site's theme is now pmndrs/design-system's own preset, `b1VlIttI` (base-luma), re-applied with `shadcn init --preset b1VlIttI`. Its radius scale is multiplicative — every step a multiple of `--radius` (`sm` 0.6×, `md` 0.8×, `xl` 1.4×) where it used to add or subtract a few pixels — so `rounded-sm`, `rounded-md` and `rounded-xl` corners shift slightly; `rounded-lg` and the larger steps are unchanged. Sandpack's radii follow those tokens instead of literals: the frame takes `--radius-lg`, a highlighted line `--radius-sm`.
+
+  Both typefaces now come from `next/font/google`: Inter, as the preset writes it, and Inconsolata, from pmndrs/design-system's `font-mono` item (`shadcn add pmndrs/design-system/font-mono#v0.6.0`). They are fetched at build time and self-hosted at runtime, as before, but by Next.js: the committed woff2 files under `src/fonts/`, the `@fontsource/inter` and `@fontsource/inconsolata` dependencies and the `scripts/copy-fonts.sh` step of `prepare` are gone. `--font-sans` and `--font-mono` keep their names, so `font-sans` / `font-mono` keep working untouched.
+
+### Patch Changes
+
+- [#693](https://github.com/pmndrs/docs/pull/693) [`b37b6e5`](https://github.com/pmndrs/docs/commit/b37b6e56378496af5fe82b7949fbbdf819cf6c7d) Thanks [@abernier](https://github.com/abernier)! - The `keypoints` and `color` registry blocks now depend on `pmndrs/design-system/theme#v0.6.0`, in place of `pmndrs/design-system/md3#v0.5.0`. pmndrs/design-system v0.6.0 renamed its `md3` item to `theme`, the single item to install, which itself pulls `md3-base` and `font-mono`; there is no `md3` item from that tag on. The palette is the same one `md3` baked, so the blocks render as before; installing either one now also brings the pmndrs monospace, Inconsolata, on `code`, `kbd`, `samp` and `pre`.
+
 ## 4.21.0
 
 ### Minor Changes
