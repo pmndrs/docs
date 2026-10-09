@@ -5,8 +5,8 @@ import type { ComponentProps, CSSProperties } from 'react'
 //
 // Swatches of the theme's color roles, as Material's scheme poster shows them: a cell of the
 // role's color, its name on it in the color of what goes on it. The colors are the
-// `--md-sys-color-*` variables of the Material 3 colour layer (`pmndrs/design-system/md3`, or an
-// `<Mtb>` of material-theme-builder): its roles, and any custom color given to the palette,
+// `--md-sys-color-*` variables of the Material 3 palette that `pmndrs/design-system/theme` bakes
+// (or an `<Mtb>` of material-theme-builder): its roles, and any custom color given to the palette,
 // `lime`, `note`…, with no change here.
 //
 // Two dumb pieces, composed in MDX: a `Color` is a swatch — a disc inline in text, like a badge, or
