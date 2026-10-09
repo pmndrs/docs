@@ -1016,3 +1016,41 @@ test.describe('radius', () => {
     }
   })
 })
+
+//
+// Fonts: Inter from the luma preset as `--font-sans`, Inconsolata from pmndrs/design-system's
+// `font-mono` item as `--font-mono`, both through `next/font/google`. Read off what a reader's
+// browser computes, not off the stylesheet: the family names `next/font` writes are its own
+// business, so each assertion only asks which typeface comes first.
+//
+
+test.describe('fonts', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('code is set in Inconsolata, the prose in Inter', async ({ page }) => {
+    await page.goto('/authoring/code')
+    await page.waitForLoadState('networkidle')
+
+    const article = page.getByRole('article')
+    // The first family is the one asked for; the rest are `next/font`'s metric-matched fallback
+    // and the generic family
+    const inconsolata = /^"?Inconsolata"?,/
+    const inter = /^"?Inter"?,/
+
+    await expect(article.locator('pre').first()).toHaveCSS('font-family', inconsolata)
+    await expect(article.getByRole('paragraph').locator('code').first()).toHaveCSS(
+      'font-family',
+      inconsolata,
+    )
+
+    await expect(page.locator('body')).toHaveCSS('font-family', inter)
+    // `font-mono` styles `code, kbd, samp, pre` without a class: a selector any broader would turn
+    // the prose monospace, which this paragraph, with no code in it, would show
+    const paragraph = article
+      .getByRole('paragraph')
+      .filter({ hasNot: page.locator('code') })
+      .first()
+    await expect(paragraph).toHaveCSS('font-family', inter)
+    await expect(paragraph).not.toHaveCSS('font-family', /Inconsolata|monospace/)
+  })
+})
