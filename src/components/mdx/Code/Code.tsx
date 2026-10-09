@@ -26,16 +26,10 @@ import {
 import { flushSync } from 'react-dom'
 import { CodeFileIcon } from './CodeFileIcon'
 
-// Using a fixed color to only have 1 theme for prism. A variable too, for the fade of a collapsed
-// block.
-//
-// Tones of the primary palette rather than the `*-fixed` roles: those are fixed across light and
-// dark, not across contrast levels, which move them, up to flipping the pair (a white background
-// at high contrast). Tones 10 and 90 are what `on-primary-fixed` and `primary-fixed` are at the
-// standard contrast.
-const codeBackground =
-  '[--code-background:oklch(from_var(--md-ref-palette-primary-10)_l_calc(c*0.2)_h)] bg-(--code-background)'
-const codeText = 'text-[oklch(from_var(--md-ref-palette-primary-90)_l_calc(c*0.2)_h)]'
+// The code colours (globals.css): one dark background whatever the theme, for one prism theme. A
+// variable too, for the fade of a collapsed block.
+const codeBackground = 'bg-(--code-background)'
+const codeText = 'text-(--code-text)'
 const codeColors = cn(codeBackground, codeText)
 
 const preClassName = 'overflow-x-auto scroll-fade-x no-scrollbar p-(--pad) font-mono text-sm'

@@ -1,5 +1,5 @@
 import { test, expect } from '@chromatic-com/playwright'
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 
 //
 // Test any docs/**/*.mdx page
@@ -1069,6 +1069,17 @@ function resolveColor(page: Page, value: string) {
   }, value)
 }
 
+// The background a reader sees behind an element: its own, or its nearest ancestor's that has one
+function backdrop(locator: Locator) {
+  return locator.evaluate((element) => {
+    for (let node: Element | null = element; node; node = node.parentElement) {
+      const background = getComputedStyle(node).backgroundColor
+      if (background !== 'rgba(0, 0, 0, 0)') return background
+    }
+    return null
+  })
+}
+
 const alerts = ['note', 'tip', 'important', 'warning', 'caution']
 
 test.describe('docs-only colours', () => {
@@ -1095,4 +1106,19 @@ test.describe('docs-only colours', () => {
       }
     })
   }
+
+  test('a Sandpack editor is coloured like a code block', async ({ page }) => {
+    await page.goto('/authoring/code')
+    await page.waitForLoadState('networkidle')
+    const codeKeyword = page.getByRole('article').locator('pre .token.keyword').first()
+    const keywordColor = await codeKeyword.evaluate((element) => getComputedStyle(element).color)
+    const codeBackground = await backdrop(codeKeyword)
+
+    // Not `networkidle`: the previews keep fetching from CodeSandbox
+    await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+    const sandpackKeyword = page.locator('.sp-code-editor .sp-syntax-keyword').first()
+
+    await expect(sandpackKeyword).toHaveCSS('color', keywordColor)
+    expect(await backdrop(sandpackKeyword)).toBe(codeBackground)
+  })
 })

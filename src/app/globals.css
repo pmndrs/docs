@@ -88,16 +88,26 @@ pre[class*='language-'] {
   hyphens: none;
 }
 
-/* Code blocks */
-pre[class*='language-'] {
-  /*
-   * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
-   * the same in light and dark: the code block background is always dark (see Code.tsx).
-   * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
-   * strings and functions 120 degrees apart), with its own lightness and chroma, so the
-   * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
-   * near-neutral, like the plain code text (see Code.tsx).
-   */
+/*
+ * Code colours: the code block's background, text and syntax ramp. On the root rather than on the
+ * code block, so that whatever draws code takes them too: Sandpack's editor maps its theme onto
+ * them (see Sandpack.tsx), and reads the same as a code block.
+ *
+ * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
+ * the same in light and dark: the code block background is always dark.
+ * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
+ * strings and functions 120 degrees apart), with its own lightness and chroma, so the
+ * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
+ * near-neutral, like the plain code text.
+ *
+ * The background and text are tones of the primary palette rather than the `*-fixed` roles: those
+ * are fixed across light and dark, not across contrast levels, which move them, up to flipping the
+ * pair (a white background at high contrast). Tones 10 and 90 are what `on-primary-fixed` and
+ * `primary-fixed` are at the standard contrast.
+ */
+:root {
+  --code-background: oklch(from var(--md-ref-palette-primary-10) l calc(c * 0.2) h);
+  --code-text: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
   --seed: var(--md-ref-palette-primary-80);
   --keyword: oklch(from var(--seed) 0.78 0.15 h);
   --operator: var(--keyword);
@@ -111,6 +121,10 @@ pre[class*='language-'] {
   /* Diffs keep their meaning (green, red) rather than following the seed */
   --inserted: var(--md-ref-palette-tip-80);
   --deleted: var(--md-ref-palette-caution-80);
+}
+
+/* Code blocks */
+pre[class*='language-'] {
   --linenumber-border-width: --spacing(1);
   --pad: --spacing(6);
 }

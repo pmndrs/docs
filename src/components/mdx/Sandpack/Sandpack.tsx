@@ -52,6 +52,44 @@ async function getSandpackFiles(
   }, {} as SandpackFiles)
 }
 
+/**
+ * Coloured like a code block (`Code`), from the code colours in globals.css: the same snippet reads
+ * the same in an editor and in a code block next to it. The editor sits on the code background, in
+ * light and dark alike, since the syntax ramp is tuned for it.
+ *
+ * Its surfaces are that background and two tones of the primary palette above it, treated as the
+ * code background is, for the borders and the active line and buttons. Its foregrounds (tabs,
+ * buttons, the caret) are the code text and primary tones that read on it.
+ *
+ * The syntax keys follow the prism mapping in globals.css.
+ */
+const sandpackTheme = {
+  colors: {
+    surface1: 'var(--code-background)',
+    surface2: 'oklch(from var(--md-ref-palette-primary-15) l calc(c * 0.2) h)',
+    surface3: 'oklch(from var(--md-ref-palette-primary-20) l calc(c * 0.2) h)',
+    disabled: 'var(--comment)',
+    base: 'var(--code-text)',
+    clickable: 'oklch(from var(--md-ref-palette-primary-70) l calc(c * 0.2) h)',
+    hover: 'var(--code-text)',
+    accent: 'var(--md-ref-palette-primary-80)',
+  },
+  syntax: {
+    plain: 'var(--code-text)',
+    comment: 'var(--comment)',
+    keyword: 'var(--keyword)',
+    definition: 'var(--function)',
+    punctuation: 'var(--punctuation)',
+    property: 'var(--property)',
+    tag: 'var(--property)',
+    static: 'var(--boolean)',
+    string: 'var(--string)',
+  },
+  font: {
+    mono: 'var(--font-mono)',
+  },
+} satisfies SandpackProviderProps['theme']
+
 // https://sandpack.codesandbox.io/docs/getting-started/usage
 export const Sandpack = async ({
   className,
@@ -90,16 +128,7 @@ export const Sandpack = async ({
     <div className={cn(className, 'sandpack')}>
       <SandpackProvider
         {...props}
-        theme={{
-          colors: {
-            surface1: 'var(--md-sys-color-surface-container-low)',
-            surface2: 'var(--md-sys-color-surface-container)',
-            surface3: 'var(--md-sys-color-surface-container-high)',
-          },
-          font: {
-            mono: 'var(--font-mono)',
-          },
-        }}
+        theme={sandpackTheme}
         files={_files}
         customSetup={customSetup}
         options={options}

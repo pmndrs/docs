@@ -7,14 +7,14 @@
  * scanner reads `.css` sources too, on a site the CLI builds as well (it copies `src/` to a work
  * directory outside `node_modules`, which the scanner would skip). */
 .highlight {
-  background: #1ea7fd2b;
+  background: color-mix(in srgb, var(--md-sys-color-primary) 17%, transparent);
   border-radius: var(--radius-sm);
 }
 /* Not a token: a widget outlines a few characters inside a line of code, and its 2px stays with
  * the text it frames, as inline code's em-relative corner does. The scale starts at 6.375px (`sm`),
  * which would turn a box a line tall into a lozenge around a word. */
 .widget {
-  border: 1px solid #1ea7fd;
+  border: 1px solid var(--md-sys-color-primary);
   border-radius: 2px;
   padding: 2px 4px 2px 12px;
   margin-left: 6px;
@@ -24,7 +24,7 @@
 
 .widget:before {
   content: attr(data-id);
-  background: #1ea7fd;
+  background: var(--md-sys-color-primary);
   border-radius: 100%;
   position: absolute;
   width: 16px;
@@ -34,6 +34,6 @@
   top: 2px;
   font-size: 11px;
   text-align: center;
-  color: white;
+  color: var(--md-sys-color-on-primary);
   line-height: 17px;
 }
