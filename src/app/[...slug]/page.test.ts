@@ -1027,7 +1027,7 @@ test.describe('fonts', () => {
 
     const article = page.getByRole('article')
     // The first family is the one asked for. Inconsolata's fallback is the generic monospace
-    // (`layout.tsx`), so code stays monospace before the font loads or if it fails to; Inter's is
+    // (`src/lib/fonts.ts`), so code stays monospace before the font loads or if it fails to; Inter's is
     // `next/font`'s metric-matched face
     const inconsolata = /^"?Inconsolata"?,.*\bmonospace$/
     const inter = /^"?Inter"?,/

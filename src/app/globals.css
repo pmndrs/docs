@@ -346,7 +346,7 @@ pre[class*='language-'] {
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   /* Written by pmndrs/design-system's `font-mono` item: the variable `next/font/google` sets on
-   * `<html>` for Inconsolata (see `layout.tsx`), as `--font-sans` above is for Inter */
+   * `<html>` for Inconsolata (see `src/lib/fonts.ts`), as `--font-sans` above is for Inter */
   --font-mono: var(--font-mono);
 }
 

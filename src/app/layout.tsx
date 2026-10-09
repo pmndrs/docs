@@ -1,37 +1,11 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
+import { inconsolata, inter } from '@/lib/fonts'
 import { docsMtb } from '@/lib/mtb'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { Inconsolata, Inter } from 'next/font/google'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
-
-// Both typefaces come from pmndrs/design-system, through `next/font/google`, which downloads them
-// at build time and serves them from the site, so a reader's browser never asks Google for them.
-// `next/font` sets each variable on `<html>`, and `globals.css` hands it to Tailwind's utility.
-
-// Inter as the preset `b1VlIttI` writes it (`pnpm exec shadcn init --preset b1VlIttI`), the
-// design system's own. Its variable is `--font-sans` itself, which `globals.css` hands to the
-// `font-sans` utility and `--font-heading`
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
-
-// Inconsolata as the design system's `font-mono` item writes it
-// (`pnpm exec shadcn add pmndrs/design-system/font-mono#v0.6.0`). Its variable is `--font-mono`
-// itself, which `globals.css` hands to the `font-mono` utility and to `code, kbd, samp, pre`;
-// Sandpack reads it too. The item writes no `subsets`, which `next/font/google` requires to
-// preload the font: `latin`, as for Inter.
-// Nor can it write a fallback: the `registry:font` schema has no field for one, so the site adds
-// it. Left to itself, `next/font` falls back on an `Inconsolata Fallback` face, Arial resized to
-// Inconsolata's metrics, and on no generic family: code would be set proportional until the font
-// loads, or for good if it fails to. `adjustFontFallback: false` drops that face, and the fallback
-// is the platform's monospace
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  adjustFontFallback: false,
-  fallback: ['ui-monospace', 'monospace'],
-})
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
