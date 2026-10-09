@@ -16,7 +16,7 @@
           "type": "registry:block"
         }
       ],
-      "docs": "Renders on stock shadcn tokens apart from `bg-surface-dim`, which is why it depends on `pmndrs/design-system/theme` — MD3 has a surface role shadcn has no equivalent for. Installing it without that dependency resolved leaves the panel with no background at all, and Tailwind reports nothing."
+      "docs": "Renders on stock shadcn tokens apart from `bg-surface-dim`, which is why it depends on `pmndrs/design-system/theme` — MD3 has a surface role shadcn has no equivalent for. That dependency is the design system's whole theme, so installing the block brings its palette and its mono font along. Installing it without that dependency resolved leaves the panel with no background at all, and Tailwind reports nothing."
     },
     {
       "name": "color",
@@ -32,7 +32,7 @@
           "type": "registry:block"
         }
       ],
-      "docs": "Every swatch is painted from `--md-sys-color-<role>`, which is why it depends on `pmndrs/design-system/theme`: that layer defines those variables, and they are the whole of what this block shows. Without it every swatch is transparent, and nothing reports it. The baked palette `theme` brings has the Material roles and the seven pmndrs colors (`lime`, `teal`, `cyan`, `purple`, `red`, `orange`, `yellow`): any other custom color (`note`, `tip`…) renders once your own palette defines it — compute it from `md3-base` with `customColors`, as `lib/md3.ts` describes. A group has no margin of its own: space it from the page."
+      "docs": "Every swatch is painted from `--md-sys-color-<role>`, which is why it depends on `pmndrs/design-system/theme`: that layer defines those variables, and they are the whole of what this block shows. That dependency is the design system's whole theme, so installing the block brings its palette and its mono font along. Without it every swatch is transparent, and nothing reports it. The baked palette `theme` brings has the Material roles and the seven pmndrs colors (`lime`, `teal`, `cyan`, `purple`, `red`, `orange`, `yellow`): any other custom color (`note`, `tip`…) renders once your own palette defines it — compute it from `md3-base` with `customColors`, as `lib/md3.ts` describes. A group has no margin of its own: space it from the page."
     }
   ]
 }

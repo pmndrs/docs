@@ -958,3 +958,94 @@ test.describe('theme', () => {
     expect(hydrationErrors).toEqual([])
   })
 })
+
+//
+// Radius: the corners a reader sees are the design system's, the luma preset's scale
+// (pmndrs/design-system's own preset, `b1VlIttI`): every step a multiple of `--radius`
+//
+
+test.describe('radius', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test("the corners follow the design-system preset's radius scale", async ({ page }) => {
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    // What a reader's browser computes, through what the stylesheet actually ships, rather than the
+    // `--radius-*` variables: Tailwind only emits the theme variables it finds named in the sources,
+    // and with `@theme inline` it writes their values into the utilities instead, so which of them
+    // a page declares depends on what some file happens to name (Sandpack.css, a story's sample
+    // CSS), not on its corners.
+    // Not a `rounded-*` probe for every step either: Tailwind only generates the utilities the
+    // sources use, and nothing uses `rounded-sm` as a class. So each step is read off a probe that
+    // the site's own CSS styles with it: a `<mark>` (`@apply rounded-sm` in globals.css) for `sm`,
+    // the `rounded-*` utility, which the ui/ components use, for the others. A step that loses its
+    // last user fails here rather than passing on a 0px probe.
+    // The expected pixels are the spec: the 17px root makes the 0.625rem base 10.625px, times
+    // luma's factor
+    const expected = {
+      sm: 6.375, // ×0.6
+      md: 8.5, // ×0.8
+      lg: 10.625, // ×1
+      xl: 14.875, // ×1.4
+      '2xl': 19.125, // ×1.8
+      '3xl': 23.375, // ×2.2
+      '4xl': 27.625, // ×2.6
+    }
+    const computed = await page.evaluate((steps) => {
+      return Object.fromEntries(
+        steps.map((step) => {
+          const probe = document.createElement(step === 'sm' ? 'mark' : 'div')
+          if (step !== 'sm') probe.className = `rounded-${step}`
+          document.body.append(probe)
+          const value = parseFloat(getComputedStyle(probe).borderTopLeftRadius)
+          probe.remove()
+          return [step, value]
+        }),
+      )
+    }, Object.keys(expected))
+
+    for (const [step, px] of Object.entries(expected)) {
+      expect(computed[step], `--radius-${step}`).toBeCloseTo(px, 2)
+    }
+  })
+})
+
+//
+// Fonts: Inter from the luma preset as `--font-sans`, Inconsolata from pmndrs/design-system's
+// `font-mono` item as `--font-mono`, both through `next/font/google`. Read off what a reader's
+// browser computes, not off the stylesheet: the family names `next/font` writes are its own
+// business, so each assertion only asks which typeface comes first.
+//
+
+test.describe('fonts', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('code is set in Inconsolata, the prose in Inter', async ({ page }) => {
+    await page.goto('/authoring/code')
+    await page.waitForLoadState('networkidle')
+
+    const article = page.getByRole('article')
+    // The first family is the one asked for. Inconsolata's fallback is the generic monospace
+    // (`src/lib/fonts.ts`), so code stays monospace before the font loads or if it fails to; Inter's is
+    // `next/font`'s metric-matched face
+    const inconsolata = /^"?Inconsolata"?,.*\bmonospace$/
+    const inter = /^"?Inter"?,/
+
+    await expect(article.locator('pre').first()).toHaveCSS('font-family', inconsolata)
+    await expect(article.getByRole('paragraph').locator('code').first()).toHaveCSS(
+      'font-family',
+      inconsolata,
+    )
+
+    await expect(page.locator('body')).toHaveCSS('font-family', inter)
+    // `font-mono` styles `code, kbd, samp, pre` without a class: a selector any broader would turn
+    // the prose monospace, which this paragraph, with no code in it, would show
+    const paragraph = article
+      .getByRole('paragraph')
+      .filter({ hasNot: page.locator('code') })
+      .first()
+    await expect(paragraph).toHaveCSS('font-family', inter)
+    await expect(paragraph).not.toHaveCSS('font-family', /Inconsolata|monospace/)
+  })
+})

@@ -1,59 +1,11 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
+import { inconsolata, inter } from '@/lib/fonts'
 import { docsMtb } from '@/lib/mtb'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import localFont from 'next/font/local'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
-
-const inter = localFont({
-  src: [
-    {
-      path: '../fonts/inter/inter-latin-400-normal.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inter/inter-latin-500-normal.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inter/inter-latin-600-normal.woff2',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inter/inter-latin-700-normal.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  display: 'swap',
-  variable: '--font-inter',
-})
-
-const inconsolata = localFont({
-  src: [
-    {
-      path: '../fonts/inconsolata/inconsolata-latin-400-normal.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inconsolata/inconsolata-latin-600-normal.woff2',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inconsolata/inconsolata-latin-700-normal.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  display: 'swap',
-  variable: '--font-inconsolata',
-})
 
 const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL
 const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
@@ -103,7 +55,7 @@ export default function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${inconsolata.variable}`}
+      className={cn(inconsolata.variable, 'font-sans', inter.variable)}
     >
       <head>
         <link rel="alternate" type="text/plain" href={`${basePath}/llms.txt`} />
