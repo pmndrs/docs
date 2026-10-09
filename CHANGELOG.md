@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.21.0
+
+### Minor Changes
+
+- [#690](https://github.com/pmndrs/docs/pull/690) [`858efe9`](https://github.com/pmndrs/docs/commit/858efe93402df9910c823f90558fc80283aaef5b) Thanks [@abernier](https://github.com/abernier)! - `{branch}` (`{branch:generic}`) now fits its hostname label. A long branch made `<project>-git-<slug>-<scope>` longer than the 63 characters a DNS label holds, and Vercel refused the alias as "not a valid hostname" -- `claude/pages-shadcn-tailwind-prep-98d23c` gave a 64-character label in pmndrs/design-system. As `{branch:vercel}` already did, an overflowing slug is now cut and hashed: its first `63 - (rest of the label) - 7` characters, any trailing `-` dropped, then `-` and the first 6 hex characters of the branch name's SHA-256. Short branches, and `{branch}` outside a hostname, are unchanged.
+
+  So that an alias step need not reimplement that, `pmndrs-docs version-url` prints the URL the switcher links a branch to (`--hostname`: the hostname alone), and the reusable workflow outputs it, as `version_url` and `version_hostname`.
+
+### Patch Changes
+
+- [#688](https://github.com/pmndrs/docs/pull/688) [`525b57f`](https://github.com/pmndrs/docs/commit/525b57f3f522643a626cfc2d9b104740397f2b08) Thanks [@abernier](https://github.com/abernier)! - Mermaid `block` / `block-beta` diagrams render again. They threw "Converting circular structure to JSON": mermaid's block layout eagerly `JSON.stringify`s a d3 selection whose `_parents` is `<html>`, and under React `<html>` carries enumerable, circular `__reactFiber$…` / `__reactProps$…` properties. The `Mermaid` component now gives `<html>` a non-enumerable `toJSON` before rendering, so it serializes like a plain element, as it does outside React. Upstream: mermaid-js/mermaid#5530, mermaid-js/mermaid#7907.
+
 ## 4.20.0
 
 ### Minor Changes
