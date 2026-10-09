@@ -74,14 +74,19 @@ TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavio
 
 # Test
 
-Visual tests are performed in the cloud, through [chromatic.yml](.github/workflows/chromatic.yml).
+Visual tests are performed in the cloud, through [chromatic-playwright.yml](.github/workflows/chromatic-playwright.yml) and [chromatic-storybook.yml](.github/workflows/chromatic-storybook.yml).
+
+- `pnpm run lgtm` — fast gate: types, lint, unit tests.
+- `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright.
+
+Screenshots Playwright writes locally are throwaway — Chromatic holds the baselines.
 
 <details>
 
 You can also replay locally:
 
 ```sh
-$ npx playwright test --update-snapshots
+$ pnpm run LGTM
 $ npx chromatic --playwright --project-token $CHROMATIC_PROJECT_TOKEN
 ```
 

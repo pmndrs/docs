@@ -19,8 +19,10 @@ jobs:
       - name: Install dependencies
         # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
         run: pnpm install --frozen-lockfile
-      - name: Run Playwright tests
-        run: npx playwright test --update-snapshots
+      - name: Run the gate
+        # The repo's gate: types, lint, unit tests, then Playwright, whose test-results/ feed the Chromatic job.
+        # A red unit test therefore also skips the Chromatic job.
+        run: pnpm run LGTM
         env:
           HOME: /root
       - uses: actions/upload-artifact@v6
