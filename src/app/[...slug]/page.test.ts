@@ -1160,6 +1160,23 @@ test.describe('docs-only colours', () => {
     }
   })
 
+  test('a link that paints its own surface keeps its own text colour in a GitHub alert', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+
+    // The MCP-server Tip's install links: buttons, on `primary`
+    const installLink = page
+      .locator('[data-slot="gha"][data-keyword="tip"]')
+      .locator('a[data-slot="button"]')
+      .first()
+    await expect(installLink).toHaveCSS(
+      'color',
+      await resolveColor(page, 'var(--primary-foreground)'),
+    )
+  })
+
   test('a Sandpack editor is coloured like a code block', async ({ page }) => {
     await page.goto('/authoring/code')
     await page.waitForLoadState('networkidle')
