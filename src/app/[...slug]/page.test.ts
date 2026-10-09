@@ -1221,11 +1221,20 @@ test.describe('docs-only colours', () => {
     }) => {
       await page.emulateMedia({ colorScheme })
 
-      // Inline code in an alert, in a link
+      // Inline code in an alert, in a link: its own chip, with its own text role
       await page.goto('/authoring/img')
       await page.waitForLoadState('networkidle')
       const code = page.locator('[data-slot="gha"] code').first()
       expect(await contrast(code)).toBeGreaterThanOrEqual(4.5)
+
+      // A table in an alert, its striped rows included: its own surfaces, with their text role
+      await page.goto('/agents/introduction')
+      await page.waitForLoadState('networkidle')
+      const cells = page.locator('[data-slot="gha"] td')
+      await expect(cells.first()).toBeAttached()
+      for (const cell of await cells.all()) {
+        expect(await contrast(cell)).toBeGreaterThanOrEqual(4.5)
+      }
 
       // The MCP-server Tip's tabs, the active one and the others
       await page.goto('/')

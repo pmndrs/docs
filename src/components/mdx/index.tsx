@@ -55,10 +55,8 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
 )
 
 export const table = (props: ComponentProps<'table'>) => (
-  <div
-    data-slot="table"
-    className="my-8 overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low"
-  >
+  // Its surface with its text role: in an alert too, whose text is meant for the alert's container
+  <div className="my-8 overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low text-on-surface">
     {/* The fade masks the scroller and everything it paints: the frame stays on the outer div */}
     <div className="overflow-x-auto scroll-fade-x no-scrollbar">
       <table className="min-w-full divide-y divide-outline-variant" {...props} />
