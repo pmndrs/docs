@@ -57,22 +57,27 @@ async function getSandpackFiles(
  * the same in an editor and in a code block next to it. The editor sits on the code background, in
  * light and dark alike, since the syntax ramp is tuned for it.
  *
- * Its surfaces are that background and two tones of the primary palette above it, treated as the
- * code background is, for the borders and the active line and buttons. Its foregrounds (tabs,
- * buttons, the caret) are the code text and primary tones that read on it.
+ * Its surfaces and foregrounds (tabs, buttons, the caret) are the code colours too, and primary.
+ * Its error and warning colours are the dark scheme's tones of the error and warning palettes: left
+ * out, Sandpack would pick its light defaults, as it can't tell a `var()` surface is dark (a pale
+ * error line behind the light code text).
  *
  * The syntax keys follow the prism mapping in globals.css.
  */
 const sandpackTheme = {
   colors: {
     surface1: 'var(--code-background)',
-    surface2: 'oklch(from var(--md-ref-palette-primary-15) l calc(c * 0.2) h)',
-    surface3: 'oklch(from var(--md-ref-palette-primary-20) l calc(c * 0.2) h)',
+    surface2: 'var(--code-surface-2)',
+    surface3: 'var(--code-surface-3)',
     disabled: 'var(--comment)',
     base: 'var(--code-text)',
-    clickable: 'oklch(from var(--md-ref-palette-primary-70) l calc(c * 0.2) h)',
+    clickable: 'var(--code-clickable)',
     hover: 'var(--code-text)',
     accent: 'var(--md-ref-palette-primary-80)',
+    error: 'var(--md-ref-palette-error-80)',
+    errorSurface: 'var(--md-ref-palette-error-30)',
+    warning: 'var(--md-ref-palette-warning-80)',
+    warningSurface: 'var(--md-ref-palette-warning-30)',
   },
   syntax: {
     plain: 'var(--code-text)',

@@ -108,6 +108,11 @@ pre[class*='language-'] {
 :root {
   --code-background: oklch(from var(--md-ref-palette-primary-10) l calc(c * 0.2) h);
   --code-text: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
+  /* Above the background, for what draws a code editor around the code (Sandpack.tsx): two
+   * surfaces (borders, the active line and buttons), and a dimmer text (tabs, icons) */
+  --code-surface-2: oklch(from var(--md-ref-palette-primary-15) l calc(c * 0.2) h);
+  --code-surface-3: oklch(from var(--md-ref-palette-primary-20) l calc(c * 0.2) h);
+  --code-clickable: oklch(from var(--md-ref-palette-primary-70) l calc(c * 0.2) h);
   --seed: var(--md-ref-palette-primary-80);
   --keyword: oklch(from var(--seed) 0.78 0.15 h);
   --operator: var(--keyword);
