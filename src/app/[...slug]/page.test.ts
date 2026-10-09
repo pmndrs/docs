@@ -28,6 +28,9 @@ const pages = [
   '/github-actions/introduction',
 ]
 
+// `toHaveScreenshot` never compares against a baseline (see `updateSnapshots` in
+// playwright.config.ts): it waits for a settled page. Chromatic, which captures at the end of
+// the test, holds the baselines
 for (const pagePath of pages) {
   const pageName = pagePath.replace(/\//g, '_').replace(/^_/, '')
 
