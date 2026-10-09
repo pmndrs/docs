@@ -1,37 +1,17 @@
 import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
 import { docsMtb } from '@/lib/mtb'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
+import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
 import { SandpackCSS } from './sandpack-styles'
-
-const inter = localFont({
-  src: [
-    {
-      path: '../fonts/inter/inter-latin-400-normal.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inter/inter-latin-500-normal.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inter/inter-latin-600-normal.woff2',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/inter/inter-latin-700-normal.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  display: 'swap',
-  variable: '--font-inter',
-})
+// Inter as the preset `b1VlIttI` writes it (`pnpm exec shadcn init --preset b1VlIttI`), the
+// design system's own: `next/font/google` downloads it at build time and serves it from the
+// site, so a reader's browser never asks Google for it. Its variable is `--font-sans` itself,
+// which `globals.css` hands to the `font-sans` utility and `--font-heading`
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 const inconsolata = localFont({
   src: [
@@ -103,7 +83,7 @@ export default function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${inconsolata.variable}`}
+      className={cn(inconsolata.variable, 'font-sans', inter.variable)}
     >
       <head>
         <link rel="alternate" type="text/plain" href={`${basePath}/llms.txt`} />

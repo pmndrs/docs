@@ -25,8 +25,9 @@
     lime, teal, cyan, purple, red, orange, yellow, note, tip, important, warning, caution;
 }
 
+/* `--font-sans` is not here: the preset declares it in `@theme inline` below, as the variable
+ * `next/font/google` sets on `<html>` for Inter (see `layout.tsx`). */
 @theme {
-  --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-inconsolata), monospace;
 }
 
@@ -342,6 +343,7 @@ pre[class*='language-'] {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: var(--font-sans);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -391,6 +393,9 @@ pre[class*='language-'] {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
