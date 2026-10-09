@@ -319,8 +319,8 @@ export function Sankey({
 
     const style = getComputedStyle(canvas)
     const colors = {
-      ok: style.getPropertyValue('--md-sys-color-primary').trim() || '#3367d6',
-      error: style.getPropertyValue('--md-sys-color-error').trim() || '#d93025',
+      ok: style.getPropertyValue('--md-sys-color-primary').trim(),
+      error: style.getPropertyValue('--md-sys-color-error').trim(),
     }
 
     /** Where an event's particle is, `progress` (0..1) of the way along its route. */
