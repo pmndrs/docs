@@ -7,6 +7,26 @@ type MermaidProps = {
   chart: string
 }
 
+/**
+ * Work around a mermaid bug that breaks every `block` / `block-beta` diagram in a React app.
+ *
+ * Mermaid's block layout eagerly calls `JSON.stringify` on block objects in debug log
+ * arguments. Those objects hold a d3 selection, whose `_parents` is `[document.documentElement]`.
+ * React attaches enumerable `__reactFiber$…` / `__reactProps$…` properties to `<html>` (the
+ * app router renders it), so the stringify walks into the fiber graph and throws "Converting
+ * circular structure to JSON". A `toJSON` on `<html>` only makes it serialize like a plain
+ * element (`{}`), as it does outside React.
+ *
+ * Remove once mermaid stops stringifying DOM references:
+ * https://github.com/mermaid-js/mermaid/issues/5530
+ * https://github.com/mermaid-js/mermaid/issues/7907
+ */
+function preventMermaidBlockStringifyCrash() {
+  const html = document.documentElement
+  if (Object.hasOwn(html, 'toJSON')) return
+  Object.defineProperty(html, 'toJSON', { value: () => ({}), configurable: true })
+}
+
 export function Mermaid({ chart }: MermaidProps) {
   const ref = useRef<HTMLDivElement>(null)
   const { resolvedTheme } = useTheme()
@@ -17,6 +37,7 @@ export function Mermaid({ chart }: MermaidProps) {
     const renderDiagram = async () => {
       try {
         const mermaid = (await import('mermaid')).default
+        preventMermaidBlockStringifyCrash()
 
         // Initialize with theme-aware configuration
         mermaid.initialize({
