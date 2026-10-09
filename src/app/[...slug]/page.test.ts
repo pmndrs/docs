@@ -1269,7 +1269,8 @@ test.describe('docs-only colours', () => {
     const sandpackKeyword = page.locator('.sp-code-editor .sp-syntax-keyword').first()
 
     await expect(sandpackKeyword).toHaveCSS('color', keywordColor)
-    expect(await backdrop(sandpackKeyword)).toBe(codeBackground)
+    // Polled: Sandpack remounts its editor once it has loaded, and a detached node computes no style
+    await expect.poll(() => backdrop(sandpackKeyword)).toBe(codeBackground)
   })
 
   test('a Mermaid diagram is drawn in the palette, and follows the theme and the picked color', async ({
