@@ -1225,7 +1225,12 @@ test.describe('shadcn compositions', () => {
     await expect(pageLink).toBeVisible()
     if (testInfo.project.name === 'w375') {
       // A page destination stays readable even when several sandbox actions share its row.
-      expect(await pageLink.evaluate((link) => link.getClientRects().length)).toBeLessThanOrEqual(2)
+      const titleLines = await pageLink.evaluate((link) => {
+        const text = document.createRange()
+        text.selectNodeContents(document.createTreeWalker(link, NodeFilter.SHOW_TEXT).nextNode()!)
+        return text.getClientRects().length
+      })
+      expect(titleLines).toBeLessThanOrEqual(2)
     }
     await expect(
       row.getByRole('link', { name: 'CodeSandbox 3rjsl', exact: true }).first(),

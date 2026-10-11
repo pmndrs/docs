@@ -2,7 +2,6 @@ import { ComponentProps, Fragment, ReactElement } from 'react'
 
 import { CodesandboxIcon } from '@/components/brand-icons'
 import { a as Link } from '@/components/mdx'
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item'
 import { groupBy } from 'lodash-es'
 import { Img } from '../Img'
 import { sandboxUrl, type Box } from '../Codesandbox'
@@ -39,15 +38,13 @@ export async function Entries({
           return (
             <Fragment key={group}>
               <h2 className="my-8 text-xl capitalize first-of-type:mt-0">{group}</h2>
-              <ul className="flex flex-col gap-1">
+              <ul className="text-sm">
                 {entries?.map(({ title, url, boxes }) => (
-                  <Item key={url} render={<li />} size="xs" className="break-inside-avoid">
-                    <ItemContent className="min-w-0 basis-24">
-                      <ItemTitle className="line-clamp-none w-full break-words">
-                        <Link href={url}>{title}</Link>
-                      </ItemTitle>
-                    </ItemContent>
-                    <ItemActions className="max-w-full flex-wrap">
+                  <li key={url} className="flex break-inside-avoid flex-wrap gap-1">
+                    <Link href={url} className="min-w-0 flex-1 basis-24 break-words">
+                      {title}
+                    </Link>
+                    <span className="inline-flex max-w-full flex-wrap gap-1">
                       {boxes.map(({ id, img }, i) => (
                         <a
                           key={i} // a page may show the same sandbox twice
@@ -67,8 +64,8 @@ export async function Entries({
                           )}
                         </a>
                       ))}
-                    </ItemActions>
-                  </Item>
+                    </span>
+                  </li>
                 ))}
               </ul>
             </Fragment>
