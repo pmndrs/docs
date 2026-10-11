@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.23.2
+
+### Patch Changes
+
+- [#703](https://github.com/pmndrs/docs/pull/703) [`58d3716`](https://github.com/pmndrs/docs/commit/58d3716b53e343bb63853c5899ca8b4f93076310) Thanks [@abernier](https://github.com/abernier)! - Add an All libraries link at the top of the library menu and label the generator's own documentation site as docs.
+
 ## 4.23.1
 
 ### Patch Changes
