@@ -10,4 +10,4 @@ Align article code blocks, images, tables and embedded frames with the design sy
 
 GitHub callouts and legacy hints use Card with its standard spacing, a complete title and full-width rich content.
 
-Documentation entries retain a compact native list with vertical spacing and independently linked sandbox previews.
+Documentation entries retain a compact native list with vertical spacing and independently linked sandbox previews beside each title.

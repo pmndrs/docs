@@ -41,7 +41,7 @@ export async function Entries({
               <ul className="text-sm">
                 {entries?.map(({ title, url, boxes }) => (
                   <li key={url} className="my-2 flex break-inside-avoid flex-wrap gap-1">
-                    <Link href={url} className="min-w-0 flex-1 basis-24 break-words">
+                    <Link href={url} className="min-w-0 max-w-full break-words">
                       {title}
                     </Link>
                     <span className="inline-flex max-w-full flex-wrap gap-1">
