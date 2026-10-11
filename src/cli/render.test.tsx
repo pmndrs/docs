@@ -2,6 +2,7 @@ import { mkdtemp, readFile, readdir, writeFile, mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test } from 'vitest'
+import { load } from 'cheerio'
 import { main } from './main'
 import { renderFragment } from './render'
 
@@ -16,8 +17,8 @@ const render = (source: string) =>
  * the third reads a folder. They are covered by compiling the `docs/` folder instead.
  */
 test.each([
-  ['Gha', '> [!NOTE]\n> hello', 'bg-note-container'],
-  ['Hint', '<Hint>hi</Hint>', 'bg-note-container'],
+  ['Gha', '> [!NOTE]\n> hello', 'Note'],
+  ['Hint', '<Hint>hi</Hint>', 'hi'],
   ['Code', '```js\nconst a = 1\n```', 'language-js'],
   ['Mermaid', '```mermaid\ngraph TD;\nA-->B;\n```', 'graph TD;'],
   ['Keypoints', '<Keypoints><KeypointsItem>a</KeypointsItem></Keypoints>', 'Keypoints'],
@@ -30,6 +31,96 @@ test.each([
   ['heading anchors', '## Section one', 'id="section-one"'],
 ])('renders %s', async (_name, source, marker) => {
   expect(await render(source)).toContain(marker)
+})
+
+test.each([
+  ['NOTE', 'Note'],
+  ['TIP', 'Tip'],
+  ['IMPORTANT', 'Important'],
+  ['WARNING', 'Warning'],
+  ['CAUTION', 'Caution'],
+])('exports a static %s editorial note with rich Markdown', async (keyword, title) => {
+  const $ = load(
+    await render(
+      `> [!${keyword}]\n> Read **carefully** and [continue](https://example.com/guide).\n>\n> - First takeaway\n> - Second takeaway`,
+    ),
+  )
+  const note = $('[role="note"]')
+  expect(note).toHaveLength(1)
+  expect(note.text()).toContain(title)
+  expect(note.find('strong').text()).toBe('carefully')
+  expect(note.find('a').attr('href')).toBe('https://example.com/guide')
+  expect(
+    note
+      .find('li')
+      .map((_, item) => $(item).text())
+      .get(),
+  ).toEqual(['First takeaway', 'Second takeaway'])
+  expect($('[role="alert"]')).toHaveLength(0)
+})
+
+test('keeps custom alert labels, unknown-kind fallback and the deprecated Hint adapter', async () => {
+  const $ = load(
+    await render(
+      '<Gha keyword="UNKNOWN" title="Local advice">Read this advice</Gha>\n\n<Hint>Legacy note</Hint>',
+    ),
+  )
+  expect($('[role="note"][aria-label="Local advice"]').text()).toContain('Read this advice')
+  expect($('[role="note"][aria-label="Note"]').text()).toContain('Legacy note')
+  expect($('[role="alert"]')).toHaveLength(0)
+})
+
+test('exports sandbox metadata and a meaningful destination without a title or image', async () => {
+  const $ = load(
+    await render(
+      '<Codesandbox id="physics-example" description="A physics demo" tags={["physics", "rapier"]} />',
+    ),
+  )
+  const preview = $('a[aria-label="CodeSandbox physics-example"]')
+  expect(preview.attr('href')).toBe('https://codesandbox.io/s/physics-example')
+  expect(preview.attr('target')).toBe('_blank')
+  expect(preview.find('img')).toHaveLength(0)
+  expect($.text()).toContain('A physics demo')
+  expect($.text()).toContain('physics')
+  expect($.text()).toContain('rapier')
+  expect($('a a, a button, button a')).toHaveLength(0)
+})
+
+test.each([
+  ['img="https://example.com/preview.webp"', 'https://example.com/preview.webp'],
+  ['screenshot_url="https://example.com/legacy.webp"', 'https://example.com/legacy.webp'],
+  [
+    'img="https://example.com/preview.webp" screenshot_url="https://example.com/legacy.webp"',
+    'https://example.com/preview.webp',
+  ],
+])('exports sandbox preview image compatibility for %s', async (props, source) => {
+  const $ = load(await render(`<Codesandbox id="image-example" title="Image demo" ${props} />`))
+  const preview = $('a[aria-label="Image demo"]')
+  expect(preview.attr('href')).toBe('https://codesandbox.io/s/image-example')
+  expect(preview.find('img').attr('src')).toBe(source)
+  expect(preview.find('img').attr('alt')).toBe('Image demo')
+  expect($('h6').text()).toBe('Image demo')
+})
+
+test('exports the sandbox iframe permissions and caption unchanged', async () => {
+  const $ = load(
+    await render(
+      '<Codesandbox id="live-example" title="Live demo" embed description="Interactive demo" tags={["live"]} />',
+    ),
+  )
+  const embed = $('iframe')
+  expect(embed.attr('src')).toBe('https://codesandbox.io/embed/live-example')
+  expect(embed.attr('title')).toBe('Live demo')
+  expect(embed.attr('sandbox')).toBe(
+    'allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts',
+  )
+  expect(embed.attr('allow')).toBe(
+    'accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking',
+  )
+  expect($('h6').text()).toBe('Live demo')
+  expect($.text()).toContain('Interactive demo')
+  expect($.text()).toContain('live')
+  expect($('a[href="https://codesandbox.io/s/live-example"]')).toHaveLength(0)
 })
 
 /**
@@ -64,5 +155,7 @@ test('compiles a folder to one HTML file per doc, assets alongside', async () =>
 
   expect((await readdir(to)).sort()).toEqual(['guide', 'index.html'])
   expect((await readdir(join(to, 'guide'))).sort()).toEqual(['dog.png', 'start.html'])
-  expect(await readFile(join(to, 'guide/start.html'), 'utf8')).toContain('bg-tip-container')
+  expect(
+    load(await readFile(join(to, 'guide/start.html'), 'utf8'))('[role="note"]').text(),
+  ).toContain('Tip')
 })

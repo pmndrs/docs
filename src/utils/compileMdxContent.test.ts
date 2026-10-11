@@ -375,7 +375,7 @@ describe('Codesandbox', () => {
     expect(html).not.toContain('codesandbox.io/api')
     expect(html).toContain('href="https://codesandbox.io/s/3rjsl"')
     expect(html).toContain('lucide-codesandbox')
-    expect(html).toContain('bg-surface-container')
+    expect(html).toContain('aria-label="Cell fracture"')
   })
 })
 
