@@ -6,11 +6,12 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LibIcon } from '@/components/LibIcon'
 import { libs } from '@/libs'
-import { CheckIcon, ChevronDownIcon } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, LayoutGridIcon } from 'lucide-react'
 import Link from 'next/link'
 import type * as React from 'react'
 
@@ -63,6 +64,13 @@ export function LibsMenu({
         <ChevronDownIcon data-icon="inline-end" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-auto">
+        <DropdownMenuGroup>
+          <DropdownMenuItem render={<a href={DOCS_HUB_URL} />}>
+            <LayoutGridIcon />
+            <span className="flex-1">All libraries</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {items.map(({ id, title, href }) => {
             const current = id === currentItem?.id

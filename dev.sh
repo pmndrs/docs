@@ -6,8 +6,8 @@ export PORT=${PORT:-3000}
 export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
 
 export MDX=docs
-export NEXT_PUBLIC_LIBNAME="Poimandres"
-export NEXT_PUBLIC_LIBNAME_SHORT="pmndrs"
+export NEXT_PUBLIC_LIBNAME="docs"
+export NEXT_PUBLIC_LIBNAME_SHORT="docs"
 export BASE_PATH=
 export DIST_DIR=
 export OUTPUT=

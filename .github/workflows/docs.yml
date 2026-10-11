@@ -25,8 +25,8 @@ jobs:
       # commit -- as in ci.yml.
       tag_match: 'v*.*.*'
       mdx: 'docs'
-      libname: 'Poimandres'
-      libname_short: 'pmndrs'
+      libname: 'docs'
+      libname_short: 'docs'
       home_redirect: '/getting-started/introduction'
       icon: '🖨️'
       logo: 'gutenberg.jpg'
