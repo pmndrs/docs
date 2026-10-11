@@ -1,22 +1,31 @@
-import { cn } from '@/lib/utils'
+import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'
 import { excerpt, highlight } from '@/utils/text'
 import { CornerDownLeftIcon } from 'lucide-react'
-import Link from 'next/link'
 import { ComponentProps } from 'react'
 import sanitizeHtml from 'sanitize-html'
 
+/** Searchable documentation content and its destination. */
 export interface SearchResult {
+  /** Heading text, possibly containing author markup. */
   title: string
+  /** Content used to produce the highlighted excerpt. */
   content: string
+  /** Destination handled by the containing CommandItem. */
   url: string
+  /** Document label displayed above the heading. */
   label: string
+  /** Optional preview image. */
   image?: string
 }
 
+/** Content presented inside the command palette's selected result. */
 export interface SearchItemProps {
+  /** Current query used to highlight the result. */
   search: string
+  /** Matching document content. */
   result: SearchResult
 }
+
 function sanitizeAllHtmlButMark(str: string) {
   return sanitizeHtml(str, {
     allowedTags: ['mark'],
@@ -26,42 +35,34 @@ function sanitizeAllHtmlButMark(str: string) {
   })
 }
 
-function SearchItem({
-  className,
-  search,
-  result,
-  ...props
-}: Omit<ComponentProps<typeof Link>, 'href'> & SearchItemProps) {
+function SearchItem({ search, result, ...props }: ComponentProps<typeof Item> & SearchItemProps) {
   return (
-    <Link
-      {...props}
-      href={result.url}
-      className={cn(className, 'block no-underline')}
-      target={result.url.startsWith('http') ? '_blank' : undefined}
-    >
-      <div className="flex items-center justify-between rounded-md p-4 py-5">
-        <div className="break-all pr-3">
-          <div className="block pb-1 text-xs text-on-surface-variant/50">{result.label}</div>
+    <Item size="sm" {...props}>
+      <ItemContent className="min-w-0 break-words">
+        <ItemDescription>{result.label}</ItemDescription>
+        <ItemTitle className="line-clamp-none">
           <span
             dangerouslySetInnerHTML={{
               __html: highlight(sanitizeAllHtmlButMark(result.title), search),
             }}
           />
-          <div className="mt-2 line-clamp-3 text-sm text-on-surface-variant/50">
-            <span
-              dangerouslySetInnerHTML={{
-                __html: highlight(sanitizeAllHtmlButMark(excerpt(result.content, search)), search),
-              }}
-            />
-          </div>
-        </div>
+        </ItemTitle>
+        <ItemDescription>
+          <span
+            dangerouslySetInnerHTML={{
+              __html: highlight(sanitizeAllHtmlButMark(excerpt(result.content, search)), search),
+            }}
+          />
+        </ItemDescription>
+      </ItemContent>
+      <ItemMedia variant={result.image ? 'image' : 'icon'}>
         {result.image ? (
-          <img className="max-w-[40%] rounded" src={result.image} alt={result.title} />
+          <img src={result.image} alt={result.title} />
         ) : (
-          <CornerDownLeftIcon />
+          <CornerDownLeftIcon aria-hidden />
         )}
-      </div>
-    </Link>
+      </ItemMedia>
+    </Item>
   )
 }
 

@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+import { Kbd } from '@/components/ui/kbd'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { SearchIcon } from 'lucide-react'
@@ -21,9 +23,7 @@ function Search({ className }: ComponentProps<typeof DialogTrigger>) {
 
   return (
     <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
-      <DialogTrigger className={className}>
-        <SearchButton />
-      </DialogTrigger>
+      <DialogTrigger className={className} render={<SearchButton />} />
 
       {/* A command palette, as shadcn's `CommandDialog` composes one, but opened by the trigger
        * above and hung from the top of the viewport rather than from its first third. */}
@@ -38,32 +38,24 @@ function Search({ className }: ComponentProps<typeof DialogTrigger>) {
   )
 }
 
-export function SearchButton({ className, ...props }: ComponentProps<'span'>) {
+/** Search trigger presentation, composed as the dialog's single native button. */
+export function SearchButton({ className, ...props }: ComponentProps<typeof Button>) {
   return (
-    <span
-      className={cn(
-        className,
-        'group flex w-full items-center gap-2 rounded-l-full rounded-r-full p-2 px-4 text-sm',
-        'bg-surface-container',
-        'text-on-surface-variant/50 hover:text-inherit',
-      )}
+    <Button
+      variant="secondary"
+      aria-label="Search for anything"
+      className={cn('min-w-0 flex-1 justify-start', className)}
       {...props}
     >
-      <SearchIcon className="size-5 flex-none" />
+      <SearchIcon data-icon="inline-start" />
       <span>
         Search
         <span className="hidden sm:inline"> for anything</span>
       </span>
-      <span className="ml-auto hidden rounded-md border px-1.5 py-0.5 text-sm leading-5 sm:block">
-        <span className="sr-only">Press </span>
-        <kbd>
-          <kbd title="Forward slash" className="no-underline">
-            /
-          </kbd>
-        </kbd>
-        <span className="sr-only"> to search</span>
-      </span>
-    </span>
+      <Kbd title="Forward slash" className="ml-auto hidden sm:inline-flex">
+        /
+      </Kbd>
+    </Button>
   )
 }
 

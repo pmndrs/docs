@@ -1,3 +1,11 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 import { linkProps } from './Link/linkProps'
@@ -54,28 +62,27 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
   </blockquote>
 )
 
+/** A Markdown table with a local scroll container and an outer frame. */
 export const table = (props: ComponentProps<'table'>) => (
-  <div className="my-8 overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low">
-    {/* The fade masks the scroller and everything it paints: the frame stays on the outer div */}
-    <div className="overflow-x-auto scroll-fade-x no-scrollbar">
-      <table className="min-w-full divide-y divide-outline-variant" {...props} />
-    </div>
+  <div className="my-8 overflow-hidden rounded-lg border *:data-[slot=table-container]:scroll-fade-x *:data-[slot=table-container]:no-scrollbar">
+    <Table {...props} />
   </div>
 )
 
-export const thead = (props: ComponentProps<'thead'>) => (
-  <thead className="text-on-surface-variant/50" {...props} />
-)
+/** Markdown table header rows. */
+export const thead = (props: ComponentProps<'thead'>) => <TableHeader {...props} />
 
-export const th = (props: ComponentProps<'th'>) => (
-  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide" {...props} />
-)
+/** Markdown table body rows. */
+export const tbody = (props: ComponentProps<'tbody'>) => <TableBody {...props} />
 
-export const tr = (props: ComponentProps<'tr'>) => <tr className="even:bg-surface" {...props} />
+/** A header cell, retaining authored alignment and other HTML attributes. */
+export const th = (props: ComponentProps<'th'>) => <TableHead {...props} />
 
-export const td = (props: ComponentProps<'td'>) => (
-  <td className="px-6 py-4 text-sm first:font-medium" {...props} />
-)
+/** A Markdown table row. */
+export const tr = (props: ComponentProps<'tr'>) => <TableRow {...props} />
+
+/** A body cell, retaining authored alignment and other HTML attributes. */
+export const td = (props: ComponentProps<'td'>) => <TableCell {...props} />
 
 // Underlined, not told apart by colour alone (WCAG 1.4.1): a palette can bring `primary` within a
 // hair of the body text — a lime seed with color match puts it at white in dark mode, next to a

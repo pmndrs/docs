@@ -1049,3 +1049,127 @@ test.describe('fonts', () => {
     await expect(paragraph).not.toHaveCSS('font-family', /Inconsolata|monospace/)
   })
 })
+
+// Migrated compositions retain the reader's navigation and narrow-screen reading contracts.
+test.describe('shadcn compositions', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('search opens from its button and slash, selects results and navigates with Enter or a click', async ({
+    page,
+  }) => {
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const trigger = page.getByRole('button', { name: 'Search for anything', exact: true })
+    await expect(trigger).toHaveCount(1)
+    expect(await trigger.evaluate((element) => element.tagName)).toBe('BUTTON')
+    await expect(trigger.locator('button, a')).toHaveCount(0)
+    await trigger.click()
+
+    const dialog = page.getByRole('dialog', { name: 'Search anything', exact: true })
+    const input = dialog.getByRole('combobox')
+    const options = dialog.getByRole('option')
+    await expect(input).toBeFocused()
+    await input.fill('code')
+    await expect(options.nth(1)).toBeVisible()
+    await expect(options.first()).toHaveAttribute('aria-selected', 'true')
+    await expect(options.locator('a, button, [role="option"]')).toHaveCount(0)
+    await expect(options.first().locator('mark').first()).toBeVisible()
+    await input.press('ArrowDown')
+    await expect(options.nth(1)).toHaveAttribute('aria-selected', 'true')
+    await input.press('ArrowUp')
+    await expect(options.first()).toHaveAttribute('aria-selected', 'true')
+    await input.press('ArrowDown')
+
+    // A deferred query replaces the results after the input changes: select its first new result.
+    await input.fill('keypoints')
+    await expect(options.first()).toHaveAttribute('data-value', /keypoints/)
+    await expect(options.first()).toHaveAttribute('aria-selected', 'true')
+    const keyboardDestination = await options.first().getAttribute('data-value')
+    await input.press('Enter')
+    await expect(page).toHaveURL(new URL(keyboardDestination!, page.url()).href)
+    await expect(dialog).toBeHidden()
+
+    await page.getByRole('button', { name: 'Search for anything', exact: true }).click()
+    await expect(input).toBeFocused()
+    await input.press('Escape')
+    await expect(dialog).toBeHidden()
+    await page.keyboard.press('Slash')
+    await expect(input).toBeFocused()
+    await input.fill('tabs')
+    await expect(options.first()).toHaveAttribute('data-value', /tabs/)
+    const pointerDestination = await options.first().getAttribute('data-value')
+    await options.first().click()
+    await expect(page).toHaveURL(new URL(pointerDestination!, page.url()).href)
+    await expect(dialog).toBeHidden()
+  })
+
+  test('entry rows keep page and sandbox links independent and locally contained', async ({
+    page,
+  }) => {
+    await page.goto('/authoring/entries')
+    await page.waitForLoadState('networkidle')
+
+    const article = page.getByRole('article')
+    const pageLink = article.locator(
+      'li > [data-slot="item-content"] a[href="/authoring/codesandbox"]',
+    )
+    await expect(pageLink).toBeVisible()
+    const row = article.getByRole('listitem').filter({ has: pageLink })
+    await expect(
+      row.getByRole('link', { name: 'CodeSandbox 3rjsl', exact: true }).first(),
+    ).toHaveAttribute('href', 'https://codesandbox.io/s/3rjsl')
+    await expect(row.locator('a a, a button, button a, button button')).toHaveCount(0)
+    expect(await row.evaluate((element) => getComputedStyle(element).breakInside)).toBe('avoid')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  })
+
+  test('Markdown tables keep header/body semantics and scroll within the article', async ({
+    page,
+  }, testInfo) => {
+    await page.goto('/authoring/codesandbox')
+    await page.waitForLoadState('networkidle')
+
+    const table = page.getByRole('article').getByRole('table').first()
+    await expect(table.getByRole('columnheader')).toHaveCount(3)
+    await expect(table.locator('tbody').getByRole('row')).toHaveCount(6)
+    const scroll = table.locator('..')
+    await expect(scroll).toHaveCSS('overflow-x', 'auto')
+    if (testInfo.project.name === 'w375') {
+      expect(await scroll.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(
+        true,
+      )
+      await scroll.evaluate((element) => {
+        element.scrollLeft = 40
+      })
+      expect(await scroll.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0)
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await expect(
+      page.getByRole('article').locator('a a, a button, button a, button button'),
+    ).toHaveCount(0)
+  })
+
+  test('takeaways remain a headed list while Card and Alert retain their internal layouts', async ({
+    page,
+  }) => {
+    await page.goto('/authoring/keypoints')
+    await page.waitForLoadState('networkidle')
+    const section = page
+      .getByRole('article')
+      .locator('section')
+      .filter({ has: page.getByRole('heading', { name: "What you'll learn", level: 2 }) })
+    await expect(section.getByRole('listitem')).toHaveCount(2)
+    await expect(section.locator('[data-slot="card"]')).toHaveCSS('display', 'flex')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+
+    await page.goto('/authoring/gha')
+    await page.waitForLoadState('networkidle')
+    const article = page.getByRole('article')
+    await expect(article.getByRole('alert')).toHaveCount(0)
+    const note = article.getByRole('note', { name: 'Note', exact: true })
+    await expect(note).toHaveCSS('display', 'grid')
+    await expect(article.getByRole('note', { name: 'MCP-server', exact: true })).toBeVisible()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  })
+})

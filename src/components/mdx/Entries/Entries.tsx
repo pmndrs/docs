@@ -2,17 +2,24 @@ import { ComponentProps, Fragment, ReactElement } from 'react'
 
 import { CodesandboxIcon } from '@/components/brand-icons'
 import { a as Link } from '@/components/mdx'
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item'
 import { groupBy } from 'lodash-es'
 import { Img } from '../Img'
 import { sandboxUrl, type Box } from '../Codesandbox'
 
+/** A documentation page and the sandboxes offered alongside its destination. */
 export type Entry = {
+  /** Rich frontmatter title. */
   title: ReactElement
+  /** Page destination. */
   url: string
+  /** Path segments, starting with the directory group. */
   slug: string[]
+  /** Independent sandbox destinations and optional author thumbnails. */
   boxes: Box[]
 }
 
+/** Renders a compact grouped directory with independent page and sandbox links. */
 export async function Entries({
   items,
   excludedGroups = [],
@@ -28,11 +35,15 @@ export async function Entries({
           return (
             <Fragment key={group}>
               <h2 className="my-8 text-xl capitalize first-of-type:mt-0">{group}</h2>
-              <ul className="text-sm">
+              <ul className="flex flex-col gap-1">
                 {entries?.map(({ title, url, boxes }) => (
-                  <li key={url} className="flex gap-1">
-                    <Link href={url}>{title}</Link>
-                    <span className="inline-flex gap-1">
+                  <Item key={url} render={<li />} size="xs" className="break-inside-avoid">
+                    <ItemContent className="min-w-0">
+                      <ItemTitle className="line-clamp-none w-full break-words">
+                        <Link href={url}>{title}</Link>
+                      </ItemTitle>
+                    </ItemContent>
+                    <ItemActions className="max-w-full flex-wrap">
                       {boxes.map(({ id, img }, i) => (
                         <a
                           key={i} // a page may show the same sandbox twice
@@ -52,8 +63,8 @@ export async function Entries({
                           )}
                         </a>
                       ))}
-                    </span>
-                  </li>
+                    </ItemActions>
+                  </Item>
                 ))}
               </ul>
             </Fragment>

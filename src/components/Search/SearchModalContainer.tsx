@@ -106,17 +106,16 @@ export const SearchModalContainer = ({
                     key={`search-item-${index}`}
                     value={result.url}
                     onSelect={(value) => {
-                      router.push(value)
+                      if (value.startsWith('http')) {
+                        window.open(value, '_blank', 'noopener,noreferrer')
+                      } else {
+                        router.push(value)
+                      }
                       close()
                     }}
                     className="p-0 font-normal"
                   >
-                    <SearchItem
-                      search={query}
-                      result={result}
-                      tabIndex={-1}
-                      className="min-w-0 flex-1"
-                    />
+                    <SearchItem search={query} result={result} className="min-w-0 flex-1" />
                   </CommandItem>
                 )
               })}
