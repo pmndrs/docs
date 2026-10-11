@@ -41,7 +41,7 @@ export async function Img({
       decoding="async"
       loading="lazy"
       alt={alt}
-      className={cn('bg-surface-container inline-block rounded-lg', className)}
+      className={cn('bg-surface-container inline-block rounded-2xl', className)}
       {...dims}
       {...props}
     />

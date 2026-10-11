@@ -183,7 +183,7 @@ export const Code = ({
     </>
   )
 
-  const frameClassName = cn('group/code relative my-5 overflow-hidden rounded-lg', codeColors)
+  const frameClassName = cn('group/code relative my-5 overflow-hidden rounded-2xl', codeColors)
 
   // Not `CollapsibleContent`: closed, Base UI hides its panel (`hidden`), where the block shows
   // its first lines. The root's `data-open`/`data-closed` clip the `<pre>` instead.
@@ -268,7 +268,7 @@ function PackageManagerCode({
       onValueChange={(value) => {
         if (isPackageManager(value)) setPackageManager(value)
       }}
-      className={cn('my-5 gap-0 overflow-hidden rounded-lg', codeColors)}
+      className={cn('my-5 gap-0 overflow-hidden rounded-2xl', codeColors)}
     >
       <CodeHeader>
         <SquareTerminalIcon className="size-4 shrink-0" />

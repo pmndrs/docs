@@ -117,7 +117,7 @@ pre[class*='language-'] {
 
 /* Inline code */
 :not(pre) > code[class*='language-'] {
-  @apply rounded-lg;
+  @apply rounded-sm;
   white-space: normal;
 }
 

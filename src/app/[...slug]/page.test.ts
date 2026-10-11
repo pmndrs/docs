@@ -993,6 +993,57 @@ test.describe('theme', () => {
 test.describe('radius', () => {
   test.use({ disableAutoSnapshot: true })
 
+  test('article frames use the larger editorial corner while inline code stays compact', async ({
+    page,
+  }) => {
+    await page.goto('/authoring/code')
+    await page.waitForLoadState('networkidle')
+    const article = page.getByRole('article')
+    const codeFrame = article.locator('pre').first().locator('..')
+    await expect(codeFrame).toHaveCSS('border-top-left-radius', '19.125px')
+    const packageManagerFrame = article
+      .getByRole('tablist', { name: 'Package manager', exact: true })
+      .locator('../..')
+    await expect(packageManagerFrame).toHaveCSS('border-top-left-radius', '19.125px')
+
+    const inline = article.getByRole('paragraph').locator('code').first()
+    await expect(inline).toHaveCSS('border-top-left-radius', '6.375px')
+    // Authored language classes take the syntax stylesheet's inline-code path.
+    const highlightedRadius = await inline.evaluate((element) => {
+      const highlighted = element.cloneNode(true) as HTMLElement
+      highlighted.className = 'language-ts'
+      element.after(highlighted)
+      const radius = getComputedStyle(highlighted).borderTopLeftRadius
+      highlighted.remove()
+      return radius
+    })
+    expect(highlightedRadius).toBe('6.375px')
+
+    await page.goto('/authoring/img')
+    await page.waitForLoadState('networkidle')
+    await expect(page.getByRole('article').locator('img').first()).toHaveCSS(
+      'border-top-left-radius',
+      '19.125px',
+    )
+
+    await page.goto('/authoring/codesandbox')
+    await page.waitForLoadState('networkidle')
+    const tableFrame = page.getByRole('article').getByRole('table').first().locator('../..')
+    await expect(tableFrame).toHaveCSS('border-top-left-radius', '19.125px')
+
+    await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+    // Sandpack exposes its layout class as a customization hook; its bundler need not finish.
+    const sandpackFrame = page.getByRole('article').locator('.sp-layout').first()
+    await expect(sandpackFrame).toBeVisible()
+    await expect(sandpackFrame).toHaveCSS('border-top-left-radius', '19.125px')
+
+    await page.goto('/agents/introduction', { waitUntil: 'domcontentloaded' })
+    const liveFrame = page.locator(
+      'iframe[title="MCP live: the requests the pmndrs docs MCP server is serving"]',
+    )
+    await expect(liveFrame).toHaveCSS('border-top-left-radius', '19.125px')
+  })
+
   test("the corners follow the design-system preset's radius scale", async ({ page }) => {
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
@@ -1003,8 +1054,8 @@ test.describe('radius', () => {
     // a page declares depends on what some file happens to name (Sandpack.css, a story's sample
     // CSS), not on its corners.
     // Not a `rounded-*` probe for every step either: Tailwind only generates the utilities the
-    // sources use, and nothing uses `rounded-sm` as a class. So each step is read off a probe that
-    // the site's own CSS styles with it: a `<mark>` (`@apply rounded-sm` in globals.css) for `sm`,
+    // sources use. Each step is read off a probe that the site's own CSS styles with it:
+    // a `<mark>` (`@apply rounded-sm` in globals.css) for `sm`,
     // the `rounded-*` utility, which the ui/ components use, for the others. A step that loses its
     // last user fails here rather than passing on a 0px probe.
     // The expected pixels are the spec: the 17px root makes the 0.625rem base 10.625px, times

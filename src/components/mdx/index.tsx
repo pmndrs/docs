@@ -67,7 +67,7 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
  * @param props Authored HTML attributes and child content for this table element.
  */
 export const table = (props: ComponentProps<'table'>) => (
-  <div className="my-8 overflow-hidden rounded-lg border *:data-[slot=table-container]:scroll-fade-x *:data-[slot=table-container]:no-scrollbar">
+  <div className="my-8 overflow-hidden rounded-2xl border *:data-[slot=table-container]:scroll-fade-x *:data-[slot=table-container]:no-scrollbar">
     <Table {...props} />
   </div>
 )
@@ -119,13 +119,10 @@ export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'
 // The text role goes with the background role: inherited, the parent's text can be meant for
 // another background (on-primary-container, in the sidebar's current page) and vanish on this one
 // at high contrast.
-// The corner is not a radius token, on purpose: inline code sits in text of any size (a paragraph,
-// a heading, a table cell), and `.25em` keeps it in proportion with the letters, where a fixed step
-// of the scale (`sm` is 6.375px) would round a small chip in body text into a pill and look square in
-// an h1. The 4px floor keeps it visibly rounded in the smallest text.
+// Inline code takes the compact step of the same radius scale as the article frames.
 export const code = (props: ComponentProps<'code'>) => (
   <code
-    className="bg-surface-container-high text-on-surface rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
+    className="bg-surface-container-high text-on-surface rounded-sm px-1.5 py-0.5 font-mono"
     {...props}
   />
 )
