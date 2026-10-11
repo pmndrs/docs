@@ -78,8 +78,8 @@ export function Gha({ children, keyword, title }: GhaProps) {
           </ItemMedia>
           <ItemTitle className="min-w-0 flex-1 line-clamp-none break-words">{label}</ItemTitle>
         </ItemHeader>
-        <ItemContent className="min-w-0 basis-full [&>:first-child]:mt-0 [&>:last-child]:mb-0">
-          {children}
+        <ItemContent className="min-w-0 basis-full">
+          <div className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">{children}</div>
         </ItemContent>
       </Item>
     </div>

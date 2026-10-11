@@ -1353,5 +1353,14 @@ test.describe('shadcn compositions', () => {
     expect(labelIsFullyVisible).toBe(true)
     await expect(customNote.getByRole('heading', { name: 'Reproduce the example' })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+
+    await page.goto('/authoring/hint')
+    await page.waitForLoadState('networkidle')
+    const legacyNote = page.getByRole('article').getByRole('note', { name: 'Note', exact: true })
+    const inlineCodeWidth = await legacyNote.locator('code').evaluate((code) => ({
+      code: code.getBoundingClientRect().width,
+      content: code.parentElement!.getBoundingClientRect().width,
+    }))
+    expect(inlineCodeWidth.code).toBeLessThan(inlineCodeWidth.content / 2)
   })
 })
