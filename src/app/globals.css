@@ -97,11 +97,11 @@ pre[class*='language-'],
 .sandpack {
   /*
    * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
-   * the same in light and dark: the code block background is always dark (see Code.tsx).
+   * the same in light and dark: the shared --code-background above is always dark.
    * Only the hue comes from the seed: each accent rotates it (keyword at the seed, then
    * strings and functions 120 degrees apart), with its own lightness and chroma, so the
    * accents stay apart whatever the seed, even a nearly grey one. Punctuation stays
-   * near-neutral, like the plain code text (see Code.tsx).
+   * near-neutral, like the shared --code-foreground above.
    */
   --seed: var(--md-ref-palette-primary-80);
   --keyword: oklch(from var(--seed) 0.78 0.15 h);
