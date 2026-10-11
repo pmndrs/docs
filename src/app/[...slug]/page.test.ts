@@ -1247,6 +1247,25 @@ test.describe('shadcn compositions', () => {
     const scroll = table.locator('..')
     await expect(scroll).toHaveCSS('overflow-x', 'auto')
     if (testInfo.project.name === 'w375') {
+      const description = table.getByRole('cell', {
+        name: 'Preview image: relative to the article, or a full URL',
+        exact: true,
+      })
+      const descriptionLines = await description.evaluate((cell) => {
+        const text = document.createRange()
+        text.selectNodeContents(cell)
+        return text.getClientRects().length
+      })
+      expect(descriptionLines).toBeGreaterThan(1)
+      const naturallyOverflows = await scroll.evaluate(
+        (element) => element.scrollWidth > element.clientWidth,
+      )
+      if (!naturallyOverflows) {
+        // Prose can fit again; a long unbroken destination must still scroll within the article.
+        await description.evaluate((cell) => {
+          cell.append(document.createTextNode(` https://example.com/${'a'.repeat(180)}`))
+        })
+      }
       expect(await scroll.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(
         true,
       )
@@ -1254,11 +1273,38 @@ test.describe('shadcn compositions', () => {
         element.scrollLeft = 40
       })
       expect(await scroll.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0)
+      if (!naturallyOverflows) {
+        await description.evaluate((cell) => cell.lastChild?.remove())
+      }
+    } else {
+      expect(await scroll.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+        true,
+      )
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
     await expect(
       page.getByRole('article').locator('a a, a button, button a, button button'),
     ).toHaveCount(0)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+    const colorMatchRow = page
+      .getByRole('article')
+      .getByRole('row')
+      .filter({
+        has: page.getByRole('cell', { name: 'THEME_COLOR_MATCH', exact: true }),
+      })
+    const longDescriptionLines = await colorMatchRow
+      .getByRole('cell')
+      .nth(1)
+      .evaluate((cell) => {
+        // This authored plain-text run is long enough to wrap at either article width.
+        const text = document.createRange()
+        text.selectNodeContents(cell.firstChild!)
+        return text.getClientRects().length
+      })
+    expect(longDescriptionLines).toBeGreaterThan(1)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   })
 
   test('takeaways remain a headed list while Card and Alert retain their internal layouts', async ({

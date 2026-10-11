@@ -85,10 +85,11 @@ export const thead = (props: ComponentProps<'thead'>) => <TableHeader {...props}
 export const tbody = (props: ComponentProps<'tbody'>) => <TableBody {...props} />
 
 /**
- * A header cell, retaining authored alignment and other HTML attributes.
- * @param props Authored HTML attributes and child content for this table element.
+ * A header cell with normal text wrapping, retaining authored alignment and class overrides.
  */
-export const th = (props: ComponentProps<'th'>) => <TableHead {...props} />
+export const th = ({ className, ...props }: ComponentProps<'th'>) => (
+  <TableHead className={cn('whitespace-normal', className)} {...props} />
+)
 
 /**
  * A Markdown table row.
@@ -97,10 +98,11 @@ export const th = (props: ComponentProps<'th'>) => <TableHead {...props} />
 export const tr = (props: ComponentProps<'tr'>) => <TableRow {...props} />
 
 /**
- * A body cell, retaining authored alignment and other HTML attributes.
- * @param props Authored HTML attributes and child content for this table element.
+ * A body cell with normal text wrapping, retaining authored alignment and class overrides.
  */
-export const td = (props: ComponentProps<'td'>) => <TableCell {...props} />
+export const td = ({ className, ...props }: ComponentProps<'td'>) => (
+  <TableCell className={cn('whitespace-normal', className)} {...props} />
+)
 
 // Underlined, not told apart by colour alone (WCAG 1.4.1): a palette can bring `primary` within a
 // hair of the body text — a lime seed with color match puts it at white in dark mode, next to a
