@@ -8,7 +8,8 @@ main() {
   export VERSION="${VERSION:-latest}"
 
   export MDX="${MDX:-docs}"
-  export NEXT_PUBLIC_LIBNAME="${NEXT_PUBLIC_LIBNAME:-Poimandres}"
+  export NEXT_PUBLIC_LIBNAME="${NEXT_PUBLIC_LIBNAME:-docs}"
+  export NEXT_PUBLIC_LIBNAME_SHORT="${NEXT_PUBLIC_LIBNAME_SHORT:-docs}"
   # Relative assets resolve against the MDX folder, served below on the same port
   export MDX_BASEURL="${MDX_BASEURL:-http://localhost:$_PORT}"
 
