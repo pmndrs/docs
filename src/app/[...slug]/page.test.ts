@@ -1127,6 +1127,69 @@ test.describe('fonts', () => {
   })
 })
 
+test.describe('code palette', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('Sandpack matches readable Code colors in light and dark', async ({ page }) => {
+    for (const colorScheme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/code', { waitUntil: 'domcontentloaded' })
+      const code = page.getByRole('article').locator('pre.language-ts').first()
+      await expect(code).toBeVisible()
+      const colors = await code.evaluate((element) => {
+        const frame = element.closest('[class~="group/code"]')!
+        const background = getComputedStyle(frame).backgroundColor
+        const foreground = getComputedStyle(element).color
+        const keyword = getComputedStyle(element.querySelector('.token.keyword')!).color
+        const string = getComputedStyle(element.querySelector('.token.string')!).color
+
+        // Convert the displayed colors to sRGB, regardless of the stylesheet's color space.
+        const context = document.createElement('canvas').getContext('2d')!
+        const luminance = (color: string) => {
+          context.fillStyle = color
+          context.fillRect(0, 0, 1, 1)
+          const rgb = Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3)
+          const linear = rgb.map((channel) => {
+            const value = channel / 255
+            return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+          })
+          return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722
+        }
+        const backgroundLuminance = luminance(background)
+        const contrast = (luminance(foreground) + 0.05) / (backgroundLuminance + 0.05)
+        return { background, foreground, keyword, string, backgroundLuminance, contrast }
+      })
+      expect(colors.backgroundLuminance).toBeLessThan(0.05)
+      expect(colors.contrast).toBeGreaterThan(7)
+
+      // The editor renders independently of the preview's external bundler and iframe.
+      await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+      // CodeMirror initializes lazily when its server-rendered container enters the viewport.
+      await page
+        .getByRole('article')
+        .locator('.sandpack .sp-code-editor')
+        .first()
+        .scrollIntoViewIfNeeded()
+      const editor = page.getByRole('article').locator('.sandpack .cm-editor').first()
+      await expect(editor).toBeVisible()
+      await expect(editor).toHaveCSS('background-color', colors.background)
+      await expect(editor.locator('.cm-content')).toHaveCSS('color', colors.foreground)
+      await expect(
+        editor
+          .locator('.cm-line span')
+          .filter({ hasText: /^import$/ })
+          .first(),
+      ).toHaveCSS('color', colors.keyword)
+      await expect(
+        editor
+          .locator('.cm-line span')
+          .filter({ hasText: /^'@react-three\/fiber'$/ })
+          .first(),
+      ).toHaveCSS('color', colors.string)
+    }
+  })
+})
+
 // Migrated compositions retain the reader's navigation and narrow-screen reading contracts.
 test.describe('shadcn compositions', () => {
   test.use({ disableAutoSnapshot: true })
