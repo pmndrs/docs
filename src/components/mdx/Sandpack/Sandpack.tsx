@@ -92,9 +92,25 @@ export const Sandpack = async ({
         {...props}
         theme={{
           colors: {
-            surface1: 'var(--md-sys-color-surface-container-low)',
-            surface2: 'var(--md-sys-color-surface-container)',
-            surface3: 'var(--md-sys-color-surface-container-high)',
+            surface1: 'var(--code-background)',
+            surface2: 'color-mix(in oklab, var(--code-background), var(--code-foreground) 5%)',
+            surface3: 'color-mix(in oklab, var(--code-background), var(--code-foreground) 10%)',
+            base: 'var(--code-foreground)',
+            clickable: 'var(--comment)',
+            disabled: 'color-mix(in oklab, var(--code-foreground), transparent 60%)',
+            hover: 'var(--code-foreground)',
+            accent: 'var(--keyword)',
+          },
+          syntax: {
+            plain: 'var(--code-foreground)',
+            comment: 'var(--comment)',
+            keyword: 'var(--keyword)',
+            definition: 'var(--function)',
+            punctuation: 'var(--punctuation)',
+            property: 'var(--operator)',
+            tag: 'var(--property)',
+            static: 'var(--literal)',
+            string: 'var(--string)',
           },
           font: {
             mono: 'var(--font-mono)',

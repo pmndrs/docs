@@ -28,6 +28,10 @@
 /* Custom base styles */
 
 :root {
+  /* Code and Sandpack keep the same dark surfaces in every site theme and contrast level. */
+  --code-background: oklch(from var(--md-ref-palette-primary-10) l calc(c * 0.2) h);
+  --code-foreground: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
+
   @apply [--rgrid-m:--spacing(4)] lg:[--rgrid-m:--spacing(6)];
   @apply [--rgrid-g:--spacing(4)] lg:[--rgrid-g:--spacing(12)];
   @apply [--header-height:--spacing(16)];
@@ -89,7 +93,8 @@ pre[class*='language-'] {
 }
 
 /* Code blocks */
-pre[class*='language-'] {
+pre[class*='language-'],
+.sandpack {
   /*
    * Token colors derive from the MTB primary palette (--md-ref-palette-*), whose tones are
    * the same in light and dark: the code block background is always dark (see Code.tsx).
@@ -107,7 +112,7 @@ pre[class*='language-'] {
   --property: oklch(from var(--seed) 0.86 0.06 calc(h + 180));
   --function: oklch(from var(--seed) 0.8 0.14 calc(h + 240));
   --comment: var(--md-ref-palette-neutral-variant-60);
-  --punctuation: oklch(from var(--md-ref-palette-primary-90) l calc(c * 0.2) h);
+  --punctuation: var(--code-foreground);
   /* Diffs keep their meaning (green, red) rather than following the seed */
   --inserted: var(--md-ref-palette-tip-80);
   --deleted: var(--md-ref-palette-caution-80);
