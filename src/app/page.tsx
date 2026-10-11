@@ -4,7 +4,7 @@ import { Gha } from '@/components/mdx/Gha/Gha'
 import { LibIcon } from '@/components/LibIcon'
 import { McpInstall } from '@/components/McpInstall/McpInstall'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardAction,
@@ -139,25 +139,23 @@ export default function Page() {
                     </CardAction>
                   </CardHeader>
                   <CardFooter className="flex-wrap gap-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      nativeButton={false}
-                      render={<Link href={data.docs_url} />}
+                    <Link
+                      href={data.docs_url}
+                      className={buttonVariants({ variant: 'outline', className: 'flex-1' })}
                     >
                       <FileTextIcon data-icon="inline-start" />
                       <span className="sm:hidden">Docs</span>
                       <span className="hidden sm:inline">Documentation</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      nativeButton={false}
-                      render={<a href={data.github} target="_blank" rel="noopener noreferrer" />}
+                    </Link>
+                    <a
+                      href={data.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={buttonVariants({ variant: 'outline', className: 'flex-1' })}
                     >
                       <GitHubIcon data-icon="inline-start" />
                       GitHub
-                    </Button>
+                    </a>
                   </CardFooter>
                 </Card>
               )
