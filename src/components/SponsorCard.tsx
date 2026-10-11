@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { HeartIcon } from 'lucide-react'
 import { ComponentProps } from 'react'
@@ -23,15 +23,15 @@ export function SponsorCard({ className, ...props }: ComponentProps<'div'>) {
         </CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          render={<a href={SPONSORS_URL} target="_blank" rel="noopener noreferrer" />}
+        <a
+          href={SPONSORS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({ variant: 'outline', size: 'sm' })}
         >
           <HeartIcon data-icon="inline-start" />
           Sponsor on GitHub
-        </Button>
+        </a>
       </CardFooter>
     </Card>
   )
