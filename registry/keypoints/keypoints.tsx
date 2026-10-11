@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 
 type KeypointsProps = ComponentProps<'section'> & {
   /** Heading displayed above the list of article takeaways. */
@@ -29,6 +29,7 @@ export function Keypoints({ title = 'Keypoints', children, className, ...props }
 
 /**
  * One takeaway in a Keypoints list, retaining native list-item attributes.
+ * @param props Native list-item attributes and the takeaway content.
  */
 export function KeypointsItem(props: ComponentProps<'li'>) {
   return <li className="my-1" {...props} />
