@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.23.1
+
+### Patch Changes
+
+- [#701](https://github.com/pmndrs/docs/pull/701) [`49bc574`](https://github.com/pmndrs/docs/commit/49bc5746dd49b7fbf5923619854a66e8b43e9e08) Thanks [@abernier](https://github.com/abernier)! - Keep Sandpack code dark in light mode and align its syntax colors with Code blocks.
+
 ## 4.23.0
 
 ### Minor Changes
