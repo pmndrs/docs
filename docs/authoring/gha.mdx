@@ -11,6 +11,10 @@ nav: 10
 
 Aka. ["GitHub alerts"](https://github.com/orgs/community/discussions/16925)
 
+Callouts compose shadcn `Alert` parts with each kind's Material background and matching
+foreground. They remain static editorial notes, so reading an article does not trigger an
+assertive screen-reader announcement.
+
 ```md
 <Gha keyword="NOTE">Highlights information that users should take into account, even when skimming.</Gha>
 ```
@@ -56,3 +60,11 @@ The `title` prop overrides the label derived from `keyword` (icon and background
 result:
 
 <Gha keyword="TIP" title="MCP-server">Browse these docs from your MCP-compatible client.</Gha>
+
+Rich Markdown also works inside a callout:
+
+> [!NOTE]
+> Keep **headings, links and lists** in your existing authoring content:
+>
+> - Read the [Keypoints](keypoints) before starting.
+> - Open the [sandbox examples](codesandbox) to try the ideas.
