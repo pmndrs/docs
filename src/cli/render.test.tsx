@@ -59,7 +59,7 @@ test.each([
   expect($('[role="alert"]')).toHaveLength(0)
 })
 
-test('keeps custom alert labels, unknown-kind fallback and the deprecated Hint adapter', async () => {
+test('keeps custom callout labels, unknown-kind fallback and the deprecated Hint adapter', async () => {
   const $ = load(
     await render(
       '<Gha keyword="UNKNOWN" title="Local advice">Read this advice</Gha>\n\n<Hint>Legacy note</Hint>',
@@ -68,6 +68,38 @@ test('keeps custom alert labels, unknown-kind fallback and the deprecated Hint a
   expect($('[role="note"][aria-label="Local advice"]').text()).toContain('Read this advice')
   expect($('[role="note"][aria-label="Note"]').text()).toContain('Legacy note')
   expect($('[role="alert"]')).toHaveLength(0)
+})
+
+test('exports a full custom callout label with headings, code and nested lists', async () => {
+  const title =
+    'Before sharing a sandbox, check its dependencies and document the environment needed to reproduce the example'
+  const $ = load(
+    await render(`<Gha keyword="TIP" title="${title}">
+
+### Reproduce the example
+
+Run **locally** before sharing.
+
+\`\`\`sh
+pnpm install
+pnpm dev
+\`\`\`
+
+- Document the requirements.
+  - Include the supported Node.js version.
+- Read the [sandbox examples](codesandbox).
+
+</Gha>`),
+  )
+  const note = $('[role="note"]')
+  expect(note.attr('aria-label')).toBe(title)
+  expect(note.text()).toContain(title)
+  expect(note.find('h3').text()).toBe('Reproduce the example')
+  expect(note.find('p strong').text()).toBe('locally')
+  expect(note.find('pre code').text()).toContain('pnpm install\npnpm dev')
+  expect(note.find('ul ul li').text()).toBe('Include the supported Node.js version.')
+  expect(note.find('a[href="codesandbox"]')).toHaveLength(1)
+  expect(note.find('p p, p pre, p ul')).toHaveLength(0)
 })
 
 test('exports sandbox metadata and a meaningful destination without a title or image', async () => {

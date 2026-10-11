@@ -1307,7 +1307,7 @@ test.describe('shadcn compositions', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   })
 
-  test('takeaways remain a headed list while Card and Alert retain their internal layouts', async ({
+  test('takeaways remain a headed list and callout bodies use the full content width', async ({
     page,
   }) => {
     await page.goto('/authoring/keypoints')
@@ -1324,9 +1324,34 @@ test.describe('shadcn compositions', () => {
     await page.waitForLoadState('networkidle')
     const article = page.getByRole('article')
     await expect(article.getByRole('alert')).toHaveCount(0)
-    const note = article.getByRole('note', { name: 'Note', exact: true }).first()
-    await expect(note).toHaveCSS('display', 'grid')
+    const richNote = article.getByRole('note', { name: 'Note', exact: true }).filter({
+      has: page.getByRole('link', { name: 'Keypoints', exact: true }),
+    })
+    const contentGaps = await richNote
+      .locator('p')
+      .first()
+      .evaluate((paragraph) => {
+        const note = paragraph.closest('[role="note"]')!
+        const frame = note.getBoundingClientRect()
+        const body = paragraph.getBoundingClientRect()
+        const style = getComputedStyle(note)
+        const contentLeft =
+          frame.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft)
+        const contentRight =
+          frame.right - parseFloat(style.borderRightWidth) - parseFloat(style.paddingRight)
+        return { left: body.left - contentLeft, right: contentRight - body.right }
+      })
+    expect(Math.abs(contentGaps.left)).toBeLessThan(1)
+    expect(Math.abs(contentGaps.right)).toBeLessThan(1)
     await expect(article.getByRole('note', { name: 'MCP-server', exact: true })).toBeVisible()
+    const customLabel =
+      'Before sharing a sandbox, check its dependencies and document the environment needed to reproduce the example'
+    const customNote = article.getByRole('note', { name: customLabel, exact: true })
+    const labelIsFullyVisible = await customNote
+      .getByText(customLabel, { exact: true })
+      .evaluate((label) => label.scrollHeight <= label.clientHeight)
+    expect(labelIsFullyVisible).toBe(true)
+    await expect(customNote.getByRole('heading', { name: 'Reproduce the example' })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   })
 })

@@ -11,9 +11,10 @@ nav: 10
 
 Aka. ["GitHub alerts"](https://github.com/orgs/community/discussions/16925)
 
-Callouts compose shadcn `Alert` parts with each kind's Material background and matching
-foreground. They remain static editorial notes, so reading an article does not trigger an
-assertive screen-reader announcement.
+Callouts compose shadcn `Item` parts with each kind's Material background and matching
+foreground. A compact icon-and-label header sits above full-width rich content. They remain
+static editorial notes, so reading an article does not trigger an assertive screen-reader
+announcement.
 
 ```md
 <Gha keyword="NOTE">Highlights information that users should take into account, even when skimming.</Gha>
@@ -68,3 +69,22 @@ Rich Markdown also works inside a callout:
 >
 > - Read the [Keypoints](keypoints) before starting.
 > - Open the [sandbox examples](codesandbox) to try the ideas.
+
+Custom labels wrap in full, and rich blocks retain their structure:
+
+<Gha keyword="TIP" title="Before sharing a sandbox, check its dependencies and document the environment needed to reproduce the example">
+
+### Reproduce the example
+
+Run the example locally before sharing it:
+
+```sh
+pnpm install
+pnpm dev
+```
+
+- Document the requirements.
+  - Include the supported Node.js version.
+- Link to the [sandbox examples](codesandbox).
+
+</Gha>

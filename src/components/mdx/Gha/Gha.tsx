@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Item, ItemContent, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item'
 import {
   InfoIcon,
   LightbulbIcon,
@@ -71,11 +71,17 @@ export function Gha({ children, keyword, title }: GhaProps) {
 
   return (
     <div className="my-6">
-      <Alert role="note" aria-label={label} className={colors}>
-        <Icon aria-hidden />
-        <AlertTitle>{label}</AlertTitle>
-        <AlertDescription className="min-w-0 text-inherit">{children}</AlertDescription>
-      </Alert>
+      <Item role="note" aria-label={label} className={colors}>
+        <ItemHeader className="justify-start">
+          <ItemMedia variant="icon">
+            <Icon aria-hidden />
+          </ItemMedia>
+          <ItemTitle className="min-w-0 flex-1 line-clamp-none break-words">{label}</ItemTitle>
+        </ItemHeader>
+        <ItemContent className="min-w-0 basis-full [&>:first-child]:mt-0 [&>:last-child]:mb-0">
+          {children}
+        </ItemContent>
+      </Item>
     </div>
   )
 }
