@@ -40,7 +40,7 @@ export async function Entries({
               <h2 className="my-8 text-xl capitalize first-of-type:mt-0">{group}</h2>
               <ul className="text-sm">
                 {entries?.map(({ title, url, boxes }) => (
-                  <li key={url} className="flex break-inside-avoid flex-wrap gap-1">
+                  <li key={url} className="my-2 flex break-inside-avoid flex-wrap gap-1">
                     <Link href={url} className="min-w-0 flex-1 basis-24 break-words">
                       {title}
                     </Link>

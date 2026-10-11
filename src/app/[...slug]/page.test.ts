@@ -1237,6 +1237,15 @@ test.describe('shadcn compositions', () => {
     ).toHaveAttribute('href', 'https://codesandbox.io/s/3rjsl')
     await expect(row.locator('a a, a button, button a, button button')).toHaveCount(0)
     expect(await row.evaluate((element) => getComputedStyle(element).breakInside)).toBe('avoid')
+    const verticalMargin = await row.evaluate((element) => {
+      const style = getComputedStyle(element)
+      return {
+        start: parseFloat(style.marginBlockStart),
+        end: parseFloat(style.marginBlockEnd),
+      }
+    })
+    expect(verticalMargin.start).toBeGreaterThan(0)
+    expect(verticalMargin.end).toBeGreaterThan(0)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   })
 
