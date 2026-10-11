@@ -8,4 +8,4 @@ Existing MDX authoring APIs remain compatible. The Keypoints registry block now 
 
 Align article code blocks, images, tables and embedded frames with the design system's larger editorial radius, and use its compact radius consistently for inline code.
 
-GitHub callouts and legacy hints use Item with a compact header and full-width rich content.
+GitHub callouts and legacy hints use Card with its standard spacing, a complete title and full-width rich content.

@@ -1307,7 +1307,7 @@ test.describe('shadcn compositions', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   })
 
-  test('takeaways remain a headed list and callout bodies use the full content width', async ({
+  test('takeaways remain a headed list and callouts use standard Card spacing with full-width bodies', async ({
     page,
   }) => {
     await page.goto('/authoring/keypoints')
@@ -1331,10 +1331,10 @@ test.describe('shadcn compositions', () => {
       .locator('p')
       .first()
       .evaluate((paragraph) => {
-        const note = paragraph.closest('[role="note"]')!
-        const frame = note.getBoundingClientRect()
+        const content = paragraph.parentElement!
+        const frame = content.getBoundingClientRect()
         const body = paragraph.getBoundingClientRect()
-        const style = getComputedStyle(note)
+        const style = getComputedStyle(content)
         const contentLeft =
           frame.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft)
         const contentRight =
@@ -1352,6 +1352,23 @@ test.describe('shadcn compositions', () => {
       .evaluate((label) => label.scrollHeight <= label.clientHeight)
     expect(labelIsFullyVisible).toBe(true)
     await expect(customNote.getByRole('heading', { name: 'Reproduce the example' })).toBeVisible()
+    const codePadding = await customNote
+      .locator('pre')
+      .first()
+      .evaluate((pre) => parseFloat(getComputedStyle(pre).paddingLeft))
+    const measureCalloutSpacing = (notes: Element[]) =>
+      notes.flatMap((note) => {
+        const frame = getComputedStyle(note)
+        const content = getComputedStyle(note.querySelector('[data-slot="card-content"]')!)
+        return [
+          frame.paddingTop,
+          frame.paddingBottom,
+          frame.rowGap,
+          content.paddingLeft,
+          content.paddingRight,
+        ].map((padding) => parseFloat(padding))
+      })
+    const calloutSpacings = await article.getByRole('note').evaluateAll(measureCalloutSpacing)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
 
     await page.goto('/authoring/hint')
@@ -1362,5 +1379,7 @@ test.describe('shadcn compositions', () => {
       content: code.parentElement!.getBoundingClientRect().width,
     }))
     expect(inlineCodeWidth.code).toBeLessThan(inlineCodeWidth.content / 2)
+    calloutSpacings.push(...(await legacyNote.evaluateAll(measureCalloutSpacing)))
+    for (const padding of calloutSpacings) expect(padding).toBeCloseTo(codePadding, 1)
   })
 })

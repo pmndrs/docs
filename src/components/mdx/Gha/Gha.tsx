@@ -1,4 +1,4 @@
-import { Item, ItemContent, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   InfoIcon,
   LightbulbIcon,
@@ -71,17 +71,15 @@ export function Gha({ children, keyword, title }: GhaProps) {
 
   return (
     <div className="my-6">
-      <Item role="note" aria-label={label} className={colors}>
-        <ItemHeader className="justify-start">
-          <ItemMedia variant="icon">
-            <Icon aria-hidden />
-          </ItemMedia>
-          <ItemTitle className="min-w-0 flex-1 line-clamp-none break-words">{label}</ItemTitle>
-        </ItemHeader>
-        <ItemContent className="min-w-0 basis-full">
-          <div className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">{children}</div>
-        </ItemContent>
-      </Item>
+      <Card role="note" aria-label={label} className={colors}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icon size={16} className="shrink-0" aria-hidden />
+            <span className="min-w-0 break-words">{label}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">{children}</CardContent>
+      </Card>
     </div>
   )
 }
