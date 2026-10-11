@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { HeartIcon } from 'lucide-react'
 import { ComponentProps } from 'react'
 
@@ -12,28 +12,27 @@ const SPONSORS_URL = 'https://github.com/sponsors/pmndrs'
  */
 export function SponsorCard({ className, ...props }: ComponentProps<'div'>) {
   return (
-    <div
-      className={cn(
-        'flex flex-col gap-2 rounded-lg bg-surface-container p-6 text-sm text-on-surface-variant',
-        className,
-      )}
-      {...props}
-    >
-      <p className="text-base font-semibold text-on-surface">Sponsor Poimandres</p>
-      <p>Poimandres is an open source developer collective.</p>
-      <p>
-        Your sponsorship keeps react-three-fiber, drei, zustand and friends free and maintained.
-      </p>
-      <Button
-        variant="outline"
-        size="sm"
-        className="mt-2 self-start"
-        nativeButton={false}
-        render={<a href={SPONSORS_URL} target="_blank" rel="noopener noreferrer" />}
-      >
-        <HeartIcon data-icon="inline-start" />
-        Sponsor on GitHub
-      </Button>
-    </div>
+    <Card size="sm" className={className} {...props}>
+      <CardHeader>
+        <CardTitle>Sponsor Poimandres</CardTitle>
+        <CardDescription className="flex flex-col gap-2">
+          <p>Poimandres is an open source developer collective.</p>
+          <p>
+            Your sponsorship keeps react-three-fiber, drei, zustand and friends free and maintained.
+          </p>
+        </CardDescription>
+      </CardHeader>
+      <CardFooter>
+        <Button
+          variant="outline"
+          size="sm"
+          nativeButton={false}
+          render={<a href={SPONSORS_URL} target="_blank" rel="noopener noreferrer" />}
+        >
+          <HeartIcon data-icon="inline-start" />
+          Sponsor on GitHub
+        </Button>
+      </CardFooter>
+    </Card>
   )
 }

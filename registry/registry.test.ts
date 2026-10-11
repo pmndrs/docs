@@ -4,6 +4,11 @@ import registry from '../registry.json'
 // `shadcn registry validate` only checks the schema: it never resolves a remote
 // dependency, so two blocks pinning different design-system releases stay green.
 describe('registry.json', () => {
+  it('installs Card with the Keypoints block', () => {
+    const keypoints = registry.items.find((item) => item.name === 'keypoints')
+    expect(keypoints?.registryDependencies).toContain('card')
+  })
+
   const designSystemDependencies = registry.items
     .flatMap((item) => item.registryDependencies ?? [])
     .filter((dependency) => dependency.startsWith('pmndrs/design-system/'))

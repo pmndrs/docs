@@ -1,26 +1,35 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
-export function Keypoints({
-  title = 'Keypoints',
-  children,
-  className,
-  ...props
-}: { title?: string } & ComponentProps<'section'>) {
-  return (
-    <section
-      {...props}
-      className={cn('bg-surface-dim my-8 rounded-xl border border-border p-6', className)}
-    >
-      <h2 className="mb-6 text-2xl font-bold">{title}</h2>
+type KeypointsProps = ComponentProps<'section'> & {
+  /** Heading displayed above the list of article takeaways. */
+  title?: string
+}
 
-      <div className="mt-4 mb-0 text-sm">
-        <ul className="ms-6 list-disc">{children}</ul>
-      </div>
+/**
+ * A titled section of article takeaways, presented with the consumer's Card primitive.
+ */
+export function Keypoints({ title = 'Keypoints', children, className, ...props }: KeypointsProps) {
+  return (
+    <section {...props} className={cn('my-8', className)}>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h2>{title}</h2>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="ms-6 list-disc">{children}</ul>
+        </CardContent>
+      </Card>
     </section>
   )
 }
 
+/**
+ * One takeaway in a Keypoints list, retaining native list-item attributes.
+ */
 export function KeypointsItem(props: ComponentProps<'li'>) {
   return <li className="my-1" {...props} />
 }

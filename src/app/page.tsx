@@ -4,6 +4,15 @@ import { Gha } from '@/components/mdx/Gha/Gha'
 import { LibIcon } from '@/components/LibIcon'
 import { McpInstall } from '@/components/McpInstall/McpInstall'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { libs } from '@/libs'
 import { FileTextIcon } from 'lucide-react'
 import { svg } from '@/utils/icon'
@@ -98,63 +107,59 @@ export default function Page() {
           <main className="max-w-8xl mt-8 grid w-full grid-cols-1 gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-12 2xl:grid-cols-3">
             {Object.entries(libs).map(([id, data]) => {
               return (
-                <div
-                  key={id}
-                  className="group/card bg-surface-container relative overflow-hidden rounded-md border border-outline-variant font-normal"
-                >
-                  <div className="relative z-10 flex h-full flex-col justify-between">
-                    <div className="flex items-start justify-between gap-6 px-6 py-6">
-                      <div className="max-w-md">
-                        <div className="flex items-center gap-2">
-                          <div className="text-lg font-bold">{data.title}</div>
-                          {'llms_full' in data && data.llms_full && (
-                            <Badge
-                              variant="secondary"
-                              title={`Reachable from an MCP client as lib="${id}" -- see its requests live`}
-                              render={<Link href={`/mcp/live?lib=${encodeURIComponent(id)}`} />}
-                            >
-                              MCP
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="grow text-sm leading-relaxed! text-on-surface-variant/50">
-                          {data.description}
-                        </div>
-                      </div>
-                      <a
-                        href={data.github}
-                        target="_blank"
-                        rel="noopener"
-                        className="relative block h-20 w-20 shrink-0"
-                      >
-                        <LibIcon
-                          id={id as keyof typeof libs}
-                          size={80}
-                          className="absolute inset-0 h-full w-full grayscale transition group-hover/card:grayscale-0"
-                        />
-                      </a>
-                    </div>
-                    <div className="flex w-full divide-x divide-outline-variant border-t border-outline-variant text-sm">
-                      <Link
-                        href={data.docs_url}
-                        className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
-                      >
-                        <FileTextIcon className="size-5 flex-none" />
-                        <span className="sm:hidden">Docs</span>
-                        <span className="hidden sm:inline">Documentation</span>
-                      </Link>
+                <Card key={id} role="group" aria-labelledby={`library-${id}`} className="min-w-0">
+                  <CardHeader className="flex-1">
+                    <CardTitle className="flex flex-wrap items-center gap-2">
+                      <h2 id={`library-${id}`}>{data.title}</h2>
+                      {'llms_full' in data && data.llms_full && (
+                        <Badge
+                          variant="secondary"
+                          title={`Reachable from an MCP client as lib="${id}" -- see its requests live`}
+                          render={<Link href={`/mcp/live?lib=${encodeURIComponent(id)}`} />}
+                        >
+                          MCP
+                        </Badge>
+                      )}
+                    </CardTitle>
+                    <CardDescription className="max-w-md">{data.description}</CardDescription>
+                    <CardAction>
                       <a
                         href={data.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-surface-container inline-flex flex-1 items-center space-x-2 px-6 py-4 transition-colors"
+                        aria-label={`${data.title} on GitHub`}
+                        className="relative block size-20 shrink-0"
                       >
-                        <GitHubIcon className="size-5 flex-none" />
-                        <span>GitHub</span>
+                        <LibIcon
+                          id={id as keyof typeof libs}
+                          size={80}
+                          className="absolute inset-0 size-full grayscale transition group-hover/card:grayscale-0"
+                        />
                       </a>
-                    </div>
-                  </div>
-                </div>
+                    </CardAction>
+                  </CardHeader>
+                  <CardFooter className="flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      nativeButton={false}
+                      render={<Link href={data.docs_url} />}
+                    >
+                      <FileTextIcon data-icon="inline-start" />
+                      <span className="sm:hidden">Docs</span>
+                      <span className="hidden sm:inline">Documentation</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      nativeButton={false}
+                      render={<a href={data.github} target="_blank" rel="noopener noreferrer" />}
+                    >
+                      <GitHubIcon data-icon="inline-start" />
+                      GitHub
+                    </Button>
+                  </CardFooter>
+                </Card>
               )
             })}
           </main>

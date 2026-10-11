@@ -9,14 +9,14 @@
       "title": "Keypoints",
       "description": "A titled panel listing the main points an article covers — one bullet per `KeypointsItem`. Usually sits right after the intro.",
       "author": "pmndrs",
-      "registryDependencies": ["pmndrs/design-system/theme#v0.6.0"],
+      "registryDependencies": ["card", "pmndrs/design-system/theme#v0.6.0"],
       "files": [
         {
           "path": "registry/keypoints/keypoints.tsx",
           "type": "registry:block"
         }
       ],
-      "docs": "Renders on stock shadcn tokens apart from `bg-surface-dim`, which is why it depends on `pmndrs/design-system/theme` — MD3 has a surface role shadcn has no equivalent for. That dependency is the design system's whole theme, so installing the block brings its palette and its mono font along. Installing it without that dependency resolved leaves the panel with no background at all, and Tailwind reports nothing."
+      "docs": "Composes shadcn Card with a section, heading and bulleted list. The `card` dependency follows the consumer's shadcn base and preset. The explicit, release-tagged `pmndrs/design-system/theme` dependency brings the design system's palette and mono font; using Card alone does not install that theme. Keypoints uses semantic shadcn tokens and requires no custom surface utility."
     },
     {
       "name": "color",
