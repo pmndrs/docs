@@ -285,6 +285,21 @@ function primary(page: Page) {
   )
 }
 
+// Resolve the documented Material container pair through the browser's CSS color engine.
+// The expected roles come from the design system, independently of component classes.
+function materialContainerColors(page: Page, role: string) {
+  return page.evaluate((role) => {
+    const probe = document.createElement('span')
+    probe.style.backgroundColor = `var(--md-sys-color-${role}-container)`
+    probe.style.color = `var(--md-sys-color-on-${role}-container)`
+    document.body.append(probe)
+    const style = getComputedStyle(probe)
+    const colors = { background: style.backgroundColor, foreground: style.color }
+    probe.remove()
+    return colors
+  }, role)
+}
+
 // The palette cached once applied, for the next load: the seeds it was built from
 function cache(page: Page) {
   return page.evaluate(() =>
@@ -342,6 +357,13 @@ test.describe('primary color', () => {
         getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
       )
     const defaultPrimary = await primary()
+    const search = anyCopy(page, 'Search for anything')
+    const defaultSearchBackground = await search.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    )
+    const defaultSearchColors = await materialContainerColors(page, 'secondary')
+    await expect(search).toHaveCSS('background-color', defaultSearchColors.background)
+    await expect(search).toHaveCSS('color', defaultSearchColors.foreground)
     const swatch = anyCopy(page, 'Theme color').locator('span')
     const defaultSwatch = await swatch.evaluate(
       (element) => getComputedStyle(element).backgroundColor,
@@ -382,6 +404,10 @@ test.describe('primary color', () => {
     const pickedPalette = await palette()
     const pickedPrimary = await primary()
     expect(pickedPrimary).not.toBe(defaultPrimary)
+    const pickedSearchColors = await materialContainerColors(page, 'secondary')
+    expect(pickedSearchColors.background).not.toBe(defaultSearchBackground)
+    await expect(search).toHaveCSS('background-color', pickedSearchColors.background)
+    await expect(search).toHaveCSS('color', pickedSearchColors.foreground)
     expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBe(
       '#ff0000',
     )
@@ -1054,6 +1080,36 @@ test.describe('fonts', () => {
 test.describe('shadcn compositions', () => {
   test.use({ disableAutoSnapshot: true })
 
+  test('callout text and icons use the matching Material container foreground in light and dark', async ({
+    page,
+  }) => {
+    for (const colorScheme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/gha')
+      await page.waitForLoadState('networkidle')
+
+      for (const [label, role] of [
+        ['Note', 'note'],
+        ['Tip', 'tip'],
+        ['Important', 'important'],
+        ['Warning', 'warning'],
+        ['Caution', 'caution'],
+      ]) {
+        const note = page
+          .getByRole('article')
+          .getByRole('note', { name: label, exact: true })
+          .first()
+        const colors = await materialContainerColors(page, role)
+        await expect(note).toHaveCSS('background-color', colors.background)
+        await expect(note).toHaveCSS('color', colors.foreground)
+        await expect(note.getByText(label, { exact: true })).toHaveCSS('color', colors.foreground)
+        await expect(note.locator('p').first()).toHaveCSS('color', colors.foreground)
+        await expect(note.locator('svg').first()).toHaveCSS('color', colors.foreground)
+        await expect(note.locator('svg').first()).toHaveCSS('stroke', colors.foreground)
+      }
+    }
+  })
+
   test('search opens from its button and slash, selects results and navigates with Enter or a click', async ({
     page,
   }) => {
@@ -1106,16 +1162,20 @@ test.describe('shadcn compositions', () => {
 
   test('entry rows keep page and sandbox links independent and locally contained', async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.goto('/authoring/entries')
     await page.waitForLoadState('networkidle')
 
     const article = page.getByRole('article')
-    const pageLink = article.locator(
-      'li > [data-slot="item-content"] a[href="/authoring/codesandbox"]',
-    )
+    const row = article.getByRole('listitem').filter({
+      has: page.locator('a[href="/authoring/codesandbox"]'),
+    })
+    const pageLink = row.locator('a[href="/authoring/codesandbox"]')
     await expect(pageLink).toBeVisible()
-    const row = article.getByRole('listitem').filter({ has: pageLink })
+    if (testInfo.project.name === 'w375') {
+      // A page destination stays readable even when several sandbox actions share its row.
+      expect(await pageLink.evaluate((link) => link.getClientRects().length)).toBeLessThanOrEqual(2)
+    }
     await expect(
       row.getByRole('link', { name: 'CodeSandbox 3rjsl', exact: true }).first(),
     ).toHaveAttribute('href', 'https://codesandbox.io/s/3rjsl')
@@ -1167,7 +1227,7 @@ test.describe('shadcn compositions', () => {
     await page.waitForLoadState('networkidle')
     const article = page.getByRole('article')
     await expect(article.getByRole('alert')).toHaveCount(0)
-    const note = article.getByRole('note', { name: 'Note', exact: true })
+    const note = article.getByRole('note', { name: 'Note', exact: true }).first()
     await expect(note).toHaveCSS('display', 'grid')
     await expect(article.getByRole('note', { name: 'MCP-server', exact: true })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)

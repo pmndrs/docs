@@ -62,26 +62,44 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
   </blockquote>
 )
 
-/** A Markdown table with a local scroll container and an outer frame. */
+/**
+ * A Markdown table with a local scroll container and an outer frame.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const table = (props: ComponentProps<'table'>) => (
   <div className="my-8 overflow-hidden rounded-lg border *:data-[slot=table-container]:scroll-fade-x *:data-[slot=table-container]:no-scrollbar">
     <Table {...props} />
   </div>
 )
 
-/** Markdown table header rows. */
+/**
+ * Markdown table header rows.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const thead = (props: ComponentProps<'thead'>) => <TableHeader {...props} />
 
-/** Markdown table body rows. */
+/**
+ * Markdown table body rows.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const tbody = (props: ComponentProps<'tbody'>) => <TableBody {...props} />
 
-/** A header cell, retaining authored alignment and other HTML attributes. */
+/**
+ * A header cell, retaining authored alignment and other HTML attributes.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const th = (props: ComponentProps<'th'>) => <TableHead {...props} />
 
-/** A Markdown table row. */
+/**
+ * A Markdown table row.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const tr = (props: ComponentProps<'tr'>) => <TableRow {...props} />
 
-/** A body cell, retaining authored alignment and other HTML attributes. */
+/**
+ * A body cell, retaining authored alignment and other HTML attributes.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const td = (props: ComponentProps<'td'>) => <TableCell {...props} />
 
 // Underlined, not told apart by colour alone (WCAG 1.4.1): a palette can bring `primary` within a

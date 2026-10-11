@@ -4,7 +4,9 @@ import { CornerDownLeftIcon } from 'lucide-react'
 import { ComponentProps } from 'react'
 import sanitizeHtml from 'sanitize-html'
 
-/** Searchable documentation content and its destination. */
+/**
+ * Searchable documentation content and its destination.
+ */
 export interface SearchResult {
   /** Heading text, possibly containing author markup. */
   title: string
@@ -18,7 +20,9 @@ export interface SearchResult {
   image?: string
 }
 
-/** Content presented inside the command palette's selected result. */
+/**
+ * Content presented inside the command palette's selected result.
+ */
 export interface SearchItemProps {
   /** Current query used to highlight the result. */
   search: string

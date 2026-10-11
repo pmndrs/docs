@@ -7,7 +7,9 @@ import { groupBy } from 'lodash-es'
 import { Img } from '../Img'
 import { sandboxUrl, type Box } from '../Codesandbox'
 
-/** A documentation page and the sandboxes offered alongside its destination. */
+/**
+ * A documentation page and the sandboxes offered alongside its destination.
+ */
 export type Entry = {
   /** Rich frontmatter title. */
   title: ReactElement
@@ -19,7 +21,9 @@ export type Entry = {
   boxes: Box[]
 }
 
-/** Renders a compact grouped directory with independent page and sandbox links. */
+/**
+ * Renders a compact grouped directory with independent page and sandbox links.
+ */
 export async function Entries({
   items,
   excludedGroups = [],
@@ -38,7 +42,7 @@ export async function Entries({
               <ul className="flex flex-col gap-1">
                 {entries?.map(({ title, url, boxes }) => (
                   <Item key={url} render={<li />} size="xs" className="break-inside-avoid">
-                    <ItemContent className="min-w-0">
+                    <ItemContent className="min-w-0 basis-24">
                       <ItemTitle className="line-clamp-none w-full break-words">
                         <Link href={url}>{title}</Link>
                       </ItemTitle>

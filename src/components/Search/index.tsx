@@ -38,7 +38,9 @@ function Search({ className }: ComponentProps<typeof DialogTrigger>) {
   )
 }
 
-/** Search trigger presentation, composed as the dialog's single native button. */
+/**
+ * Search trigger presentation, composed as the dialog's single native button.
+ */
 export function SearchButton({ className, ...props }: ComponentProps<typeof Button>) {
   return (
     <Button
