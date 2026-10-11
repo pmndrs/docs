@@ -1164,6 +1164,12 @@ test.describe('code palette', () => {
 
       // The editor renders independently of the preview's external bundler and iframe.
       await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+      // CodeMirror initializes lazily when its server-rendered container enters the viewport.
+      await page
+        .getByRole('article')
+        .locator('.sandpack .sp-code-editor')
+        .first()
+        .scrollIntoViewIfNeeded()
       const editor = page.getByRole('article').locator('.sandpack .cm-editor').first()
       await expect(editor).toBeVisible()
       await expect(editor).toHaveCSS('background-color', colors.background)
