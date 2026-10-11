@@ -103,13 +103,13 @@ export const Sandpack = async ({
         files={_files}
         customSetup={customSetup}
         options={options}
-        // The frame's corners are a code block's (`rounded-lg` in Code.tsx), so the two read as one
+        // The frame's corners are a code block's (`rounded-2xl` in Code.tsx), so the two read as one
         // family in the prose, on the design system's scale. Sandpack also derives its inner corners
         // (tabs, buttons) from it, halving it for some.
-        // Naming `--radius-lg` here is also what makes Tailwind emit it: it only declares the theme
+        // Naming `--radius-2xl` here is also what makes Tailwind emit it: it only declares the theme
         // variables it finds named in the sources.
         // @ts-ignore
-        style={{ '--sp-border-radius': 'var(--radius-lg)' }}
+        style={{ '--sp-border-radius': 'var(--radius-2xl)' }}
       >
         <SandpackLayout>
           {fileExplorer && (

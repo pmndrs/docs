@@ -13,6 +13,20 @@ nav: 3
 
 Can be used after `Intro`, to list main points the article covers: one bullet per `KeypointsItem`.
 
+`Keypoints` composes a shadcn `Card`, while keeping a native section, heading and bulleted list.
+Its MDX API stays the same.
+
+To install the standalone block in a shadcn project:
+
+```sh
+pnpm dlx shadcn@latest add pmndrs/docs/keypoints
+```
+
+The registry installs `card` using your project's shadcn base and preset. It also resolves an
+explicit, release-tagged `pmndrs/design-system/theme` dependency, bringing the design system's
+palette and mono font. Card alone does not install that theme, and Keypoints needs no custom
+surface utility.
+
 ```md
 <Keypoints title="What you'll learn">
   <KeypointsItem>First item</KeypointsItem>

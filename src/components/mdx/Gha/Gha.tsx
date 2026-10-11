@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   InfoIcon,
   LightbulbIcon,
@@ -7,56 +7,60 @@ import {
   TriangleAlertIcon,
   type LucideIcon,
 } from 'lucide-react'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { p as P } from '@/components/mdx'
 
 type Style = {
   icon: LucideIcon
   label: string
-  bg: string
+  colors: string
 }
 
 const styles: Record<string, Style> = {
   NOTE: {
     icon: InfoIcon,
     label: 'Note',
-    bg: 'bg-note-container',
+    colors: 'bg-note-container text-on-note-container',
   },
   TIP: {
     icon: LightbulbIcon,
     label: 'Tip',
-    bg: 'bg-tip-container',
+    colors: 'bg-tip-container text-on-tip-container',
   },
   IMPORTANT: {
     icon: MessageSquareWarningIcon,
     label: 'Important',
-    bg: 'bg-important-container',
+    colors: 'bg-important-container text-on-important-container',
   },
   WARNING: {
     icon: TriangleAlertIcon,
     label: 'Warning',
-    bg: 'bg-warning-container',
+    colors: 'bg-warning-container text-on-warning-container',
   },
   CAUTION: {
     icon: OctagonAlertIcon,
     label: 'Caution',
-    bg: 'bg-caution-container',
+    colors: 'bg-caution-container text-on-caution-container',
   },
 }
 
-export function Gha({
-  children,
-  keyword,
-  title,
-}: {
+type GhaProps = {
+  /** Rich article content displayed under the callout label. */
   children: ReactNode
+  /** GitHub alert kind; missing or unknown kinds render a note. */
   keyword?: string
+  /** Optional label that keeps the keyword's semantic colors and icon. */
   title?: string
-}) {
-  if (!keyword || !(keyword in styles)) keyword = 'NOTE' // default to "NOTE"
+}
 
-  const { icon, label: defaultLabel, bg } = styles[keyword]
+/**
+ * A static editorial callout using GitHub alert kinds and their Material color pairs.
+ */
+export function Gha({ children, keyword, title }: GhaProps) {
+  if (!keyword || !Object.hasOwn(styles, keyword)) keyword = 'NOTE'
+
+  const { icon, label: defaultLabel, colors } = styles[keyword]
   const label = title ?? defaultLabel
   const Icon = icon
 
@@ -66,12 +70,16 @@ export function Gha({
   }
 
   return (
-    <div className={cn('my-6 overflow-clip rounded-lg px-6 py-2', bg)}>
-      <div className="my-4 flex items-center gap-2 text-lg font-semibold">
-        <Icon size="1em" />
-        {label}
-      </div>
-      {children}
+    <div className="my-6">
+      <Card role="note" aria-label={label} className={colors}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icon size={16} className="shrink-0" aria-hidden />
+            <span className="min-w-0 break-words">{label}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">{children}</CardContent>
+      </Card>
     </div>
   )
 }

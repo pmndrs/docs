@@ -1,3 +1,11 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 import { linkProps } from './Link/linkProps'
@@ -54,27 +62,46 @@ export const blockquote = ({ children, className, ...props }: ComponentProps<'bl
   </blockquote>
 )
 
+/**
+ * A Markdown table with a local scroll container and an outer frame.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
 export const table = (props: ComponentProps<'table'>) => (
-  <div className="my-8 overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low">
-    {/* The fade masks the scroller and everything it paints: the frame stays on the outer div */}
-    <div className="overflow-x-auto scroll-fade-x no-scrollbar">
-      <table className="min-w-full divide-y divide-outline-variant" {...props} />
-    </div>
+  <div className="my-8 overflow-hidden rounded-2xl border *:data-[slot=table-container]:scroll-fade-x *:data-[slot=table-container]:no-scrollbar">
+    <Table {...props} />
   </div>
 )
 
-export const thead = (props: ComponentProps<'thead'>) => (
-  <thead className="text-on-surface-variant/50" {...props} />
+/**
+ * Markdown table header rows.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
+export const thead = (props: ComponentProps<'thead'>) => <TableHeader {...props} />
+
+/**
+ * Markdown table body rows.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
+export const tbody = (props: ComponentProps<'tbody'>) => <TableBody {...props} />
+
+/**
+ * A header cell with normal text wrapping, retaining authored alignment and class overrides.
+ */
+export const th = ({ className, ...props }: ComponentProps<'th'>) => (
+  <TableHead className={cn('whitespace-normal', className)} {...props} />
 )
 
-export const th = (props: ComponentProps<'th'>) => (
-  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide" {...props} />
-)
+/**
+ * A Markdown table row.
+ * @param props Authored HTML attributes and child content for this table element.
+ */
+export const tr = (props: ComponentProps<'tr'>) => <TableRow {...props} />
 
-export const tr = (props: ComponentProps<'tr'>) => <tr className="even:bg-surface" {...props} />
-
-export const td = (props: ComponentProps<'td'>) => (
-  <td className="px-6 py-4 text-sm first:font-medium" {...props} />
+/**
+ * A body cell with normal text wrapping, retaining authored alignment and class overrides.
+ */
+export const td = ({ className, ...props }: ComponentProps<'td'>) => (
+  <TableCell className={cn('whitespace-normal', className)} {...props} />
 )
 
 // Underlined, not told apart by colour alone (WCAG 1.4.1): a palette can bring `primary` within a
@@ -94,13 +121,10 @@ export const a = ({ href, target, rel, className, ...props }: ComponentProps<'a'
 // The text role goes with the background role: inherited, the parent's text can be meant for
 // another background (on-primary-container, in the sidebar's current page) and vanish on this one
 // at high contrast.
-// The corner is not a radius token, on purpose: inline code sits in text of any size (a paragraph,
-// a heading, a table cell), and `.25em` keeps it in proportion with the letters, where a fixed step
-// of the scale (`sm` is 6.375px) would round a small chip in body text into a pill and look square in
-// an h1. The 4px floor keeps it visibly rounded in the smallest text.
+// Inline code takes the compact step of the same radius scale as the article frames.
 export const code = (props: ComponentProps<'code'>) => (
   <code
-    className="bg-surface-container-high text-on-surface rounded-[max(.25em,4px)] px-1.5 py-0.5 font-mono"
+    className="bg-surface-container-high text-on-surface rounded-sm px-1.5 py-0.5 font-mono"
     {...props}
   />
 )

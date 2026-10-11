@@ -1,4 +1,5 @@
 import { renderToHtml } from '@/cli/render'
+import { load } from 'cheerio'
 import { join } from 'node:path'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -375,7 +376,7 @@ describe('Codesandbox', () => {
     expect(html).not.toContain('codesandbox.io/api')
     expect(html).toContain('href="https://codesandbox.io/s/3rjsl"')
     expect(html).toContain('lucide-codesandbox')
-    expect(html).toContain('bg-surface-container')
+    expect(html).toContain('aria-label="Cell fracture"')
   })
 })
 
@@ -408,5 +409,41 @@ describe('package managers', () => {
     const html = await render('```bash\ncd my-app\n```')
     expect(html).not.toContain('role="tablist"')
     expect(html).toContain('code-highlight')
+  })
+})
+
+/** Markdown tables keep their reading structure and authored alignment without hydration. */
+describe('Markdown tables', () => {
+  it('renders header and body cells with left, center and right alignment', async () => {
+    const result = await compileMdxContent(
+      '| Left | Center | Right |\n| :--- | :---: | ---: |\n| [Guide](/guide) | **Middle** | 42 |',
+      {
+        relFilePath: '/test/table.mdx',
+        absoluteFilePath: '/test/table.mdx',
+        title: 'Table',
+        url: '/test/table',
+        tableOfContents: [],
+        entries: [],
+      },
+    )
+    const $ = load(await renderToHtml(result.content))
+    expect(
+      $('table thead tr th')
+        .map((_, cell) => $(cell).text())
+        .get(),
+    ).toEqual(['Left', 'Center', 'Right'])
+    expect($('table tbody tr td')).toHaveLength(3)
+    expect($('tbody td a').attr('href')).toBe('/guide')
+    expect($('tbody td strong').text()).toBe('Middle')
+    expect(
+      $('thead th')
+        .map((_, cell) => $(cell).attr('style'))
+        .get(),
+    ).toEqual(['text-align:left', 'text-align:center', 'text-align:right'])
+    expect(
+      $('tbody td')
+        .map((_, cell) => $(cell).attr('style'))
+        .get(),
+    ).toEqual(['text-align:left', 'text-align:center', 'text-align:right'])
   })
 })

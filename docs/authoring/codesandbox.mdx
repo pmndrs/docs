@@ -9,6 +9,9 @@ nav: 9
   Embed live CodeSandbox examples.
 </Intro>
 
+Linked previews use shadcn `Card` with optional title, description and `Badge` tags. The preview
+image or placeholder remains the link to CodeSandbox. Interactive embeds keep their iframe.
+
 Give the sandbox a preview image with `img`. Like an [`<img src>`](img), it can be relative to
 the article:
 
@@ -44,6 +47,26 @@ still linking to the sandbox:
 result:
 
 <Codesandbox id="3rjsl" title="Cell fracture" />
+
+Optional metadata can accompany either an image or a placeholder:
+
+```md
+<Codesandbox
+  id="3rjsl"
+  title="Cell fracture"
+  description="Explore a physics example with Rapier."
+  tags={["physics", "rapier"]}
+/>
+```
+
+<Codesandbox
+  id="3rjsl"
+  title="Cell fracture"
+  description="Explore a physics example with Rapier."
+  tags={["physics", "rapier"]}
+/>
+
+With only an `id`, the placeholder link is still labelled `CodeSandbox` followed by that id.
 
 > [!NOTE]
 > `screenshot_url` is the former name of `img`. It still works, but is deprecated.

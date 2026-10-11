@@ -23,7 +23,7 @@ export const St1: Story = {
   args: {
     title: 'Key points',
   },
-  render: (args) => <Keypoints {...args}>lorem10</Keypoints>,
+  render: (args) => <Keypoints {...args} />,
 }
 
 export const St2: Story = {
@@ -34,7 +34,9 @@ export const St2: Story = {
   render: (args) => (
     <Keypoints {...args}>
       <KeypointsItem>First key point</KeypointsItem>
-      <KeypointsItem>Second key point</KeypointsItem>
+      <KeypointsItem>
+        Second <strong>key point</strong> with an <a href="#details">article link</a>
+      </KeypointsItem>
       <KeypointsItem>Third key point</KeypointsItem>
     </Keypoints>
   ),

@@ -26,7 +26,7 @@ export function McpLiveEmbed() {
         src={`${url}?embed`}
         title="MCP live: the requests the pmndrs docs MCP server is serving"
         loading="lazy"
-        className="h-[36rem] w-full rounded-lg"
+        className="h-[36rem] w-full rounded-2xl"
       />
       <p className="mt-1 text-xs text-on-surface-variant">
         The MCP server&apos;s requests, live — see the <Link href={url}>full view</Link>.

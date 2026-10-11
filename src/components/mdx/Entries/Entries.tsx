@@ -6,13 +6,23 @@ import { groupBy } from 'lodash-es'
 import { Img } from '../Img'
 import { sandboxUrl, type Box } from '../Codesandbox'
 
+/**
+ * A documentation page and the sandboxes offered alongside its destination.
+ */
 export type Entry = {
+  /** Rich frontmatter title. */
   title: ReactElement
+  /** Page destination. */
   url: string
+  /** Path segments, starting with the directory group. */
   slug: string[]
+  /** Independent sandbox destinations and optional author thumbnails. */
   boxes: Box[]
 }
 
+/**
+ * Renders a compact grouped directory with independent page and sandbox links.
+ */
 export async function Entries({
   items,
   excludedGroups = [],
@@ -30,9 +40,11 @@ export async function Entries({
               <h2 className="my-8 text-xl capitalize first-of-type:mt-0">{group}</h2>
               <ul className="text-sm">
                 {entries?.map(({ title, url, boxes }) => (
-                  <li key={url} className="flex gap-1">
-                    <Link href={url}>{title}</Link>
-                    <span className="inline-flex gap-1">
+                  <li key={url} className="my-2 flex break-inside-avoid flex-wrap gap-1">
+                    <Link href={url} className="min-w-0 max-w-full break-words">
+                      {title}
+                    </Link>
+                    <span className="inline-flex max-w-full flex-wrap gap-1">
                       {boxes.map(({ id, img }, i) => (
                         <a
                           key={i} // a page may show the same sandbox twice

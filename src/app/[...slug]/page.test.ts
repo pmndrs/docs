@@ -285,6 +285,21 @@ function primary(page: Page) {
   )
 }
 
+// Resolve the documented Material container pair through the browser's CSS color engine.
+// The expected roles come from the design system, independently of component classes.
+function materialContainerColors(page: Page, role: string) {
+  return page.evaluate((role) => {
+    const probe = document.createElement('span')
+    probe.style.backgroundColor = `var(--md-sys-color-${role}-container)`
+    probe.style.color = `var(--md-sys-color-on-${role}-container)`
+    document.body.append(probe)
+    const style = getComputedStyle(probe)
+    const colors = { background: style.backgroundColor, foreground: style.color }
+    probe.remove()
+    return colors
+  }, role)
+}
+
 // The palette cached once applied, for the next load: the seeds it was built from
 function cache(page: Page) {
   return page.evaluate(() =>
@@ -342,6 +357,13 @@ test.describe('primary color', () => {
         getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-primary'),
       )
     const defaultPrimary = await primary()
+    const search = anyCopy(page, 'Search for anything')
+    const defaultSearchBackground = await search.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    )
+    const defaultSearchColors = await materialContainerColors(page, 'secondary')
+    await expect(search).toHaveCSS('background-color', defaultSearchColors.background)
+    await expect(search).toHaveCSS('color', defaultSearchColors.foreground)
     const swatch = anyCopy(page, 'Theme color').locator('span')
     const defaultSwatch = await swatch.evaluate(
       (element) => getComputedStyle(element).backgroundColor,
@@ -382,6 +404,10 @@ test.describe('primary color', () => {
     const pickedPalette = await palette()
     const pickedPrimary = await primary()
     expect(pickedPrimary).not.toBe(defaultPrimary)
+    const pickedSearchColors = await materialContainerColors(page, 'secondary')
+    expect(pickedSearchColors.background).not.toBe(defaultSearchBackground)
+    await expect(search).toHaveCSS('background-color', pickedSearchColors.background)
+    await expect(search).toHaveCSS('color', pickedSearchColors.foreground)
     expect(await page.evaluate(() => localStorage.getItem('pmndrs-docs:primary-color'))).toBe(
       '#ff0000',
     )
@@ -967,6 +993,57 @@ test.describe('theme', () => {
 test.describe('radius', () => {
   test.use({ disableAutoSnapshot: true })
 
+  test('article frames use the larger editorial corner while inline code stays compact', async ({
+    page,
+  }) => {
+    await page.goto('/authoring/code')
+    await page.waitForLoadState('networkidle')
+    const article = page.getByRole('article')
+    const codeFrame = article.locator('pre').first().locator('..')
+    await expect(codeFrame).toHaveCSS('border-top-left-radius', '19.125px')
+    const packageManagerFrame = article
+      .getByRole('tablist', { name: 'Package manager', exact: true })
+      .locator('../..')
+    await expect(packageManagerFrame).toHaveCSS('border-top-left-radius', '19.125px')
+
+    const inline = article.getByRole('paragraph').locator('code').first()
+    await expect(inline).toHaveCSS('border-top-left-radius', '6.375px')
+    // Authored language classes take the syntax stylesheet's inline-code path.
+    const highlightedRadius = await inline.evaluate((element) => {
+      const highlighted = element.cloneNode(true) as HTMLElement
+      highlighted.className = 'language-ts'
+      element.after(highlighted)
+      const radius = getComputedStyle(highlighted).borderTopLeftRadius
+      highlighted.remove()
+      return radius
+    })
+    expect(highlightedRadius).toBe('6.375px')
+
+    await page.goto('/authoring/img')
+    await page.waitForLoadState('networkidle')
+    await expect(page.getByRole('article').locator('img').first()).toHaveCSS(
+      'border-top-left-radius',
+      '19.125px',
+    )
+
+    await page.goto('/authoring/codesandbox')
+    await page.waitForLoadState('networkidle')
+    const tableFrame = page.getByRole('article').getByRole('table').first().locator('../..')
+    await expect(tableFrame).toHaveCSS('border-top-left-radius', '19.125px')
+
+    await page.goto('/authoring/sandpack', { waitUntil: 'domcontentloaded' })
+    // Sandpack exposes its layout class as a customization hook; its bundler need not finish.
+    const sandpackFrame = page.getByRole('article').locator('.sp-layout').first()
+    await expect(sandpackFrame).toBeVisible()
+    await expect(sandpackFrame).toHaveCSS('border-top-left-radius', '19.125px')
+
+    await page.goto('/agents/introduction', { waitUntil: 'domcontentloaded' })
+    const liveFrame = page.locator(
+      'iframe[title="MCP live: the requests the pmndrs docs MCP server is serving"]',
+    )
+    await expect(liveFrame).toHaveCSS('border-top-left-radius', '19.125px')
+  })
+
   test("the corners follow the design-system preset's radius scale", async ({ page }) => {
     await page.goto('/getting-started/introduction')
     await page.waitForLoadState('networkidle')
@@ -977,8 +1054,8 @@ test.describe('radius', () => {
     // a page declares depends on what some file happens to name (Sandpack.css, a story's sample
     // CSS), not on its corners.
     // Not a `rounded-*` probe for every step either: Tailwind only generates the utilities the
-    // sources use, and nothing uses `rounded-sm` as a class. So each step is read off a probe that
-    // the site's own CSS styles with it: a `<mark>` (`@apply rounded-sm` in globals.css) for `sm`,
+    // sources use. Each step is read off a probe that the site's own CSS styles with it:
+    // a `<mark>` (`@apply rounded-sm` in globals.css) for `sm`,
     // the `rounded-*` utility, which the ui/ components use, for the others. A step that loses its
     // last user fails here rather than passing on a 0px probe.
     // The expected pixels are the spec: the 17px root makes the 0.625rem base 10.625px, times
@@ -1047,5 +1124,276 @@ test.describe('fonts', () => {
       .first()
     await expect(paragraph).toHaveCSS('font-family', inter)
     await expect(paragraph).not.toHaveCSS('font-family', /Inconsolata|monospace/)
+  })
+})
+
+// Migrated compositions retain the reader's navigation and narrow-screen reading contracts.
+test.describe('shadcn compositions', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('callout text and icons use the matching Material container foreground in light and dark', async ({
+    page,
+  }) => {
+    for (const colorScheme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/authoring/gha')
+      await page.waitForLoadState('networkidle')
+
+      for (const [label, role] of [
+        ['Note', 'note'],
+        ['Tip', 'tip'],
+        ['Important', 'important'],
+        ['Warning', 'warning'],
+        ['Caution', 'caution'],
+      ]) {
+        const note = page
+          .getByRole('article')
+          .getByRole('note', { name: label, exact: true })
+          .first()
+        const colors = await materialContainerColors(page, role)
+        await expect(note).toHaveCSS('background-color', colors.background)
+        await expect(note).toHaveCSS('color', colors.foreground)
+        await expect(note.getByText(label, { exact: true })).toHaveCSS('color', colors.foreground)
+        await expect(note.locator('p').first()).toHaveCSS('color', colors.foreground)
+        await expect(note.locator('svg').first()).toHaveCSS('color', colors.foreground)
+        await expect(note.locator('svg').first()).toHaveCSS('stroke', colors.foreground)
+      }
+    }
+  })
+
+  test('search opens from its button and slash, selects results and navigates with Enter or a click', async ({
+    page,
+  }) => {
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+
+    const trigger = page.getByRole('button', { name: 'Search for anything', exact: true })
+    await expect(trigger).toHaveCount(1)
+    expect(await trigger.evaluate((element) => element.tagName)).toBe('BUTTON')
+    await expect(trigger.locator('button, a')).toHaveCount(0)
+    await trigger.click()
+
+    const dialog = page.getByRole('dialog', { name: 'Search anything', exact: true })
+    const input = dialog.getByRole('combobox')
+    const options = dialog.getByRole('option')
+    await expect(input).toBeFocused()
+    await input.fill('code')
+    await expect(options.nth(1)).toBeVisible()
+    await expect(options.first()).toHaveAttribute('aria-selected', 'true')
+    await expect(options.locator('a, button, [role="option"]')).toHaveCount(0)
+    await expect(options.first().locator('mark').first()).toBeVisible()
+    await input.press('ArrowDown')
+    await expect(options.nth(1)).toHaveAttribute('aria-selected', 'true')
+    await input.press('ArrowUp')
+    await expect(options.first()).toHaveAttribute('aria-selected', 'true')
+    await input.press('ArrowDown')
+
+    // A deferred query replaces the results after the input changes: select its first new result.
+    await input.fill('keypoints')
+    await expect(options.first()).toHaveAttribute('data-value', /keypoints/)
+    await expect(options.first()).toHaveAttribute('aria-selected', 'true')
+    const keyboardDestination = await options.first().getAttribute('data-value')
+    await input.press('Enter')
+    await expect(page).toHaveURL(new URL(keyboardDestination!, page.url()).href)
+    await expect(dialog).toBeHidden()
+
+    await page.getByRole('button', { name: 'Search for anything', exact: true }).click()
+    await expect(input).toBeFocused()
+    await input.press('Escape')
+    await expect(dialog).toBeHidden()
+    await page.keyboard.press('Slash')
+    await expect(input).toBeFocused()
+    await input.fill('tabs')
+    await expect(options.first()).toHaveAttribute('data-value', /tabs/)
+    const pointerDestination = await options.first().getAttribute('data-value')
+    await options.first().click()
+    await expect(page).toHaveURL(new URL(pointerDestination!, page.url()).href)
+    await expect(dialog).toBeHidden()
+  })
+
+  test('entry rows keep page and sandbox links independent and locally contained', async ({
+    page,
+  }, testInfo) => {
+    await page.goto('/authoring/entries')
+    await page.waitForLoadState('networkidle')
+
+    const article = page.getByRole('article')
+    const row = article.getByRole('listitem').filter({
+      has: page.locator('a[href="/authoring/codesandbox"]'),
+    })
+    const pageLink = row.locator('a[href="/authoring/codesandbox"]')
+    await expect(pageLink).toBeVisible()
+    if (testInfo.project.name === 'w375') {
+      // A page destination stays readable even when several sandbox actions share its row.
+      const titleLines = await pageLink.evaluate((link) => {
+        const text = document.createRange()
+        text.selectNodeContents(document.createTreeWalker(link, NodeFilter.SHOW_TEXT).nextNode()!)
+        return text.getClientRects().length
+      })
+      expect(titleLines).toBeLessThanOrEqual(2)
+    }
+    await expect(
+      row.getByRole('link', { name: 'CodeSandbox 3rjsl', exact: true }).first(),
+    ).toHaveAttribute('href', 'https://codesandbox.io/s/3rjsl')
+    await expect(row.locator('a a, a button, button a, button button')).toHaveCount(0)
+    expect(await row.evaluate((element) => getComputedStyle(element).breakInside)).toBe('avoid')
+    const verticalMargin = await row.evaluate((element) => {
+      const style = getComputedStyle(element)
+      return {
+        start: parseFloat(style.marginBlockStart),
+        end: parseFloat(style.marginBlockEnd),
+      }
+    })
+    expect(verticalMargin.start).toBeGreaterThan(0)
+    expect(verticalMargin.end).toBeGreaterThan(0)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  })
+
+  test('Markdown tables keep header/body semantics and scroll within the article', async ({
+    page,
+  }, testInfo) => {
+    await page.goto('/authoring/codesandbox')
+    await page.waitForLoadState('networkidle')
+
+    const table = page.getByRole('article').getByRole('table').first()
+    await expect(table.getByRole('columnheader')).toHaveCount(3)
+    await expect(table.locator('tbody').getByRole('row')).toHaveCount(6)
+    const scroll = table.locator('..')
+    await expect(scroll).toHaveCSS('overflow-x', 'auto')
+    if (testInfo.project.name === 'w375') {
+      const description = table.getByRole('cell', {
+        name: 'Preview image: relative to the article, or a full URL',
+        exact: true,
+      })
+      const descriptionLines = await description.evaluate((cell) => {
+        const text = document.createRange()
+        text.selectNodeContents(cell)
+        return text.getClientRects().length
+      })
+      expect(descriptionLines).toBeGreaterThan(1)
+      const naturallyOverflows = await scroll.evaluate(
+        (element) => element.scrollWidth > element.clientWidth,
+      )
+      if (!naturallyOverflows) {
+        // Prose can fit again; a long unbroken destination must still scroll within the article.
+        await description.evaluate((cell) => {
+          cell.append(document.createTextNode(` https://example.com/${'a'.repeat(180)}`))
+        })
+      }
+      expect(await scroll.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(
+        true,
+      )
+      await scroll.evaluate((element) => {
+        element.scrollLeft = 40
+      })
+      expect(await scroll.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0)
+      if (!naturallyOverflows) {
+        await description.evaluate((cell) => cell.lastChild?.remove())
+      }
+    } else {
+      expect(await scroll.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+        true,
+      )
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await expect(
+      page.getByRole('article').locator('a a, a button, button a, button button'),
+    ).toHaveCount(0)
+
+    await page.goto('/getting-started/introduction')
+    await page.waitForLoadState('networkidle')
+    const colorMatchRow = page
+      .getByRole('article')
+      .getByRole('row')
+      .filter({
+        has: page.getByRole('cell', { name: 'THEME_COLOR_MATCH', exact: true }),
+      })
+    const longDescriptionLines = await colorMatchRow
+      .getByRole('cell')
+      .nth(1)
+      .evaluate((cell) => {
+        // This authored plain-text run is long enough to wrap at either article width.
+        const text = document.createRange()
+        text.selectNodeContents(cell.firstChild!)
+        return text.getClientRects().length
+      })
+    expect(longDescriptionLines).toBeGreaterThan(1)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  })
+
+  test('takeaways remain a headed list and callouts use standard Card spacing with full-width bodies', async ({
+    page,
+  }) => {
+    await page.goto('/authoring/keypoints')
+    await page.waitForLoadState('networkidle')
+    const section = page
+      .getByRole('article')
+      .locator('section')
+      .filter({ has: page.getByRole('heading', { name: "What you'll learn", level: 2 }) })
+    await expect(section.getByRole('listitem')).toHaveCount(2)
+    await expect(section.locator('[data-slot="card"]')).toHaveCSS('display', 'flex')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+
+    await page.goto('/authoring/gha')
+    await page.waitForLoadState('networkidle')
+    const article = page.getByRole('article')
+    await expect(article.getByRole('alert')).toHaveCount(0)
+    const richNote = article.getByRole('note', { name: 'Note', exact: true }).filter({
+      has: page.getByRole('link', { name: 'Keypoints', exact: true }),
+    })
+    const contentGaps = await richNote
+      .locator('p')
+      .first()
+      .evaluate((paragraph) => {
+        const content = paragraph.parentElement!
+        const frame = content.getBoundingClientRect()
+        const body = paragraph.getBoundingClientRect()
+        const style = getComputedStyle(content)
+        const contentLeft =
+          frame.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft)
+        const contentRight =
+          frame.right - parseFloat(style.borderRightWidth) - parseFloat(style.paddingRight)
+        return { left: body.left - contentLeft, right: contentRight - body.right }
+      })
+    expect(Math.abs(contentGaps.left)).toBeLessThan(1)
+    expect(Math.abs(contentGaps.right)).toBeLessThan(1)
+    await expect(article.getByRole('note', { name: 'MCP-server', exact: true })).toBeVisible()
+    const customLabel =
+      'Before sharing a sandbox, check its dependencies and document the environment needed to reproduce the example'
+    const customNote = article.getByRole('note', { name: customLabel, exact: true })
+    const labelIsFullyVisible = await customNote
+      .getByText(customLabel, { exact: true })
+      .evaluate((label) => label.scrollHeight <= label.clientHeight)
+    expect(labelIsFullyVisible).toBe(true)
+    await expect(customNote.getByRole('heading', { name: 'Reproduce the example' })).toBeVisible()
+    const codePadding = await customNote
+      .locator('pre')
+      .first()
+      .evaluate((pre) => parseFloat(getComputedStyle(pre).paddingLeft))
+    const measureCalloutSpacing = (notes: Element[]) =>
+      notes.flatMap((note) => {
+        const frame = getComputedStyle(note)
+        const content = getComputedStyle(note.querySelector('[data-slot="card-content"]')!)
+        return [
+          frame.paddingTop,
+          frame.paddingBottom,
+          frame.rowGap,
+          content.paddingLeft,
+          content.paddingRight,
+        ].map((padding) => parseFloat(padding))
+      })
+    const calloutSpacings = await article.getByRole('note').evaluateAll(measureCalloutSpacing)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+
+    await page.goto('/authoring/hint')
+    await page.waitForLoadState('networkidle')
+    const legacyNote = page.getByRole('article').getByRole('note', { name: 'Note', exact: true })
+    const inlineCodeWidth = await legacyNote.locator('code').evaluate((code) => ({
+      code: code.getBoundingClientRect().width,
+      content: code.parentElement!.getBoundingClientRect().width,
+    }))
+    expect(inlineCodeWidth.code).toBeLessThan(inlineCodeWidth.content / 2)
+    calloutSpacings.push(...(await legacyNote.evaluateAll(measureCalloutSpacing)))
+    for (const padding of calloutSpacings) expect(padding).toBeCloseTo(codePadding, 1)
   })
 })
