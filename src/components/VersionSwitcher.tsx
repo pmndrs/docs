@@ -32,7 +32,7 @@ export function VersionSwitcher() {
   // Discreet: small and muted, a footnote rather than a menu entry. The color is the button's,
   // so the switcher's hover still lights it up.
   const lines = (
-    <div className="flex min-w-0 flex-col gap-1 text-xs leading-none">
+    <div data-chromatic="ignore" className="flex min-w-0 flex-col gap-1 text-xs leading-none">
       <span className="truncate">{label ?? branch}</span>
       {label && branch && <span className="truncate opacity-70">{branch}</span>}
     </div>
