@@ -1,7 +1,9 @@
 import { renderToHtml } from '@/cli/render'
+import { PrimaryColorMtb } from '@/components/PrimaryColorMtb'
 import { load } from 'cheerio'
 import { join } from 'node:path'
 import { renderToString } from 'react-dom/server'
+import { createElement } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { compileMdxContent, compileMdxFrontmatter } from './compileMdxContent'
 
@@ -322,6 +324,50 @@ describe('MDX expressions', () => {
     const result = await compileMdxFrontmatter('sum: {1+1}')
     expect(renderToString(result.content)).toMatch(/sum: (<!-- -->)?2/)
   })
+})
+
+describe('ThemeSeeds', () => {
+  const render = async (source: string, contrast = 0) => {
+    const result = await compileMdxContent(
+      '<ThemeSeeds presets={[{name: "theme-lime", label: "Lime", config: {source: "#CAF543", colorMatch: true}}]} />',
+      {
+        relFilePath: '/tokens/colors.mdx',
+        absoluteFilePath: '/tokens/colors.mdx',
+        title: 'Colors',
+        url: '/tokens/colors',
+        tableOfContents: [],
+        entries: [],
+      },
+    )
+    return load(
+      renderToString(
+        createElement(
+          PrimaryColorMtb,
+          {
+            source,
+            colorMatch: true,
+            contrast,
+            neutral: '#c1b793',
+            error: '#FF4980',
+          },
+          result.content,
+        ),
+      ),
+    )
+  }
+
+  it.each(['#CAF543', '#123456'])(
+    'keeps server HTML neutral until stored choices are available (%s)',
+    async (source) => {
+      const $ = await render(source, 0.5)
+      expect($('[role="status"][aria-label="Loading seed preset"]')).toHaveLength(1)
+      expect($('[data-slot="skeleton"]')).toHaveLength(2)
+      expect($('button[aria-label="Seed preset"]')).toHaveLength(0)
+      expect($('table[aria-label="Current theme seeds"]')).toHaveLength(0)
+      expect($('[role="status"]').text()).not.toContain('#CAF543')
+      expect($('[role="status"]').text()).not.toContain('#123456')
+    },
+  )
 })
 
 /**
