@@ -1,0 +1,101 @@
+---
+title: "`ThemeSeeds`"
+description: Preview named source-seed presets with the site's theme
+sourcecode: docs/authoring/theme-seeds.mdx
+nav: 19
+---
+
+<Intro>
+  A dropdown of named seed presets, followed by the active theme's defined seed settings.
+</Intro>
+
+## Usage
+
+Pass `presets` as an array of unique `name`, display `label` and seed `config` values:
+
+```md
+<ThemeSeeds presets={[
+  {
+    name: 'theme-lime',
+    label: 'Lime',
+    config: {
+      source: '#CAF543',
+      neutral: '#c1b793',
+      neutralVariant: '#495720',
+      colorMatch: true,
+    },
+  },
+  {
+    name: 'theme-purple',
+    label: 'Purple',
+    config: { source: '#D855F9', colorMatch: true },
+  },
+  {
+    name: 'theme-teal',
+    label: 'Teal',
+    config: { source: '#00F7A3', colorMatch: true },
+  },
+  {
+    name: 'theme-cyan',
+    label: 'Cyan',
+    config: { source: '#2BDCF6', colorMatch: true },
+  },
+]} />
+```
+
+result:
+
+<ThemeSeeds presets={[
+  {
+    name: 'theme-lime',
+    label: 'Lime',
+    config: {
+      source: '#CAF543',
+      neutral: '#c1b793',
+      neutralVariant: '#495720',
+      colorMatch: true,
+    },
+  },
+  {
+    name: 'theme-purple',
+    label: 'Purple',
+    config: { source: '#D855F9', colorMatch: true },
+  },
+  {
+    name: 'theme-teal',
+    label: 'Teal',
+    config: { source: '#00F7A3', colorMatch: true },
+  },
+  {
+    name: 'theme-cyan',
+    label: 'Cyan',
+    config: { source: '#2BDCF6', colorMatch: true },
+  },
+]} />
+
+This is a small example. For a design-system catalog, generate the array from the same canonical
+preset definitions used to build its installable themes, so the preview and installed palette agree.
+
+## Preview behaviour
+
+Selecting a preset applies its `source` and optional `neutral` / `neutralVariant` seeds.
+Omit either neutral seed to let Material Design 3 derive that palette from the source. The site's
+other seed settings stay in place; this component is a source-preset preview, not a general theme editor.
+
+Selection also restores `colorMatch` and `scheme` from the preset, defaulting to `false` and
+`tonalSpot` when omitted. `colorMatch` takes precedence over `scheme` in the existing builder.
+Contrast remains the reader's preference, as does light/dark mode: leave contrast out of presets.
+
+The dropdown and footer theme controls share stored preferences. Selected source and neutral seeds
+remain active across other pages and reloads, even when this component is not mounted. A footer colour or display setting
+that no longer matches a preset labels the selection `Custom`. The table follows the active builder;
+undefined settings and contrast are omitted.
+
+On initial load, a Skeleton appears until saved preferences have been applied, avoiding a flash of
+the site's default preset. The panel remains visible during subsequent changes.
+
+## HTML fragments
+
+The website supplies the theme provider and interactive controls. A standalone HTML fragment has
+neither: `pmndrs-docs build --format fragment` renders a static seed table from the **first** preset,
+without a dropdown or client JavaScript. Put the intended default first; an empty array renders nothing.

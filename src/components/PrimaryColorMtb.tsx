@@ -5,8 +5,9 @@ import { DefaultColorMatchProvider, useColorMatch } from '@/hooks/useColorMatch'
 import { DefaultContrastLevelProvider, useContrastLevel } from '@/hooks/useContrastLevel'
 import { DefaultPrimaryColorProvider, usePrimaryColor } from '@/hooks/usePrimaryColor'
 import { DefaultSchemeProvider, useScheme } from '@/hooks/useScheme'
+import { useSourcePreset } from '@/hooks/useSourcePreset'
 import { Mtb } from 'material-theme-builder/react'
-import { useDeferredValue, type ComponentProps } from 'react'
+import { useDeferredValue, useMemo, type ComponentProps } from 'react'
 
 /**
  * `Mtb`, seeded with the color the reader picked (see `PrimaryColorPicker`), `source` otherwise:
@@ -60,14 +61,30 @@ function SeededMtb(
   const [contrastLevel] = useContrastLevel()
   const [scheme] = useScheme()
   const [colorMatch] = useColorMatch()
+  const [preset] = useSourcePreset()
   // Dragging in the native picker changes the color on every move: the swatch follows at once, the
   // palette (and the whole page restyled with it) when React has the time
-  const source = useDeferredValue(primaryColor)
+  const seeds = useMemo(() => {
+    const matchesPreset = preset?.source.toLowerCase() === primaryColor.toLowerCase()
+    return {
+      source: primaryColor,
+      neutral: matchesPreset ? preset.neutral : props.neutral,
+      neutralVariant: matchesPreset ? preset.neutralVariant : props.neutralVariant,
+    }
+  }, [
+    primaryColor,
+    preset?.source,
+    preset?.neutral,
+    preset?.neutralVariant,
+    props.neutral,
+    props.neutralVariant,
+  ])
+  const deferredSeeds = useDeferredValue(seeds)
 
   return (
     <Mtb
       {...props}
-      source={source}
+      {...deferredSeeds}
       contrast={contrastLevel}
       scheme={scheme}
       colorMatch={colorMatch}

@@ -6,6 +6,7 @@ import { useContrastLevel, CONTRAST_LEVEL_KEY, CONTRAST_LEVELS } from '@/hooks/u
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { HEX_COLOR, PRIMARY_COLOR_KEY, usePrimaryColor } from '@/hooks/usePrimaryColor'
 import { SCHEME_KEY, SCHEMES, useScheme, type SchemeValue } from '@/hooks/useScheme'
+import { useSourcePreset } from '@/hooks/useSourcePreset'
 import { useMtb } from 'material-theme-builder/react'
 import { useEffect, useState } from 'react'
 
@@ -121,6 +122,7 @@ export function PrimaryColorPrepaint(props: PrepaintProps) {
   const [contrastLevel, , isDefaultContrastLevel] = useContrastLevel()
   const [scheme, , isDefaultScheme] = useScheme()
   const [colorMatch, , isDefaultColorMatch] = useColorMatch()
+  const [preset] = useSourcePreset()
   const isHydrated = useIsHydrated()
 
   // Before hydration, the picks are the defaults, as on the server, whatever is stored
@@ -129,7 +131,9 @@ export function PrimaryColorPrepaint(props: PrepaintProps) {
     mtbConfig.source === primaryColor &&
     mtbConfig.contrast === contrastLevel &&
     mtbConfig.scheme === scheme &&
-    mtbConfig.colorMatch === colorMatch
+    mtbConfig.colorMatch === colorMatch &&
+    (preset?.source.toLowerCase() !== primaryColor.toLowerCase() ||
+      (mtbConfig.neutral === preset.neutral && mtbConfig.neutralVariant === preset.neutralVariant))
 
   const [isRemoved, setIsRemoved] = useState(false)
   if (isApplied && !isRemoved) setIsRemoved(true)

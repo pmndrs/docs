@@ -17,6 +17,7 @@ import { useContrastLevel } from '@/hooks/useContrastLevel'
 import { useIsHydrated } from '@/hooks/useIsHydrated'
 import { usePrimaryColor } from '@/hooks/usePrimaryColor'
 import { useScheme } from '@/hooks/useScheme'
+import { useSourcePreset } from '@/hooks/useSourcePreset'
 import { Color } from '@/registry/color/color'
 import { ChevronDownIcon } from 'lucide-react'
 import type { MtbConfig } from 'material-theme-builder'
@@ -37,21 +38,25 @@ export function ThemeSeeds({ presets }: { presets: SeedPreset[] }) {
   const [contrast] = useContrastLevel()
   const isHydrated = useIsHydrated()
   const [hasRevealed, setHasRevealed] = useState(false)
-  const { mtbConfig, setMtbConfig } = useMtb()
+  const { mtbConfig } = useMtb()
+  const [storedPreset, setSourcePreset] = useSourcePreset()
   const sourcePreset = presets.find(
     ({ config }) => config.source.toLowerCase() === source.toLowerCase(),
   )
 
-  // PrimaryColorMtb defers source updates and reapplies its props when footer controls change.
-  // Wait for that update, then synchronize just these preset-specific overrides in the native
-  // builder before paint, avoiding a frame with the previous preset's neutral rows and palette.
-  // Undefined removes a fixed seed and lets M3 derive its neutral palette.
+  // Remember a named source already chosen through the footer too. The root theme applies
+  // these seeds globally; this panel only supplies preset data, never writes the native config.
   useLayoutEffect(() => {
-    if (!sourcePreset || mtbConfig.source.toLowerCase() !== source.toLowerCase()) return
-    const { neutral, neutralVariant } = sourcePreset.config
-    if (mtbConfig.neutral === neutral && mtbConfig.neutralVariant === neutralVariant) return
-    setMtbConfig({ ...mtbConfig, neutral, neutralVariant })
-  }, [sourcePreset, source, mtbConfig, setMtbConfig])
+    if (!isHydrated || !sourcePreset) return
+    const { source: presetSource, neutral, neutralVariant } = sourcePreset.config
+    if (
+      storedPreset?.source.toLowerCase() === presetSource.toLowerCase() &&
+      storedPreset.neutral === neutral &&
+      storedPreset.neutralVariant === neutralVariant
+    )
+      return
+    setSourcePreset(sourcePreset.config)
+  }, [isHydrated, sourcePreset, storedPreset, setSourcePreset])
 
   // Static HTML cannot know stored preferences. Reveal once the native builder has caught up
   // with them, then keep the panel visible throughout normal preset changes.
@@ -80,6 +85,7 @@ export function ThemeSeeds({ presets }: { presets: SeedPreset[] }) {
   function selectPreset(name: string) {
     const preset = presets.find((preset) => preset.name === name)
     if (!preset) return
+    setSourcePreset(preset.config)
     setSource(preset.config.source)
     setScheme(preset.config.scheme ?? 'tonalSpot')
     setColorMatch(preset.config.colorMatch ?? false)

@@ -17,6 +17,9 @@ export default defineConfig({
   updateSnapshots: 'all',
   use: {
     baseURL: 'http://localhost:3000',
+    launchOptions: {
+      args: ['--use-mock-keychain', '--password-store=basic'],
+    },
   },
   projects: [
     {
