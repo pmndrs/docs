@@ -1,0 +1,50 @@
+---
+title: Local components
+nav: 16
+---
+
+Pages can import React components and typed data from their own repository. The documentation build leaves these source files unchanged.
+
+```mdx
+import { presets } from '../../src/presets'
+import { Palette } from '../components/Palette'
+
+<Palette presets={presets} />
+```
+
+Declare each local component in a server module with `defineMdxComponent`. Its Markdown converter receives the same typed props as its React component, and must return a string (or a promise of a string).
+
+```tsx title="docs/components/Palette.tsx"
+import { defineMdxComponent } from '@pmndrs/docs/mdx'
+import { PaletteSelector } from './PaletteSelector'
+
+export const Palette = defineMdxComponent({
+  component: PaletteSelector,
+  toMarkdown: ({ presets }) =>
+    [
+      '| Palette | Seed |',
+      '| --- | --- |',
+      ...presets.map(({ label, seed }) => `| ${label} | ${seed} |`),
+    ].join('\n'),
+})
+```
+
+Keep interactive UI in a separate module beginning with `'use client'`. The website builder preserves that boundary, so the selector hydrates normally. The website page uses the React component; its `.md` export, `llms-full.txt`, and static HTML fragments use the Markdown representation. Layout converters receive their children's resolved Markdown.
+
+The build rejects invalid local component props or a local component without a Markdown converter. Static imports resolve relative to the authored page, including TypeScript data outside the documentation folder. Keep the imported source graph within the consuming repository.
+
+Build the website through the CLI to stage those imports and client boundaries:
+
+```sh
+pmndrs-docs build docs out --format website
+```
+
+For integrations that need one page as Markdown, the public runtime API also removes documentation frontmatter:
+
+```ts
+import { renderMarkdown } from '@pmndrs/docs/markdown'
+
+const markdown = await renderMarkdown(source, { absoluteFilePath })
+```
+
+Repository documentation is trusted build input: imported modules and MDX expressions execute during the build. Put declarations in TypeScript modules; pages support static imports rather than inline module exports.

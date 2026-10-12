@@ -1,3 +1,4 @@
+import { resolveLocalMdx } from './localMdx'
 import {
   a,
   blockquote,
@@ -81,6 +82,8 @@ export type CompileMdxContentOptions = {
   entries: Entry[]
   /** Components overriding the defaults, e.g. a visible `h1` outside the website */
   components?: Record<string, ComponentType<any>>
+  /** Static fragments use local Markdown representations instead of client UI. */
+  localComponents?: 'markdown'
 }
 
 /**
@@ -100,9 +103,12 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
     components,
   } = options
 
+  const resolved = await resolveLocalMdx(source, absoluteFilePath)
+
   return await compileMDX({
-    source,
+    source: options.localComponents === 'markdown' ? resolved.markdown : resolved.source,
     options: {
+      scope: resolved.scope,
       // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
       blockJS: false,
       mdxOptions: {
@@ -176,6 +182,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
       },
       Codesandbox: (props) => <Codesandbox {...props} />,
       Entries: () => <Entries items={entries} />,
+      ...(resolved.scope as Record<string, ComponentType<any>>),
       ...components,
     },
   })

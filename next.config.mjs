@@ -74,6 +74,7 @@ async function rewrites() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ['esbuild', 'typescript', '@mdx-js/mdx'],
   productionBrowserSourceMaps: true,
   images: {
     // domains: ['codesandbox.io'],
