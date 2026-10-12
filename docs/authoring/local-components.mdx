@@ -48,3 +48,44 @@ const markdown = await renderMarkdown(source, { absoluteFilePath })
 ```
 
 Repository documentation is trusted build input: imported modules and MDX expressions execute during the build. Put declarations in TypeScript modules; pages support static imports rather than inline module exports.
+
+## Documentation source context
+
+Server components can read `getMdxBuildContext()` from `@pmndrs/docs/mdx`. Markdown converters receive the same immutable context as their second argument:
+
+```tsx
+import { defineMdxComponent, getMdxBuildContext } from '@pmndrs/docs/mdx'
+
+export const SourceRef = defineMdxComponent({
+  component: () => <p>{getMdxBuildContext().ref}</p>,
+  toMarkdown: (_props, context) => context.ref,
+})
+```
+
+The context contains `label`, `branch`, `ref`, `refType`, and `commit`. The display `label` can be overridden with `--lib-version` and is never evidence of a release. `refType` is `branch`, `tag`, `commit`, or `unknown`; unavailable values are empty strings. An active branch stays a branch even at a tagged commit. Tag builds identify the exact selected tag. Detached untagged commits identify the commit, never the nearest tag from the label. Pull requests identify their head rather than GitHub's synthetic merge commit.
+
+The CLI resolves this context in the consuming repository before copying sources, for websites and HTML fragments. Context contains no installation policy: each repository decides how its own components use a branch, tag, or commit.
+
+## Standalone Markdown
+
+For generated artifacts, use `renderMarkdown` and `resolveMdxBuildContext` from `@pmndrs/docs/markdown`:
+
+```ts
+const context = resolveMdxBuildContext({ cwd: repositoryRoot })
+const markdown = await renderMarkdown(source, { absoluteFilePath, context })
+```
+
+Pass explicit context for an offline or separately selected release:
+
+```ts
+const context = {
+  label: 'Release 1.2.3',
+  branch: '',
+  ref: 'v1.2.3',
+  refType: 'tag' as const,
+  commit: '',
+}
+const markdown = await renderMarkdown(source, { absoluteFilePath, context })
+```
+
+Standalone converters use their second argument, so repeated calls can render different releases in the same process. Without explicit context, `renderMarkdown` reads the current build context. It does not guess a source revision from the display label or silently choose main. For a CLI build without git, the `MDX_BUILD_CONTEXT` environment variable accepts the serialized context object; malformed configuration fails the build.

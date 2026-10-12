@@ -1,3 +1,4 @@
+import { createMdxBuildContext, getMdxBuildContext, type MdxBuildContext } from '../mdxContext'
 import { importLocalMdxScope } from './localMdxRuntime'
 import { createProcessor } from '@mdx-js/mdx'
 import { createRequire } from 'node:module'
@@ -140,7 +141,12 @@ function validateProps(
 }
 
 /** Resolves trusted repository imports without changing any authored source. */
-export async function resolveLocalMdx(source: string, absoluteFilePath: string) {
+export async function resolveLocalMdx(
+  source: string,
+  absoluteFilePath: string,
+  context: MdxBuildContext = getMdxBuildContext(),
+) {
+  context = createMdxBuildContext(context)
   if (!/^\s*(?:import|export)\s/m.test(source)) return { source, scope: {}, markdown: source }
   const parsed = parseLocalMdx(source)
   if (!parsed.imports.length) return { source, scope: {}, markdown: source }
@@ -162,7 +168,12 @@ export async function resolveLocalMdx(source: string, absoluteFilePath: string) 
         .split('.')
         .reduce<unknown>((value, key) => (value as Record<string, unknown>)[key], scope)
       const converter = (
-        component as { toMarkdown?: (props: Record<string, unknown>) => string | Promise<string> }
+        component as {
+          toMarkdown?: (
+            props: Record<string, unknown>,
+            context: MdxBuildContext,
+          ) => string | Promise<string>
+        }
       )?.toMarkdown
       if (typeof converter !== 'function')
         throw new Error(
@@ -210,7 +221,7 @@ export async function resolveLocalMdx(source: string, absoluteFilePath: string) 
           )
           .join('\n')
       }
-      const value = await converter(props)
+      const value = await converter(props, context)
       if (typeof value !== 'string')
         throw new Error(`${absoluteFilePath}: ${node.name}.toMarkdown must return a string`)
       replacements.push({

@@ -7,6 +7,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
+import type { MdxBuildContext } from '../mdxContext'
 
 /** The environment variables read here; a plain record, so tests can pass `{}`. */
 type Env = Record<string, string | undefined>
@@ -183,4 +184,48 @@ export function getBranches({
   if (!output) return []
 
   return filterBranches(parseLsRemote(output), include)
+}
+
+/** Exact source provenance, never inferred from the nearest-tag display label. */
+export function getSourceVersion({
+  cwd,
+  env = process.env,
+}: { cwd?: string; env?: Env } = {}): Omit<MdxBuildContext, 'label'> {
+  // On a PR, the event head is authoritative even when checkout only has the synthetic merge.
+  let head: { sha?: string; ref?: string } | undefined
+  if (env.GITHUB_EVENT_PATH) {
+    try {
+      head = JSON.parse(readFileSync(env.GITHUB_EVENT_PATH, 'utf8'))?.pull_request?.head
+    } catch {
+      // Invalid payload does not make a merge ref into a user branch.
+    }
+  }
+  const prSha =
+    typeof head?.sha === 'string' && /^[0-9a-f]{7,64}$/i.test(head.sha) ? head.sha : undefined
+  const isPullRequest = !!(
+    env.GITHUB_HEAD_REF ||
+    head ||
+    env.GITHUB_EVENT_NAME?.startsWith('pull_request') ||
+    env.GITHUB_REF?.startsWith('refs/pull/')
+  )
+  const commit =
+    prSha ??
+    (isPullRequest
+      ? ''
+      : env.VERCEL_GIT_COMMIT_SHA || env.GITHUB_SHA || git(['rev-parse', 'HEAD'], cwd) || '')
+  const branch = isPullRequest
+    ? env.GITHUB_HEAD_REF || (typeof head?.ref === 'string' ? head.ref : '')
+    : getCurrentBranch({ cwd, env }) || ''
+  if (!isPullRequest && env.GITHUB_REF_TYPE === 'tag' && env.GITHUB_REF_NAME)
+    return { branch: '', ref: env.GITHUB_REF_NAME, refType: 'tag', commit }
+  if (branch && !/^\d+\/merge$/.test(branch))
+    return { branch, ref: branch, refType: 'branch', commit }
+  if (!isPullRequest && commit) {
+    const args = ['describe', '--exact-match', '--tags']
+    if (env.TAG_MATCH) args.push('--match', env.TAG_MATCH)
+    args.push(commit)
+    const tag = git(args, cwd)
+    if (tag) return { branch: '', ref: tag, refType: 'tag', commit }
+  }
+  return { branch: '', ref: commit, refType: commit ? 'commit' : 'unknown', commit }
 }
