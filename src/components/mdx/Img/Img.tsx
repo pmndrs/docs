@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
-import sizeOf from 'image-size'
+import { imageSizeFromFile } from 'image-size/fromFile'
 import { resolve } from 'path'
 
 export async function Img({
@@ -27,7 +27,7 @@ export async function Img({
     src.startsWith(process.env.MDX_BASEURL)
   ) {
     const path = resolve(src.replace(process.env.MDX_BASEURL, process.env.MDX!))
-    const { width: w, height: h } = sizeOf(path)
+    const { width: w, height: h } = await imageSizeFromFile(path)
     const ratio = w && h ? w / h : undefined
 
     // If only one dimension is provided, calculate the other based on the image's aspect ratio

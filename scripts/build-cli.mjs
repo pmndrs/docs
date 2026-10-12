@@ -2,7 +2,7 @@
 // tsconfig, and the CSS and image imports our components make.
 
 import * as esbuild from 'esbuild'
-import sizeOf from 'image-size'
+import { imageSize } from 'image-size'
 import { readFile } from 'node:fs/promises'
 import { dirname, extname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -56,7 +56,7 @@ const staticImages = {
   setup(build) {
     build.onLoad({ filter: /\.(svg|png|jpe?g|gif|webp|avif)$/ }, async (args) => {
       const data = await readFile(args.path)
-      const { width, height } = sizeOf(data)
+      const { width, height } = imageSize(data)
       const src = `data:${MIME[extname(args.path)]};base64,${data.toString('base64')}`
 
       return {
@@ -73,7 +73,7 @@ await esbuild.build({
   bundle: true,
   platform: 'node',
   format: 'esm',
-  target: 'node20.9',
+  target: 'node22.12',
   packages: 'external',
   jsx: 'automatic',
   plugins: [tsconfigPaths, stylesheets, staticImages],

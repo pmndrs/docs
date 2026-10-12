@@ -179,3 +179,27 @@ test('the wheel over the list moves through the pages', async () => {
   await painted()
   expect(app.lastFrame()).toContain('Draw thousands at once.')
 })
+
+test('reads a wheel report split across stdin chunks', async () => {
+  const app = render(<Browse pages={[long]} />)
+  await painted()
+
+  const report = wheelDown(80)
+  app.stdin.write(report.slice(0, 4))
+  app.stdin.write(report.slice(4))
+  await painted()
+
+  expect(app.lastFrame()).not.toContain('alpha-001')
+  expect(app.lastFrame()).toContain('alpha-004')
+})
+
+test('reads consecutive wheel reports from one stdin chunk', async () => {
+  const app = render(<Browse pages={[long]} />)
+  await painted()
+
+  app.stdin.write(wheelDown(80) + wheelDown(80))
+  await painted()
+
+  expect(app.lastFrame()).not.toContain('alpha-003')
+  expect(app.lastFrame()).toContain('alpha-004')
+})

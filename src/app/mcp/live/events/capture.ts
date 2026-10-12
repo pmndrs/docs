@@ -1,4 +1,4 @@
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer, ServerContext } from '@modelcontextprotocol/server'
 import { after } from 'next/server'
 import type { McpEvent } from '@/app/mcp/live/_components/event'
 import { createEventId, getEventBus, type McpEventBus } from './bus'
@@ -8,13 +8,12 @@ import { createEventId, getEventBus, type McpEventBus } from './bus'
  *
  * ## Which client sent it
  *
- * `server.server.getClientVersion()` cannot tell: mcp-handler runs the Streamable HTTP
- * transport stateless, with one `McpServer` per instance shared by every client, and the SDK
- * keeps the `clientInfo` of whichever `initialize` came last -- a tool call would be credited to
- * the most recent client to connect, not to its own.
+ * mcp-handler creates a fresh server for every stateless request, so the tool call's server
+ * has not seen the client's earlier `initialize` request.
  *
  * What a request does carry is its User-Agent, which the SDK hands each handler in
- * `extra.requestInfo.headers`. So the client is resolved from that, the first of these that answers:
+ * `context.http.req.headers`, as web-standard Headers. So the client is resolved from that,
+ * the first of these that answers:
  * 1. the `clientInfo.name` an `initialize` sent with this exact User-Agent, on this instance --
  *    see `rememberClient`, which the route calls with every POST before handing it on -- unless
  *    clients announcing different names share that User-Agent ("node", say);
@@ -22,12 +21,10 @@ import { createEventId, getEventBus, type McpEventBus } from './bus'
  * 3. else "unknown".
  */
 
-type Headers = Record<string, string | string[] | undefined>
+type ClientHeaders = globalThis.Headers | Record<string, string | string[] | undefined>
 
-/** The part of the SDK's `RequestHandlerExtra` this module reads. */
-interface Extra {
-  requestInfo?: { headers?: Headers }
-}
+/** The part of the SDK's server context this module reads. */
+type Extra = Pick<ServerContext, 'http'>
 
 const MAX_NAME_LENGTH = 32
 
@@ -117,8 +114,8 @@ export async function rememberClient(request: Request) {
   }
 }
 
-export function resolveClient(headers: Headers | undefined): string {
-  const header = headers?.['user-agent']
+export function resolveClient(headers: ClientHeaders | undefined): string {
+  const header = headers instanceof Headers ? headers.get('user-agent') : headers?.['user-agent']
   const userAgent = Array.isArray(header) ? header[0] : header
   if (!userAgent) return 'unknown'
   return rememberedClients().get(userAgent) ?? clientFromUserAgent(userAgent) ?? 'unknown'
@@ -188,7 +185,7 @@ function capture(
         const published = bus.publish({
           id: createEventId(ts),
           ts,
-          client: resolveClient(extra?.requestInfo?.headers),
+          client: resolveClient(extra?.http?.req?.headers),
           kind,
           ...describe(args, ok),
           durationMs: Math.round(performance.now() - start),

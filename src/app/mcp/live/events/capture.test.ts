@@ -29,7 +29,7 @@ const server = setupServer(
   ),
 )
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
@@ -219,5 +219,9 @@ describe('client names', () => {
   it('falls back to "unknown"', () => {
     expect(resolveClient(undefined)).toBe('unknown')
     expect(resolveClient({ 'user-agent': '' })).toBe('unknown')
+  })
+
+  it('reads the web-standard headers supplied by the SDK', () => {
+    expect(resolveClient(new Headers({ 'User-Agent': 'Cursor/1.7.0' }))).toBe('cursor')
   })
 })
