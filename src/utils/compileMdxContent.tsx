@@ -47,6 +47,7 @@ import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
 import { Step, Steps } from '@/components/mdx/Steps'
 import { Summary } from '@/components/mdx/Summary'
+import { ThemeSeeds } from '@/components/mdx/ThemeSeeds'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
@@ -146,6 +147,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         Step,
         Steps,
         Summary,
+        ThemeSeeds,
         Tabs,
         TabsList,
         TabsTrigger,
