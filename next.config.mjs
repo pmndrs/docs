@@ -80,6 +80,9 @@ async function rewrites() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  ...(process.env.PMNDRS_DOCS_BUILD_ROOT
+    ? { turbopack: { root: process.env.PMNDRS_DOCS_BUILD_ROOT } }
+    : {}),
   serverExternalPackages: ['esbuild', 'typescript', '@mdx-js/mdx'],
   productionBrowserSourceMaps: true,
   images: {
