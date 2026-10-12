@@ -79,3 +79,18 @@ await esbuild.build({
   plugins: [tsconfigPaths, stylesheets, staticImages],
   logLevel: 'info',
 })
+
+// Public authoring/runtime entry points must also run from an installed package, where
+// Node cannot strip TypeScript under node_modules.
+await esbuild.build({
+  entryPoints: { mdx: resolve(root, 'src/mdx.ts'), markdown: resolve(root, 'src/markdown.ts') },
+  outdir: resolve(root, 'dist'),
+  outExtension: { '.js': '.mjs' },
+  bundle: true,
+  platform: 'node',
+  format: 'esm',
+  target: 'node22.12',
+  packages: 'external',
+  jsx: 'automatic',
+  plugins: [tsconfigPaths],
+})

@@ -52,7 +52,7 @@ export async function GET(_request: Request, { params }: { params: Promise<Param
 
   const markdown = `# ${doc.title}
 
-${doc.description ? `${doc.description}\n\n` : ''}${doc.content.trim()}
+${doc.description ? `${doc.description}\n\n` : ''}${doc.markdown.trim()}
 `
 
   return new Response(markdown, {

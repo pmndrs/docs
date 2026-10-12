@@ -1,3 +1,4 @@
+import { stageLocalMdx } from './local-mdx'
 import { existsSync } from 'node:fs'
 import { cp, mkdir, rm } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
@@ -9,6 +10,7 @@ import { dirname, join } from 'node:path'
  */
 const APP_FILES = [
   'package.json',
+  'dist',
   'next.config.mjs',
   'next-env.d.ts',
   'postcss.config.mjs',
@@ -104,18 +106,18 @@ export async function buildWebsite({
     ),
   )
 
-  // The docs move in with the app, at the path `globals.css` names in its `@source`. That
-  // declaration has to be static — Tailwind resolves it at build time, against the
-  // stylesheet — so the folder comes to the path rather than the path to the folder.
-  if (environment.MDX) {
-    const staged = join(workDir, MDX_DIR)
-    await cp(environment.MDX, staged, { recursive: true })
-    // Absolute: the app resolves a relative one against the working directory, which is the
-    // caller's, not this copy.
-    process.env.MDX = staged
-  }
-
   try {
+    // The docs move in with the app, at the path `globals.css` names in its `@source`. That
+    // declaration has to be static — Tailwind resolves it at build time, against the
+    // stylesheet — so the folder comes to the path rather than the path to the folder.
+    if (environment.MDX) {
+      const staged = join(workDir, MDX_DIR)
+      await cp(environment.MDX, staged, { recursive: true })
+      // Absolute: the app resolves a relative one against the working directory, which is the
+      // caller's, not this copy.
+      process.env.MDX = await stageLocalMdx(environment.MDX, workDir)
+    }
+
     // `next` has no public build API. `nextBuild` takes an options object, where the `build`
     // it wraps takes a dozen positional arguments whose order moves between majors — so this
     // is the entry point that survives a Next upgrade best.

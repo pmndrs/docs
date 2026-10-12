@@ -17,6 +17,9 @@ importers:
       '@codesandbox/sandpack-react':
         specifier: ^2.20.0
         version: 2.20.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@mdx-js/mdx':
+        specifier: ^3.1.1
+        version: 3.1.1
       '@modelcontextprotocol/server':
         specifier: ^2.3.1
         version: 2.3.1
@@ -62,6 +65,9 @@ importers:
       commander:
         specifier: ^15.0.0
         version: 15.0.0
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -195,9 +201,6 @@ importers:
       d3-transition:
         specifier: ^3.0.1
         version: 3.0.1(d3-selection@3.0.0)
-      esbuild:
-        specifier: ^0.28.2
-        version: 0.28.2
       eslint:
         specifier: ^9.39.5
         version: 9.39.5(jiti@2.7.0)

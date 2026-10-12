@@ -31,7 +31,7 @@ Full documentation content.
     const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
     const pageContent = `URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
-${cleanMarkdown(doc.content)}`
+${cleanMarkdown(doc.markdown)}`
 
     // Create XML fragment for efficient generation
     const page = fragment()

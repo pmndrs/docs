@@ -75,6 +75,7 @@ export async function renderFragment(
     tableOfContents,
     entries: [],
     components: fragmentComponents,
+    localComponents: 'markdown',
   })
 
   return renderToHtml(compiled.content)

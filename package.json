@@ -24,7 +24,6 @@
     "d3-sankey": "^0.12.3",
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
-    "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.0",
     "eslint-plugin-storybook": "^10.6.2",
@@ -48,6 +47,7 @@
     "@base-ui/react": "^1.9.0",
     "@codemirror/language": "6.13.1",
     "@codesandbox/sandpack-react": "^2.20.0",
+    "@mdx-js/mdx": "^3.1.1",
     "@modelcontextprotocol/server": "^2.3.1",
     "@octokit/core": "^7.0.8",
     "@tailwindcss/postcss": "^4.3.3",
@@ -63,6 +63,7 @@
     "cmdk": "^1.1.1",
     "cn": "^0.4.0",
     "commander": "^15.0.0",
+    "esbuild": "^0.28.2",
     "gray-matter": "^4.0.3",
     "image-size": "^2.0.4",
     "ink": "^8.0.0",
@@ -142,5 +143,20 @@
     "!src/app/mcp/live",
     "!**/*.test.*",
     "!**/*.stories.*"
-  ]
+  ],
+  "exports": {
+    "./mdx": {
+      "types": "./src/mdx.ts",
+      "import": "./dist/mdx.mjs",
+      "default": "./dist/mdx.mjs"
+    },
+    "./theme-seeds": "./src/components/mdx/ThemeSeeds.tsx",
+    "./package.json": "./package.json",
+    "./markdown": {
+      "types": "./src/markdown.ts",
+      "import": "./dist/markdown.mjs",
+      "default": "./dist/markdown.mjs"
+    },
+    "./*": "./*"
+  }
 }

@@ -1,3 +1,4 @@
+import { resolveLocalMdx } from './localMdx'
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import { rehypeCodesandbox, type Box } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { compileMdxContent, compileMdxFrontmatter } from '@/utils/compileMdxContent'
@@ -50,6 +51,7 @@ export async function parseDocsMetadata(root: string) {
       const compiled = matter(str)
       const frontmatter = compiled.data
       const content = compiled.content
+      const resolved = await resolveLocalMdx(content, file)
 
       const title: string = frontmatter.title?.trim() ?? slug[slug.length - 1].replace(/\-/g, ' ')
       const description: string = frontmatter.description ?? ''
@@ -63,6 +65,7 @@ export async function parseDocsMetadata(root: string) {
         description,
         nav,
         content,
+        markdown: resolved.markdown,
         frontmatter,
       }
     }),
@@ -111,9 +114,11 @@ async function _getDocs(
         // Remove inline link syntax
         .replace(INLINE_LINK_REGEX, '$1')
 
+      const resolved = await resolveLocalMdx(sanitizedContent, file)
       await compileMDX({
-        source: sanitizedContent,
+        source: resolved.source,
         options: {
+          scope: resolved.scope,
           // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
           blockJS: false,
           mdxOptions: {
