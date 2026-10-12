@@ -65,7 +65,6 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
   // Which pane the arrows drive. A page named on the command line is one to read, not to
   // pick again, so it starts on the right.
   const [focus, setFocus] = useState<'pages' | 'page'>(start.page ? 'page' : 'pages')
-  const [cursor, setCursor] = useState(0)
   const [scroll, setScroll] = useState(0)
 
   const listed = useMemo(() => {
@@ -74,11 +73,15 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
   }, [pages, libs, libIndex, searching, query, scope])
 
   // A page named on the command line is the one to open, wherever it sits in the list
-  const [pinned, setPinned] = useState(() =>
-    start.page ? listed.findIndex((page) => page.path === start.page?.path) : -1,
+  const [cursor, setCursor] = useState(() =>
+    start.page
+      ? Math.max(
+          0,
+          listed.findIndex((page) => page.path === start.page?.path),
+        )
+      : 0,
   )
-  const at = pinned >= 0 ? pinned : cursor
-  const current = listed[Math.min(at, Math.max(0, listed.length - 1))]
+  const current = listed[Math.min(cursor, Math.max(0, listed.length - 1))]
 
   const contentWidth = (sidebar ? columns - SIDEBAR_WIDTH : columns) - 4
   const body = useMemo(
@@ -93,8 +96,12 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
   const reading = focus === 'page' || !sidebar
 
   const show = (index: number) => {
-    setPinned(-1)
     setCursor(index)
+    setScroll(0)
+  }
+
+  const move = (delta: number) => {
+    setCursor((was) => moveCursor(was, delta, listed.length))
     setScroll(0)
   }
 
@@ -103,8 +110,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
 
   // The wheel answers to the pointer, not to the focus: what sits under it is what moves.
   useWheel((wheel) => {
-    if (sidebar && wheel.column <= SIDEBAR_WIDTH)
-      return show(moveCursor(at, wheel.direction, listed.length))
+    if (sidebar && wheel.column <= SIDEBAR_WIDTH) return move(wheel.direction)
     scrollBy(wheel.direction * 3)
   })
 
@@ -129,8 +135,8 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
         setFocus('page')
         return show(inLib.findIndex((page) => page.path === current.path))
       }
-      if (key.upArrow) return show(moveCursor(at, -1, listed.length))
-      if (key.downArrow) return show(moveCursor(at, 1, listed.length))
+      if (key.upArrow) return move(-1)
+      if (key.downArrow) return move(1)
       if (key.backspace || key.delete) {
         setQuery((was) => was.slice(0, -1))
         return show(0)
@@ -180,7 +186,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
     const step = key.upArrow || input === 'k' ? -1 : key.downArrow || input === 'j' ? 1 : 0
     if (!step) return
     if (reading) return scrollBy(step * 3)
-    show(moveCursor(at, step, listed.length))
+    move(step)
   })
 
   const hints = searching
@@ -208,7 +214,7 @@ export function Browse({ pages, target }: { pages: Page[]; target?: Target }) {
               rows={listed.map((page) => ({
                 label: searching ? `${page.lib.name}  ${page.title}` : page.title,
               }))}
-              cursor={at}
+              cursor={cursor}
               height={rows - 4}
               focused={!reading}
             />

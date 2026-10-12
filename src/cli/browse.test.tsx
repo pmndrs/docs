@@ -203,3 +203,33 @@ test('reads consecutive wheel reports from one stdin chunk', async () => {
   expect(app.lastFrame()).not.toContain('alpha-003')
   expect(app.lastFrame()).toContain('alpha-004')
 })
+
+test('consecutive sidebar wheel reports each move to the next page', async () => {
+  const app = render(<Browse pages={[long, pages[0], pages[1]]} />)
+  await painted()
+
+  app.stdin.write(wheelDown(10) + wheelDown(10))
+  await painted()
+
+  expect(app.lastFrame()).toContain('A scroll rig.')
+  expect(app.lastFrame()).not.toContain('Draw thousands at once.')
+})
+
+test('consecutive sidebar wheel reports move from the page named on the command line', async () => {
+  const listed = [
+    long,
+    pages[0],
+    pages[1],
+    page(drei, '/misc/fourth', 'Fourth', 'The fourth page body.'),
+  ]
+  const app = render(
+    <Browse pages={listed} target={resolveTarget('drei/performances/instances', listed)} />,
+  )
+  await painted()
+
+  app.stdin.write(wheelDown(10) + wheelDown(10))
+  await painted()
+
+  expect(app.lastFrame()).toContain('The fourth page body.')
+  expect(app.lastFrame()).not.toContain('A scroll rig.')
+})
