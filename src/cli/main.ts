@@ -1,3 +1,4 @@
+import { resolveMdxBuildContext } from './mdx-context'
 import { version } from '@/package.json'
 import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
 import { assertValidUrlTemplate, expandUrlTemplate } from '@/utils/slugify-branch'
@@ -170,6 +171,19 @@ async function compileFolder(root: string, outDir: string) {
 
 async function run(input: string | undefined, output: string | undefined, opts: OptionValues) {
   const website = opts.format === 'website'
+  const sourcePath = input ? resolve(process.cwd(), input) : process.cwd()
+  const sourceCwd =
+    input && !(await stat(sourcePath)).isDirectory() ? dirname(sourcePath) : sourcePath
+  process.env.MDX_BUILD_CONTEXT = JSON.stringify(
+    resolveMdxBuildContext({
+      cwd: sourceCwd,
+      env: {
+        ...process.env,
+        LIB_VERSION: opts.libVersion ?? process.env.LIB_VERSION,
+        TAG_MATCH: opts.tagMatch ?? process.env.TAG_MATCH,
+      },
+    }),
+  )
 
   //
   // stdin → stdout

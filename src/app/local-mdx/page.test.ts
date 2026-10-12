@@ -35,14 +35,25 @@ export const Palette = defineMdxComponent({
   toMarkdown: ({ seed }) => 'Seed: ' + seed,
 })
 `,
+  'BuildInfo.tsx': `import { defineMdxComponent, getMdxBuildContext, type MdxBuildContext } from '@pmndrs/docs/mdx'
+function describe(context: MdxBuildContext) { return context.refType + ':' + context.ref + ':' + context.label }
+export const BuildInfo = defineMdxComponent({
+  component: () => <p>{describe(getMdxBuildContext())}</p>,
+  toMarkdown: (_props, context) => describe(context),
+})
+`,
   'docs/colours.mdx': `---
 title: Local palette
 ---
 
 import { Palette } from '../Palette'
 import { seed } from '../data'
+import { BuildInfo } from '../BuildInfo'
 
 <Palette seed={seed} />
+<BuildInfo />
+
+Historical: theme@v0.1.0
 `,
 }
 
@@ -60,7 +71,7 @@ test.beforeAll(async ({}, testInfo) => {
     }),
   )
   await exec(process.execPath, ['scripts/build-cli.mjs'], { cwd: packageRoot })
-  const buildFixture = () =>
+  const buildFixture = (release = false) =>
     exec(
       process.execPath,
       [
@@ -70,6 +81,8 @@ test.beforeAll(async ({}, testInfo) => {
         output,
         '--format',
         'website',
+        '--lib-version',
+        'Friendly label',
         '--libname',
         'Local components',
         '--url',
@@ -77,10 +90,50 @@ test.beforeAll(async ({}, testInfo) => {
         '--home-redirect',
         '/colours',
       ],
-      { cwd: packageRoot, timeout: 240_000, maxBuffer: 10 * 1024 * 1024 },
+      {
+        cwd: packageRoot,
+        timeout: 240_000,
+        maxBuffer: 10 * 1024 * 1024,
+        env: {
+          ...process.env,
+          GITHUB_REF_TYPE: release ? 'tag' : 'branch',
+          GITHUB_REF_NAME: release ? 'v1.2.3' : 'main',
+          GITHUB_HEAD_REF: '',
+          GITHUB_EVENT_PATH: '',
+          GITHUB_EVENT_NAME: 'push',
+          GITHUB_REF: release ? 'refs/tags/v1.2.3' : 'refs/heads/main',
+        },
+      },
     )
 
   const pageFile = join(fixture, 'docs/colours.mdx')
+  for (const refType of ['branch', 'tag']) {
+    const { stdout } = await exec(
+      process.execPath,
+      [
+        join(packageRoot, 'bin/pmndrs-docs.mjs'),
+        'build',
+        pageFile,
+        '--lib-version',
+        'Friendly label',
+      ],
+      {
+        cwd: fixture,
+        env: {
+          ...process.env,
+          GITHUB_REF_TYPE: refType,
+          GITHUB_REF_NAME: refType === 'tag' ? 'v1.2.3' : 'main',
+          GITHUB_HEAD_REF: '',
+          GITHUB_EVENT_PATH: '',
+          GITHUB_EVENT_NAME: 'push',
+          GITHUB_REF: refType === 'tag' ? 'refs/tags/v1.2.3' : 'refs/heads/main',
+        },
+      },
+    )
+    expect(stdout).toContain(
+      refType === 'tag' ? 'tag:v1.2.3:Friendly label' : 'branch:main:Friendly label',
+    )
+  }
   await writeFile(pageFile, sources['docs/colours.mdx'].replace('seed={seed}', 'seed={42}'))
   await expect(buildFixture()).rejects.toThrow('not assignable to type')
   await writeFile(
@@ -90,6 +143,12 @@ test.beforeAll(async ({}, testInfo) => {
   await expect(buildFixture()).rejects.toThrow('must declare toMarkdown')
   await writeFile(pageFile, sources['docs/colours.mdx'])
   await buildFixture()
+  for (const file of ['colours.html', 'colours.md', 'llms-full.txt']) {
+    const content = await readFile(join(output, file), 'utf8')
+    expect(content).toContain('branch:main:Friendly label')
+    expect(content).toContain('Historical: theme@v0.1.0')
+  }
+  await buildFixture(true)
 
   const mime: Record<string, string> = {
     '.html': 'text/html',
@@ -125,6 +184,7 @@ test('exports and hydrates typed local components without rewriting authored sou
 }) => {
   await page.goto(`${url}/colours`)
   await page.waitForLoadState('networkidle')
+  await expect(page.getByText('tag:v1.2.3:Friendly label', { exact: true })).toBeVisible()
   const palette = page.getByRole('button', { name: 'Palette #CAF543: 0' })
   await expect(palette).toBeVisible()
   await palette.click()
@@ -133,6 +193,8 @@ test('exports and hydrates typed local components without rewriting authored sou
   for (const file of ['colours.md', 'llms-full.txt']) {
     const markdown = await readFile(join(output, file), 'utf8')
     expect(markdown).toContain('Seed: #CAF543')
+    expect(markdown).toContain('tag:v1.2.3:Friendly label')
+    expect(markdown).toContain('Historical: theme@v0.1.0')
     expect(markdown).not.toContain('import {')
     expect(markdown).not.toContain('<Palette')
   }

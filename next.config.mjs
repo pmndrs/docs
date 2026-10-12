@@ -25,7 +25,7 @@ import { VERSION_ENV_KEYS } from './src/cli/version-env-keys.js'
  */
 async function resolveVersionEnvIfAbsent() {
   const missing = VERSION_ENV_KEYS.filter((key) => process.env[key] === undefined)
-  if (missing.length === 0) return
+  if (missing.length === 0 && process.env.MDX_BUILD_CONTEXT !== undefined) return
 
   let git, versionEnv, slugifyBranch
   try {
@@ -43,6 +43,12 @@ async function resolveVersionEnvIfAbsent() {
     git,
     assertValidUrlTemplate: slugifyBranch.assertValidUrlTemplate,
   })
+  if (process.env.MDX_BUILD_CONTEXT === undefined) {
+    process.env.MDX_BUILD_CONTEXT = JSON.stringify({
+      label: process.env.NEXT_PUBLIC_VERSION_LABEL ?? resolved.NEXT_PUBLIC_VERSION_LABEL,
+      ...git.getSourceVersion({ cwd, env: process.env }),
+    })
+  }
   for (const key of missing) {
     process.env[key] = resolved[key]
   }

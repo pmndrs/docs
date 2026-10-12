@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { afterEach, expect, it } from 'vitest'
 import { renderFragment } from '@/cli/render'
 import { parseDocsMetadata } from '@/utils/docs'
+import { renderMarkdown } from '@/markdown'
 
 const folders: string[] = []
 afterEach(async () => {
@@ -95,6 +96,40 @@ export const Card = defineMdxComponent({ component: () => <p>Local content</p>, 
   expect(doc.markdown).toContain('## Heading')
   expect(doc.markdown).toContain('Converted nested content')
   expect(doc.markdown).not.toContain('<Card')
+})
+
+it('uses explicit immutable source context for standalone Markdown without changing historical content', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'docs-context-'))
+  folders.push(root)
+  await writeFile(
+    join(root, 'Install.tsx'),
+    `import { defineMdxComponent } from '@pmndrs/docs/mdx'
+export const Install = defineMdxComponent({
+ component: ({ item }: { item: string }) => <p>{item}</p>,
+ toMarkdown: ({ item }, context) => item + '@' + context.ref + ':' + context.refType + ':' + context.label + ':' + Object.isFrozen(context)
+})`,
+  )
+  const source =
+    'import { Install } from \'./Install\'\n\n<Install item="theme" />\n\nHistorical: theme@v0.1.0'
+  const absoluteFilePath = join(root, 'page.mdx')
+  expect(
+    await renderMarkdown(source, {
+      absoluteFilePath,
+      context: { label: 'Release', branch: '', ref: 'v1.2.3', refType: 'tag', commit: '' },
+    }),
+  ).toContain('theme@v1.2.3:tag:Release:true')
+  expect(
+    await renderMarkdown(source, {
+      absoluteFilePath,
+      context: { label: 'v9-nearest', branch: 'main', ref: 'main', refType: 'branch', commit: '' },
+    }),
+  ).toContain('theme@main:branch:v9-nearest:true')
+  expect(
+    await renderMarkdown(source, {
+      absoluteFilePath,
+      context: { label: '', branch: '', ref: '', refType: 'unknown', commit: '' },
+    }),
+  ).toContain('Historical: theme@v0.1.0')
 })
 
 it('exports a theme-seeds wrapper under a consumer verbatimModuleSyntax configuration', async () => {
