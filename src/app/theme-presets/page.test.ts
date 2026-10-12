@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { builder } from 'material-theme-builder'
 
 declare global {
@@ -37,6 +37,12 @@ function expectedSurfaceInk(source: string, contrast: number, neutral?: string) 
   return reference ? css.match(new RegExp(`${reference[1]}:\\s*([^;]+);`))![1].trim() : value
 }
 
+async function showThemeControls(page: Page) {
+  if (!(await page.getByRole('button', { name: /^Contrast:/ }).isVisible())) {
+    await page.getByRole('button', { name: 'Toggle Sidebar', exact: true }).click()
+  }
+}
+
 for (const preset of [
   { label: 'Purple', source: '#D855F9', neutral: undefined },
   { label: 'Lime', source: '#CAF543', neutral: '#c1b793' },
@@ -49,6 +55,7 @@ for (const preset of [
     const selector = page.getByRole('button', { name: 'Seed preset', exact: true })
     await selector.click()
     await page.getByRole('menuitemradio', { name: preset.label, exact: true }).click()
+    await page.keyboard.press('Escape')
     await expect(selector).toHaveText(preset.label)
     const ink = () => page.evaluate(surfaceInk)
     await expect.poll(ink).toBe(expectedSurfaceInk(preset.source, 0, preset.neutral))
@@ -58,6 +65,7 @@ for (const preset of [
     }
     await introduction.click()
     await expect(page).toHaveURL(/\/getting-started\/introduction/)
+    await showThemeControls(page)
     await page.getByRole('button', { name: /Contrast: standard, switch to medium/ }).click()
     await expect.poll(ink).toBe(expectedSurfaceInk(preset.source, 0.5, preset.neutral))
     await page.reload()
@@ -67,7 +75,9 @@ for (const preset of [
     await expect.poll(ink).toBe(expectedSurfaceInk(preset.source, 0.5, preset.neutral))
     await selector.click()
     await page.getByRole('menuitemradio', { name: 'Lime', exact: true }).click()
+    await page.keyboard.press('Escape')
     await expect.poll(ink).toBe(expectedSurfaceInk('#CAF543', 0.5, '#c1b793'))
+    await showThemeControls(page)
     await expect(
       page.getByRole('button', { name: /Contrast: medium, switch to high/ }),
     ).toBeVisible()
@@ -84,8 +94,15 @@ test('switches native Teal and Cyan presets without resetting the saved contrast
   await selector.click()
   await page.getByRole('menuitemradio', { name: 'Teal', exact: true }).click()
   await page.keyboard.press('Escape')
+  await showThemeControls(page)
   await page.getByRole('button', { name: /Contrast: standard, switch to medium/ }).click()
   await expect.poll(() => page.evaluate(surfaceInk)).toBe(expectedSurfaceInk('#00F7A3', 0.5))
+  if (await page.getByRole('dialog', { name: 'Sidebar', exact: true }).isVisible()) {
+    await page.locator('[data-slot="sheet-overlay"]').click({
+      position: { x: page.viewportSize()!.width - 2, y: 2 },
+    })
+    await expect(page.getByRole('dialog', { name: 'Sidebar', exact: true })).not.toBeVisible()
+  }
   await page.evaluate(() => {
     window.presetLabels = []
   })
@@ -102,6 +119,7 @@ test('switches native Teal and Cyan presets without resetting the saved contrast
   const reloadLabels = await page.evaluate(() => window.presetLabels)
   expect(reloadLabels.length).toBeGreaterThan(0)
   expect(reloadLabels.every((label) => label === 'Cyan')).toBe(true)
+  await showThemeControls(page)
   await expect(page.getByRole('button', { name: /Contrast: medium, switch to high/ })).toBeVisible()
 })
 
