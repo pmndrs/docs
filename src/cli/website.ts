@@ -1,7 +1,7 @@
 import { stageLocalMdx } from './local-mdx'
 import { existsSync } from 'node:fs'
-import { cp, mkdir, rm } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { cp, mkdir, mkdtemp, realpath, rm, rmdir, symlink } from 'node:fs/promises'
+import { dirname, join, parse, sep } from 'node:path'
 
 /**
  * What the Next app is made of — the `files` this package publishes, minus the ones a static
@@ -26,20 +26,32 @@ const MDX_DIR = 'docs'
 /** The folder the app is copied to and built in, removed once the export is out. */
 const WORK_DIR = '.pmndrs-docs'
 
-/**
- * Where to build the copy: beside the `node_modules` holding this package's own dependencies.
- *
- * Next has to be resolvable from wherever it is built, and Node finds it by walking up — so
- * building in the caller's folder only works when the caller happens to have Next installed
- * too, which `npx` does not. Symlinking the dependencies in instead is not an option either:
- * Turbopack rejects a link that leaves its project root. So the copy goes where the
- * dependencies already are, whether a package manager nested them beside this package or
- * hoisted them above it.
- */
-function findWorkDir(packageRoot: string) {
+/** The installed engine's dependency directory, including pnpm's package-local links. */
+function findDependencies(packageRoot: string) {
   for (let dir = packageRoot; ; dir = dirname(dir)) {
-    if (existsSync(join(dir, 'node_modules', 'next'))) return join(dir, WORK_DIR)
+    if (existsSync(join(dir, 'node_modules', 'next'))) return join(dir, 'node_modules')
     if (dirname(dir) === dir) return null
+  }
+}
+
+/** An app under any node_modules ancestor is treated as dependency source by Turbopack. */
+function buildRootFor(dependencies: string) {
+  const parts = dependencies.split(sep)
+  const nodeModules = parts.indexOf('node_modules')
+  return nodeModules < 0
+    ? dirname(dependencies)
+    : parts.slice(0, nodeModules).join(sep) || parse(dependencies).root
+}
+
+/** A finishing sibling may remove the empty parent between mkdir and mkdtemp. */
+async function createWorkDirectory(parent: string): Promise<string> {
+  for (;;) {
+    await mkdir(parent, { recursive: true })
+    try {
+      return await mkdtemp(join(parent, 'build-'))
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+    }
   }
 }
 
@@ -75,8 +87,11 @@ export async function buildWebsite({
   outDir: string
   env: Record<string, string | undefined>
 }) {
-  const workDir = findWorkDir(packageRoot)
-  if (!workDir) throw new Error('Cannot find the `next` package to build the website with')
+  const dependencies = findDependencies(packageRoot)
+  if (!dependencies) throw new Error('Cannot find the `next` package to build the website with')
+  const buildRoot = buildRootFor(dependencies)
+  const workParent = join(buildRoot, WORK_DIR)
+  const workDir = await createWorkDirectory(workParent)
 
   const basePath = env.BASE_PATH ?? ''
   const distDir = `out${basePath}`
@@ -89,24 +104,24 @@ export async function buildWebsite({
     DIST_DIR: distDir,
     OUTPUT: 'export',
     NODE_ENV: 'production',
+    PMNDRS_DOCS_BUILD_ROOT: buildRoot,
   }
   for (const [name, value] of Object.entries(env)) {
     if (value !== undefined) environment[name] ??= value
   }
   Object.assign(process.env, environment)
 
-  await rm(workDir, { recursive: true, force: true })
-  await mkdir(workDir, { recursive: true })
-  await Promise.all(
-    APP_FILES.filter((path) => existsSync(join(packageRoot, path))).map((path) =>
-      cp(join(packageRoot, path), join(workDir, path), {
-        recursive: true,
-        filter: (source) => !isExcluded(source),
-      }),
-    ),
-  )
-
   try {
+    await symlink(await realpath(dependencies), join(workDir, 'node_modules'), 'dir')
+    await Promise.all(
+      APP_FILES.filter((path) => existsSync(join(packageRoot, path))).map((path) =>
+        cp(join(packageRoot, path), join(workDir, path), {
+          recursive: true,
+          filter: (source) => !isExcluded(source),
+        }),
+      ),
+    )
+
     // The docs move in with the app, at the path `globals.css` names in its `@source`. That
     // declaration has to be static — Tailwind resolves it at build time, against the
     // stylesheet — so the folder comes to the path rather than the path to the folder.
@@ -141,5 +156,9 @@ export async function buildWebsite({
     if (existsSync(markdownDir)) await cp(markdownDir, outDir, { recursive: true })
   } finally {
     await rm(workDir, { recursive: true, force: true })
+    // A concurrent build may still own a sibling. Only remove the now-empty parent.
+    await rmdir(workParent).catch((error: NodeJS.ErrnoException) => {
+      if (error.code !== 'ENOTEMPTY' && error.code !== 'ENOENT') throw error
+    })
   }
 }
