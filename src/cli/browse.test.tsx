@@ -179,3 +179,57 @@ test('the wheel over the list moves through the pages', async () => {
   await painted()
   expect(app.lastFrame()).toContain('Draw thousands at once.')
 })
+
+test('reads a wheel report split across stdin chunks', async () => {
+  const app = render(<Browse pages={[long]} />)
+  await painted()
+
+  const report = wheelDown(80)
+  app.stdin.write(report.slice(0, 4))
+  app.stdin.write(report.slice(4))
+  await painted()
+
+  expect(app.lastFrame()).not.toContain('alpha-001')
+  expect(app.lastFrame()).toContain('alpha-004')
+})
+
+test('reads consecutive wheel reports from one stdin chunk', async () => {
+  const app = render(<Browse pages={[long]} />)
+  await painted()
+
+  app.stdin.write(wheelDown(80) + wheelDown(80))
+  await painted()
+
+  expect(app.lastFrame()).not.toContain('alpha-003')
+  expect(app.lastFrame()).toContain('alpha-004')
+})
+
+test('consecutive sidebar wheel reports each move to the next page', async () => {
+  const app = render(<Browse pages={[long, pages[0], pages[1]]} />)
+  await painted()
+
+  app.stdin.write(wheelDown(10) + wheelDown(10))
+  await painted()
+
+  expect(app.lastFrame()).toContain('A scroll rig.')
+  expect(app.lastFrame()).not.toContain('Draw thousands at once.')
+})
+
+test('consecutive sidebar wheel reports move from the page named on the command line', async () => {
+  const listed = [
+    long,
+    pages[0],
+    pages[1],
+    page(drei, '/misc/fourth', 'Fourth', 'The fourth page body.'),
+  ]
+  const app = render(
+    <Browse pages={listed} target={resolveTarget('drei/performances/instances', listed)} />,
+  )
+  await painted()
+
+  app.stdin.write(wheelDown(10) + wheelDown(10))
+  await painted()
+
+  expect(app.lastFrame()).toContain('The fourth page body.')
+  expect(app.lastFrame()).not.toContain('A scroll rig.')
+})

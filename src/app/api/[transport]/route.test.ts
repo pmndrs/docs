@@ -84,7 +84,7 @@ const server = setupServer(
 // 'error', not 'warn': a unit test that quietly reaches the network is not isolated,
 // and it was doing exactly that -- the one test importing ./route was dead (see the
 // @/package.json alias in vitest.config.ts), so nobody noticed it had no mock
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
@@ -590,7 +590,7 @@ Content with &lt;special&gt; characters &amp; symbols.
 
     it('rejects a library the server does not serve', async () => {
       // No msw handler exists for react-spring, and the server runs with
-      // onUnhandledRequest: 'error' -- so the rejection has to come from the schema
+      // onUnhandledFrame: 'error' -- so the rejection has to come from the schema
       const body = await searchDocs({ query: 'spring', lib: 'react-spring' })
 
       expect(body).toMatch(/invalid/i)
@@ -708,7 +708,7 @@ Content with &lt;special&gt; characters &amp; symbols.
       'refuses %j without reaching for a URL',
       async (name) => {
         // No msw handler exists for whatever this would resolve to, and the server
-        // runs with onUnhandledRequest: 'error' -- so a fetch here fails the test on
+        // runs with onUnhandledFrame: 'error' -- so a fetch here fails the test on
         // its own, and the assertion below is about the message a client gets.
         const body = await call('tools/call', { name: 'get_example', arguments: { name } })
 
@@ -873,10 +873,10 @@ Content with &lt;special&gt; characters &amp; symbols.
         methods: [null],
         userAgent: 'diag-400/0.1',
         protocolVersion: '2025-11-25',
-        response: expect.stringContaining('-32700'),
+        response: expect.stringContaining('-32600'),
       })
       // The client still gets the body the handler wrote: logging read a clone
-      expect(await response.text()).toContain('-32700')
+      expect(await response.text()).toContain('-32600')
     })
 
     it('logs nothing for a request the handler accepts', async () => {

@@ -53,8 +53,7 @@ function git(args: string[], cwd?: string): string | undefined {
  *   (https://vercel.com/docs/environment-variables/system-environment-variables#vercel_git_commit_ref)
  */
 export function getCurrentBranch({ cwd, env = process.env }: { cwd?: string; env?: Env } = {}):
-  | string
-  | undefined {
+  string | undefined {
   const githubRef = env.GITHUB_REF_TYPE === 'tag' ? undefined : env.GITHUB_REF_NAME
   const fromEnv = env.GITHUB_HEAD_REF || githubRef || env.VERCEL_GIT_COMMIT_REF
   if (fromEnv) return fromEnv

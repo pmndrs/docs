@@ -11,7 +11,6 @@
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "baseUrl": "src",
     "incremental": true,
     "allowJs": true,
     "resolveJsonModule": true,
@@ -21,10 +20,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@/package.json": ["../package.json"],
+      "@/*": ["./src/*"],
+      "@/package.json": ["./package.json"],
       // Registry items sit at the repo root, outside `src`, where `shadcn` looks for them.
-      "@/registry/*": ["../registry/*"]
+      "@/registry/*": ["./registry/*"]
     }
   },
   "include": [

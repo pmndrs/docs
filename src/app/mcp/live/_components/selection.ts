@@ -15,9 +15,7 @@ import type { McpEvent } from './event'
 export type Selection = string[]
 
 export type GraphMode =
-  | { kind: 'overview' }
-  | { kind: 'pages'; libs: string[] }
-  | { kind: 'rooted'; lib: string }
+  { kind: 'overview' } | { kind: 'pages'; libs: string[] } | { kind: 'rooted'; lib: string }
 
 /** Past this many libraries selected, their pages are not shown. */
 const MAX_LIBS_WITH_PAGES = 3

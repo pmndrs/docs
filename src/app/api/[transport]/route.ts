@@ -563,17 +563,6 @@ Always handle errors gracefully and consider alternative approaches when a speci
       version: packageJson.version,
     },
   },
-  {
-    basePath: '/api',
-    verboseLogs: false,
-    // The legacy SSE transport (/api/sse, /api/message) needs Redis, and we run none:
-    // left enabled, a request there throws for want of a Redis URL and never ends the
-    // response, so the function hangs until Vercel times it out. Off, it is a plain 404,
-    // and clients use the streamable HTTP transport at /api/mcp. (mcp-handler's own
-    // `maxDuration` option only bounds that transport, so it is left out: the function's
-    // limit is the `maxDuration` export above.)
-    disableSse: true,
-  },
 )
 
 /**
@@ -647,6 +636,9 @@ async function warnRefused(request: Request, body: unknown, response: Response) 
  * User-Agent, see `capture.ts`.
  */
 async function POST(request: Request) {
+  if (new URL(request.url).pathname !== '/api/mcp') {
+    return withCors(new Response(null, { status: 404 }))
+  }
   // mcp-handler reads a JSON body with `req.json()` itself, where nothing catches: on an empty
   // or broken body it throws, the response is never written, and the function runs until its
   // `maxDuration` for a 504. So the body is read first, and such a one is answered here. Only a
@@ -669,6 +661,10 @@ async function POST(request: Request) {
 }
 
 async function GET(request: Request) {
+  // Routing belongs to the host in mcp-handler 2. Keep the legacy SSE endpoints absent.
+  if (new URL(request.url).pathname !== '/api/mcp') {
+    return withCors(new Response(null, { status: 404 }))
+  }
   return withCors(await handler(request))
 }
 
