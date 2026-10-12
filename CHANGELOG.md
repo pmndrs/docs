@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.24.0
+
+### Minor Changes
+
+- [#705](https://github.com/pmndrs/docs/pull/705) [`66b0cfb`](https://github.com/pmndrs/docs/commit/66b0cfbc2904a1b241943a60204b29607ec0dccf) Thanks [@abernier](https://github.com/abernier)! - Add a `ThemeSeeds` MDX component for source-seed preset selection and a table of the active theme settings. Reuse the existing theme controls for live previews, and render a static seed table when exporting an HTML fragment.
+
 ## 4.23.2
 
 ### Patch Changes
