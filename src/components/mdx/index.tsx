@@ -7,7 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 import { linkProps } from './Link/linkProps'
 
 type Hn = 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
