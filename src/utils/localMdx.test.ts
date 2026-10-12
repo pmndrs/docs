@@ -96,3 +96,30 @@ export const Card = defineMdxComponent({ component: () => <p>Local content</p>, 
   expect(doc.markdown).toContain('Converted nested content')
   expect(doc.markdown).not.toContain('<Card')
 })
+
+it('exports a theme-seeds wrapper under a consumer verbatimModuleSyntax configuration', async () => {
+  const { renderMarkdown } = await import('@/markdown')
+  const root = await mkdtemp(join(tmpdir(), 'docs-local-verbatim-'))
+  folders.push(root)
+  await writeFile(
+    join(root, 'tsconfig.json'),
+    JSON.stringify({
+      compilerOptions: {
+        verbatimModuleSyntax: true,
+        jsx: 'react-jsx',
+        module: 'esnext',
+        moduleResolution: 'bundler',
+      },
+    }),
+  )
+  await writeFile(
+    join(root, 'Palette.tsx'),
+    `import { defineMdxComponent } from '@pmndrs/docs/mdx'
+import { ThemeSeeds } from '@pmndrs/docs/theme-seeds'
+export const Palette = defineMdxComponent({ component: ThemeSeeds, toMarkdown: ({presets}) => presets.map(({label, config}) => label + ': ' + config.source).join('\\n') })`,
+  )
+  const source = `import { Palette } from './Palette'\n\n<Palette presets={[{name: 'lime', label: 'Lime', config: {source: '#CAF543'}}]} />`
+  expect(await renderMarkdown(source, { absoluteFilePath: join(root, 'colours.mdx') })).toContain(
+    'Lime: #CAF543',
+  )
+})
