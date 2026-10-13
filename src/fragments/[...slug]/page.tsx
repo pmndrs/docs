@@ -6,6 +6,11 @@ type FragmentDocumentProps = {
   params: Promise<{ slug: string[] }>
 }
 
+// These routes run only in an isolated CLI export, with one root and configuration
+// for the worker's lifetime. Share the promise so concurrent pages also reuse the
+// full collection, including rich Entries and CodeSandbox metadata.
+let documents: ReturnType<typeof getDocs> | undefined
+
 /**
  * Renders each document through the website's MDX pipeline with static components.
  */
@@ -14,7 +19,7 @@ export default async function FragmentDocumentPage({ params }: FragmentDocumentP
   if (!root) throw new Error('MDX env var not set')
 
   const { slug } = await params
-  const docs = await getDocs(root, slug, false, fragmentConfig)
+  const docs = await (documents ??= getDocs(root, null, false, fragmentConfig))
   const url = `/${slug.join('/')}`.toLowerCase()
   const doc = docs.find((entry) => entry.url === url)
   if (!doc) throw new Error(`Doc not found: ${url}`)

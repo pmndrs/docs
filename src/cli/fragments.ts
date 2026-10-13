@@ -13,6 +13,37 @@ const imageTypes: Record<string, string> = {
   '.avif': 'image/avif',
 }
 
+/** Rewrites candidate URLs without splitting commas inside data or ordinary URLs. */
+async function rewriteSrcset(srcset: string, rewrite: (url: string) => Promise<string>) {
+  let position = 0
+  let copied = 0
+  let result = ''
+  while (position < srcset.length) {
+    // The HTML candidate parser skips leading commas and ASCII whitespace, then reads
+    // a URL up to whitespace. Only trailing URL commas separate descriptorless candidates.
+    while (position < srcset.length && /[\t\n\f\r ,]/.test(srcset[position])) position++
+    const start = position
+    while (position < srcset.length && !/[\t\n\f\r ]/.test(srcset[position])) position++
+    let end = position
+    while (end > start && srcset[end - 1] === ',') end--
+    if (end === start) continue
+
+    result += srcset.slice(copied, start) + (await rewrite(srcset.slice(start, end)))
+    copied = end
+    if (end < position) continue
+
+    // Keep descriptors verbatim; a comma outside parentheses starts the next candidate.
+    let parentheses = 0
+    while (position < srcset.length) {
+      const character = srcset[position++]
+      if (character === '(') parentheses++
+      else if (character === ')' && parentheses > 0) parentheses--
+      else if (character === ',' && parentheses === 0) break
+    }
+  }
+  return result + srcset.slice(copied)
+}
+
 /**
  * Extracts the document rendered by Next, keeping imported images usable without `_next`.
  *
@@ -27,10 +58,8 @@ export async function extractFragment(html: string, exportDir: string, basePath 
 
   content.find('script, style, link').remove()
   const prefix = `${basePath}/_next/static/media/`
-  for (const image of content.find('img[src]').toArray()) {
-    const src = $(image).attr('src')!
-    if (!src.startsWith(prefix)) continue
-
+  async function embedImage(src: string) {
+    if (!src.startsWith(prefix)) return src
     const mediaDir = join(exportDir, '_next/static/media')
     const file = resolve(mediaDir, decodeURIComponent(src.slice(prefix.length)))
     const path = relative(mediaDir, file)
@@ -40,7 +69,13 @@ export async function extractFragment(html: string, exportDir: string, basePath 
     const mime = imageTypes[extname(file)]
     if (!mime) throw new Error(`Unsupported exported image: ${src}`)
     const data = await readFile(file)
-    $(image).attr('src', `data:${mime};base64,${data.toString('base64')}`)
+    return `data:${mime};base64,${data.toString('base64')}`
+  }
+  for (const image of content.find('img[src]').toArray()) {
+    $(image).attr('src', await embedImage($(image).attr('src')!))
+  }
+  for (const image of content.find('img[srcset], source[srcset]').toArray()) {
+    $(image).attr('srcset', await rewriteSrcset($(image).attr('srcset')!, embedImage))
   }
 
   return content.html() ?? ''

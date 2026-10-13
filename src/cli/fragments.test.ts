@@ -81,6 +81,38 @@ test.each([
   ).rejects.toThrow(error)
 })
 
+test.each(['img', 'source'])(
+  'embeds responsive %s images without changing other candidates',
+  async (tag) => {
+    const root = await fixture()
+    const media = join(root, '_next/static/media/icon.hash.svg')
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" />'
+    await mkdir(dirname(media), { recursive: true })
+    await writeFile(media, svg)
+    const imported = '/docs/_next/static/media/icon.hash.svg'
+    const embedded = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
+    const candidates = `${imported}, ${imported} 2x, https://example.com/a,b.svg 3x, data:image/svg+xml,%3Csvg%3E,%3C/svg%3E 4x, local.png 5x`
+    const html = await extractFragment(
+      `<div data-pmndrs-fragment><picture><${tag} srcset="${candidates}"></picture></div>`,
+      root,
+      '/docs',
+    )
+    expect(load(html!, {}, false)(tag).attr('srcset')).toBe(
+      `${embedded}, ${embedded} 2x, https://example.com/a,b.svg 3x, data:image/svg+xml,%3Csvg%3E,%3C/svg%3E 4x, local.png 5x`,
+    )
+  },
+)
+
+test('rejects traversal in responsive image candidates', async () => {
+  const root = await fixture()
+  await expect(
+    extractFragment(
+      '<div data-pmndrs-fragment><source srcset="local.png 1x, /_next/static/media/%2e%2e%2fsecret.svg 2x"></div>',
+      root,
+    ),
+  ).rejects.toThrow('escapes the exported media directory')
+})
+
 test('copies assets and symlinked files from a folder without documents', async () => {
   const root = await fixture()
   const input = join(root, 'input')
