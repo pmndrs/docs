@@ -1,6 +1,6 @@
 {
   "name": "@pmndrs/docs",
-  "version": "4.25.1",
+  "version": "4.25.2",
   "type": "module",
   "bin": {
     "pmndrs-docs": "bin/pmndrs-docs.mjs"

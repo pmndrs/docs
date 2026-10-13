@@ -1,5 +1,16 @@
 # @pmndrs/docs
 
+## 4.25.2
+
+### Patch Changes
+
+- [#717](https://github.com/pmndrs/docs/pull/717) [`d34c023`](https://github.com/pmndrs/docs/commit/d34c0237713140ad1fffb1423c44d4ee43ed660d) Thanks [@abernier](https://github.com/abernier)! - Render HTML fragments through the same Next.js build and static export as the website.
+  Fragments retain their output without layout, stylesheets, or scripts, including when read
+  from stdin or a single file. These inputs now run a full Next.js build, with build logs sent
+  to stderr so stdout remains HTML only.
+
+- [#718](https://github.com/pmndrs/docs/pull/718) [`b9c179b`](https://github.com/pmndrs/docs/commit/b9c179b667b2d4de4912b06b78770a9e97acd39b) Thanks [@abernier](https://github.com/abernier)! - Resolve MDX scope values in Copy Page, page Markdown endpoints and llms-full.txt through a shared document renderer. Preserve Markdown structure and literal code, provide static representations of built-in components, and support consumer markdownComponents overrides for interactive content.
+
 ## 4.25.1
 
 ### Patch Changes
