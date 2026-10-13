@@ -1,5 +1,13 @@
 # @pmndrs/docs
 
+## 4.25.1
+
+### Patch Changes
+
+- [#714](https://github.com/pmndrs/docs/pull/714) [`22cc30a`](https://github.com/pmndrs/docs/commit/22cc30abf925193080e5c82b3add552f40344993) Thanks [@abernier](https://github.com/abernier)! - Remove the built-in `ThemeSeeds` component and its static fragment renderer. The component now belongs to the design-system documentation and must be registered through consumer configuration when needed.
+
+  Consumers using `<ThemeSeeds />` must provide their own component in `docs.config.ts`, including a static renderer for standalone HTML fragments. See the [custom components guide](https://docs.pmnd.rs/authoring/custom-components) and the [design-system implementation](https://github.com/pmndrs/design-system/pull/73). Shared theme controls and preset persistence remain available. The former authoring page redirects to the design-system Colors page.
+
 ## 4.25.0
 
 ### Minor Changes
