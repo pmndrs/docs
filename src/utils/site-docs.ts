@@ -22,7 +22,8 @@ export function getSiteDocs(root: string, slug: string[] | null, slugOnly = fals
 export const getData = cache(async (...slug: string[]) => {
   const { MDX } = process.env
   if (!MDX) throw new Error('MDX env var not set')
-  const docs = await getSiteDocs(MDX, slug)
+  // Website search uses every document's table of contents, including other pages.
+  const docs = await getSiteDocs(MDX, null)
   const url = `/${slug.join('/')}`.toLowerCase()
   const doc = docs.find((doc) => doc.url === url)
   if (!doc) throw new Error(`Doc not found: ${url}`)

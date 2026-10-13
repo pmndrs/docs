@@ -1,4 +1,4 @@
-import { renderFragment, renderToHtml } from '@/cli/render'
+import { renderFragment, renderToHtml } from '@/test-utils'
 import type { DocsConfig } from '@/config'
 import { load } from 'cheerio'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'

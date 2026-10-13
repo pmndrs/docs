@@ -306,6 +306,19 @@ Then go to: http://localhost:3000
 
 `npx @pmndrs/docs@latest build --help` lists the CLI flags, including `--config` for a configuration outside the repository root.
 
+Both `--format website` and `--format fragment` use the same Next.js build and static export.
+Fragments contain only the compiled document: no layout, stylesheet or script. The CLI
+copies assets alongside folder fragments and preserves static Mermaid and Sandpack content.
+
+```sh
+$ npx @pmndrs/docs@latest build page.mdx
+$ cat page.mdx | npx @pmndrs/docs@latest build
+```
+
+A single file or stdin writes HTML to stdout and build logs to stderr. These inputs also
+run a full Next.js build. Consumer components and data use the same `docs.config.ts` as
+the website.
+
 ## Agents
 
 `llms.txt` dumps and the pmndrs MCP server moved to their own page: [Agents](/agents/introduction).

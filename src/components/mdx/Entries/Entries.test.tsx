@@ -1,4 +1,4 @@
-import { renderToHtml } from '@/cli/render'
+import { renderToHtml } from '@/test-utils'
 import { load } from 'cheerio'
 import { describe, expect, it } from 'vitest'
 import { Entries, type Entry } from './Entries'

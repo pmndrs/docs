@@ -73,7 +73,7 @@ export async function parseDocsMetadata(root: string) {
 }
 
 /**
- * Fetches all docs, filters to a lib if specified.
+ * Fetches all document metadata and compiles the selected body, or every body when null.
  *
  * @param root - absolute or relative (to cwd) path to docs folder
  */
@@ -93,6 +93,9 @@ async function _getDocs(
   //
 
   const parsedDocs = await parseDocsMetadata(root)
+  if (slugOnly) return parsedDocs.map(({ slug }) => ({ slug }) as Doc)
+
+  const selectedUrl = slugOfInterest ? `/${slugOfInterest.join('/')}`.toLowerCase() : null
 
   const entries = await Promise.all(
     parsedDocs.map(async (parsed) => {
@@ -160,14 +163,6 @@ async function _getDocs(
         frontmatter,
       }) => {
         //
-        // "Lightest" version of the doc (for `generateStaticParams`)
-        //
-
-        if (slugOnly) {
-          return { slug } as Doc
-        }
-
-        //
         // Common infos (for every `docs`)
         //
 
@@ -205,36 +200,27 @@ async function _getDocs(
         // MDX content
         //
 
-        // Skip docs other than `slugOfInterest` -- better perfs)
-        // if (JSON.stringify(slug) !== JSON.stringify(slugOfInterest)) {
-        //   return {
-        //     slug,
-        //     url,
-        //     editURL,
-        //     title,
-        //     description,
-        //     nav,
-        //   } as Doc
-        // }
-
         //
         // inline images
         //
 
         const tableOfContents: DocToC[] = []
 
-        const compiledContent = await compileMdxContent(`# ${titleRaw}\n ${content}`, {
-          relFilePath,
-          absoluteFilePath: file,
-          baseUrl: MDX_BASEURL,
-          title: titleRaw,
-          url,
-          tableOfContents,
-          entries,
-          components: config.components,
-          scope: config.scope,
-        })
-        const contentJsx = compiledContent.content
+        const compiledContent =
+          selectedUrl === null || url === selectedUrl
+            ? await compileMdxContent(`# ${titleRaw}\n ${content}`, {
+                relFilePath,
+                absoluteFilePath: file,
+                baseUrl: MDX_BASEURL,
+                title: titleRaw,
+                url,
+                tableOfContents,
+                entries,
+                components: config.components,
+                scope: config.scope,
+              })
+            : null
+        const contentJsx = compiledContent?.content ?? null
 
         return {
           slug,
