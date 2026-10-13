@@ -175,7 +175,7 @@ export function markdownComponents({
           .filter(({ slug }) => !excludedGroups.includes(slug[0]))
           .map(({ url, title }) => (
             <li key={url}>
-              <a href={url}>{title}</a>
+              <a href={`${process.env.BASE_PATH ?? ''}${url}`}>{title}</a>
             </li>
           ))}
       </ul>

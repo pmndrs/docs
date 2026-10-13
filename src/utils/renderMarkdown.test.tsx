@@ -1,8 +1,31 @@
 import type { ComponentType, ReactNode } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderMarkdown } from './renderMarkdown'
 
 describe('renderMarkdown', () => {
+  afterEach(() => vi.unstubAllEnvs())
+
+  it.each(['/docs', '', undefined])(
+    'exports filtered Entries under base path %s',
+    async (basePath) => {
+      vi.stubEnv('BASE_PATH', basePath)
+      const markdown = await renderMarkdown(
+        '<Entries excludedGroups={["private"]} />\n\n[Authored link](/guide)',
+        {
+          entries: [
+            { url: '/guide', title: 'Guide', slug: ['guide'] },
+            { url: '/private/setup', title: 'Private', slug: ['private', 'setup'] },
+          ],
+        },
+      )
+
+      expect(markdown).toContain(`- [Guide](${basePath ?? ''}/guide)`)
+      expect(markdown).toContain(`[Authored link](${basePath ?? ''}/guide)`)
+      expect(markdown).not.toContain('private/setup')
+      expect(markdown).not.toContain('/docs/docs/guide')
+    },
+  )
+
   it.each([
     ['https://example.com/docs', 'https://example.com/docs/tokens/preview.png'],
     [undefined, './preview.png'],
