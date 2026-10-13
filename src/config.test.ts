@@ -1,6 +1,6 @@
 import { createElement, forwardRef, memo } from 'react'
 import { expect, test } from 'vitest'
-import { validateDocsConfig } from './docs.config'
+import { validateDocsConfig } from './config'
 
 test('accepts plain, async and wrapped React components with shared structured data', () => {
   const components = {

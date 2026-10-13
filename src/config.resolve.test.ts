@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, expect, test } from 'vitest'
-import { commonRoot, resolveDocsConfig } from './resolve-config.js'
+import { commonRoot, resolveDocsConfig } from './config.resolve.js'
 
 const roots: string[] = []
 

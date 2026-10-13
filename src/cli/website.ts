@@ -1,4 +1,4 @@
-import { resolveDocsConfig } from '../config/resolve-config.js'
+import { resolveDocsConfig } from '../config.resolve.js'
 import { existsSync } from 'node:fs'
 import { cp, mkdir, rm } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'

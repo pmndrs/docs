@@ -4,8 +4,8 @@ import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { afterEach, expect, test } from 'vitest'
-import { loadDocsConfig } from './config'
-import { renderFragment } from './render'
+import { loadDocsConfig } from './config.load'
+import { renderFragment } from './cli/render'
 
 const roots: string[] = []
 const require = createRequire(import.meta.url)

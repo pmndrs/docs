@@ -1,4 +1,4 @@
-import { validateDocsConfig } from '@/docs.config'
+import { validateDocsConfig } from '@/config'
 import consumerConfig from 'pmndrs-docs-config'
 import { cache } from 'react'
 import { getDocs } from './docs'

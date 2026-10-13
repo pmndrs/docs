@@ -1,5 +1,5 @@
 import type { DocToC } from '@/app/[...slug]/DocsContext'
-import type { DocsConfig } from '@/docs.config'
+import type { DocsConfig } from '@/config'
 import type { SeedPreset } from '@/components/mdx/ThemeSeeds'
 import { ThemeSeedsTable } from '@/components/mdx/ThemeSeedsTable'
 import { compileMdxContent } from '@/utils/compileMdxContent'

@@ -1,4 +1,4 @@
-import { validateDocsConfig } from '../docs.config'
+import { validateDocsConfig } from './config'
 import { build } from 'esbuild'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { createRequire } from 'node:module'

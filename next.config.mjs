@@ -1,7 +1,7 @@
 import { dirname, relative } from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
-import { commonRoot, resolveDocsConfig } from './src/config/resolve-config.js'
+import { commonRoot, resolveDocsConfig } from './src/config.resolve.js'
 
 import { VERSION_ENV_KEYS } from './src/cli/version-env-keys.js'
 
@@ -53,7 +53,7 @@ await resolveVersionEnvIfAbsent()
 
 const appDir = dirname(fileURLToPath(import.meta.url))
 const docsConfig = resolveDocsConfig(process.cwd(), process.env.DOCS_CONFIG)
-const configModule = docsConfig ?? `${appDir}/src/docs.config.ts`
+const configModule = docsConfig ?? `${appDir}/src/config.ts`
 const dependencyRoot = dirname(createRequire(import.meta.url).resolve('next/package.json'))
 
 const basePath = process.env.BASE_PATH || ''

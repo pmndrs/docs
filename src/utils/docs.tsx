@@ -1,5 +1,5 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
-import type { DocsConfig } from '@/docs.config'
+import type { DocsConfig } from '@/config'
 import { rehypeCodesandbox, type Box } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { compileMdxContent, compileMdxFrontmatter } from '@/utils/compileMdxContent'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
