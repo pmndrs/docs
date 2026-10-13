@@ -10,7 +10,7 @@
 
 ### Patch Changes
 
-- [#707](https://github.com/pmndrs/docs/pull/707) [`db4bed9`](https://github.com/pmndrs/docs/commit/db4bed96590b2a2f59635349d88c7f1b62435f21) Thanks [@abernier](https://github.com/abernier)! - Refresh dependencies and adapt image metadata handling, CLI rendering, and the MCP server for image-size 2, Ink 8, and MCP server 2. Correct the declared minimum Node.js version to 22.12, matching existing runtime dependency requirements.
+- [#707](https://github.com/pmndrs/docs/pull/707) [`db4bed9`](https://github.com/pmndrs/docs/commit/db4bed96590b2a2f59635349d88c7f1b62435f21) Thanks [@abernier](https://github.com/abernier)! - Refresh dependencies and adapt image metadata handling, CLI rendering, and the MCP server for image-size 2, Ink 8, and MCP server 2. Align the declared Node.js requirement with the runtime dependencies.
 
 ## 4.24.0
 
