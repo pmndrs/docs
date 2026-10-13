@@ -1,4 +1,4 @@
-import { renderToHtml } from '@/cli/render'
+import { renderToHtml } from '@/test-utils'
 import { load } from 'cheerio'
 import { join } from 'node:path'
 import { renderToString } from 'react-dom/server'

@@ -1,10 +1,7 @@
-// Bundles the CLI so that `node` can run what only Next could run: TSX, the `@/` paths of
-// tsconfig, and the CSS and image imports our components make.
+// Bundles the CLI and its Ink terminal UI. Next handles all MDX rendering, CSS and images.
 
 import * as esbuild from 'esbuild'
-import { imageSize } from 'image-size'
-import { readFile } from 'node:fs/promises'
-import { dirname, extname, resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -28,45 +25,6 @@ const tsconfigPaths = {
   },
 }
 
-/** Stylesheets are the website's business; a fragment carries none. */
-const stylesheets = {
-  name: 'stylesheets',
-  setup(build) {
-    build.onLoad({ filter: /\.css$/ }, () => ({ contents: '', loader: 'js' }))
-  },
-}
-
-const MIME = {
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.webp': 'image/webp',
-  '.avif': 'image/avif',
-}
-
-/**
- * Static image imports, in the shape Next gives them — `{ src, width, height }` — so that
- * components need not know which of the two compiled them. `src` is a data URI, since a
- * fragment travels alone.
- */
-const staticImages = {
-  name: 'static-images',
-  setup(build) {
-    build.onLoad({ filter: /\.(svg|png|jpe?g|gif|webp|avif)$/ }, async (args) => {
-      const data = await readFile(args.path)
-      const { width, height } = imageSize(data)
-      const src = `data:${MIME[extname(args.path)]};base64,${data.toString('base64')}`
-
-      return {
-        contents: `export default ${JSON.stringify({ src, width, height })}`,
-        loader: 'js',
-      }
-    })
-  },
-}
-
 await esbuild.build({
   entryPoints: [resolve(root, 'src/cli/main.ts')],
   outfile: resolve(root, 'dist/cli.mjs'),
@@ -76,6 +34,6 @@ await esbuild.build({
   target: 'node22.12',
   packages: 'external',
   jsx: 'automatic',
-  plugins: [tsconfigPaths, stylesheets, staticImages],
+  plugins: [tsconfigPaths],
   logLevel: 'info',
 })

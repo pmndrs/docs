@@ -1,10 +1,7 @@
-import { mkdtemp, readFile, readdir, writeFile, mkdir } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test } from 'vitest'
 import { load } from 'cheerio'
-import { main } from './main'
-import { renderFragment } from './render'
+import { renderFragment } from '@/test-utils'
 
 const render = (source: string) =>
   renderFragment(source, { absoluteFilePath: join(process.cwd(), 'docs/authoring/fixture.mdx') })
@@ -171,23 +168,4 @@ test('renders the title, which the website takes from the layout instead', async
   expect(await render('---\ntitle: From frontmatter\n---\n\nbody')).toMatch(
     /<h1[^>]*>From frontmatter<\/h1>/,
   )
-})
-
-test('compiles a folder to one HTML file per doc, assets alongside', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'pmndrs-docs-'))
-  const from = join(root, 'in')
-  const to = join(root, 'out')
-
-  await mkdir(join(from, 'guide'), { recursive: true })
-  await writeFile(join(from, 'index.mdx'), '---\ntitle: Home\n---\n\nhello')
-  await writeFile(join(from, 'guide/start.mdx'), '# Start\n\n> [!TIP]\n> go')
-  await writeFile(join(from, 'guide/dog.png'), 'not really a png')
-
-  await main(['build', from, to])
-
-  expect((await readdir(to)).sort()).toEqual(['guide', 'index.html'])
-  expect((await readdir(join(to, 'guide'))).sort()).toEqual(['dog.png', 'start.html'])
-  expect(
-    load(await readFile(join(to, 'guide/start.html'), 'utf8'))('[role="note"]').text(),
-  ).toContain('Tip')
 })

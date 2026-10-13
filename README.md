@@ -39,9 +39,13 @@ $ npx @pmndrs/docs@latest build docs out                    # one .html per .mdx
 $ npx @pmndrs/docs@latest build docs out --format website   # the whole website, statically exported
 ```
 
-`--format fragment` (the default) runs in Node without a Next build. A fragment is the
-compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
+Both formats use the same Next.js build and static export. `--format fragment` (the default)
+extracts the compiled MDX from that export: no layout, no stylesheet, no script. Mermaid
 diagrams stay fenced blocks, and Sandpack shows its code without the editor.
+
+Rendering a document runs `next build`, including a single file or stdin. For those inputs,
+stdout contains only the HTML; build logs go to stderr. esbuild is used only to package the
+CLI for publication, not to load consumer components or render documents.
 
 `build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
 one falls back to the environment variable it maps to, the same ones

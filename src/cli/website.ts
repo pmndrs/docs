@@ -1,13 +1,11 @@
 import { resolveDocsConfig } from '../config.resolve'
+import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { cp, mkdir, rm } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 
-/**
- * What the Next app is made of — the `files` this package publishes, minus the ones a static
- * export has no use for. Missing entries are skipped: `files` is a superset, and not every
- * version of this package has every one of them.
- */
+/** Published application files needed by a Next build. */
 const APP_FILES = [
   'package.json',
   'next.config.mts',
@@ -19,21 +17,16 @@ const APP_FILES = [
   'src',
 ]
 
-/** Where the docs are staged inside the copy. `src/app/globals.css` names it too. */
+/** The path scanned by the stylesheet's static Tailwind @source declaration. */
 const MDX_DIR = 'docs'
 
-/** The folder the app is copied to and built in, removed once the export is out. */
+/** Parent of the temporary application copies. */
 const WORK_DIR = '.pmndrs-docs'
 
 /**
- * Where to build the copy: beside the `node_modules` holding this package's own dependencies.
- *
- * Next has to be resolvable from wherever it is built, and Node finds it by walking up — so
- * building in the caller's folder only works when the caller happens to have Next installed
- * too, which `npx` does not. Symlinking the dependencies in instead is not an option either:
- * Turbopack rejects a link that leaves its project root. So the copy goes where the
- * dependencies already are, whether a package manager nested them beside this package or
- * hoisted them above it.
+ * Finds a writable project location outside the installed package's node_modules directory.
+ * Next must remain resolvable by walking up from the copy, including under npx installations.
+ * @param packageRoot - Installed package or checkout containing the application.
  */
 function findWorkDir(packageRoot: string) {
   for (let dir = packageRoot; ; dir = dirname(dir)) {
@@ -42,28 +35,45 @@ function findWorkDir(packageRoot: string) {
   }
 }
 
-/**
- * What the copy leaves behind, mirroring the `!` entries of `files`: Route Handlers cannot be
- * statically exported, nor the `/mcp/live` page that streams from one of its own; and tests and
- * stories are not part of the app — they reach for `.storybook` and `vitest`, which the app has no
- * reason to carry.
- */
+/** Dynamic MCP routes and development-only modules do not belong in a static export. */
 const isExcluded = (path: string) =>
   /\.(test|stories)\.[jt]sx?$/.test(path) ||
   path.endsWith('src/app/api') ||
   path.endsWith('src/app/mcp/live') ||
-  path.endsWith('src/stories')
+  path.endsWith('src/stories') ||
+  path.endsWith('src/test-utils.ts')
 
 /**
- * Statically exports the documentation website.
- *
- * The app is copied out of this package before being built, because Turbopack refuses to
- * process a project rooted under `node_modules` — which is exactly where an installed package
- * lives. The copy doubles as the way `/api` is kept out of the export: it is simply not
- * copied, so nothing has to be moved out of the way and put back.
- *
- * @param env - Website configuration, as the environment variables the app reads
- *   (`MDX`, `NEXT_PUBLIC_LIBNAME`, `BASE_PATH`, `ICON`, `THEME_*`…)
+ * Copies the application and optional documentation into an isolated Next project.
+ * @param packageRoot - Installed package or checkout containing the application.
+ * @param mdx - Documentation directory copied to Tailwind's static source path.
+ */
+async function stageApp(packageRoot: string, mdx?: string) {
+  const parent = findWorkDir(packageRoot)
+  if (!parent) throw new Error('Cannot find the `next` package to build the documentation with')
+
+  await mkdir(parent, { recursive: true })
+  const workDir = await mkdtemp(join(parent, 'app-'))
+  try {
+    await Promise.all(
+      APP_FILES.filter((path) => existsSync(join(packageRoot, path))).map((path) =>
+        cp(join(packageRoot, path), join(workDir, path), {
+          recursive: true,
+          filter: (source) => !isExcluded(source),
+        }),
+      ),
+    )
+    if (mdx) await cp(mdx, join(workDir, MDX_DIR), { recursive: true })
+    return workDir
+  } catch (error) {
+    await rm(workDir, { recursive: true, force: true })
+    throw error
+  }
+}
+
+/**
+ * Exports the website, placing each Markdown document beside its HTML page.
+ * @param options - Output directory, consumer configuration, and website environment.
  */
 export async function buildWebsite({
   packageRoot,
@@ -76,72 +86,108 @@ export async function buildWebsite({
   configPath?: string
   env: Record<string, string | undefined>
 }) {
-  const workDir = findWorkDir(packageRoot)
-  if (!workDir) throw new Error('Cannot find the `next` package to build the website with')
+  await withNextExport({ packageRoot, env, configPath }, async (exportDir) => {
+    // Server rewrites expose /md/<path>.md as /<path>.md; static hosting needs the same files.
+    const markdownDir = join(exportDir, 'md')
+    // Next exports the 404 body for an absent icon; omit that file instead.
+    const iconFile = join(exportDir, 'icon.svg')
+    const icon = env.ICON ?? process.env.ICON
+    const isLeftOut = (source: string) => source === markdownDir || (!icon && source === iconFile)
+    await mkdir(outDir, { recursive: true })
+    await cp(exportDir, outDir, { recursive: true, filter: (source) => !isLeftOut(source) })
+    if (existsSync(markdownDir)) await cp(markdownDir, outDir, { recursive: true })
+  })
+}
 
+type ExportOptions = {
+  /** Installed package or checkout containing the Next application. */
+  packageRoot: string
+  /** Configuration passed only to the build subprocess. */
+  env: Record<string, string | undefined>
+  /** Consumer module resolved in the caller's working directory. */
+  configPath?: string
+  /** Use the minimal document routes instead of the website layouts. */
+  fragments?: boolean
+  /** A file or stdin document, with its original path for relative references. */
+  source?: { content: string; absoluteFilePath: string }
+}
+
+/**
+ * Runs the same Next static export for both output formats, then removes the staged app.
+ * @param options - Build configuration and optional single-document source.
+ * @param consume - Reads the completed export before its temporary directory is removed.
+ */
+export async function withNextExport<T>(
+  {
+    packageRoot,
+    env,
+    configPath = resolveDocsConfig(process.cwd(), env.DOCS_CONFIG ?? process.env.DOCS_CONFIG),
+    fragments = false,
+    source,
+  }: ExportOptions,
+  consume: (exportDir: string) => Promise<T>,
+) {
   const basePath = env.BASE_PATH ?? ''
   const distDir = `out${basePath}`
-
-  // The Next config and the app read these at module scope, so they must be set before the
-  // build is imported. Undefined values are dropped rather than assigned: `process.env`
-  // stringifies whatever it is given, and the app would read the literal "undefined".
-  const environment: Record<string, string> = {
+  const environment = {
+    ...process.env,
+    ...Object.fromEntries(Object.entries(env).filter(([, value]) => value !== undefined)),
     BASE_PATH: basePath,
     DIST_DIR: distDir,
     OUTPUT: 'export',
     NODE_ENV: 'production',
-    // Keep consumer imports at their original paths, even after the MDX folder is staged.
+    // Next imports the original consumer module, preserving its server/client boundaries.
     DOCS_CONFIG: configPath ? resolve(configPath) : '',
-  }
-  for (const [name, value] of Object.entries(env)) {
-    if (value !== undefined) environment[name] ??= value
-  }
-  Object.assign(process.env, environment)
-
-  await rm(workDir, { recursive: true, force: true })
-  await mkdir(workDir, { recursive: true })
-  await Promise.all(
-    APP_FILES.filter((path) => existsSync(join(packageRoot, path))).map((path) =>
-      cp(join(packageRoot, path), join(workDir, path), {
-        recursive: true,
-        filter: (source) => !isExcluded(source),
-      }),
-    ),
-  )
-
-  // The docs move in with the app, at the path `globals.css` names in its `@source`. That
-  // declaration has to be static — Tailwind resolves it at build time, against the
-  // stylesheet — so the folder comes to the path rather than the path to the folder.
-  if (environment.MDX) {
-    const staged = join(workDir, MDX_DIR)
-    await cp(environment.MDX, staged, { recursive: true })
-    // Absolute: the app resolves a relative one against the working directory, which is the
-    // caller's, not this copy.
-    process.env.MDX = staged
-  }
+    MDX: source ? dirname(source.absoluteFilePath) : (env.MDX ?? process.env.MDX),
+    PMNDRS_FRAGMENT_INPUT: '',
+    PMNDRS_FRAGMENT_PATH: '',
+  } satisfies NodeJS.ProcessEnv
+  // Fragments have no stylesheet to scan. Read their original MDX paths so references such
+  // as Sandpack folder="../examples" can still reach files outside the documentation root.
+  const workDir = await stageApp(packageRoot, fragments ? undefined : environment.MDX)
 
   try {
-    // `next` has no public build API. `nextBuild` takes an options object, where the `build`
-    // it wraps takes a dozen positional arguments whose order moves between majors — so this
-    // is the entry point that survives a Next upgrade best.
-    const { nextBuild } = await import('next/dist/cli/next-build.js')
-    await nextBuild(
-      { mangling: true, experimentalDebugMemoryUsage: false, experimentalBuildMode: 'default' },
-      workDir,
-    )
+    if (!fragments && environment.MDX) environment.MDX = join(workDir, MDX_DIR)
 
-    // Each page's markdown is exported under `md/` (`src/app/md/[...slug]/route.ts`), but
-    // belongs beside the page, at `<path>.md`: the URL a server build rewrites to it.
-    const exportDir = join(workDir, distDir)
-    const markdownDir = join(exportDir, 'md')
-    // Without `ICON`, `/icon.svg` (`src/app/icon.svg/route.ts`) is a 404, but the export writes
-    // its body all the same: left out, so the file is missing rather than a broken image.
-    const iconFile = join(exportDir, 'icon.svg')
-    const isLeftOut = (source: string) =>
-      source === markdownDir || (!environment.ICON && source === iconFile)
-    await mkdir(outDir, { recursive: true })
-    await cp(exportDir, outDir, { recursive: true, filter: (source) => !isLeftOut(source) })
-    if (existsSync(markdownDir)) await cp(markdownDir, outDir, { recursive: true })
+    if (fragments) {
+      await cp(join(workDir, 'src/fragments/layout.tsx'), join(workDir, 'src/app/layout.tsx'))
+      await cp(join(workDir, 'src/fragments/page.tsx'), join(workDir, 'src/app/page.tsx'))
+      // Keep DocsContext and other shared modules in place; only the routes change.
+      for (const name of ['page.tsx', 'layout.tsx']) {
+        await rm(join(workDir, 'src/app/[...slug]', name))
+        if (!source) {
+          // An internal prefix avoids collisions with Next's own index and 404 pages.
+          const target = join(workDir, 'src/app/fragments/[...slug]', name)
+          await mkdir(dirname(target), { recursive: true })
+          await cp(join(workDir, 'src/fragments/[...slug]', name), target)
+        }
+      }
+      for (const route of ['llms.txt', 'llms-full.txt', 'md', 'icon.svg']) {
+        await rm(join(workDir, 'src/app', route), { recursive: true, force: true })
+      }
+      if (source) {
+        environment.PMNDRS_FRAGMENT_INPUT = join(workDir, 'fragment.mdx')
+        environment.PMNDRS_FRAGMENT_PATH = source.absoluteFilePath
+        await writeFile(environment.PMNDRS_FRAGMENT_INPUT, source.content)
+      }
+    }
+
+    // The subprocess isolates configuration and sends build logs to stderr, keeping stdout
+    // available for a single HTML fragment. Use Next's CLI rather than its private build API.
+    const next = createRequire(import.meta.url).resolve('next/dist/bin/next')
+    await new Promise<void>((resolve, reject) => {
+      const child = spawn(process.execPath, [next, 'build', workDir], {
+        cwd: workDir,
+        env: environment,
+        stdio: ['ignore', process.stderr, process.stderr],
+      })
+      child.once('error', reject)
+      child.once('close', (code, signal) => {
+        if (code === 0) resolve()
+        else reject(new Error(`Next build failed (${signal ?? `exit ${code}`})`))
+      })
+    })
+    return await consume(join(workDir, distDir))
   } finally {
     await rm(workDir, { recursive: true, force: true })
   }

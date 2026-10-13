@@ -1,20 +1,21 @@
-import type { DocsConfig } from '../config'
 import { resolveDocsConfig } from '../config.resolve'
-import { loadDocsConfig } from '../config.load'
 import { version } from '@/package.json'
-import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
 import { assertValidUrlTemplate, expandUrlTemplate } from '@/utils/slugify-branch'
 import { Command, Option, type OptionValues } from 'commander'
-import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { corpus, type Page } from './browse.corpus'
 import { formatHits, formatMatches } from './browse.print'
 import { matchingLines, search } from './browse.search'
 import { resolveTarget } from './browse.target'
-import { fragmentComponents, renderFragment, renderToHtml } from './render'
+import { buildFragments, renderFragment } from './fragments'
 import * as gitInfo from './git-info'
 import { resolveVersionEnv } from './version-env'
 import { buildWebsite } from './website'
+
+/** This package, wherever installed: `dist/cli.mjs` is one folder below its root. */
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 /** A website option, which `version-url` takes too. */
 const versionUrlTemplateOption = new Option(
@@ -142,68 +143,52 @@ function display(path: string) {
   return rel.length < path.length ? rel : path
 }
 
-/** Compiles every MDX file of `root` to an HTML fragment, copying everything else as is. */
-async function compileFolder(root: string, outDir: string, config: DocsConfig) {
-  process.env.MDX = root
-
-  const docs = await getDocs(root, null, false, {
-    ...config,
-    components: { ...fragmentComponents, ...config.components },
-  })
-  for (const doc of docs) {
-    const file = join(outDir, `${doc.slug.join('/')}.html`)
-    await mkdir(dirname(file), { recursive: true })
-    await writeFile(file, await renderToHtml(doc.content))
-  }
-
-  // Assets the docs reference — images, Sandpack folders — travel with them. Anything
-  // already under `outDir` is ours, not theirs: a previous run left it there.
-  const assets = await crawl(
-    root,
-    (path) =>
-      !path.includes('node_modules') &&
-      !MARKDOWN_REGEX.test(path) &&
-      !resolve(path).startsWith(`${outDir}/`),
-  )
-  for (const asset of assets) {
-    const file = join(outDir, relative(root, asset))
-    await mkdir(dirname(file), { recursive: true })
-    await copyFile(asset, file)
-  }
-
-  return docs.length
-}
-
 async function run(input: string | undefined, output: string | undefined, opts: OptionValues) {
   const website = opts.format === 'website'
   const configPath = resolveDocsConfig(process.cwd(), opts.config)
-  const config = website ? {} : await loadDocsConfig(configPath)
+  const from = input ? resolve(process.cwd(), input) : undefined
+  const isDirectory = from ? (await stat(from)).isDirectory() : false
+  const env: Record<string, string | undefined> = { DOCS_CONFIG: configPath ?? '' }
+  for (const option of websiteOptions) {
+    env[option.envVar!] = opts[option.attributeName()]
+  }
+
+  // Resolve git metadata in the consumer checkout before Next runs in its temporary copy.
+  // Set every version variable, including empty ones, so Next does not resolve them again.
+  const versionEnv = resolveVersionEnv(
+    { ...process.env, ...env },
+    {
+      cwd: from ? (isDirectory ? from : dirname(from)) : process.cwd(),
+      git: gitInfo,
+      assertValidUrlTemplate,
+    },
+  )
+  Object.assign(env, versionEnv)
+  const fragmentOptions = { packageRoot, env }
 
   //
   // stdin → stdout
   //
 
-  if (!input) {
+  if (!from) {
     if (website) throw new Error('--format website needs an IN folder')
 
     // Relative references resolve against the working directory, the only folder the caller
     // told us about
     const html = await renderFragment(await readStdin(), {
+      ...fragmentOptions,
       absoluteFilePath: join(process.cwd(), 'stdin.mdx'),
-      config,
     })
     process.stdout.write(html)
     return
   }
 
-  const from = resolve(process.cwd(), input)
-
-  if (!(await stat(from)).isDirectory()) {
+  if (!isDirectory) {
     if (website) throw new Error('--format website needs an IN folder')
 
     const html = await renderFragment(await readFile(from, 'utf8'), {
+      ...fragmentOptions,
       absoluteFilePath: from,
-      config,
     })
     if (!output) {
       process.stdout.write(html)
@@ -220,31 +205,15 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   const outDir = resolve(process.cwd(), output ?? 'out')
 
   if (!website) {
-    const count = await compileFolder(from, outDir, config)
+    const count = await buildFragments({ ...fragmentOptions, root: from, outDir })
     console.error(`${count} pages → ${display(outDir)}`)
     return
   }
 
-  const env: Record<string, string | undefined> = { MDX: from }
-  for (const option of websiteOptions) {
-    env[option.envVar!] = opts[option.attributeName()]
-  }
-
-  // Git is asked here, in the library's checkout, and not by the build: that runs in a copy of
-  // this package, where git would describe the wrong repository, or none at all. Every variable
-  // is set, even empty, which is what tells `next.config.mts` not to resolve them again.
-  // Handed the whole environment, not only the options: git reads the CI's own variables
-  // (`GITHUB_*`, `VERCEL_GIT_COMMIT_REF`) to tell which branch and commit this is.
-  const versionEnv = resolveVersionEnv(
-    { ...process.env, ...env },
-    { cwd: from, git: gitInfo, assertValidUrlTemplate },
-  )
-  Object.assign(env, versionEnv)
-
   await buildWebsite({
-    packageRoot: resolve(dirname(new URL(import.meta.url).pathname), '..'),
+    packageRoot,
     outDir,
-    env,
+    env: { ...env, MDX: from },
     configPath,
   })
   console.error(`Preview: npx -y serve ${display(outDir)}`)
@@ -277,6 +246,7 @@ Examples:
   $ pmndrs-docs build docs out --format website   the whole website, statically exported
 
 A fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script.
+Both formats run a Next.js static export, including single files and stdin.
 `,
   )
   .action(run)
