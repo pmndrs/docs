@@ -68,6 +68,30 @@ resolve while you edit. Any option from
 
 </details>
 
+## Markdown exports
+
+**Copy Page**, **View as Markdown** (`/<page>.md`), and `llms-full.txt` use the same document renderer. MDX expressions resolve against `scope`, including values inside Markdown tables, JSX attributes and commands. Headings, tables, lists, links, images and code are serialized as Markdown. Formatting is normalized; the MDX files are never rewritten. Inline code and fenced examples remain literal, including their braces and JSX.
+
+Built-in components have static representations: tabs include every panel, code blocks include their authored commands, Mermaid keeps its diagram source, and theme presets expose their declared values. Color previews expose their role or CSS value, without computing browser styles. Sandpack and live embeds provide a static notice or destination; contributor and backer lists provide links.
+
+Custom server-renderable components use their rendered content, including async components. A client component that Next exposes as an opaque reference uses a notice and its authored children. Components that need browser APIs, providers, or a particular interactive state should supply a server-renderable alternative in `markdownComponents`:
+
+```ts
+import type { DocsConfig } from '@pmndrs/docs/src/config'
+import { Example } from './docs/authoring/Example'
+import example from './docs/authoring/Example.json'
+
+export default {
+  components: { Example },
+  scope: { example },
+  markdownComponents: {
+    Example: ({ initialCount }: { initialCount: number }) => `Count: ${initialCount}`,
+  },
+} satisfies DocsConfig
+```
+
+`markdownComponents` overrides both built-in and configured components for Markdown exports only. Keep these alternatives free of client dependencies, including nested client components. Exports describe the authored or initial state at build time; they do not capture a reader's selected tab, edited playground, or theme preferences. Unresolved expressions and rendering errors fail the export with the document path instead of returning raw MDX.
+
 # Releasing
 
 Every push to `main` redeploys [docs.pmnd.rs](https://docs.pmnd.rs) via [ci.yml](.github/workflows/ci.yml) — no [changeset](.changeset/) needed for that.
