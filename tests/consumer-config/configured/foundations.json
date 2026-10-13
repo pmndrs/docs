@@ -1,0 +1,9 @@
+{
+  "spacing": {
+    "scale": [
+      { "name": "compact", "value": 4 },
+      { "name": "comfortable", "value": 12 }
+    ]
+  },
+  "initialCount": 7
+}

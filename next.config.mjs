@@ -1,5 +1,7 @@
-import { dirname } from 'node:path'
+import { dirname, relative } from 'node:path'
+import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
+import { commonRoot, resolveDocsConfig } from './src/config/resolve-config.js'
 
 import { VERSION_ENV_KEYS } from './src/cli/version-env-keys.js'
 
@@ -49,6 +51,11 @@ async function resolveVersionEnvIfAbsent() {
 }
 await resolveVersionEnvIfAbsent()
 
+const appDir = dirname(fileURLToPath(import.meta.url))
+const docsConfig = resolveDocsConfig(process.cwd(), process.env.DOCS_CONFIG)
+const configModule = docsConfig ?? `${appDir}/src/docs.config.ts`
+const dependencyRoot = dirname(createRequire(import.meta.url).resolve('next/package.json'))
+
 const basePath = process.env.BASE_PATH || ''
 const distDir = process.env.DIST_DIR || undefined
 const output = process.env.OUTPUT || undefined
@@ -75,6 +82,20 @@ async function rewrites() {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: true,
+  // A static import lets Next preserve each consumer component's server/client boundary.
+  turbopack: {
+    root: docsConfig
+      ? commonRoot(commonRoot(appDir, dependencyRoot), dirname(docsConfig))
+      : undefined,
+    resolveAlias: {
+      'pmndrs-docs-config': `./${relative(appDir, configModule).split('\\').join('/')}`,
+    },
+  },
+  experimental: { externalDir: Boolean(docsConfig) },
+  webpack(config) {
+    config.resolve.alias['pmndrs-docs-config'] = configModule
+    return config
+  },
   images: {
     // domains: ['codesandbox.io'],
     unoptimized: true,

@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// Match start.sh so an isolated check does not reuse another checkout's server.
+const url = `http://localhost:${process.env.PORT ?? 3000}`
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -16,7 +19,7 @@ export default defineConfig({
   // `toMatchAriaSnapshot` too. Do not add such assertions under this config
   updateSnapshots: 'all',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: url,
     launchOptions: {
       args: ['--use-mock-keychain', '--password-store=basic'],
     },
@@ -39,6 +42,6 @@ export default defineConfig({
   ],
   webServer: {
     command: './start.sh',
-    url: 'http://localhost:3000',
+    url,
   },
 })

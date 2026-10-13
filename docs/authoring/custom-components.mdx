@@ -1,0 +1,142 @@
+---
+title: Custom components and data
+description: Register your repository's React components and shared data for MDX pages
+sourcecode: docs/authoring/custom-components.mdx
+nav: 30
+---
+
+Use `docs.config.ts` to make local React components and shared data available to every MDX page. The engine compiles ordinary MDX with these components and values; no source preprocessing or placeholder substitution is needed.
+
+## Minimal example
+
+Keep the configuration, components, and data in your repository:
+
+```text
+docs.config.ts
+docs-components/FoundationTable.tsx
+foundations.json
+docs/spacing.mdx
+```
+
+```json title="foundations.json"
+{
+  "spacing": {
+    "scale": [
+      { "name": "small", "value": "4px" },
+      { "name": "medium", "value": "8px" }
+    ]
+  }
+}
+```
+
+```tsx title="docs-components/FoundationTable.tsx"
+type Row = { name: string; value: string }
+
+export function FoundationTable({ rows }: { rows: Row[] }) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.name}>
+            <td>{row.name}</td>
+            <td>{row.value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+```
+
+```ts title="docs.config.ts"
+import { FoundationTable } from './docs-components/FoundationTable'
+import foundations from './foundations.json'
+
+export default {
+  components: { FoundationTable },
+  scope: { foundations },
+}
+```
+
+Then use the component and data directly in MDX:
+
+```jsx title="docs/spacing.mdx"
+---
+title: Spacing
+---
+
+<FoundationTable rows={foundations.spacing.scale} />
+```
+
+From the repository root:
+
+```sh
+npx @pmndrs/docs build docs out --format website --libname 'My library'
+```
+
+Both `components` and `scope` are optional. Registered components override built-in components with the same name. Scope keys are JavaScript variable names available to page content. Frontmatter titles and descriptions keep their built-in rendering; they do not receive the custom components or scope.
+
+For optional type checking, install `@pmndrs/docs` in the repository and use `satisfies`:
+
+```ts
+import type { DocsConfig } from '@pmndrs/docs/src/docs.config'
+
+export default {
+  components: { FoundationTable },
+  scope: { foundations },
+} satisfies DocsConfig
+```
+
+## Configuration path
+
+The CLI discovers `docs.config.ts` in the current working directory. Repositories without this file keep the default behavior. To use another path, pass `--config` or set `DOCS_CONFIG`:
+
+```sh
+npx @pmndrs/docs build docs out --format website --config config/docs.config.ts
+DOCS_CONFIG=config/docs.config.ts npx @pmndrs/docs build docs out --format website
+```
+
+The flag takes precedence over the environment variable. Relative configuration paths resolve from the current working directory, independently of the input MDX folder. Explicit configuration paths support `.ts`, `.tsx`, `.js`, and `.mjs`. Imports inside a configuration resolve relative to that module; install any packages they use in the consuming repository.
+
+In CI, install the consuming repository’s dependencies before running the CLI. The reusable `build.yml` workflow currently does not install consumer dependencies or expose a custom config path; use your own build job when those are needed.
+
+`preview.sh` uses the same website build, so it accepts `DOCS_CONFIG` too. When running the engine's own Next development server against another repository, provide explicit paths:
+
+```sh
+MDX=/path/to/library/docs DOCS_CONFIG=/path/to/library/docs.config.ts pnpm dev
+```
+
+## Server and client components
+
+For websites, Next compiles the original configuration and its imported modules. Components are Server Components by default. Put `'use client'` at the top of a component module that needs state, effects, or browser interaction, and import that component into the configuration normally. Keep the configuration itself on the server.
+
+Data passed from MDX to a Client Component must be serializable across React's server/client boundary. The complete scope is not automatically sent to the browser, but values rendered into HTML or passed to Client Components are visible to readers.
+
+The configuration and MDX are executable code from your repository. Use trusted sources and keep secrets out of rendered content. Register components and data once in the configuration; this feature does not enable general `import` statements inside MDX pages.
+
+## Styles and HTML fragments
+
+On the website, components can import their CSS, or the configuration can import a stylesheet. CSS Modules are also supported by Next.
+
+The engine does not automatically scan external component files for Tailwind classes. Use explicit CSS for those components, or include them in the sources of your own Tailwind stylesheet. For example, in a Tailwind stylesheet beside `docs-components/`, add:
+
+```css
+@source './docs-components/**/*.{ts,tsx,js,jsx}';
+```
+
+The declaration belongs to the stylesheet that generates those utilities. Import that stylesheet from the configuration so the website build processes it.
+
+The same configuration works for CLI fragments, including a single file or stdin:
+
+```sh
+npx @pmndrs/docs build docs/spacing.mdx
+cat docs/spacing.mdx | npx @pmndrs/docs build
+```
+
+Fragments contain server-rendered HTML only. They have no hydration, scripts, or stylesheets, so interactive components show their initial server-rendered state. Their modules must be usable during server rendering; browser-only APIs cannot run at module initialization or during render.

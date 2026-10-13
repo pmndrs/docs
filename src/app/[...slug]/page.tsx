@@ -1,7 +1,7 @@
 import { CopyPage } from '@/components/CopyPage'
 import { cn } from '@/lib/utils'
 import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
-import { getData, getDocs } from '@/utils/docs'
+import { getData, getSiteDocs } from '@/utils/site-docs'
 import { withoutTrailingSlash } from '@/utils/version'
 
 export type Props = {
@@ -114,7 +114,7 @@ export async function generateStaticParams() {
     return []
   }
 
-  const docs = await getDocs(MDX, null, true)
+  const docs = await getSiteDocs(MDX, null, true)
   const paths = docs.map(({ slug }) => ({ slug }))
   // console.log('paths', paths)
   return paths

@@ -54,7 +54,7 @@ import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
 import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import type { ComponentType } from 'react'
+import type { DocsConfig } from '@/docs.config'
 import { dirname } from 'node:path'
 import rehypePrismPlus from 'rehype-prism-plus'
 import remarkGFM from 'remark-gfm'
@@ -80,13 +80,16 @@ export type CompileMdxContentOptions = {
   /** All doc entries, for the `Entries` component */
   entries: Entry[]
   /** Components overriding the defaults, e.g. a visible `h1` outside the website */
-  components?: Record<string, ComponentType<any>>
+  components?: DocsConfig['components']
+  /** Named values available to expressions in the MDX source. */
+  scope?: DocsConfig['scope']
 }
 
 /**
  * Compiles MDX content with full options (2nd pass).
  *
- * @returns Compiled MDX result with content JSX
+ * @param source - The MDX source content to compile
+ * @param options - Document context and consumer extensions
  */
 export async function compileMdxContent(source: string, options: CompileMdxContentOptions) {
   const {
@@ -98,6 +101,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
     tableOfContents,
     entries,
     components,
+    scope,
   } = options
 
   return await compileMDX({
@@ -105,6 +109,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
     options: {
       // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
       blockJS: false,
+      scope,
       mdxOptions: {
         remarkPlugins: [remarkGFM],
         rehypePlugins: [

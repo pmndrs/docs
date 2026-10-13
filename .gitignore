@@ -45,3 +45,6 @@ src/stories
 
 # the CLI's scratch copy of the app, removed after a build unless one crashes
 .pmndrs-docs/
+
+# Temporary consumer config modules for fragment rendering
+.pmndrs-docs-config-*/

@@ -1,4 +1,5 @@
 import type { DocToC } from '@/app/[...slug]/DocsContext'
+import type { DocsConfig } from '@/docs.config'
 import type { SeedPreset } from '@/components/mdx/ThemeSeeds'
 import { ThemeSeedsTable } from '@/components/mdx/ThemeSeedsTable'
 import { compileMdxContent } from '@/utils/compileMdxContent'
@@ -53,14 +54,21 @@ export async function renderToHtml(element: ReactNode): Promise<string> {
  * Compiles one MDX source to an HTML fragment — the document body alone, with no layout.
  *
  * @param source - MDX source, frontmatter included
- * @param absoluteFilePath - Path the source was read from. Relative references in the MDX
- *   (`Sandpack folder=`, images) resolve against its directory, so pass a path inside the
- *   folder the caller means, even when the source came from stdin.
- * @param baseUrl - Base URL for resolving MDX URLs, as `MDX_BASEURL` does on the website
  */
 export async function renderFragment(
   source: string,
-  { absoluteFilePath, baseUrl }: { absoluteFilePath: string; baseUrl?: string },
+  {
+    absoluteFilePath,
+    baseUrl,
+    config = {},
+  }: {
+    /** Path used to resolve relative references, including for source read from stdin. */
+    absoluteFilePath: string
+    /** Base URL for MDX URLs, as `MDX_BASEURL` does on the website. */
+    baseUrl?: string
+    /** Consumer components and data available in the MDX source. */
+    config?: DocsConfig
+  },
 ): Promise<string> {
   const { content, data: frontmatter } = matter(source)
   const title: string = frontmatter.title?.trim() ?? ''
@@ -74,7 +82,8 @@ export async function renderFragment(
     url: '',
     tableOfContents,
     entries: [],
-    components: fragmentComponents,
+    components: { ...fragmentComponents, ...config.components },
+    scope: config.scope,
   })
 
   return renderToHtml(compiled.content)

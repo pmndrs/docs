@@ -39,13 +39,17 @@ $ npx @pmndrs/docs@latest build docs out                    # one .html per .mdx
 $ npx @pmndrs/docs@latest build docs out --format website   # the whole website, statically exported
 ```
 
-`--format fragment` (the default) needs nothing but node — no `next build`, no bundler. A
-fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
+`--format fragment` (the default) runs in Node without a Next build. A fragment is the
+compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
 diagrams stay fenced blocks, and Sandpack shows its code without the editor.
 
 `build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
 one falls back to the environment variable it maps to, the same ones
 [configuration](docs/getting-started/introduction.mdx#Configuration) documents.
+
+To use your repository's React components and shared data in MDX, add `docs.config.ts`.
+See [custom components and data](docs/authoring/custom-components.mdx) for the configuration,
+website rendering, and HTML fragment behavior.
 
 <details>
 <summary>Preview a folder of MDX, served</summary>
@@ -77,7 +81,8 @@ TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavio
 Visual tests are performed in the cloud, through [chromatic-playwright.yml](.github/workflows/chromatic-playwright.yml) and [chromatic-storybook.yml](.github/workflows/chromatic-storybook.yml).
 
 - `pnpm run lgtm` — fast gate: types, lint, registry validation, unit tests.
-- `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright.
+- `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright + the consumer configuration integration test.
+- `pnpm run test:consumer-config` — build and preview a separate consumer repository with real server/client components and shared JSON.
 
 Screenshots Playwright writes locally are throwaway — Chromatic holds the baselines.
 
