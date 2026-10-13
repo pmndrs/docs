@@ -55,26 +55,12 @@ result:
 
 Click the counter to increment it.
 
-## Configuration and rendering
+## Rendering
 
-### Configuration
+Registered components override built-in components with the same name. Keep the configuration on the server. Add `'use client'` to interactive component modules and pass serializable props.
 
-The CLI looks for `docs.config.ts` in the current working directory. To use another file, pass `--config`:
+Website builds support CSS imports. For Tailwind classes in external components, include their files in your own Tailwind stylesheet's sources and import that stylesheet from the configuration.
 
-```sh
-npx @pmndrs/docs build docs out --format website --config config/docs.config.ts
-```
+HTML fragments render only the initial state, without hydration or stylesheets: the counter above displays its starting value but does not respond to clicks.
 
-You can also set `DOCS_CONFIG`. The flag takes precedence over the environment variable. Relative paths resolve from the current working directory. Both `components` and `scope` are optional. A custom component with the same name as a built-in component replaces it.
-
-### Interactive components
-
-Add `'use client'` to component modules that use state, effects, or event handlers. Props passed from MDX must be serializable, such as strings, numbers, arrays, or plain objects.
-
-Keep `docs.config.ts` on the server; it does not need `'use client'`. Install packages imported by your components in your repository, including when building in CI; see the [reusable workflow limitations](/github-actions/introduction#custom-components-and-data).
-
-### Styles and HTML fragments
-
-Website builds support CSS imports in your components or configuration. For Tailwind classes in external component files, add those files to the sources of your own Tailwind stylesheet and import it from the configuration.
-
-HTML fragments contain only the initial rendered HTML, without hydration or stylesheets. For example, the counter above renders its starting value but does not respond to clicks in a fragment.
+See [Configuration](/getting-started/introduction#configuration) for config paths and CLI options, and [GitHub Actions](/github-actions/introduction#custom-components-and-data) for CI setup.
