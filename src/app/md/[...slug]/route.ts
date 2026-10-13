@@ -1,7 +1,8 @@
 import { parseDocsMetadata } from '@/utils/docs'
+import { getSiteMarkdown } from '@/utils/site-markdown'
 
 //
-// Each page as raw markdown, published at the page's URL plus `.md` (`/<path>.md`) -- what the
+// Each page as resolved Markdown, published at the page's URL plus `.md` (`/<path>.md`) -- what the
 // "Copy Page" and "View as Markdown" actions of a page header read.
 //
 // A route handler cannot sit next to `[...slug]/page.tsx`, hence its own `/md` prefix -- an
@@ -50,10 +51,7 @@ export async function GET(_request: Request, { params }: { params: Promise<Param
   const doc = docs.find((doc) => doc.url === url)
   if (!doc) return new Response('Not Found', { status: 404 })
 
-  const markdown = `# ${doc.title}
-
-${doc.description ? `${doc.description}\n\n` : ''}${doc.content.trim()}
-`
+  const markdown = await getSiteMarkdown(doc, docs, MDX)
 
   return new Response(markdown, {
     headers: {
