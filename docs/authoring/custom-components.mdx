@@ -55,6 +55,26 @@ result:
 
 Click the counter to increment it.
 
-- The CLI finds `docs.config.ts` in the current working directory. Use `--config path/to/config.ts` or `DOCS_CONFIG` for another path. Both `components` and `scope` are optional.
-- Add `'use client'` to interactive component modules and pass serializable props. Keep the configuration on the server. Install any imported packages in your repository, including in CI.
-- Website builds support CSS imports; include external component files in your Tailwind sources if needed. HTML fragments only render the initial HTML, without hydration or stylesheets.
+## Configuration and rendering
+
+### Configuration
+
+The CLI looks for `docs.config.ts` in the current working directory. To use another file, pass `--config`:
+
+```sh
+npx @pmndrs/docs build docs out --format website --config config/docs.config.ts
+```
+
+You can also set `DOCS_CONFIG`. Relative paths resolve from the current working directory. Both `components` and `scope` are optional. A custom component with the same name as a built-in component replaces it.
+
+### Interactive components
+
+Add `'use client'` to component modules that use state, effects, or event handlers. Props passed from MDX must be serializable, such as strings, numbers, arrays, or plain objects.
+
+Keep `docs.config.ts` on the server; it does not need `'use client'`. Install packages imported by your components in your repository, including when building in CI.
+
+### Styles and HTML fragments
+
+Website builds support CSS imports in your components or configuration. For Tailwind classes in external component files, add those files to the sources of your own Tailwind stylesheet and import it from the configuration.
+
+HTML fragments contain only the initial rendered HTML, without hydration or stylesheets. For example, the counter above renders its starting value but does not respond to clicks in a fragment.
