@@ -51,6 +51,30 @@ for (const pagePath of pages) {
 test.describe('custom components', () => {
   test.use({ disableAutoSnapshot: true })
 
+  test('Copy Page and View as Markdown use the resolved document export', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto('/authoring/custom-components')
+    const response = await page.request.get('/authoring/custom-components.md')
+    expect(response.ok()).toBe(true)
+    const markdown = await response.text()
+    expect(markdown).toContain('Count: 3')
+    expect(markdown).toMatch(/\| compact\s*\| 4\s*\|/)
+    expect(markdown).toMatch(/\| comfortable\s*\| 12\s*\|/)
+
+    await page.getByRole('button', { name: 'Copy Page', exact: true }).click()
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(markdown)
+    await page.getByRole('button', { name: 'More page actions', exact: true }).click()
+    await expect(page.getByRole('menuitem', { name: 'View as Markdown' })).toHaveAttribute(
+      'href',
+      '/authoring/custom-components.md',
+    )
+    const full = await (await page.request.get('/llms-full.txt')).text()
+    expect(full).toContain(markdown.trim())
+  })
+
   test('the documentation renders async data and hydrates its configured client component', async ({
     page,
   }) => {

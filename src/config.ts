@@ -91,6 +91,10 @@ const docsConfigSchema = z.object({
     .record(z.string(), component)
     .optional()
     .describe('React components added to, or overriding, the built-in MDX components.'),
+  markdownComponents: z
+    .record(z.string(), component)
+    .optional()
+    .describe('Server-renderable alternatives used only in Markdown exports.'),
   scope: z
     .preprocess(
       (value, context) => {

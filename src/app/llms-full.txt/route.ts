@@ -1,14 +1,8 @@
 import { parseDocsMetadata } from '@/utils/docs'
+import { getSiteMarkdown } from '@/utils/site-markdown'
 import { fragment } from 'xmlbuilder2'
 
 export const dynamic = 'force-static'
-
-/**
- * Basic cleanup of markdown content
- */
-function cleanMarkdown(content: string): string {
-  return content.replace(/]]>/g, ']] >') // Escape CDATA end sequence to prevent breaking XML
-}
 
 export async function GET() {
   const { MDX, NEXT_PUBLIC_LIBNAME, NEXT_PUBLIC_URL } = process.env
@@ -27,24 +21,25 @@ Full documentation content.
 `
 
   // Build XML for each page using fragment mode for efficiency
-  const pages = docs.map((doc) => {
-    const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
-    const pageContent = `URL: ${url}
+  const pages = await Promise.all(
+    docs.map(async (doc) => {
+      const url = baseUrl ? `${baseUrl}${doc.url}` : doc.url
+      const pageContent = `URL: ${url}
 ${doc.description ? `Description: ${doc.description}\n` : ''}
-${cleanMarkdown(doc.content)}`
+${await getSiteMarkdown(doc, docs, MDX)}`
 
-    // Create XML fragment for efficient generation
-    const page = fragment()
-      .ele('page', {
-        path: doc.url,
-        title: doc.title,
+      // Create XML fragment for efficient generation
+      const page = fragment().ele('page', { path: doc.url, title: doc.title })
+      // Split CDATA boundaries without changing literal code in the document.
+      const sections = pageContent.split(']]>')
+      sections.forEach((section, index) => {
+        page.dat(`${index > 0 ? '>' : ''}${section}${index < sections.length - 1 ? ']]' : ''}`)
       })
-      .dat(pageContent) // Use .dat() instead of .txt() to avoid HTML entity escaping
-      .up()
 
-    // Return the XML string
-    return page.end({ headless: true })
-  })
+      // Return the XML string
+      return page.end({ headless: true })
+    }),
+  )
 
   const fullContent = header + pages.join('\n') + '\n'
 

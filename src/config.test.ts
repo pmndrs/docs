@@ -14,9 +14,10 @@ test('accepts plain, async and wrapped React components with shared structured d
     }),
   }
   const data = { spacing: [0, 4, 8] }
-  const config = validateDocsConfig({ components, scope: { data } })
+  const config = validateDocsConfig({ components, markdownComponents: components, scope: { data } })
   expect(config.components?.Plain).toBe(components.Plain)
   expect(config.components?.Memo).toBe(components.Memo)
+  expect(config.markdownComponents?.Async).toBe(components.Async)
   expect(config.scope?.data).toBe(data)
 })
 
@@ -27,12 +28,15 @@ test.each(['bad-key', '1data', 'opts', 'frontmatter', '_jsxDEV', 'MDXContent', '
   },
 )
 
-test.each([null, [], { components: { Invalid: 42 } }, { scope: [] }])(
-  'rejects malformed consumer configuration %j',
-  (value) => {
-    expect(() => validateDocsConfig(value)).toThrow()
-  },
-)
+test.each([
+  null,
+  [],
+  { components: { Invalid: 42 } },
+  { markdownComponents: { Invalid: 42 } },
+  { scope: [] },
+])('rejects malformed consumer configuration %j', (value) => {
+  expect(() => validateDocsConfig(value)).toThrow()
+})
 
 test('rejects an own __proto__ scope key instead of silently dropping its value', () => {
   expect(() =>

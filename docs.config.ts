@@ -7,4 +7,7 @@ import type { DocsConfig } from './src/config'
 export default {
   components: { Example, ExampleTable },
   scope: { example },
+  markdownComponents: {
+    Example: ({ initialCount }: { initialCount: number }) => `Count: ${initialCount}`,
+  },
 } satisfies DocsConfig
