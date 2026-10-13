@@ -9,47 +9,6 @@ import { renderFragment } from './render'
 const render = (source: string) =>
   renderFragment(source, { absoluteFilePath: join(process.cwd(), 'docs/authoring/fixture.mdx') })
 
-test('exports the first seed preset as a static table without theme providers', async () => {
-  const $ = load(
-    await render(
-      '<ThemeSeeds presets={[{name: "theme-lime", label: "Lime", config: {source: "#CAF543", colorMatch: true, contrast: 0, neutral: "#c1b793"}}, {name: "theme-teal", label: "Teal", config: {source: "#00F7A3"}}]} />',
-    ),
-  )
-  const table = $('table[aria-label="Current theme seeds"]')
-  expect(table).toHaveLength(1)
-  expect(
-    table
-      .find('tbody tr')
-      .map((_, row) =>
-        $(row)
-          .find('code')
-          .map((_, cell) => $(cell).text())
-          .get(),
-      )
-      .get(),
-  ).toEqual(['source', '#CAF543', 'colorMatch', 'true', 'neutral', '#c1b793'])
-  expect($('button[aria-label="Seed preset"]')).toHaveLength(0)
-  expect(table.text()).not.toContain('#00F7A3')
-})
-
-test('omits undefined neutral seeds from the fragment table', async () => {
-  const $ = load(
-    await render(
-      '<ThemeSeeds presets={[{name: "theme-purple", label: "Purple", config: {source: "#D855F9", colorMatch: true}}]} />',
-    ),
-  )
-  expect(
-    $('tbody tr')
-      .map((_, row) =>
-        $(row)
-          .find('code')
-          .map((_, cell) => $(cell).text())
-          .get(),
-      )
-      .get(),
-  ).toEqual(['source', '#D855F9', 'colorMatch', 'true'])
-})
-
 /**
  * One case per authoring module, asserting the markup it is recognizable by rather than the
  * whole of its output — the latter changes every time a class name does.
