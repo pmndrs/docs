@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.25.0
+
+### Minor Changes
+
+- [#713](https://github.com/pmndrs/docs/pull/713) [`2c0c320`](https://github.com/pmndrs/docs/commit/2c0c320acd00341cbcfc5e50f644e09b96061258) Thanks [@abernier](https://github.com/abernier)! - Add consumer configuration for local React components and shared MDX data. Register components and scope in `docs.config.ts`, or select a configuration with `--config` or `DOCS_CONFIG`, for website builds and HTML fragments. Website builds preserve Next's server and client component boundaries without rewriting MDX sources.
+
+  Require Node.js 22.18+ on the 22.x line, or 23.6+ on newer lines, so the Next configuration and shared configuration resolver can use native TypeScript.
+
+### Patch Changes
+
+- [#707](https://github.com/pmndrs/docs/pull/707) [`db4bed9`](https://github.com/pmndrs/docs/commit/db4bed96590b2a2f59635349d88c7f1b62435f21) Thanks [@abernier](https://github.com/abernier)! - Refresh dependencies and adapt image metadata handling, CLI rendering, and the MCP server for image-size 2, Ink 8, and MCP server 2. Align the declared Node.js requirement with the runtime dependencies.
+
 ## 4.24.0
 
 ### Minor Changes
