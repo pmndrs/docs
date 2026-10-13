@@ -1,5 +1,5 @@
 ---
-'@pmndrs/docs': major
+'@pmndrs/docs': patch
 ---
 
 Remove the built-in `ThemeSeeds` component and its static fragment renderer. The component now belongs to the design-system documentation and must be registered through consumer configuration when needed.
