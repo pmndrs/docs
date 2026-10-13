@@ -45,9 +45,9 @@ diagrams stay fenced blocks, and Sandpack shows its code without the editor.
 
 `build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
 one falls back to the environment variable it maps to, the same ones
-[configuration](docs/getting-started/introduction.mdx#Configuration) documents.
+[configuration](docs/getting-started/introduction.mdx#configuration) documents.
 
-To use your repository's React components and shared data in MDX, add `docs.config.ts`.
+To use your repository's React components and shared data in MDX, add `docs.config.ts` in the current working directory. Use `--config path/to/config.ts` or `DOCS_CONFIG` for another location; the flag takes precedence.
 See [custom components and data](docs/authoring/custom-components.mdx) for the configuration,
 website rendering, and HTML fragment behavior.
 
@@ -63,7 +63,7 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 
 Builds the website, then serves it — alongside the MDX folder itself, so relative assets
 resolve while you edit. Any option from
-[configuration](docs/getting-started/introduction.mdx#Configuration) goes in the same way, and
+[configuration](docs/getting-started/introduction.mdx#configuration) goes in the same way, and
 `VERSION` picks a published version of the CLI.
 
 </details>

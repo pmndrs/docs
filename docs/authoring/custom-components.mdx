@@ -65,13 +65,13 @@ The CLI looks for `docs.config.ts` in the current working directory. To use anot
 npx @pmndrs/docs build docs out --format website --config config/docs.config.ts
 ```
 
-You can also set `DOCS_CONFIG`. Relative paths resolve from the current working directory. Both `components` and `scope` are optional. A custom component with the same name as a built-in component replaces it.
+You can also set `DOCS_CONFIG`. The flag takes precedence over the environment variable. Relative paths resolve from the current working directory. Both `components` and `scope` are optional. A custom component with the same name as a built-in component replaces it.
 
 ### Interactive components
 
 Add `'use client'` to component modules that use state, effects, or event handlers. Props passed from MDX must be serializable, such as strings, numbers, arrays, or plain objects.
 
-Keep `docs.config.ts` on the server; it does not need `'use client'`. Install packages imported by your components in your repository, including when building in CI.
+Keep `docs.config.ts` on the server; it does not need `'use client'`. Install packages imported by your components in your repository, including when building in CI; see the [reusable workflow limitations](/github-actions/introduction#custom-components-and-data).
 
 ### Styles and HTML fragments
 

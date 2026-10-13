@@ -10,7 +10,7 @@ nav: 0
 <Badge href="https://www.chromatic.com/library?appId=696fd126f0e504f96615dec9&branch=main" logo="chromatic" label="chromatic">playwright</Badge>
 
 <Intro>
-  A static MDX documentation generator, with a GitHub [reusable workflow](./github-actions.mdx). It is primarily used for some `pmndrs/*` projects, but will work for anyone.
+  A static MDX documentation generator, with a GitHub [reusable workflow](/github-actions/introduction). It is primarily used for some `pmndrs/*` projects, but will work for anyone.
 </Intro>
 
 ![Gutenberg lithography](gutenberg.jpg)
@@ -51,13 +51,16 @@ nav: 0
 
 ## Configuration
 
+Environment variables configure the website. For MDX extensions, add `docs.config.ts` in the current working directory: `components` registers React components and `scope` exposes named data. Both fields are optional. See [Custom components and data](/authoring/custom-components) for the typed configuration and a live example.
+
 > [!IMPORTANT]
 >
-> Default value is always: `""` (think *empty*).
+> Variables default to `""` (empty) unless a fallback is documented below.
 
 | var                                   | description                                                                                                                                                              | example                                                                                          |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | `MDX`\*                               | Path to `*.mdx` folder<br/>NB: can be relative or absolute                                                                                                               | `docs` or `~/code/myproject/documentation`                                                       |
+| `DOCS_CONFIG` | Path to the component and data configuration, relative to the current working directory or absolute. Unset: look for `docs.config.ts` there; no file keeps the built-in renderer. CLI: `--config` overrides this variable. | `config/docs.config.ts` |
 | `NEXT_PUBLIC_LIBNAME`\*               | Library name                                                                                                                                                             | `React Three Fiber`                                                                              |
 | `NEXT_PUBLIC_LIBNAME_SHORT`           | Library short name                                                                                                                                                       | `r3f`                                                                                            |
 | `BASE_PATH`                           | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                             |
@@ -217,6 +220,12 @@ $ (
 
 Then go to: http://localhost:3000
 
+When running the engine against another repository, set both `MDX` and `DOCS_CONFIG`; the configuration is discovered from the working directory, not the MDX folder:
+
+```sh
+MDX=/path/to/library/docs DOCS_CONFIG=/path/to/library/docs.config.ts pnpm dev
+```
+
 > [!TIP]
 > If `HOME_REDIRECT=` empty, `/` will not redirect, and instead displays an index of libraries.
 
@@ -265,7 +274,7 @@ http://localhost:3000
 
 ### CLI
 
-No clone, no install — the published CLI does the same build:
+The published CLI builds without cloning the engine. If your custom components import packages, install those dependencies in your repository first:
 
 ```sh
 $ cd ~/code/pmndrs/react-three-fiber
@@ -295,7 +304,7 @@ $ (
 
 Then go to: http://localhost:3000
 
-Every option above has a flag too — `npx @pmndrs/docs@latest build --help` lists them.
+`npx @pmndrs/docs@latest build --help` lists the CLI flags, including `--config` for a configuration outside the repository root.
 
 ## Agents
 
