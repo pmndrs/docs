@@ -1,7 +1,5 @@
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import type { DocsConfig } from '@/config'
-import type { SeedPreset } from '@/components/mdx/ThemeSeeds'
-import { ThemeSeedsTable } from '@/components/mdx/ThemeSeedsTable'
 import { compileMdxContent } from '@/utils/compileMdxContent'
 import matter from 'gray-matter'
 import type { ComponentProps, ReactNode } from 'react'
@@ -12,9 +10,6 @@ import { renderToReadableStream } from 'react-dom/server'
  * its `h1` renders nothing. A fragment has no layout, so it must keep the title it is given.
  */
 export const fragmentComponents = {
-  /** A standalone fragment has no theme provider or controls: show the first preset's seeds. */
-  ThemeSeeds: ({ presets }: { presets: SeedPreset[] }) =>
-    presets[0] ? <ThemeSeedsTable config={presets[0].config} /> : null,
   h1: (props: ComponentProps<'h1'>) => (
     <h1 className="mb-2 text-5xl font-bold tracking-tighter" {...props} />
   ),

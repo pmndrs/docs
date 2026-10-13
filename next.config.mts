@@ -109,6 +109,11 @@ const nextConfig = {
   rewrites: output === 'export' ? undefined : rewrites,
   async redirects() {
     return [
+      {
+        source: '/authoring/theme-seeds',
+        destination: 'https://pmndrs.github.io/design-system/tokens/colors#seeds',
+        permanent: true,
+      },
       // Where the markdown of a page was first published. Redirects only apply to the request
       // as it comes in, never to the destination of a rewrite, so this does not loop with the
       // rewrite above, which still serves the markdown from `/md`.
