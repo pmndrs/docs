@@ -48,6 +48,20 @@ for (const pagePath of pages) {
   })
 }
 
+test.describe('custom components', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('the documentation renders and hydrates its own configured component and data', async ({
+    page,
+  }) => {
+    await page.goto('/authoring/custom-components')
+    const example = page.getByTestId('custom-component-example')
+    await expect(example).toHaveAttribute('data-count', '3')
+    await example.click()
+    await expect(example).toHaveAttribute('data-count', '4')
+  })
+})
+
 //
 // Links: underlined in the prose, not told apart by colour alone (WCAG 1.4.1) — a palette can bring
 // `primary` within a hair of the body text. The headings' self-links are not
