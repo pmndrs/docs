@@ -27,7 +27,13 @@ export function Example({ initialCount }: { initialCount: number }) {
 ```
 
 ```json title="docs/authoring/Example.json"
-{ "initialCount": 3 }
+{
+  "initialCount": 3,
+  "spacing": [
+    { "name": "compact", "value": 4 },
+    { "name": "comfortable", "value": 12 }
+  ]
+}
 ```
 
 Register them in `docs.config.ts` at your repository root:
@@ -54,6 +60,47 @@ result:
 <Example initialCount={example.initialCount} />
 
 Click the counter to increment it.
+
+<details>
+<summary>Server components</summary>
+
+Components can also load data asynchronously on the server, without `'use client'`:
+
+```tsx title="docs/authoring/Example.server.tsx"
+export async function ExampleTable() {
+  const { default: example } = await import('./Example.json')
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Spacing</th>
+          <th>Pixels</th>
+        </tr>
+      </thead>
+      <tbody>
+        {example.spacing.map(({ name, value }) => (
+          <tr key={name}>
+            <th scope="row">{name}</th>
+            <td>{value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+```
+
+Import `ExampleTable` into `docs.config.ts` and add it to `components`, then use it in MDX:
+
+```md
+<ExampleTable />
+```
+
+result:
+
+<ExampleTable />
+
+</details>
 
 ## Rendering
 

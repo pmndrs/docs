@@ -51,7 +51,7 @@ for (const pagePath of pages) {
 test.describe('custom components', () => {
   test.use({ disableAutoSnapshot: true })
 
-  test('the documentation renders and hydrates its own configured component and data', async ({
+  test('the documentation renders async data and hydrates its configured client component', async ({
     page,
   }) => {
     await page.goto('/authoring/custom-components')
@@ -59,6 +59,16 @@ test.describe('custom components', () => {
     await expect(example).toHaveAttribute('data-count', '3')
     await example.click()
     await expect(example).toHaveAttribute('data-count', '4')
+
+    const serverExample = page.locator('details').filter({
+      has: page.getByTestId('custom-component-table'),
+    })
+    await serverExample.locator('summary').click()
+    const table = page.getByTestId('custom-component-table')
+    await expect(table).toBeVisible()
+    await expect(table.locator('tbody tr')).toHaveCount(2)
+    await expect(table.locator('[data-token="compact"]')).toHaveAttribute('data-value', '4')
+    await expect(table.locator('[data-token="comfortable"]')).toHaveAttribute('data-value', '12')
   })
 })
 

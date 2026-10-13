@@ -4,10 +4,10 @@ import { dirname, isAbsolute, relative, resolve, sep } from 'node:path'
 /**
  * Finds the consumer module without evaluating it. Explicit paths must exist; an absent
  * conventional config keeps the built-in renderer. Paths are relative to the caller's cwd.
- * @param {string} cwd - Consumer working directory
- * @param {string | undefined} explicit - Path supplied with --config or DOCS_CONFIG
+ * @param cwd - Consumer working directory
+ * @param explicit - Path supplied with --config or DOCS_CONFIG
  */
-export function resolveDocsConfig(cwd, explicit) {
+export function resolveDocsConfig(cwd: string, explicit?: string) {
   if (explicit) {
     const path = resolve(cwd, explicit)
     if (!existsSync(path)) throw new Error(`Docs config not found: ${path}`)
@@ -19,10 +19,10 @@ export function resolveDocsConfig(cwd, explicit) {
 
 /**
  * Keeps the app and consumer modules inside Turbopack's filesystem root.
- * @param {string} appDir - Directory containing the Next application
- * @param {string} configDir - Directory containing the consumer module
+ * @param appDir - Directory containing the Next application
+ * @param configDir - Directory containing the consumer module
  */
-export function commonRoot(appDir, configDir) {
+export function commonRoot(appDir: string, configDir: string) {
   let root = resolve(appDir)
   const target = resolve(configDir)
   while (true) {

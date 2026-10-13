@@ -1,5 +1,5 @@
 import type { DocsConfig } from '../config'
-import { resolveDocsConfig } from '../config.resolve.js'
+import { resolveDocsConfig } from '../config.resolve'
 import { loadDocsConfig } from '../config.load'
 import { version } from '@/package.json'
 import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
@@ -232,7 +232,7 @@ async function run(input: string | undefined, output: string | undefined, opts: 
 
   // Git is asked here, in the library's checkout, and not by the build: that runs in a copy of
   // this package, where git would describe the wrong repository, or none at all. Every variable
-  // is set, even empty, which is what tells `next.config.mjs` not to resolve them again.
+  // is set, even empty, which is what tells `next.config.mts` not to resolve them again.
   // Handed the whole environment, not only the options: git reads the CI's own variables
   // (`GITHUB_*`, `VERCEL_GIT_COMMIT_REF`) to tell which branch and commit this is.
   const versionEnv = resolveVersionEnv(

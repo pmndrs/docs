@@ -102,16 +102,15 @@
     "changeset": "changeset",
     "test": "vitest run && playwright test",
     "lgtm": "tsc --noEmit && pnpm run lint && pnpm run check-registry && vitest run",
-    "LGTM": "pnpm run lgtm && playwright test && pnpm run test:consumer-config",
+    "LGTM": "pnpm run lgtm && playwright test",
     "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build:cli": "node scripts/build-cli.mjs",
-    "prepack": "node scripts/build-cli.mjs",
-    "test:consumer-config": "node scripts/test-consumer-config.mjs"
+    "prepack": "node scripts/build-cli.mjs"
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": "^22.18.0 || >=23.6.0"
   },
   "packageManager": "pnpm@10.28.1",
   "description": "Generate pmndrs-standardized documentation — HTML fragments, or the whole website — from a folder of MDX.",
@@ -134,7 +133,7 @@
     "public",
     "registry",
     "src",
-    "next.config.mjs",
+    "next.config.mts",
     "next-env.d.ts",
     "postcss.config.mjs",
     "tsconfig.json",

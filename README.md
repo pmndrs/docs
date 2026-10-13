@@ -81,8 +81,10 @@ TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavio
 Visual tests are performed in the cloud, through [chromatic-playwright.yml](.github/workflows/chromatic-playwright.yml) and [chromatic-storybook.yml](.github/workflows/chromatic-storybook.yml).
 
 - `pnpm run lgtm` — fast gate: types, lint, registry validation, unit tests.
-- `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright + the consumer configuration integration test.
-- `pnpm run test:consumer-config` — build and preview a separate consumer repository with real server/client components and shared JSON.
+- `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright.
+
+Playwright checks that the [custom components example](docs/authoring/custom-components.mdx)
+renders the configured data and responds to interaction.
 
 Screenshots Playwright writes locally are throwaway — Chromatic holds the baselines.
 

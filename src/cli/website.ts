@@ -1,4 +1,4 @@
-import { resolveDocsConfig } from '../config.resolve.js'
+import { resolveDocsConfig } from '../config.resolve'
 import { existsSync } from 'node:fs'
 import { cp, mkdir, rm } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -10,7 +10,7 @@ import { dirname, join, resolve } from 'node:path'
  */
 const APP_FILES = [
   'package.json',
-  'next.config.mjs',
+  'next.config.mts',
   'next-env.d.ts',
   'postcss.config.mjs',
   'tsconfig.json',
