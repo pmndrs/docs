@@ -1,11 +1,12 @@
 import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
+import type { DocsConfig } from '@/config'
 import { rehypeCodesandbox, type Box } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { compileMdxContent, compileMdxFrontmatter } from '@/utils/compileMdxContent'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import fs from 'node:fs'
-import { cache, type ComponentType } from 'react'
+import { cache } from 'react'
 
 /**
  * Checks for .md(x) file extension
@@ -81,8 +82,7 @@ async function _getDocs(
   root: string,
   slugOfInterest: string[] | null,
   slugOnly = false,
-  /** Components overriding the defaults, for consumers rendering docs outside the website */
-  components?: Record<string, ComponentType<any>>,
+  config: DocsConfig = {},
 ): Promise<Doc[]> {
   // Read at call time, not at module scope: consumers embedding this (the CLI) set their
   // environment after the module is loaded.
@@ -116,6 +116,7 @@ async function _getDocs(
         options: {
           // Trusted docs from the consuming repo: keep `{...}` expressions next-mdx-remote 6 strips by default (blockDangerousJS stays on)
           blockJS: false,
+          scope: config.scope,
           mdxOptions: {
             rehypePlugins: [
               rehypeCodesandbox(relFilePath, MDX_BASEURL, boxes), // 1. put all Codesandbox[id][img] into `boxes`
@@ -230,7 +231,8 @@ async function _getDocs(
           url,
           tableOfContents,
           entries,
-          components,
+          components: config.components,
+          scope: config.scope,
         })
         const contentJsx = compiledContent.content
 
@@ -263,26 +265,3 @@ async function _getDocs(
 export const getDocs = cache(_getDocs)
 
 // export const getDocs = cache(_getDocs)
-
-async function _getData(...slug: string[]) {
-  // console.log('getData', slug)
-
-  const { MDX } = process.env
-  if (!MDX) throw new Error('MDX env var not set')
-
-  const docs = await getDocs(MDX, slug)
-  // console.log('allDocs', docs)
-
-  const url = `/${slug.join('/')}`.toLowerCase()
-  // console.log('url', url)
-  const doc = docs.find((doc) => doc.url === url)
-  // console.log('doc', doc)
-
-  if (!doc) throw new Error(`Doc not found: ${url}`)
-
-  return {
-    docs,
-    doc,
-  }
-}
-export const getData = cache(_getData)

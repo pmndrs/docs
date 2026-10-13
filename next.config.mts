@@ -1,5 +1,8 @@
-import { dirname } from 'node:path'
+import type { NextConfig } from 'next'
+import { dirname, relative } from 'node:path'
+import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
+import { commonRoot, resolveDocsConfig } from './src/config.resolve.ts'
 
 import { VERSION_ENV_KEYS } from './src/cli/version-env-keys.js'
 
@@ -15,11 +18,10 @@ import { VERSION_ENV_KEYS } from './src/cli/version-env-keys.js'
  * Written to `process.env`, like the CLI does, rather than to `env`: one way in for both, and
  * the processes Next spawns inherit them instead of asking git again.
  *
- * Which keys are missing is decided first, from a plain `.js` list, so that a build with none
- * missing never imports TypeScript. The TypeScript is otherwise imported as is, which Node's type
- * stripping allows (Node >= 22.18, see .nvmrc). Anywhere it does not, the site simply builds
- * without a version label -- and that is the only failure swallowed here: git being unavailable
- * already degrades inside git-info, while a broken configuration (an invalid `VERSION_BRANCHES`,
+ * Only load the version helpers when a variable is missing. Node's native type stripping
+ * loads their TypeScript directly (Node >= 22.18). If a helper cannot load, the site builds
+ * without a version label. Git being unavailable already degrades inside git-info, while
+ * a broken configuration (an invalid `VERSION_BRANCHES`,
  * an unknown `{branch:<preset>}`) throws from `resolveVersionEnv` and fails the build, as it does
  * under the CLI.
  */
@@ -49,9 +51,15 @@ async function resolveVersionEnvIfAbsent() {
 }
 await resolveVersionEnvIfAbsent()
 
+const appDir = dirname(fileURLToPath(import.meta.url))
+const docsConfig = resolveDocsConfig(process.cwd(), process.env.DOCS_CONFIG)
+const configModule = docsConfig ?? `${appDir}/src/config.ts`
+const dependencyRoot = dirname(createRequire(import.meta.url).resolve('next/package.json'))
+
 const basePath = process.env.BASE_PATH || ''
 const distDir = process.env.DIST_DIR || undefined
-const output = process.env.OUTPUT || undefined
+// Next validates the environment value when it loads this configuration.
+const output = (process.env.OUTPUT || undefined) as NextConfig['output']
 
 /**
  * Each page's markdown at the page's own URL plus `.md`, e.g. `/getting-started/introduction.md`.
@@ -72,9 +80,25 @@ async function rewrites() {
   ]
 }
 
-/** @type {import('next').NextConfig} */
+/**
+ * Website configuration, including the consumer's statically imported MDX components.
+ */
 const nextConfig = {
   productionBrowserSourceMaps: true,
+  // A static import lets Next preserve each consumer component's server/client boundary.
+  turbopack: {
+    root: docsConfig
+      ? commonRoot(commonRoot(appDir, dependencyRoot), dirname(docsConfig))
+      : undefined,
+    resolveAlias: {
+      'pmndrs-docs-config': `./${relative(appDir, configModule).split('\\').join('/')}`,
+    },
+  },
+  experimental: { externalDir: Boolean(docsConfig) },
+  webpack(config) {
+    config.resolve.alias['pmndrs-docs-config'] = configModule
+    return config
+  },
   images: {
     // domains: ['codesandbox.io'],
     unoptimized: true,
@@ -172,7 +196,7 @@ const nextConfig = {
       },
     ]
   },
-}
+} satisfies NextConfig
 // console.log('nextConfig=', nextConfig)
 
 export default nextConfig

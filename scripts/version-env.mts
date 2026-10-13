@@ -4,7 +4,7 @@
 // The CLI resolves them itself, in the caller's checkout. docs.pmnd.rs is not built by the CLI but
 // by Vercel, from sources `vercel deploy` uploads without `.git` -- no tags, no remote. So CI,
 // which has the checkout, resolves them here, with the very function the CLI calls, and hands
-// them down as build env. `next.config.mjs` then finds them set and asks nothing more.
+// them down as build env. `next.config.mts` then finds them set and asks nothing more.
 //
 // Run with Node's type stripping: `node scripts/version-env.mts >> "$GITHUB_OUTPUT"`.
 // Reads the website configuration from the environment, like the CLI does: `LIB_VERSION`,

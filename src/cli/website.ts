@@ -1,6 +1,7 @@
+import { resolveDocsConfig } from '../config.resolve'
 import { existsSync } from 'node:fs'
 import { cp, mkdir, rm } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 
 /**
  * What the Next app is made of — the `files` this package publishes, minus the ones a static
@@ -9,7 +10,7 @@ import { dirname, join } from 'node:path'
  */
 const APP_FILES = [
   'package.json',
-  'next.config.mjs',
+  'next.config.mts',
   'next-env.d.ts',
   'postcss.config.mjs',
   'tsconfig.json',
@@ -68,9 +69,11 @@ export async function buildWebsite({
   packageRoot,
   outDir,
   env,
+  configPath = resolveDocsConfig(process.cwd(), env.DOCS_CONFIG ?? process.env.DOCS_CONFIG),
 }: {
   packageRoot: string
   outDir: string
+  configPath?: string
   env: Record<string, string | undefined>
 }) {
   const workDir = findWorkDir(packageRoot)
@@ -87,6 +90,8 @@ export async function buildWebsite({
     DIST_DIR: distDir,
     OUTPUT: 'export',
     NODE_ENV: 'production',
+    // Keep consumer imports at their original paths, even after the MDX folder is staged.
+    DOCS_CONFIG: configPath ? resolve(configPath) : '',
   }
   for (const [name, value] of Object.entries(env)) {
     if (value !== undefined) environment[name] ??= value

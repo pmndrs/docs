@@ -1,0 +1,113 @@
+---
+title: Custom components and data
+description: Use your React components and shared data in MDX
+sourcecode: docs/authoring/custom-components.mdx
+nav: 30
+---
+
+<Intro>
+  Make your React components and data available to every MDX page.
+</Intro>
+
+Create a component and some data:
+
+```tsx title="docs/authoring/Example.tsx"
+'use client'
+
+import { useState } from 'react'
+
+export function Example({ initialCount }: { initialCount: number }) {
+  const [count, setCount] = useState(initialCount)
+  return (
+    <button className="rounded border px-3 py-2" onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  )
+}
+```
+
+```json title="docs/authoring/Example.json"
+{
+  "initialCount": 3,
+  "spacing": [
+    { "name": "compact", "value": 4 },
+    { "name": "comfortable", "value": 12 }
+  ]
+}
+```
+
+Register them in `docs.config.ts` at your repository root:
+
+```ts title="docs.config.ts"
+import type { DocsConfig } from '@pmndrs/docs/src/config'
+import { Example } from './docs/authoring/Example'
+import example from './docs/authoring/Example.json'
+
+export default {
+  components: { Example },
+  scope: { example },
+} satisfies DocsConfig
+```
+
+Then use them directly in MDX:
+
+```md
+<Example initialCount={example.initialCount} />
+```
+
+result:
+
+<Example initialCount={example.initialCount} />
+
+Click the counter to increment it.
+
+<details>
+<summary>Server components</summary>
+
+Components can also load data asynchronously on the server, without `'use client'`:
+
+```tsx title="docs/authoring/Example.server.tsx"
+export async function ExampleTable() {
+  const { default: example } = await import('./Example.json')
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Spacing</th>
+          <th>Pixels</th>
+        </tr>
+      </thead>
+      <tbody>
+        {example.spacing.map(({ name, value }) => (
+          <tr key={name}>
+            <th scope="row">{name}</th>
+            <td>{value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+```
+
+Import `ExampleTable` into `docs.config.ts` and add it to `components`, then use it in MDX:
+
+```md
+<ExampleTable />
+```
+
+result:
+
+<ExampleTable />
+
+</details>
+
+## Rendering
+
+Registered components override built-in components with the same name. Keep the configuration on the server. Add `'use client'` to interactive component modules and pass serializable props.
+
+Website builds support CSS imports. For Tailwind classes in external components, include their files in your own Tailwind stylesheet's sources and import that stylesheet from the configuration.
+
+HTML fragments render only the initial state, without hydration or stylesheets: the counter above displays its starting value but does not respond to clicks.
+
+See [Configuration](/getting-started/introduction#configuration) for config paths and CLI options, and [GitHub Actions](/github-actions/introduction#custom-components-and-data) for CI setup.

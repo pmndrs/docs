@@ -1,0 +1,7 @@
+{
+  "initialCount": 3,
+  "spacing": [
+    { "name": "compact", "value": 4 },
+    { "name": "comfortable", "value": 12 }
+  ]
+}

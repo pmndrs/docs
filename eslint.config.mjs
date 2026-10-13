@@ -10,7 +10,7 @@ const eslintConfig = [
       'react/jsx-no-target-blank': 0,
       'import/no-anonymous-default-export': 0,
       'react-hooks/set-state-in-effect': 0,
-      // `next/image` buys nothing here: `images.unoptimized` is set in next.config.mjs,
+      // `next/image` buys nothing here: `images.unoptimized` is set in next.config.mts,
       // and the CLI renders these components outside Next, where next/image throws.
       '@next/next/no-img-element': 0,
     },

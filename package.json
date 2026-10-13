@@ -24,7 +24,6 @@
     "d3-sankey": "^0.12.3",
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
-    "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.0",
     "eslint-plugin-storybook": "^10.6.2",
@@ -63,6 +62,7 @@
     "cmdk": "^1.1.1",
     "cn": "^0.4.0",
     "commander": "^15.0.0",
+    "esbuild": "^0.28.2",
     "gray-matter": "^4.0.3",
     "image-size": "^2.0.4",
     "ink": "^8.0.0",
@@ -110,7 +110,7 @@
     "prepack": "node scripts/build-cli.mjs"
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": "^22.18.0 || >=23.6.0"
   },
   "packageManager": "pnpm@10.28.1",
   "description": "Generate pmndrs-standardized documentation — HTML fragments, or the whole website — from a folder of MDX.",
@@ -133,7 +133,7 @@
     "public",
     "registry",
     "src",
-    "next.config.mjs",
+    "next.config.mts",
     "next-env.d.ts",
     "postcss.config.mjs",
     "tsconfig.json",

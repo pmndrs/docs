@@ -568,7 +568,7 @@ Always handle errors gracefully and consider alternative approaches when a speci
 /**
  * Open to browsers from any origin. The server is public, read-only documentation and asks for
  * no credentials, so `*` gives nothing away -- and without these a browser-based MCP client is
- * refused at the preflight, with no error it can show. Set here rather than in `next.config.mjs`
+ * refused at the preflight, with no error it can show. Set here rather than in `next.config.mts`
  * `headers()`: the route's tests then see them, and the policy travels with the route instead
  * of with the server it happens to run on.
  */

@@ -39,13 +39,17 @@ $ npx @pmndrs/docs@latest build docs out                    # one .html per .mdx
 $ npx @pmndrs/docs@latest build docs out --format website   # the whole website, statically exported
 ```
 
-`--format fragment` (the default) needs nothing but node — no `next build`, no bundler. A
-fragment is the compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
+`--format fragment` (the default) runs in Node without a Next build. A fragment is the
+compiled MDX and nothing else: no layout, no stylesheet, no script. Mermaid
 diagrams stay fenced blocks, and Sandpack shows its code without the editor.
 
 `build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
 one falls back to the environment variable it maps to, the same ones
-[configuration](docs/getting-started/introduction.mdx#Configuration) documents.
+[configuration](docs/getting-started/introduction.mdx#configuration) documents.
+
+To use your repository's React components and shared data in MDX, add `docs.config.ts` in the current working directory. Use `--config path/to/config.ts` or `DOCS_CONFIG` for another location; the flag takes precedence.
+See [custom components and data](docs/authoring/custom-components.mdx) for the configuration,
+website rendering, and HTML fragment behavior.
 
 <details>
 <summary>Preview a folder of MDX, served</summary>
@@ -59,7 +63,7 @@ $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview
 
 Builds the website, then serves it — alongside the MDX folder itself, so relative assets
 resolve while you edit. Any option from
-[configuration](docs/getting-started/introduction.mdx#Configuration) goes in the same way, and
+[configuration](docs/getting-started/introduction.mdx#configuration) goes in the same way, and
 `VERSION` picks a published version of the CLI.
 
 </details>
@@ -78,6 +82,9 @@ Visual tests are performed in the cloud, through [chromatic-playwright.yml](.git
 
 - `pnpm run lgtm` — fast gate: types, lint, registry validation, unit tests.
 - `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright.
+
+Playwright checks that the [custom components example](docs/authoring/custom-components.mdx)
+renders the configured data and responds to interaction.
 
 Screenshots Playwright writes locally are throwaway — Chromatic holds the baselines.
 

@@ -11,7 +11,7 @@ nav: 15
 In your `.github/workflows` folder, create a eg. `docs.yml` file:
 
 ```yml title=".github/workflows/docs.yml"
-uses: pmndrs/docs/.github/workflows/build.yml@v3
+uses: pmndrs/docs/.github/workflows/build.yml@v4
   with:
     mdx: 'docs'
     libname: 'React Three Fiber'
@@ -26,6 +26,18 @@ uses: pmndrs/docs/.github/workflows/build.yml@v3
 With no `theme_*` input, the site gets the pmndrs palette. Each input is a `THEME_*` variable of the [configuration](/getting-started/introduction#configuration).
 
 See [`pmndrs/react-three-fiber/.github/workflows/docs.yml`](https://github.com/pmndrs/react-three-fiber/blob/master/.github/workflows/docs.yml) for an example implementation.
+
+## Custom components and data
+
+The CLI discovers `docs.config.ts` at the checked-out repository root. See [Custom components and data](/authoring/custom-components) for its `components` and `scope` fields.
+
+The reusable workflow does not install your repository's dependencies or expose a custom configuration path. If your components import packages or your configuration lives elsewhere, use your own build job: check out the repository, set up Node, install its dependencies, then run the CLI:
+
+```sh
+npx @pmndrs/docs build docs out --format website --libname 'My library' --config config/docs.config.ts
+```
+
+Set the website's [configuration](/getting-started/introduction#configuration) in that job and deploy the generated `out` folder. `--config` is optional when using the root `docs.config.ts`.
 
 ## Version switcher
 

@@ -1,12 +1,10 @@
 // What the sidebar's version switcher is told at build time, as `NEXT_PUBLIC_VERSION_*` variables.
 //
 // Resolved in exactly one place, here, and called from two: the CLI, in the library's checkout,
-// before it builds; and `next.config.mjs`, for `next dev` / `next build` run without the CLI.
+// before it builds; and `next.config.mts`, for `next dev` / `next build` run without the CLI.
 //
-// This file must stay loadable by Node's own type stripping, since `next.config.mjs` imports it
-// as is: erasable syntax only, and no runtime import of another `.ts` file (Node would need its
-// extension, which TypeScript refuses here) -- hence git, and the URL template check, being
-// handed in rather than imported. A `.js` file is fine, extension and all: the key list comes
+// This file must stay loadable by Node's own type stripping, since `next.config.mts` imports it
+// as is: erasable syntax only. Git and the URL template check are handed in by the caller. A `.js` file is fine, extension and all: the key list comes
 // from one, `./version-env-keys.js`. The app imports this file too, for
 // `DEFAULT_PRODUCTION_BRANCH`: one more reason to keep its runtime imports to that.
 

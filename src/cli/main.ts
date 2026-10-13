@@ -1,3 +1,6 @@
+import type { DocsConfig } from '../config'
+import { resolveDocsConfig } from '../config.resolve'
+import { loadDocsConfig } from '../config.load'
 import { version } from '@/package.json'
 import { MARKDOWN_REGEX, crawl, getDocs } from '@/utils/docs'
 import { assertValidUrlTemplate, expandUrlTemplate } from '@/utils/slugify-branch'
@@ -140,10 +143,13 @@ function display(path: string) {
 }
 
 /** Compiles every MDX file of `root` to an HTML fragment, copying everything else as is. */
-async function compileFolder(root: string, outDir: string) {
+async function compileFolder(root: string, outDir: string, config: DocsConfig) {
   process.env.MDX = root
 
-  const docs = await getDocs(root, null, false, fragmentComponents)
+  const docs = await getDocs(root, null, false, {
+    ...config,
+    components: { ...fragmentComponents, ...config.components },
+  })
   for (const doc of docs) {
     const file = join(outDir, `${doc.slug.join('/')}.html`)
     await mkdir(dirname(file), { recursive: true })
@@ -170,6 +176,8 @@ async function compileFolder(root: string, outDir: string) {
 
 async function run(input: string | undefined, output: string | undefined, opts: OptionValues) {
   const website = opts.format === 'website'
+  const configPath = resolveDocsConfig(process.cwd(), opts.config)
+  const config = website ? {} : await loadDocsConfig(configPath)
 
   //
   // stdin → stdout
@@ -182,6 +190,7 @@ async function run(input: string | undefined, output: string | undefined, opts: 
     // told us about
     const html = await renderFragment(await readStdin(), {
       absoluteFilePath: join(process.cwd(), 'stdin.mdx'),
+      config,
     })
     process.stdout.write(html)
     return
@@ -192,7 +201,10 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   if (!(await stat(from)).isDirectory()) {
     if (website) throw new Error('--format website needs an IN folder')
 
-    const html = await renderFragment(await readFile(from, 'utf8'), { absoluteFilePath: from })
+    const html = await renderFragment(await readFile(from, 'utf8'), {
+      absoluteFilePath: from,
+      config,
+    })
     if (!output) {
       process.stdout.write(html)
       return
@@ -208,7 +220,7 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   const outDir = resolve(process.cwd(), output ?? 'out')
 
   if (!website) {
-    const count = await compileFolder(from, outDir)
+    const count = await compileFolder(from, outDir, config)
     console.error(`${count} pages → ${display(outDir)}`)
     return
   }
@@ -220,7 +232,7 @@ async function run(input: string | undefined, output: string | undefined, opts: 
 
   // Git is asked here, in the library's checkout, and not by the build: that runs in a copy of
   // this package, where git would describe the wrong repository, or none at all. Every variable
-  // is set, even empty, which is what tells `next.config.mjs` not to resolve them again.
+  // is set, even empty, which is what tells `next.config.mts` not to resolve them again.
   // Handed the whole environment, not only the options: git reads the CI's own variables
   // (`GITHUB_*`, `VERCEL_GIT_COMMIT_REF`) to tell which branch and commit this is.
   const versionEnv = resolveVersionEnv(
@@ -233,6 +245,7 @@ async function run(input: string | undefined, output: string | undefined, opts: 
     packageRoot: resolve(dirname(new URL(import.meta.url).pathname), '..'),
     outDir,
     env,
+    configPath,
   })
   console.error(`Preview: npx -y serve ${display(outDir)}`)
 }
@@ -240,6 +253,12 @@ async function run(input: string | undefined, output: string | undefined, opts: 
 /** Named rather than default: what compiles a folder of MDX is a build step, and it says so. */
 const build = new Command('build')
   .description('Compile MDX to HTML')
+  .addOption(
+    new Option(
+      '--config <path>',
+      'Consumer components and scope (default: docs.config.ts in cwd)',
+    ).env('DOCS_CONFIG'),
+  )
   .argument('[in]', 'MDX file or folder. Reads stdin when omitted.')
   // No default: whether OUT was given is what tells a single file to write to stdout
   .argument('[out]', 'Output folder (default: "out"). Writes to stdout when IN is a file.')

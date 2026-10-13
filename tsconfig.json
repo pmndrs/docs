@@ -13,6 +13,7 @@
     "jsx": "react-jsx",
     "incremental": true,
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "plugins": [
       {
@@ -29,6 +30,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "**/*.mts",
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"

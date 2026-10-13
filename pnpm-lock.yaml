@@ -62,6 +62,9 @@ importers:
       commander:
         specifier: ^15.0.0
         version: 15.0.0
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -195,9 +198,6 @@ importers:
       d3-transition:
         specifier: ^3.0.1
         version: 3.0.1(d3-selection@3.0.0)
-      esbuild:
-        specifier: ^0.28.2
-        version: 0.28.2
       eslint:
         specifier: ^9.39.5
         version: 9.39.5(jiti@2.7.0)
