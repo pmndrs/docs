@@ -10,7 +10,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # A release merge triggers this workflow and ci.yml at the same time: `@latest` below would
+  # still resolve to the previous version while CI is publishing the new one, and npm only
+  # exposes a publish a few minutes after it. Wait until `latest` is the version this commit
+  # declares, so the site is never left one release behind. Any other push returns at once.
+  wait-for-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: package.json
+          sparse-checkout-cone-mode: false
+      - name: Wait for npm `latest` to match package.json
+        run: |
+          expected=$(node -p "require('./package.json').version")
+          deadline=$(( $(date +%s) + 20 * 60 ))
+          while true; do
+            # `--prefer-online` revalidates every poll instead of trusting npm's cached packument;
+            # a failed request is just another miss, retried until the deadline
+            latest=$(npm view @pmndrs/docs dist-tags.latest --prefer-online) || latest='unreachable'
+            if [ "$latest" = "$expected" ]; then
+              echo "npm latest is $expected"
+              exit 0
+            fi
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "::error::npm latest is still $latest after 20 min, expected $expected"
+              exit 1
+            fi
+            echo "npm latest is $latest, waiting for $expected"
+            sleep 15
+          done
+
   build:
+    needs: wait-for-npm
     permissions:
       contents: read
       pages: write
