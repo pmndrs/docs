@@ -136,3 +136,35 @@ test('parseDocsMetadata keeps only .md/.mdx files, wherever the folder is named 
 
   expect(docs.map(({ url }) => url).sort()).toEqual(['/guide.mdx/start', '/intro'])
 })
+
+test('takes the "Edit this page" URL from the `edit` frontmatter, over EDIT_BASEURL', async () => {
+  vi.stubEnv('EDIT_BASEURL', 'https://github.com/me/site/edit/main/docs')
+  const root = await fixture()
+  const edit = 'https://github.com/me/lib/edit/main/thing/README.md'
+  await writeFile(
+    join(root, 'third.mdx'),
+    `---\ntitle: Third\nedit: ${edit}\nnav: 3\n---\nThird body`,
+  )
+
+  const docs = await getDocs(root, ['first'])
+
+  expect(docs.map(({ editURL }) => editURL)).toEqual([
+    'https://github.com/me/site/edit/main/docs/first.mdx',
+    'https://github.com/me/site/edit/main/docs/second.mdx',
+    edit,
+  ])
+})
+
+test('takes the `edit` frontmatter without EDIT_BASEURL', async () => {
+  vi.stubEnv('EDIT_BASEURL', '')
+  const root = await fixture()
+  await writeFile(join(root, 'third.mdx'), '---\nedit: https://example.com/edit\nnav: 3\n---\n')
+
+  const docs = await getDocs(root, ['first'])
+
+  expect(docs.map(({ editURL }) => editURL)).toEqual([
+    undefined,
+    undefined,
+    'https://example.com/edit',
+  ])
+})
