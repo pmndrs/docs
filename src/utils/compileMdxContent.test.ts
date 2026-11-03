@@ -436,6 +436,32 @@ describe('Img', () => {
     })
   })
 
+  describe('with a path-only MDX_BASEURL', () => {
+    for (const baseUrl of ['/integral', '/integral/', '/']) {
+      const prefix = baseUrl.replace(/\/+$/, '')
+
+      it(`resolves a relative src root-relative and reads its dimensions (${baseUrl})`, async () => {
+        vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+        vi.stubEnv('MDX_BASEURL', baseUrl)
+
+        const html = await render('![](gutenberg.jpg)', baseUrl)
+        expect(html).toContain(`src="${prefix}/authoring/gutenberg.jpg"`)
+        expect(html).toContain('width="1100"')
+        expect(html).toContain('height="695"')
+      })
+    }
+
+    it('reads the dimensions of a Codesandbox `img`', async () => {
+      vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+      vi.stubEnv('MDX_BASEURL', '/integral')
+
+      const html = await render('<Codesandbox id="3rjsl" img="cell-fracture.webp" />', '/integral')
+      expect(html).toContain('src="/integral/authoring/cell-fracture.webp"')
+      expect(html).toContain('width="1200"')
+      expect(html).toContain('height="630"')
+    })
+  })
+
   it('leaves a relative src as is, without dimensions, without MDX_BASEURL', async () => {
     vi.stubEnv('MDX', join(process.cwd(), 'docs'))
 

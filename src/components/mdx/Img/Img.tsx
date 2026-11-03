@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
 import { imageSizeFromFile } from 'image-size/fromFile'
-import { resolve } from 'path'
+import { mdxFilePath } from '@/utils/resolveMdxUrl'
 
 export async function Img({
   src,
@@ -21,12 +21,11 @@ export async function Img({
   // If image is from MDX folder, we can determine its dimensions
   //
 
-  if (
-    process.env.MDX_BASEURL &&
-    typeof src === 'string' &&
-    src.startsWith(process.env.MDX_BASEURL)
-  ) {
-    const path = resolve(src.replace(process.env.MDX_BASEURL, process.env.MDX!))
+  const path =
+    typeof src === 'string'
+      ? mdxFilePath(src, process.env.MDX_BASEURL, process.env.MDX!)
+      : undefined
+  if (path) {
     const { width: w, height: h } = await imageSizeFromFile(path)
     const ratio = w && h ? w / h : undefined
 

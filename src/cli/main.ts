@@ -45,9 +45,10 @@ const websiteOptions = [
     'Where "/" redirects to, e.g. "/getting-started/introduction"',
   ).env('HOME_REDIRECT'),
   new Option('--url <url>', 'Public URL the website is served from').env('NEXT_PUBLIC_URL'),
-  new Option('--mdx-baseurl <url>', 'Base URL relative assets are resolved against').env(
-    'MDX_BASEURL',
-  ),
+  new Option(
+    '--mdx-baseurl <url>',
+    'Base URL relative assets are resolved against, or a path for root-relative ones',
+  ).env('MDX_BASEURL'),
   new Option('--sourcecode-baseurl <url>', 'Base URL of the "source code" links').env(
     'SOURCECODE_BASEURL',
   ),

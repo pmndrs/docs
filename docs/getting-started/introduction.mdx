@@ -67,7 +67,7 @@ Environment variables configure the website. For MDX extensions, add `docs.confi
 | `DIST_DIR`                            | Path to the output folder ([within project](https://nextjs.org/docs/app/api-reference/next-config-js/distDir#:~:text=should%20not%20leave%20your%20project%20directory)) | `out` or `docs/out/react-three-fiber`                                                            |
 | `OUTPUT`                              | Set to `export` for static output                                                                                                                                        | `export`                                                                                         |
 | `HOME_REDIRECT`                       | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                                  |
-| `MDX_BASEURL`                         | Base URL for inlining relative images                                                                                                                                    | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs`         |
+| `MDX_BASEURL`                         | Base URL for inlining relative images, or a path (e.g. `/react-three-fiber`) for root-relative ones                                                                      | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs`         |
 | `SOURCECODE_BASEURL`                  | Base URL for `sourcecode:` code path                                                                                                                                     | `https://github.com/pmndrs/react-three-fiber/tree/main`                                          |
 | `EDIT_BASEURL`                        | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                                   |
 | `NEXT_PUBLIC_URL`                     | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                                     |
@@ -127,6 +127,17 @@ becomes (for a `MDX_BASEURL=http://localhost:60141` value):
 
 > [!TIP]
 > When deployed on GitHub Pages, `MDX_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
+
+`MDX_BASEURL` can also be a path only, root-relative, such as `/react-three-fiber` (or `/` for a site served at the root of its domain): the `MDX` folder then has to be served at that path, on the same host as the website. URLs then come out root-relative too:
+
+```md
+![](/react-three-fiber/advanced/dog.png)
+```
+
+so they follow the website onto any host it answers on (e.g. both the deployment and the branch URL of a Vercel preview), where an absolute URL would point to one host only.
+
+> [!NOTE]
+> With a path, the `image` frontmatter (`og:image`) is made absolute against the origin of `NEXT_PUBLIC_URL`, when set, since social images need an absolute URL.
 
 </details>
 
