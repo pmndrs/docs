@@ -1,6 +1,5 @@
 'use client'
 
-import { Doc } from '@/app/[...slug]/DocsContext'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   SidebarContent,
@@ -18,9 +17,7 @@ import { cn } from '@/lib/utils'
 import { ChevronRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'
-
-/** The page a category's own entry links to, instead of listing it under the category. */
-const INDEX_PAGE = 'introduction'
+import { sidebarNavCategories, type SidebarNavDoc } from './SidebarNav.categories'
 
 /**
  * The shape of the nav this replaced, on shadcn's buttons: flush with the sidebar's left edge,
@@ -36,12 +33,11 @@ const ITEM_SHAPE = 'h-auto rounded-none rounded-r-full py-(--NavItem-pad) pl-(--
 const HOVER_SOFT =
   'hover:bg-sidebar-accent/40 hover:text-sidebar-foreground active:bg-sidebar-accent/40 active:text-sidebar-foreground'
 
-export type SidebarNavDoc = Pick<Doc, 'slug' | 'url' | 'title'>
-
 /**
  * The docs navigation: one entry per category (the parent folder of a page, or `root`), each
- * listing its pages. A category links to its `introduction` page, or to its first page when it
- * has none, and starts open when it holds the current page.
+ * listing its pages. A category links to its `introduction` (or else `readme`) page, or to its
+ * first page when it has none, and starts open when it holds the current page. A README at the
+ * MDX root is an entry of its own, labelled by its title (see `sidebarNavCategories`).
  */
 export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: string }) {
   const { setOpenMobile } = useSidebar()
@@ -51,38 +47,20 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
 
   const currentUrl = `/${asPath}`
 
-  const categories = useMemo(() => {
-    const categories = new Map<string, Map<string, SidebarNavDoc>>()
-    for (const doc of docs) {
-      const page = doc.slug.at(-1)
-      // A doc with no slug has no page to list, and would leave its category empty.
-      if (!page) continue
-      const category = doc.slug.at(-2) || 'root'
-
-      if (!categories.has(category)) categories.set(category, new Map())
-      categories.get(category)!.set(page, doc)
-    }
-    return categories
-  }, [docs])
+  const categories = useMemo(() => sidebarNavCategories(docs), [docs])
 
   // `--NavSub-offset`: how far the pages' list sits from the edge, its indent and tree line.
   return (
     <SidebarContent className="[--NavItem-pad:--spacing(3)] [--NavSub-offset:calc(var(--rgrid-m)+1px)]">
       <SidebarGroup className="p-0 pt-8">
         <SidebarMenu className="gap-0">
-          {[...categories].map(([category, pages]) => {
-            const label = category.replace(/-/g, ' ')
-
-            const indexDoc = pages.get(INDEX_PAGE)
-            const categoryHref = indexDoc ? indexDoc.url : [...pages.values()][0].url
-            const subDocs = [...pages].filter(([page]) => page !== INDEX_PAGE).map(([, doc]) => doc)
-
-            const containsCurrent = [...pages.values()].some((doc) => doc.url === currentUrl)
+          {categories.map(({ key, label, title, href, indexDoc, subDocs, docs }) => {
+            const containsCurrent = docs.some((doc) => doc.url === currentUrl)
             const isCategoryActive = !!indexDoc && indexDoc.url === currentUrl
 
             const categoryButton = (
               <SidebarMenuButton
-                render={<Link href={categoryHref} />}
+                render={<Link href={href} />}
                 isActive={isCategoryActive}
                 aria-current={isCategoryActive ? 'page' : undefined}
                 onClick={closeMobile}
@@ -95,7 +73,9 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
                   ],
                 )}
               >
-                <span className="capitalize tracking-wide">{label}</span>
+                <span className={cn('tracking-wide', title === undefined && 'capitalize')}>
+                  {title ?? label}
+                </span>
               </SidebarMenuButton>
             )
 
@@ -104,7 +84,7 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
 
             if (subDocs.length === 0) {
               return (
-                <SidebarMenuItem key={category} className={itemClassName}>
+                <SidebarMenuItem key={key} className={itemClassName}>
                   {categoryButton}
                 </SidebarMenuItem>
               )
@@ -112,7 +92,7 @@ export function SidebarNav({ docs, asPath }: { docs: SidebarNavDoc[]; asPath: st
 
             return (
               <Collapsible
-                key={category}
+                key={key}
                 defaultOpen={containsCurrent}
                 render={<SidebarMenuItem />}
                 className={itemClassName}
