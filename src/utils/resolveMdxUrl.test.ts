@@ -145,4 +145,66 @@ describe('resolveMdxUrl', () => {
       )
     })
   })
+
+  /**
+   * Characterization of the absolute `MDX_BASEURL` outputs, written against the code before a
+   * path-only base was accepted: they must not change.
+   */
+  describe('absolute base, unchanged', () => {
+    const mdFile = 'advanced/introduction.mdx'
+
+    it('resolves `.`, `./` and `..` against the page', () => {
+      expect(resolveMdxUrl('.', mdFile, baseUrl)).toBe(`${baseUrl}/advanced`)
+      expect(resolveMdxUrl('./', mdFile, baseUrl)).toBe(`${baseUrl}/advanced`)
+      expect(resolveMdxUrl('..', mdFile, baseUrl)).toBe(`${baseUrl}/`)
+      expect(resolveMdxUrl('./sub/../dog.png', mdFile, baseUrl)).toBe(`${baseUrl}/advanced/dog.png`)
+    })
+
+    it('keeps a query and a hash, and percent-encodes the path', () => {
+      expect(resolveMdxUrl('dog.png?v=1#top', mdFile, baseUrl)).toBe(
+        `${baseUrl}/advanced/dog.png?v=1#top`,
+      )
+      expect(resolveMdxUrl('my dog.png', mdFile, baseUrl)).toBe(`${baseUrl}/advanced/my%20dog.png`)
+    })
+
+    it('resolves against a base without a path', () => {
+      expect(resolveMdxUrl('dog.png', mdFile, 'http://localhost:60141')).toBe(
+        'http://localhost:60141/advanced/dog.png',
+      )
+      expect(resolveMdxUrl('/dog.png', mdFile, 'http://localhost:60141')).toBe(
+        'http://localhost:60141/dog.png',
+      )
+    })
+
+    it('keeps the double slash a trailing slash on the base gives', () => {
+      expect(resolveMdxUrl('dog.png', mdFile, 'https://example.com/docs/')).toBe(
+        'https://example.com/docs//advanced/dog.png',
+      )
+    })
+
+    it('resolves against a GitHub raw base', () => {
+      const github = 'https://github.com/pmndrs/docs/raw/main/docs'
+      expect(resolveMdxUrl('dog.png', mdFile, github)).toBe(`${github}/advanced/dog.png`)
+      expect(resolveMdxUrl('../shots/a.png', mdFile, github)).toBe(`${github}/shots/a.png`)
+    })
+
+    it('leaves a URL with a scheme or protocol-relative as is', () => {
+      for (const src of [
+        'https://example.com/a.png',
+        'HTTP://EXAMPLE.COM/A.PNG',
+        'data:image/png;base64,iVBORw0KGgo=',
+        'mailto:a@example.com',
+        '//example.com/a.png',
+      ]) {
+        expect(resolveMdxUrl(src, mdFile, baseUrl)).toBe(src)
+      }
+    })
+
+    it('returns the src as is with an empty base', () => {
+      for (const src of ['dog.png', '/dog.png', '../dog.png', '.']) {
+        expect(resolveMdxUrl(src, mdFile, '')).toBe(src)
+        expect(resolveMdxUrl(src, mdFile, undefined)).toBe(src)
+      }
+    })
+  })
 })

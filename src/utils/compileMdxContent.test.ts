@@ -381,6 +381,71 @@ describe('Codesandbox', () => {
 })
 
 /**
+ * An image of the MDX folder gets its dimensions read from the file, which `Img` finds by
+ * mapping its `MDX_BASEURL` URL back into `MDX`.
+ */
+describe('Img', () => {
+  const render = async (source: string, baseUrl: string | undefined) => {
+    const result = await compileMdxContent(source, {
+      relFilePath: '/authoring/img.mdx',
+      absoluteFilePath: join(process.cwd(), 'docs/authoring/img.mdx'),
+      baseUrl,
+      title: 'Test Title',
+      url: '/authoring/img',
+      tableOfContents: [],
+      entries: [],
+    })
+    // `Img` is async, which only the streaming renderer waits for
+    return renderToHtml(result.content)
+  }
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  describe('with an absolute MDX_BASEURL', () => {
+    const baseUrl = 'http://localhost:60141'
+
+    it('resolves a relative src and reads its dimensions', async () => {
+      vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+      vi.stubEnv('MDX_BASEURL', baseUrl)
+
+      const html = await render('![](gutenberg.jpg)', baseUrl)
+      expect(html).toContain(`src="${baseUrl}/authoring/gutenberg.jpg"`)
+      expect(html).toContain('width="1100"')
+      expect(html).toContain('height="695"')
+    })
+
+    it('derives the missing dimension from the ratio', async () => {
+      vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+      vi.stubEnv('MDX_BASEURL', baseUrl)
+
+      const html = await render('<img src="../authoring/gutenberg.jpg" height="200" />', baseUrl)
+      expect(html).toContain(`src="${baseUrl}/authoring/gutenberg.jpg"`)
+      expect(html).toContain('width="317"')
+      expect(html).toContain('height="200"')
+    })
+
+    it('reads no dimensions for an image outside the MDX folder', async () => {
+      vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+      vi.stubEnv('MDX_BASEURL', baseUrl)
+
+      const html = await render('![](https://example.com/a.png)', baseUrl)
+      expect(html).toContain('src="https://example.com/a.png"')
+      expect(html).not.toContain('width=')
+    })
+  })
+
+  it('leaves a relative src as is, without dimensions, without MDX_BASEURL', async () => {
+    vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+
+    const html = await render('![](gutenberg.jpg)', undefined)
+    expect(html).toContain('src="gutenberg.jpg"')
+    expect(html).not.toContain('width=')
+  })
+})
+
+/**
  * A shell block of npm commands gets a tab per package manager. Rendered without hydration (as
  * the website's first paint, or the CLI's HTML), it shows the default, pnpm, one.
  */
