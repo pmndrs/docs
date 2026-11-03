@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.27.0
+
+### Minor Changes
+
+- [#727](https://github.com/pmndrs/docs/pull/727) [`814fc24`](https://github.com/pmndrs/docs/commit/814fc24ea0a850a524f677066b85efd8ff20b410) Thanks [@abernier](https://github.com/abernier)! - `MDX_BASEURL` can be a path only, root-relative, e.g. `/react-three-fiber` or `/`: relative images then resolve to root-relative URLs, which follow the website onto any host it answers on, and their dimensions are still read from the `MDX` folder. The `image` frontmatter is made absolute against the origin of `NEXT_PUBLIC_URL` for `og:image`. A path used to throw `Invalid URL`; an absolute or empty `MDX_BASEURL` is unchanged.
+
 ## 4.26.0
 
 ### Minor Changes
