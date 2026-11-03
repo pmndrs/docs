@@ -166,9 +166,11 @@ async function _getDocs(
         // Common infos (for every `docs`)
         //
 
-        // editURL
+        // editURL: the `edit` frontmatter, for a page whose source is not at its own path in the
+        // MDX folder, or else the file's path under EDIT_BASEURL
         const EDIT_BASEURL = process.env.EDIT_BASEURL
-        const editURL = EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined
+        const editURL: string | undefined =
+          frontmatter.edit || (EDIT_BASEURL?.length ? file.replace(root, EDIT_BASEURL) : undefined)
 
         //
         // frontmatter
