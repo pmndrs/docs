@@ -1,10 +1,10 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, expect, test, vi } from 'vitest'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import { compileMdxContent, compileMdxFrontmatter } from './compileMdxContent'
-import { getDocs } from './docs'
+import { getDocs, parseDocsMetadata } from './docs'
 import { getData } from './site-docs'
 
 vi.mock('pmndrs-docs-config', () => ({ default: { scope: { token: 'configured value' } } }))
@@ -118,4 +118,21 @@ test('passes consumer scope and component overrides to the selected document com
   expect(compileMDX).toHaveBeenCalledWith(
     expect.objectContaining({ options: expect.objectContaining({ scope: config.scope }) }),
   )
+})
+
+test('parseDocsMetadata keeps only .md/.mdx files, wherever the folder is named `.mdx`', async () => {
+  const parent = await mkdtemp(join(tmpdir(), 'pmndrs-docs-extension-'))
+  temporaryDirectories.push(parent)
+  const root = join(parent, 'docs.mdx')
+  await mkdir(join(root, 'guide.mdx'), { recursive: true })
+  await Promise.all([
+    writeFile(join(root, 'intro.mdx'), '# Intro'),
+    writeFile(join(root, 'image.png'), 'not markdown'),
+    writeFile(join(root, 'guide.mdx', 'start.md'), '# Start'),
+    writeFile(join(root, 'guide.mdx', 'diagram.svg'), '<svg />'),
+  ])
+
+  const docs = await parseDocsMetadata(root)
+
+  expect(docs.map(({ url }) => url).sort()).toEqual(['/guide.mdx/start', '/intro'])
 })

@@ -11,7 +11,7 @@ import { cache } from 'react'
 /**
  * Checks for .md(x) file extension
  */
-export const MARKDOWN_REGEX = /\.mdx?/
+export const MARKDOWN_REGEX = /\.mdx?$/
 
 /**
  * Removes <https://inline.links> formatting from markdown
