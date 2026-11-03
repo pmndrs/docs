@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.26.0
+
+### Minor Changes
+
+- [#726](https://github.com/pmndrs/docs/pull/726) [`a0ab092`](https://github.com/pmndrs/docs/commit/a0ab09249859c20026e28cd867f323dfa3a4e6e4) Thanks [@abernier](https://github.com/abernier)! - `edit` frontmatter: an absolute URL for the page's "Edit this page" link, over the file's path under `EDIT_BASEURL`, for a page generated from a source that lives elsewhere. Pages without it are unchanged.
+
+- [#722](https://github.com/pmndrs/docs/pull/722) [`49cc256`](https://github.com/pmndrs/docs/commit/49cc256fe80b79cca327f8ce9aabf670a0609c98) Thanks [@abernier](https://github.com/abernier)! - Add `SPONSOR_CARD` and `LIBS_MENU` (CLI `--sponsor-card`, `--libs-menu`; workflow inputs `sponsor_card`, `libs_menu`): set to `false`, a site that is not a pmndrs library hides the "Sponsor Poimandres" card, and shows its name as a plain link home instead of the menu of the pmndrs libraries. Both stay on by default.
+
+### Patch Changes
+
+- [#723](https://github.com/pmndrs/docs/pull/723) [`c105eb9`](https://github.com/pmndrs/docs/commit/c105eb9dc4bc72be6093369786d631091ae97b23) Thanks [@abernier](https://github.com/abernier)! - Only `.md` and `.mdx` files are compiled as pages: an MDX folder (or subfolder) whose name contains `.md` no longer compiles every asset in it as MDX, and its pages keep the folder name in their slug.
+
 ## 4.25.2
 
 ### Patch Changes
