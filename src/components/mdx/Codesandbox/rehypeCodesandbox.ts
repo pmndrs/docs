@@ -1,7 +1,6 @@
-import resolveMdxUrl from '@/utils/resolveMdxUrl'
+import resolveMdxUrl, { mdxFilePath } from '@/utils/resolveMdxUrl'
 import type { Root } from 'hast'
 import fs from 'node:fs'
-import { resolve } from 'node:path'
 import { visit } from 'unist-util-visit'
 
 /**
@@ -9,7 +8,7 @@ import { visit } from 'unist-util-visit'
  */
 export type Box = {
   id: string
-  /** Preview image, already resolved to a full URL when it was relative to the page */
+  /** Preview image, already resolved under `MDX_BASEURL` when it was relative to the page */
   img?: string
 }
 
@@ -54,9 +53,9 @@ function stringValue(value: AttributeValue) {
  */
 function mdxFolderPath(src: string, MDX_BASEURL?: string) {
   const { MDX } = process.env
-  if (!MDX_BASEURL || !MDX || !src.startsWith(MDX_BASEURL)) return undefined
+  if (!MDX) return undefined
 
-  return resolve(src.replace(MDX_BASEURL, MDX))
+  return mdxFilePath(src, MDX_BASEURL, MDX)
 }
 
 function isFile(path: string) {
@@ -74,7 +73,7 @@ function isFile(path: string) {
  * the placeholder stands in.
  *
  * @param relFilePath - Path of the page, relative to the MDX folder, e.g. "/authoring/codesandbox.mdx"
- * @param MDX_BASEURL - Base URL of the MDX folder
+ * @param MDX_BASEURL - Base URL, or root-relative path, of the MDX folder
  * @param boxes - Filled with the sandboxes found, in page order
  */
 export function rehypeCodesandbox(

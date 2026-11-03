@@ -157,6 +157,23 @@ describe('rehypeCodesandbox', () => {
       ])
     })
 
+    it('keeps an `img` found in the MDX folder, under a path-only `MDX_BASEURL`', async () => {
+      for (const MDX_BASEURL of ['/integral', '/']) {
+        const prefix = MDX_BASEURL.replace(/\/+$/, '')
+        expect(await boxesOf('<Codesandbox id="3rjsl" img="a.png" />', { MDX_BASEURL })).toEqual([
+          { id: '3rjsl', img: `${prefix}/authoring/a.png` },
+        ])
+      }
+    })
+
+    it('removes an `img` missing from the MDX folder, under a path-only `MDX_BASEURL`', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const source = '<Codesandbox id="3rjsl" img="missing.png" />'
+
+      expect(await boxesOf(source, { MDX_BASEURL: '/integral' })).toEqual([{ id: '3rjsl' }])
+      expect(warn.mock.calls[0][0]).toContain(path.join(MDX, 'authoring', 'missing.png'))
+    })
+
     it('warns about an `img` missing from the MDX folder, and removes it', async () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const source = '<Codesandbox id="3rjsl" img="missing.png" />'

@@ -168,3 +168,29 @@ test('takes the `edit` frontmatter without EDIT_BASEURL', async () => {
     'https://example.com/edit',
   ])
 })
+
+test('resolves the `image` frontmatter and LOGO under MDX_BASEURL, absolute or a path', async () => {
+  const root = await fixture()
+  await mkdir(join(root, 'advanced'))
+  await writeFile(join(root, 'advanced', 'third.mdx'), '---\nimage: dog.png\nnav: 3\n---\n')
+  vi.stubEnv('LOGO', 'logo.png')
+
+  const images = async (MDX_BASEURL: string) => {
+    vi.stubEnv('MDX_BASEURL', MDX_BASEURL)
+    const docs = await getDocs(root, ['first'])
+    return docs.map(({ image }) => image)
+  }
+
+  expect(await images('http://localhost:60141')).toEqual([
+    'http://localhost:60141/logo.png',
+    'http://localhost:60141/logo.png',
+    'http://localhost:60141/advanced/dog.png',
+  ])
+  expect(await images('/integral')).toEqual([
+    '/integral/logo.png',
+    '/integral/logo.png',
+    '/integral/advanced/dog.png',
+  ])
+  expect(await images('/')).toEqual(['/logo.png', '/logo.png', '/advanced/dog.png'])
+  expect(await images('')).toEqual(['logo.png', 'logo.png', 'dog.png'])
+})

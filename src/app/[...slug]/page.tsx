@@ -1,6 +1,7 @@
 import { CopyPage } from '@/components/CopyPage'
 import { cn } from '@/lib/utils'
 import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
+import { socialImageUrl } from '@/utils/resolveMdxUrl'
 import { getData, getSiteDocs } from '@/utils/site-docs'
 import { withoutTrailingSlash } from '@/utils/version'
 
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props) {
   const title = `${doc.metadata.title} - ${process.env.NEXT_PUBLIC_LIBNAME}`
   const description = doc.metadata.description
   const url = doc.url
-  const image = doc.image
+  const image = socialImageUrl(doc.image, process.env.MDX_BASEURL, process.env.NEXT_PUBLIC_URL)
 
   return {
     title,
