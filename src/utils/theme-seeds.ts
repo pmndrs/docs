@@ -5,6 +5,8 @@
 // optional: a site that sets none gets the pmndrs seeds (see `src/lib/mtb.ts`).
 //
 
+import { parseEnvFlag } from './env-flag'
+
 // 3, 6 or 8 hex digits, the forms `argbFromHex` reads
 export const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
@@ -28,9 +30,5 @@ export function parseThemeColor(name: string, value = ''): string | undefined {
  * `parseThemeColor` does. Throws on anything else, with the variable's name.
  */
 export function parseThemeFlag(name: string, value = ''): boolean | undefined {
-  if (value === '') return undefined
-  if (value !== 'true' && value !== 'false') {
-    throw new Error(`THEME_${name}: "${value}" is not \`true\` or \`false\``)
-  }
-  return value === 'true'
+  return parseEnvFlag(`THEME_${name}`, value)
 }

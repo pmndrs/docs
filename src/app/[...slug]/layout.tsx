@@ -18,7 +18,9 @@ import { VersionSwitcher } from '@/components/VersionSwitcher'
 import { SidebarFooter, SidebarTrigger } from '@/components/ui/sidebar'
 import { DiscordIcon, GitHubIcon } from '@/components/brand-icons'
 import { Toc } from '@/components/mdx/Toc'
+import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { readLayoutParts } from '@/utils/layout-parts'
 import { getData } from '@/utils/site-docs'
 import { formatStars, getStars } from '@/utils/github'
 import Link from 'next/link'
@@ -44,22 +46,30 @@ export default async function Layoutt({ params, children }: Props) {
 
   const NEXT_PUBLIC_LIBNAME = process.env.NEXT_PUBLIC_LIBNAME
   const NEXT_PUBLIC_LIBNAME_SHORT = process.env.NEXT_PUBLIC_LIBNAME_SHORT
+  const { sponsorCard, libsMenu } = readLayoutParts()
 
   // Only what the nav reads crosses to the client, not each page's rendered content.
   const navDocs = docs.map(({ slug, url, title }) => ({ slug, url, title }))
   const nav = <SidebarNav docs={navDocs} asPath={asPath} />
+  const libname = (
+    <span className="font-bold">
+      {NEXT_PUBLIC_LIBNAME_SHORT && (
+        <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
+      )}
+      <span className={cn(NEXT_PUBLIC_LIBNAME_SHORT ? 'hidden' : undefined, 'lg:inline')}>
+        {NEXT_PUBLIC_LIBNAME}
+      </span>
+    </span>
+  )
   const header = (
     <div className="flex h-(--header-height) items-center gap-(--rgrid-m) px-(--rgrid-m)">
-      <LibsMenu siteUrl={process.env.NEXT_PUBLIC_URL}>
-        <span className="font-bold">
-          {NEXT_PUBLIC_LIBNAME_SHORT && (
-            <span className="inline lg:hidden">{NEXT_PUBLIC_LIBNAME_SHORT}</span>
-          )}
-          <span className={cn(NEXT_PUBLIC_LIBNAME_SHORT ? 'hidden' : undefined, 'lg:inline')}>
-            {NEXT_PUBLIC_LIBNAME}
-          </span>
-        </span>
-      </LibsMenu>
+      {libsMenu ? (
+        <LibsMenu siteUrl={process.env.NEXT_PUBLIC_URL}>{libname}</LibsMenu>
+      ) : (
+        <Link href="/" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>
+          {libname}
+        </Link>
+      )}
 
       <Search className="grow" />
       <SidebarTrigger className="lg:hidden" />
@@ -203,7 +213,7 @@ export default async function Layoutt({ params, children }: Props) {
             </LayoutContent>
             <LayoutAside className="flex-col pt-8 xl:flex">
               {toc}
-              <SponsorCard className="mt-8 mr-(--rgrid-m)" />
+              {sponsorCard && <SponsorCard className="mt-8 mr-(--rgrid-m)" />}
               {/* At the foot of the column, and of the viewport while a long TOC scrolls under it */}
               <ThemeControls className="sticky top-full mt-auto justify-end bg-surface py-4 pr-(--rgrid-m)" />
             </LayoutAside>

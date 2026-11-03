@@ -75,6 +75,12 @@ on:
       theme_color_match:
         type: string
         description: '`false` to tone each core and custom color down to `theme_scheme`, instead of rendering it true to its own input (Material Theme Builder''s "Color match", on by default)'
+      sponsor_card:
+        type: string
+        description: '`false` to hide the "Sponsor Poimandres" card, for a site that is not a pmndrs library'
+      libs_menu:
+        type: string
+        description: '`false` to show the site name without the menu of the pmndrs libraries, for a site that is not one'
       theme_secondary:
         type: string
         description: 'Secondary color of the palette, instead of the one derived from the primary, eg: `#B03A3A`'
@@ -180,6 +186,8 @@ jobs:
           THEME_CAUTION: '${{ inputs.theme_caution }}'
           THEME_CUSTOM_COLORS: '${{ inputs.theme_custom_colors }}'
           THEME_COLOR_MATCH: '${{ inputs.theme_color_match }}'
+          SPONSOR_CARD: '${{ inputs.sponsor_card }}'
+          LIBS_MENU: '${{ inputs.libs_menu }}'
           THEME_SECONDARY: '${{ inputs.theme_secondary }}'
           THEME_TERTIARY: '${{ inputs.theme_tertiary }}'
           THEME_NEUTRAL: '${{ inputs.theme_neutral }}'

@@ -40,6 +40,9 @@ function pathOnSite(href: string, siteUrl: string) {
 /**
  * The library name of the header, as a button opening the list of the pmndrs libraries documented
  * with pmndrs/docs. This site's own library leads to the home of its docs.
+ *
+ * A site that is not a pmndrs library turns it off with `LIBS_MENU=false`, and the name is then a
+ * plain link home.
  */
 export function LibsMenu({
   children,
