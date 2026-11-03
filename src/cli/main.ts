@@ -94,6 +94,14 @@ const websiteOptions = [
   new Option('--theme-storybook <color>', 'Color of the storybook badges').env('THEME_STORYBOOK'),
   new Option('--theme-npm <color>', 'Color of the npm badges').env('THEME_NPM'),
   new Option('--theme-chromatic <color>', 'Color of the chromatic badges').env('THEME_CHROMATIC'),
+  new Option(
+    '--sponsor-card <boolean>',
+    '"false" to hide the "Sponsor Poimandres" card, for a site that is not a pmndrs library',
+  ).env('SPONSOR_CARD'),
+  new Option(
+    '--libs-menu <boolean>',
+    '"false" to show the site name without the menu of the pmndrs libraries, for a site that is not one',
+  ).env('LIBS_MENU'),
   new Option('--lib-version <version>', 'Version label, instead of `git describe --tags`').env(
     'LIB_VERSION',
   ),

@@ -7,8 +7,8 @@ const SPONSORS_URL = 'https://github.com/sponsors/pmndrs'
 
 /**
  * A call to sponsor Poimandres on GitHub, under the table of contents, like the "Deploy on Vercel"
- * card of the shadcn/ui docs. Static: every site this engine builds is a pmndrs library, so the
- * link is the same for all of them.
+ * card of the shadcn/ui docs. Static: the link is the same for every pmndrs library, and a site
+ * that is not one turns the card off with `SPONSOR_CARD=false`.
  */
 export function SponsorCard({ className, ...props }: ComponentProps<'div'>) {
   return (
