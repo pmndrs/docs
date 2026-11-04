@@ -6,7 +6,7 @@ nav: 4
 ---
 
 <Intro>
-  Display images using markdown or HTML syntax with automatic dimensions and relative path support.
+  Display images using markdown, HTML or `<Img>` syntax with automatic dimensions and relative path support.
 </Intro>
 
 ## Relative paths
@@ -46,6 +46,16 @@ It is also possible to specify only one dimension (other is inferred from intrin
 result:
 
 <img src="gutenberg.jpg" height="200" />
+
+`<Img>` written as such works like `<img>`: relative `src` resolved, dimensions read:
+
+```md
+<Img src="gutenberg.jpg" height="200" />
+```
+
+result:
+
+<Img src="gutenberg.jpg" height="200" />
 
 ## Sizing with CSS
 

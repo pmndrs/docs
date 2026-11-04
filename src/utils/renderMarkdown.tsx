@@ -74,7 +74,8 @@ export async function renderMarkdown(
         rehypePlugins: [
           rehypePreserveCodeMeta,
           rehypeLink(process.env.BASE_PATH),
-          rehypeImg(relFilePath, baseUrl),
+          // Only renames to `Img`: its markdown twin resolves the src, `src={expression}` included, which rehypeImg cannot.
+          rehypeImg(relFilePath, undefined),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
         ],
       },

@@ -1,0 +1,218 @@
+---
+title: "`Carousel`"
+description: Slides shown one or a few at a time, scrolled by dragging or with arrows
+sourcecode: docs/authoring/carousel.mdx
+nav: 18
+---
+
+<Intro>
+  Slides shown one (or a few) at a time: drag them, or click an arrow, then use the left and right arrow keys.
+</Intro>
+
+Same API as [shadcn `Carousel`](https://ui.shadcn.com/docs/components/base/carousel), built on [Embla](https://www.embla-carousel.com/) (`opts` takes [Embla's options](https://www.embla-carousel.com/api/options/)).
+
+## Usage
+
+```jsx
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+result:
+
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
+The arrows sit inside the article's width, in a gutter: on each side, or above and below a vertical carousel.
+
+## Two at a time
+
+```jsx
+<Carousel opts={{ align: "start" }}>
+  <CarouselContent>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+result:
+
+<Carousel opts={{ align: "start" }}>
+  <CarouselContent>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
+## Vertical
+
+The strip needs a height:
+
+```jsx
+<Carousel orientation="vertical">
+  <CarouselContent className="h-80">
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+result:
+
+<Carousel orientation="vertical">
+  <CarouselContent className="h-80">
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
+## Without arrows
+
+Drag only, and `loop` so there is always a next slide. No arrows, no gutter.
+
+```jsx
+<Carousel opts={{ loop: true }}>
+  <CarouselContent>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+  </CarouselContent>
+</Carousel>
+```
+
+result:
+
+<Carousel opts={{ loop: true }}>
+  <CarouselContent>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+  </CarouselContent>
+</Carousel>
+
+## Images
+
+```jsx
+<Carousel opts={{ loop: true }}>
+  <CarouselContent>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+result:
+
+<Carousel opts={{ loop: true }}>
+  <CarouselContent>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
+In the markdown export of a page, the slides follow one another, without the arrows.

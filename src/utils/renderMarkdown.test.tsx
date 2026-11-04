@@ -28,6 +28,7 @@ describe('renderMarkdown', () => {
 
   it.each([
     ['https://example.com/docs', 'https://example.com/docs/tokens/preview.png'],
+    ['/docs', '/docs/tokens/preview.png'],
     [undefined, './preview.png'],
   ])('resolves Markdown and JSX images with base %s', async (baseUrl, expected) => {
     const markdown = await renderMarkdown(
@@ -181,6 +182,19 @@ describe('renderMarkdown', () => {
     expect(markdown).toContain('`primary`')
     expect(markdown).toContain('`#abcdef`')
     expect(markdown).not.toContain('<Tabs')
+  })
+
+  it('exports Carousel slides in order without arrows', async () => {
+    const markdown = await renderMarkdown(
+      '<Carousel><CarouselContent><CarouselItem>First slide</CarouselItem><CarouselItem>Second slide</CarouselItem></CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>',
+    )
+
+    expect(markdown).toContain('First slide')
+    expect(markdown).toContain('Second slide')
+    expect(markdown.indexOf('First slide')).toBeLessThan(markdown.indexOf('Second slide'))
+    expect(markdown).not.toContain('<button')
+    expect(markdown).not.toContain('Previous slide')
+    expect(markdown).not.toContain('Next slide')
   })
 
   it('awaits custom server components and permits a static alternative to an opaque client component', async () => {

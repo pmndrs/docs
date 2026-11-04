@@ -21,6 +21,13 @@ import {
   ul,
 } from '@/components/mdx'
 import { Badge } from '@/components/mdx/Badge'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/mdx/Carousel'
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { rehypePackageManagers } from '@/components/mdx/Code/rehypePackageManagers'
@@ -131,6 +138,11 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
     components: {
       ...{
         Badge,
+        Carousel,
+        CarouselContent,
+        CarouselItem,
+        CarouselNext,
+        CarouselPrevious,
         Code,
         Color,
         ColorGroup,

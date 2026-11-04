@@ -194,6 +194,67 @@ describe('compileMdxContent', () => {
     expect(vuePanel).not.toMatch(hiddenAttribute)
   })
 
+  it('compiles Carousel, every slide in the HTML', async () => {
+    const source = [
+      '<Carousel opts={{ loop: true }}>',
+      '  <CarouselContent>',
+      '    <CarouselItem>React</CarouselItem>',
+      '    <CarouselItem>',
+      '',
+      '      Vue is a progressive framework.',
+      '',
+      '    </CarouselItem>',
+      '  </CarouselContent>',
+      '  <CarouselPrevious />',
+      '  <CarouselNext />',
+      '</Carousel>',
+    ].join('\n')
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    expect(html).toMatch(/<div[^>]*aria-roledescription="carousel"/)
+    const slides = html.match(/data-slot="carousel-item"/g) ?? []
+    expect(slides).toHaveLength(2)
+    expect(html).toContain('React')
+    expect(html).toMatch(/<p[^>]*>Vue is a progressive framework.<\/p>/)
+    expect(html).toContain('data-slot="carousel-previous"')
+    expect(html).toContain('data-slot="carousel-next"')
+  })
+
+  it('compiles a vertical Carousel, its orientation on the root', async () => {
+    const source = [
+      '<Carousel orientation="vertical">',
+      '  <CarouselContent className="h-80">',
+      '    <CarouselItem>React</CarouselItem>',
+      '    <CarouselItem>Vue</CarouselItem>',
+      '  </CarouselContent>',
+      '  <CarouselPrevious />',
+      '  <CarouselNext />',
+      '</Carousel>',
+    ].join('\n')
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    const root = html.match(/<div[^>]*data-slot="carousel"[^>]*>/)?.[0]
+    expect(root).toContain('data-orientation="vertical"')
+    expect(html).toContain('data-slot="carousel-previous"')
+    expect(html).toContain('data-slot="carousel-next"')
+  })
+
   it('renders a Tabs with a syncKey as one without: its defaultValue, until hydrated', async () => {
     const tabs = (syncKey: string) =>
       [
@@ -414,6 +475,16 @@ describe('Img', () => {
       expect(html).toContain(`src="${baseUrl}/authoring/gutenberg.jpg"`)
       expect(html).toContain('width="1100"')
       expect(html).toContain('height="695"')
+    })
+
+    it('resolves a relative src of an Img written as such', async () => {
+      vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+      vi.stubEnv('MDX_BASEURL', baseUrl)
+
+      const html = await render('<Img src="gutenberg.jpg" alt="Gutenberg" />', baseUrl)
+      expect(html).toContain(`src="${baseUrl}/authoring/gutenberg.jpg"`)
+      expect(html).toContain('width="1100"')
+      expect(html).toContain('alt="Gutenberg"')
     })
 
     it('derives the missing dimension from the ratio', async () => {
