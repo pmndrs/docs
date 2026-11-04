@@ -450,6 +450,16 @@ describe('Img', () => {
       expect(html).toContain('height="695"')
     })
 
+    it('resolves a relative src of an Img written as such', async () => {
+      vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+      vi.stubEnv('MDX_BASEURL', baseUrl)
+
+      const html = await render('<Img src="gutenberg.jpg" alt="Gutenberg" />', baseUrl)
+      expect(html).toContain(`src="${baseUrl}/authoring/gutenberg.jpg"`)
+      expect(html).toContain('width="1100"')
+      expect(html).toContain('alt="Gutenberg"')
+    })
+
     it('derives the missing dimension from the ratio', async () => {
       vi.stubEnv('MDX', join(process.cwd(), 'docs'))
       vi.stubEnv('MDX_BASEURL', baseUrl)

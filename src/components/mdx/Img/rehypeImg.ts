@@ -52,7 +52,8 @@ export function rehypeImg(
       // console.log('node', node)
 
       const isMDImage = 'tagName' in node && node.tagName === 'img'
-      const isHTMLImage = 'name' in node && node.name === 'img'
+      // `<img>` as HTML, or `<Img>` written as the component it becomes: the same resolution
+      const isHTMLImage = 'name' in node && (node.name === 'img' || node.name === 'Img')
 
       if (isMDImage) {
         node.tagName = 'Img' // map to <Img> React component
