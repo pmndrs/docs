@@ -99,6 +99,27 @@ export const Loop: Story = {
 }
 
 /**
+ * `orientation="vertical"`: the arrows above and below, in the root's gutter, and the strip
+ * needs a height.
+ */
+export const Vertical: Story = {
+  args: { orientation: 'vertical' },
+  render: (args) => (
+    <Carousel {...args}>
+      <CarouselContent className="h-64">
+        {slides.map((slide) => (
+          <CarouselItem key={slide} className="basis-1/2">
+            <Slide>{slide}</Slide>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  ),
+}
+
+/**
  * Any markup in a slide, e.g. a paragraph of text.
  */
 export const RichSlides: Story = {

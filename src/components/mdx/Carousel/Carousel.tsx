@@ -22,22 +22,36 @@ import type { ComponentProps } from 'react'
 /**
  * Slides shown one (or a few) at a time, scrolled by dragging, the arrows, or the arrow keys.
  *
- * - `opts`: embla's options (https://www.embla-carousel.com/api/options/), e.g.
+ * - `opts`: Embla's options (https://www.embla-carousel.com/api/options/), e.g.
  *   `{ loop: true, align: 'start' }`. Plain data only: the MDX runs on the server, the carousel
  *   in the browser.
  * - `orientation`: `horizontal` (default) or `vertical`.
  */
 export function Carousel({
+  orientation = 'horizontal',
   className,
   ...props
 }: Omit<ComponentProps<typeof UiCarousel>, 'setApi' | 'plugins'>) {
   // `.post-container > *` (globals.css) makes this root `display: block`: as `relative`, it still
-  // anchors the arrows. `px-12` is the gutter the arrows sit in (`left-2`/`right-2`, `size-8`).
-  return <UiCarousel className={cn('my-6 px-12', className)} {...props} />
+  // anchors the arrows. The padding is the gutter the arrows sit in (`size-8`, 0.5rem from the
+  // edge): on the sides of a horizontal carousel, above and below a vertical one. The arrows
+  // (server components too) read the orientation from `data-orientation`, not from the context.
+  return (
+    <UiCarousel
+      orientation={orientation}
+      data-orientation={orientation}
+      className={cn(
+        'group/carousel my-6',
+        orientation === 'vertical' ? 'py-12' : 'px-12',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 /**
- * The strip of `CarouselItem`s.
+ * The strip of `CarouselItem`s. A vertical carousel needs a height on it, e.g. `h-80`.
  */
 export function CarouselContent(props: ComponentProps<typeof UiCarouselContent>) {
   return <UiCarouselContent {...props} />
@@ -50,19 +64,27 @@ export function CarouselItem(props: ComponentProps<typeof UiCarouselItem>) {
   return <UiCarouselItem {...props} />
 }
 
+// The ui arrows are 3rem outside the root (`-left-12`, `-top-12`…): back inside its gutter. With
+// their orientation variants, these only add to the ui classes, without replacing their
+// counterparts of the other orientation (`left-1/2` of a vertical arrow stays).
+const previousClassName =
+  'group-data-[orientation=horizontal]/carousel:left-2 group-data-[orientation=vertical]/carousel:top-2'
+const nextClassName =
+  'group-data-[orientation=horizontal]/carousel:right-2 group-data-[orientation=vertical]/carousel:bottom-2'
+
 /**
- * The arrow to the previous slide, in the root's left gutter.
+ * The arrow to the previous slide, in the root's gutter: left, or top of a vertical carousel.
  */
 export function CarouselPrevious({
   className,
   ...props
 }: ComponentProps<typeof UiCarouselPrevious>) {
-  return <UiCarouselPrevious className={cn('left-2', className)} {...props} />
+  return <UiCarouselPrevious className={cn(previousClassName, className)} {...props} />
 }
 
 /**
- * The arrow to the next slide, in the root's right gutter.
+ * The arrow to the next slide, in the root's gutter: right, or bottom of a vertical carousel.
  */
 export function CarouselNext({ className, ...props }: ComponentProps<typeof UiCarouselNext>) {
-  return <UiCarouselNext className={cn('right-2', className)} {...props} />
+  return <UiCarouselNext className={cn(nextClassName, className)} {...props} />
 }

@@ -15,13 +15,13 @@ nav: 18
 <Carousel>
   <CarouselContent>
     <CarouselItem>
-      <div className="flex aspect-video items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">React</div>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
     </CarouselItem>
     <CarouselItem>
-      <div className="flex aspect-video items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">Vue</div>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
     </CarouselItem>
     <CarouselItem>
-      <div className="flex aspect-video items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">Svelte</div>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
     </CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
@@ -34,56 +34,37 @@ result:
 <Carousel>
   <CarouselContent>
     <CarouselItem>
-      <div className="flex aspect-video items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">React</div>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
     </CarouselItem>
     <CarouselItem>
-      <div className="flex aspect-video items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">Vue</div>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
     </CarouselItem>
     <CarouselItem>
-      <div className="flex aspect-video items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">Svelte</div>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
     </CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
 </Carousel>
 
-Same API as [shadcn `Carousel`](https://ui.shadcn.com/docs/components/base/carousel), built on [Embla](https://www.embla-carousel.com/). The arrows sit inside the article's width, in a gutter the carousel keeps on each side.
+Same API as [shadcn `Carousel`](https://ui.shadcn.com/docs/components/base/carousel): `opts` takes [Embla's options](https://www.embla-carousel.com/api/options/), `orientation` is `horizontal` or `vertical`. The arrows sit inside the article's width, in a gutter the carousel keeps on each side.
 
-Markdown inside a `CarouselItem` (an image, a paragraph, a code block) needs a blank line after the opening tag and before the closing one.
-
-## Options
-
-`opts` takes [Embla's options](https://www.embla-carousel.com/api/options/): `loop` to go from the last slide back to the first, `align` to align the slides to the start of the strip rather than its center…
-
-```md
-<Carousel opts={{ loop: true }}>
-  ...
-</Carousel>
-```
-
-Plain data only: the page is rendered on the server and the carousel runs in the browser, so `plugins` and `setApi` are not available from MDX.
-
-## Several slides at once
-
-A `basis-*` class on each `CarouselItem` sets how many slides fit at once, with `align: 'start'` so the strip starts on a slide:
+## Two at a time
 
 ```md
 <Carousel opts={{ align: "start" }}>
   <CarouselContent>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">1</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
     </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">2</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
     </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">3</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
     </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">4</div>
-    </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">5</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
     </CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
@@ -95,30 +76,107 @@ result:
 
 <Carousel opts={{ align: "start" }}>
   <CarouselContent>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">1</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
     </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">2</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
     </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">3</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
     </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">4</div>
-    </CarouselItem>
-    <CarouselItem className="basis-1/2 md:basis-1/3">
-      <div className="flex aspect-square items-center justify-center rounded-2xl border bg-surface-container text-3xl font-bold">5</div>
+    <CarouselItem className="basis-1/2">
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
     </CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
+</Carousel>
+
+## Vertical
+
+The strip needs a height:
+
+```md
+<Carousel orientation="vertical">
+  <CarouselContent className="h-80">
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+result:
+
+<Carousel orientation="vertical">
+  <CarouselContent className="h-80">
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+    <CarouselItem className="basis-1/2">
+      <div className="flex h-full items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
+## Without arrows
+
+Drag only, and `loop` so there is always a next slide. Without arrows, the gutter is of no use: `px-0`.
+
+```md
+<Carousel opts={{ loop: true }} className="px-0">
+  <CarouselContent>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+  </CarouselContent>
+</Carousel>
+```
+
+result:
+
+<Carousel opts={{ loop: true }} className="px-0">
+  <CarouselContent>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    </CarouselItem>
+  </CarouselContent>
 </Carousel>
 
 ## Images
 
-Slides hold any markup, images included:
-
 ```md
 <Carousel>
   <CarouselContent>
@@ -126,7 +184,10 @@ Slides hold any markup, images included:
       <Img src="gutenberg.jpg" alt="Gutenberg" />
     </CarouselItem>
     <CarouselItem>
-      <Img src="cell-fracture.webp" alt="Cell fracture" />
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
     </CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
@@ -142,7 +203,10 @@ result:
       <Img src="gutenberg.jpg" alt="Gutenberg" />
     </CarouselItem>
     <CarouselItem>
-      <Img src="cell-fracture.webp" alt="Cell fracture" />
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
+    </CarouselItem>
+    <CarouselItem>
+      <Img src="gutenberg.jpg" alt="Gutenberg" />
     </CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
