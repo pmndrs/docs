@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.28.0
+
+### Minor Changes
+
+- [#729](https://github.com/pmndrs/docs/pull/729) [`82d57c4`](https://github.com/pmndrs/docs/commit/82d57c4db067f8ff466eefec2bf2c588c4ca4886) Thanks [@abernier](https://github.com/abernier)! - `<Img>` written as such in MDX resolves its relative `src` against the MDX file, as `<img>` and `![]()` already did, and gets its dimensions the same way.
+
+- [#729](https://github.com/pmndrs/docs/pull/729) [`82d57c4`](https://github.com/pmndrs/docs/commit/82d57c4db067f8ff466eefec2bf2c588c4ca4886) Thanks [@abernier](https://github.com/abernier)! - `Carousel` MDX component: shadcn's Carousel (Embla), with `CarouselContent`, `CarouselItem`, `CarouselPrevious` and `CarouselNext`, documented in the authoring section. Its arrows sit inside the article's width, in a gutter on each side, or above and below a vertical carousel; without arrows, no gutter. In the markdown export of a page, the slides follow one another, without the arrows.
+
+### Patch Changes
+
+- [#729](https://github.com/pmndrs/docs/pull/729) [`82d57c4`](https://github.com/pmndrs/docs/commit/82d57c4db067f8ff466eefec2bf2c588c4ca4886) Thanks [@abernier](https://github.com/abernier)! - Markdown export: with a path-only `MDX_BASEURL` (e.g. `/react-three-fiber`), relative images (`![]()`, `<img>`, `<Img>`) were resolved twice and came out with the base path doubled. They are now resolved once.
+
 ## 4.27.0
 
 ### Minor Changes
