@@ -160,6 +160,11 @@ export function markdownComponents({
       )
       return href ? <a href={href}>{content}</a> : <span>{content}</span>
     },
+    Carousel: Content,
+    CarouselContent: Content,
+    CarouselItem: Content,
+    CarouselPrevious: () => null,
+    CarouselNext: () => null,
     Code,
     Color: ({ role, color, children }: ChildrenProps & { role?: string; color?: string }) => (
       <span>

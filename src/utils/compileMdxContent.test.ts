@@ -194,6 +194,40 @@ describe('compileMdxContent', () => {
     expect(vuePanel).not.toMatch(hiddenAttribute)
   })
 
+  it('compiles Carousel, every slide in the HTML', async () => {
+    const source = [
+      '<Carousel opts={{ loop: true }}>',
+      '  <CarouselContent>',
+      '    <CarouselItem>React</CarouselItem>',
+      '    <CarouselItem>',
+      '',
+      '      Vue is a progressive framework.',
+      '',
+      '    </CarouselItem>',
+      '  </CarouselContent>',
+      '  <CarouselPrevious />',
+      '  <CarouselNext />',
+      '</Carousel>',
+    ].join('\n')
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    expect(html).toMatch(/<div[^>]*aria-roledescription="carousel"/)
+    const slides = html.match(/aria-roledescription="slide"/g) ?? []
+    expect(slides).toHaveLength(2)
+    expect(html).toContain('React')
+    expect(html).toMatch(/<p[^>]*>Vue is a progressive framework.<\/p>/)
+    expect(html).toContain('Previous slide')
+    expect(html).toContain('Next slide')
+  })
+
   it('renders a Tabs with a syncKey as one without: its defaultValue, until hydrated', async () => {
     const tabs = (syncKey: string) =>
       [

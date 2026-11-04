@@ -61,6 +61,7 @@
     "cmdk": "^1.1.1",
     "cn": "^0.4.0",
     "commander": "^15.0.0",
+    "embla-carousel-react": "^8.6.0",
     "gray-matter": "^4.0.3",
     "hast-util-to-mdast": "^10.1.2",
     "image-size": "^2.0.4",
