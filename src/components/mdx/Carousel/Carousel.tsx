@@ -5,7 +5,7 @@ import {
   CarouselNext as UiCarouselNext,
   CarouselPrevious as UiCarouselPrevious,
 } from '@/components/ui/carousel'
-import { cn } from 'cn'
+import { cn } from '@/lib/utils'
 import type { ComponentProps } from 'react'
 
 //
@@ -18,6 +18,11 @@ import type { ComponentProps } from 'react'
 // (next-mdx-remote/rsc), handing everything to the client ui ones. The slides are rendered on the
 // server too, as children: only the scrolling and the arrows wait for the page's JavaScript.
 //
+
+const horizontalGutterClassName =
+  'has-[>[data-slot=carousel-previous],>[data-slot=carousel-next]]:px-12'
+const verticalGutterClassName =
+  'has-[>[data-slot=carousel-previous],>[data-slot=carousel-next]]:py-12'
 
 /**
  * Slides shown one (or a few) at a time, scrolled by dragging, the arrows, or the arrow keys.
@@ -34,15 +39,17 @@ export function Carousel({
 }: Omit<ComponentProps<typeof UiCarousel>, 'setApi' | 'plugins'>) {
   // `.post-container > *` (globals.css) makes this root `display: block`: as `relative`, it still
   // anchors the arrows. The padding is the gutter the arrows sit in (`size-8`, 0.5rem from the
-  // edge): on the sides of a horizontal carousel, above and below a vertical one. The arrows
-  // (server components too) read the orientation from `data-orientation`, not from the context.
+  // edge): on the sides of a horizontal carousel, above and below a vertical one. Only when the
+  // root has an arrow as a direct child (`:has(>…)`): a carousel without arrows keeps its full
+  // width. The arrows (server components too) read the orientation from `data-orientation`, not
+  // from the context.
   return (
     <UiCarousel
       orientation={orientation}
       data-orientation={orientation}
       className={cn(
-        'group/carousel my-6',
-        orientation === 'vertical' ? 'py-12' : 'px-12',
+        'my-6',
+        orientation === 'vertical' ? verticalGutterClassName : horizontalGutterClassName,
         className,
       )}
       {...props}
@@ -66,11 +73,13 @@ export function CarouselItem(props: ComponentProps<typeof UiCarouselItem>) {
 
 // The ui arrows are 3rem outside the root (`-left-12`, `-top-12`…): back inside its gutter. With
 // their orientation variants, these only add to the ui classes, without replacing their
-// counterparts of the other orientation (`left-1/2` of a vertical arrow stays).
+// counterparts of the other orientation (`left-1/2` of a vertical arrow stays). The variants match
+// the arrow's direct parent (`[data-orientation=…]>&`), the root: a `group-data-*` one would match
+// any ancestor carousel, and a vertical carousel nested in a horizontal one would get its `left-2`.
 const previousClassName =
-  'group-data-[orientation=horizontal]/carousel:left-2 group-data-[orientation=vertical]/carousel:top-2'
+  '[[data-orientation=horizontal]>&]:left-2 [[data-orientation=vertical]>&]:top-2'
 const nextClassName =
-  'group-data-[orientation=horizontal]/carousel:right-2 group-data-[orientation=vertical]/carousel:bottom-2'
+  '[[data-orientation=horizontal]>&]:right-2 [[data-orientation=vertical]>&]:bottom-2'
 
 /**
  * The arrow to the previous slide, in the root's gutter: left, or top of a vertical carousel.

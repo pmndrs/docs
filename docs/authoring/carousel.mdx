@@ -1,17 +1,19 @@
 ---
 title: "`Carousel`"
-description: Slides shown one at a time, scrolled by dragging or with arrows
+description: Slides shown one or a few at a time, scrolled by dragging or with arrows
 sourcecode: docs/authoring/carousel.mdx
 nav: 18
 ---
 
 <Intro>
-  Slides shown one (or a few) at a time: drag them, click the arrows, or focus the carousel and use the arrow keys.
+  Slides shown one (or a few) at a time: drag them, or click an arrow, then use the left and right arrow keys.
 </Intro>
+
+Same API as [shadcn `Carousel`](https://ui.shadcn.com/docs/components/base/carousel), built on [Embla](https://www.embla-carousel.com/) (`opts` takes [Embla's options](https://www.embla-carousel.com/api/options/)).
 
 ## Usage
 
-```md
+```jsx
 <Carousel>
   <CarouselContent>
     <CarouselItem>
@@ -47,11 +49,11 @@ result:
   <CarouselNext />
 </Carousel>
 
-Same API as [shadcn `Carousel`](https://ui.shadcn.com/docs/components/base/carousel): `opts` takes [Embla's options](https://www.embla-carousel.com/api/options/), `orientation` is `horizontal` or `vertical`. The arrows sit inside the article's width, in a gutter the carousel keeps on each side.
+The arrows sit inside the article's width, in a gutter: on each side, or above and below a vertical carousel.
 
 ## Two at a time
 
-```md
+```jsx
 <Carousel opts={{ align: "start" }}>
   <CarouselContent>
     <CarouselItem className="basis-1/2">
@@ -97,7 +99,7 @@ result:
 
 The strip needs a height:
 
-```md
+```jsx
 <Carousel orientation="vertical">
   <CarouselContent className="h-80">
     <CarouselItem className="basis-1/2">
@@ -141,10 +143,10 @@ result:
 
 ## Without arrows
 
-Drag only, and `loop` so there is always a next slide. Without arrows, the gutter is of no use: `px-0`.
+Drag only, and `loop` so there is always a next slide. No arrows, no gutter.
 
-```md
-<Carousel opts={{ loop: true }} className="px-0">
+```jsx
+<Carousel opts={{ loop: true }}>
   <CarouselContent>
     <CarouselItem>
       <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
@@ -161,7 +163,7 @@ Drag only, and `loop` so there is always a next slide. Without arrows, the gutte
 
 result:
 
-<Carousel opts={{ loop: true }} className="px-0">
+<Carousel opts={{ loop: true }}>
   <CarouselContent>
     <CarouselItem>
       <div className="flex aspect-video items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
@@ -177,7 +179,7 @@ result:
 
 ## Images
 
-```md
+```jsx
 <Carousel opts={{ loop: true }}>
   <CarouselContent>
     <CarouselItem>

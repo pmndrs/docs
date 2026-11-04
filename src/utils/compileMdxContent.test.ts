@@ -220,12 +220,39 @@ describe('compileMdxContent', () => {
     })
     const html = renderToString(result.content)
     expect(html).toMatch(/<div[^>]*aria-roledescription="carousel"/)
-    const slides = html.match(/aria-roledescription="slide"/g) ?? []
+    const slides = html.match(/data-slot="carousel-item"/g) ?? []
     expect(slides).toHaveLength(2)
     expect(html).toContain('React')
     expect(html).toMatch(/<p[^>]*>Vue is a progressive framework.<\/p>/)
-    expect(html).toContain('Previous slide')
-    expect(html).toContain('Next slide')
+    expect(html).toContain('data-slot="carousel-previous"')
+    expect(html).toContain('data-slot="carousel-next"')
+  })
+
+  it('compiles a vertical Carousel, its orientation on the root', async () => {
+    const source = [
+      '<Carousel orientation="vertical">',
+      '  <CarouselContent className="h-80">',
+      '    <CarouselItem>React</CarouselItem>',
+      '    <CarouselItem>Vue</CarouselItem>',
+      '  </CarouselContent>',
+      '  <CarouselPrevious />',
+      '  <CarouselNext />',
+      '</Carousel>',
+    ].join('\n')
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    const root = html.match(/<div[^>]*data-slot="carousel"[^>]*>/)?.[0]
+    expect(root).toContain('data-orientation="vertical"')
+    expect(html).toContain('data-slot="carousel-previous"')
+    expect(html).toContain('data-slot="carousel-next"')
   })
 
   it('renders a Tabs with a syncKey as one without: its defaultValue, until hydrated', async () => {
