@@ -10,7 +10,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # On a release commit (changesets' "Version Packages"), ci.yml publishes the version package.json
+  # names while this workflow runs: until it has, `latest` is still the previous release, which does
+  # not know the pages this commit adds for the new one (the Carousel page broke 4.28.0's deploy
+  # this way). So wait for npm's `latest` to have caught up with package.json before building.
+  # On any other push the two already agree and this passes at once; a publish that never comes
+  # fails here, in the open, instead of deploying a site built by the release before.
+  published:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Wait for npm's `latest` to be this commit's version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          for _ in $(seq 1 40); do
+            latest="$(npm view @pmndrs/docs dist-tags.latest)"
+            # `latest` at or past `version`: the oldest of the two, by semver, is `version`.
+            if [ "$(printf '%s\n%s\n' "$version" "$latest" | sort -V | head -n 1)" = "$version" ]; then
+              echo "@pmndrs/docs@latest is $latest"
+              exit 0
+            fi
+            echo "@pmndrs/docs@latest is $latest, waiting for $version"
+            sleep 30
+          done
+          echo "::error::@pmndrs/docs@$version was not published within 20 minutes"
+          exit 1
+
   build:
+    needs: published
     permissions:
       contents: read
       pages: write
