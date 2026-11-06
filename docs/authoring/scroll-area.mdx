@@ -83,4 +83,42 @@ result:
   <ScrollBar orientation="horizontal" />
 </ScrollArea>
 
+## Fade
+
+A [`scroll-fade`](/authoring/scroll-fade) class on the `ScrollArea` fades the edges of its viewport, the element that scrolls inside it, where there is more content to scroll to: `scroll-fade-x` for a horizontal one, `scroll-fade` for a vertical one.
+
+```jsx
+<ScrollArea className="scroll-fade-x">
+  <div className="flex w-max gap-4 py-4">
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">5</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">6</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">7</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">8</div>
+  </div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+```
+
+result:
+
+<ScrollArea className="scroll-fade-x">
+  <div className="flex w-max gap-4 py-4">
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">5</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">6</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">7</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">8</div>
+  </div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+
+At the start, only the right edge fades; mid-scroll, both; at the end, only the left. The fade dissolves the content, so leave the border off the `ScrollArea`.
+
 In the markdown export of a page, the content is written out in full, without the box.

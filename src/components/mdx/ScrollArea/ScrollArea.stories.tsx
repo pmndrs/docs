@@ -69,3 +69,12 @@ export const Horizontal: Story = {
     </ScrollArea>
   ),
 }
+
+/**
+ * A `scroll-fade-x` on the root fades the viewport, the element that scrolls: the right edge at
+ * the start, both mid-scroll, the left one at the end.
+ */
+export const HorizontalFade: Story = {
+  args: { className: 'w-96 scroll-fade-x' },
+  render: Horizontal.render,
+}

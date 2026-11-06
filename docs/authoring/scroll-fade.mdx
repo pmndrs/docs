@@ -9,7 +9,14 @@ nav: 20
   A fade on the edges of a scroll container, where there is more content to scroll to.
 </Intro>
 
-[shadcn's `scroll-fade`](https://ui.shadcn.com/docs/utils/scroll-fade) utility classes, available in any `className`: see its page for every class (`scroll-fade-t`, `scroll-fade-<number>`, `scroll-fade-none`…).
+[shadcn's `scroll-fade`](https://ui.shadcn.com/docs/utils/scroll-fade) utility classes, available in any `className`:
+
+- `scroll-fade` (or `scroll-fade-y`) and `scroll-fade-x`: both edges of an axis;
+- `scroll-fade-t`, `scroll-fade-b`, `scroll-fade-l`, `scroll-fade-r`, `scroll-fade-s`, `scroll-fade-e`: one edge;
+- `scroll-fade-1` to `scroll-fade-12`: the size of the fade, in spacing units;
+- `scroll-fade-none`: no fade.
+
+On a [`ScrollArea`](/authoring/scroll-area#fade), they fade its viewport.
 
 ## Usage
 

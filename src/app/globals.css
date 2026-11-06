@@ -17,6 +17,10 @@
  * is handed a folder from anywhere and stages it here. */
 @source '../../docs/**/*.{md,mdx}';
 
+/* The `scroll-fade` utilities (docs/authoring/scroll-fade.mdx), emitted whether or not a page uses
+ * them: docs read from elsewhere (`MDX=/path/to/docs pnpm dev`, fragments) are not scanned. */
+@source inline('scroll-fade{,-x,-y,-t,-b,-l,-r,-s,-e,-none,-{1..12}}');
+
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
  * roles of each custom colour named here: the seven pmndrs ones (`src/lib/md3.ts`),
  * then our alert colours (`src/lib/mtb.ts`). */
@@ -69,6 +73,62 @@ main :target {
    * the component: it is distributed, and has no `.post-container` to know about. */
   &[data-slot='color-group'] {
     @apply my-4 grid;
+  }
+}
+
+/* A `scroll-fade` utility on a `ScrollArea` (docs/authoring/scroll-area.mdx), where an author can
+ * only reach the root: it fades by the scroll position of its own element (`scroll(self)`), and
+ * the element that scrolls is the viewport inside. So the root drops its mask and its animation —
+ * in browsers without scroll timelines too, where the fade is static — and the viewport takes the
+ * utility instead. A sizing one (`scroll-fade-8`) needs nothing: its variable is inherited. */
+@layer utilities {
+  [data-slot='scroll-area'] {
+    &:is(
+      .scroll-fade,
+      .scroll-fade-y,
+      .scroll-fade-x,
+      .scroll-fade-t,
+      .scroll-fade-b,
+      .scroll-fade-l,
+      .scroll-fade-r,
+      .scroll-fade-s,
+      .scroll-fade-e
+    ) {
+      -webkit-mask-image: none;
+      mask-image: none;
+      animation: none;
+    }
+
+    &.scroll-fade > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade;
+    }
+    &.scroll-fade-y > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-y;
+    }
+    &.scroll-fade-x > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-x;
+    }
+    &.scroll-fade-t > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-t;
+    }
+    &.scroll-fade-b > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-b;
+    }
+    &.scroll-fade-l > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-l;
+    }
+    &.scroll-fade-r > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-r;
+    }
+    &.scroll-fade-s > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-s;
+    }
+    &.scroll-fade-e > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-e;
+    }
+    &.scroll-fade-none > [data-slot='scroll-area-viewport'] {
+      @apply scroll-fade-none;
+    }
   }
 }
 
