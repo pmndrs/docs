@@ -2,6 +2,7 @@ import type { Doc, DocToC } from '@/app/[...slug]/DocsContext'
 import type { DocsConfig } from '@/config'
 import { rehypeCodesandbox, type Box } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { compileMdxContent, compileMdxFrontmatter } from '@/utils/compileMdxContent'
+import { originalPath } from '@/utils/originalPath'
 import resolveMdxUrl from '@/utils/resolveMdxUrl'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
@@ -212,7 +213,7 @@ async function _getDocs(
           selectedUrl === null || url === selectedUrl
             ? await compileMdxContent(`# ${titleRaw}\n ${content}`, {
                 relFilePath,
-                absoluteFilePath: file,
+                absoluteFilePath: originalPath(file),
                 baseUrl: MDX_BASEURL,
                 title: titleRaw,
                 url,

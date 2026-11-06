@@ -1,3 +1,6 @@
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import type { ComponentType, ReactNode } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderMarkdown } from './renderMarkdown'
@@ -266,5 +269,21 @@ describe('renderMarkdown', () => {
     expect(markdown).not.toContain('decorative text')
     expect(markdown).not.toContain('<script')
     expect(markdown).not.toContain('<svg')
+  })
+
+  it('fills a fence with its `file=`, which the export does not carry', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'render-markdown-'))
+    try {
+      writeFileSync(join(dir, 'dev.sh'), 'echo dev\n')
+      const markdown = await renderMarkdown('```sh title="dev.sh" file="dev.sh"\nstale copy\n```', {
+        dir,
+      })
+
+      expect(markdown).toContain('echo dev')
+      expect(markdown).not.toContain('stale copy')
+      expect(markdown).not.toContain('file=')
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
   })
 })

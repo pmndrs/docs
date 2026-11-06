@@ -18,6 +18,17 @@ export function resolveDocsConfig(cwd: string, explicit?: string) {
 }
 
 /**
+ * Whether a path is a root or under it. A child whose name starts with `..`, like `..drafts`, is
+ * under it; another drive, on Windows, is not.
+ * @param root - Folder the path should be in
+ * @param path - Path to check
+ */
+export function isInside(root: string, path: string) {
+  const rel = relative(root, path)
+  return rel === '' || (rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel))
+}
+
+/**
  * Keeps the app and consumer modules inside Turbopack's filesystem root.
  * @param appDir - Directory containing the Next application
  * @param configDir - Directory containing the consumer module
@@ -26,8 +37,7 @@ export function commonRoot(appDir: string, configDir: string) {
   let root = resolve(appDir)
   const target = resolve(configDir)
   while (true) {
-    const path = relative(root, target)
-    if (path !== '..' && !path.startsWith(`..${sep}`) && !isAbsolute(path)) return root
+    if (isInside(root, target)) return root
     const parent = dirname(root)
     if (parent === root) throw new Error('The docs app and config must be on the same filesystem')
     root = parent

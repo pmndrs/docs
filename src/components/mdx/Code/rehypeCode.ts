@@ -2,13 +2,25 @@ import type { Element, Root } from 'hast'
 import { visit } from 'unist-util-visit'
 
 /**
+ * The value of a `name="..."` attribute of a fence's meta, e.g. `x.ts` for `title="x.ts"`.
+ * Double or single quotes. After a space, or the `}` of line highlights: `{2}title="x.ts"`. An
+ * empty value is none.
+ * @param meta - Meta of the fence, after its language
+ * @param name - Name of the attribute
+ */
+export function parseMetaAttribute(meta: string | null | undefined, name: string) {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = meta?.match(new RegExp(`(?:^|[\\s}])${escaped}=(?:"([^"]*)"|'([^']*)')`))
+  const value = match?.[1] ?? match?.[2]
+  return value || undefined
+}
+
+/**
  * The `title="..."` of a fence's meta, e.g. `lib/utils.ts` for ```` ```ts title="lib/utils.ts" ````.
- * Double or single quotes. After a space, or the `}` of line highlights: `{2}title="x.ts"`.
+ * @param meta - Meta of the fence, after its language
  */
 export function parseTitle(meta: string | undefined) {
-  const match = meta?.match(/(?:^|[\s}])title=(?:"([^"]*)"|'([^']*)')/)
-  const title = match?.[1] ?? match?.[2]
-  return title || undefined
+  return parseMetaAttribute(meta, 'title')
 }
 
 /**

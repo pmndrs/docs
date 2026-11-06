@@ -4,8 +4,9 @@ import { rehypeInlineFlow } from './rehypeInlineFlow'
 import type { DocsConfig } from '@/config'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
+import { remarkCodeFile } from '@/components/mdx/Code/remarkCodeFile'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import { relative } from 'node:path'
+import { dirname, relative } from 'node:path'
 import type { ReactNode } from 'react'
 // Next route handlers require the stream renderer's explicit edge entry point.
 import { renderToReadableStream } from 'react-dom/server.edge'
@@ -16,13 +17,15 @@ import remarkStringify from 'remark-stringify'
 import { unified } from 'unified'
 import type { parseDocsMetadata } from './docs'
 import { markdownComponents } from './markdownComponents'
+import { originalPath } from './originalPath'
 import { markdownHandlers, rehypePreserveCodeMeta, remarkAutolinks } from './markdownSyntax'
 
 type ParsedDoc = Awaited<ReturnType<typeof parseDocsMetadata>>[number]
 
 /**
- * Compiles trusted MDX into document-only Markdown. Code nodes stay literal; expressions
- * and JSX are evaluated with the same scope as the website before semantic serialization.
+ * Compiles trusted MDX into document-only Markdown. Code nodes stay literal, but for a fence's
+ * `file=`, which is filled with that file; expressions and JSX are evaluated with the same scope
+ * as the website before semantic serialization.
  * @param source - MDX without frontmatter
  * @param options - Consumer extensions and document context
  */
@@ -33,6 +36,7 @@ export async function renderMarkdown(
     entries = [],
     relFilePath = '',
     baseUrl,
+    dir,
   }: {
     /** Consumer components, static alternatives and expression values. */
     config?: DocsConfig
@@ -42,6 +46,8 @@ export async function renderMarkdown(
     relFilePath?: string
     /** Base URL for document assets. */
     baseUrl?: string
+    /** Folder of the current document, against which a fence's `file=` is resolved. */
+    dir?: string
   } = {},
 ) {
   const components = { ...markdownComponents({ entries, relFilePath, baseUrl }) }
@@ -70,7 +76,7 @@ export async function renderMarkdown(
       blockJS: false,
       scope: config.scope,
       mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkAutolinks],
+        remarkPlugins: [remarkGfm, remarkAutolinks, ...(dir ? [remarkCodeFile(dir)] : [])],
         rehypePlugins: [
           rehypePreserveCodeMeta,
           rehypeLink(process.env.BASE_PATH),
@@ -132,6 +138,7 @@ export async function renderDocMarkdown(
         entries: docs,
         relFilePath: `/${relative(root, doc.file).split('\\').join('/')}`,
         baseUrl: process.env.MDX_BASEURL,
+        dir: dirname(originalPath(doc.file)),
       },
     )
   } catch (error) {

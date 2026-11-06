@@ -31,6 +31,7 @@ import {
 import { Code } from '@/components/mdx/Code'
 import { rehypeCode } from '@/components/mdx/Code/rehypeCode'
 import { rehypePackageManagers } from '@/components/mdx/Code/rehypePackageManagers'
+import { remarkCodeFile } from '@/components/mdx/Code/remarkCodeFile'
 import { Codesandbox } from '@/components/mdx/Codesandbox'
 import { rehypeCodesandbox } from '@/components/mdx/Codesandbox/rehypeCodesandbox'
 import { Color, ColorGroup } from '@/registry/color/color'
@@ -74,7 +75,7 @@ import remarkGFM from 'remark-gfm'
 export type CompileMdxContentOptions = {
   /** Relative file path, e.g. "/getting-started/tutorials/store.mdx" */
   relFilePath: string
-  /** Absolute file path, against which `Sandpack folder=` is resolved */
+  /** Absolute file path, against which `Sandpack folder=` and a fence's `file=` are resolved */
   absoluteFilePath: string
   /** Base URL for resolving MDX URLs */
   baseUrl?: string
@@ -118,7 +119,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
       blockJS: false,
       scope,
       mdxOptions: {
-        remarkPlugins: [remarkGFM],
+        remarkPlugins: [remarkGFM, remarkCodeFile(dirname(absoluteFilePath))],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),

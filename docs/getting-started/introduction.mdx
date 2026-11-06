@@ -197,38 +197,15 @@ We implement [m3 design system](https://m3.material.io/styles/color/system/overv
 
 ### dev
 
-This is [`dev.sh`](https://github.com/pmndrs/docs/blob/main/dev.sh). The site listens on `PORT` (default `3000`), the MDX folder on any free port, so several checkouts can run side by side:
+Run [`dev.sh`](https://github.com/pmndrs/docs/blob/main/dev.sh). The site listens on `PORT` (default `3000`), the MDX folder on any free port, so several checkouts can run side by side:
 
-```sh collapsible
-$ (
-  trap 'kill -9 0' SIGINT
+```sh
+$ ./dev.sh
+```
 
-  export PORT=${PORT:-3000}
-  export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
+which is:
 
-  export MDX=docs
-  export NEXT_PUBLIC_LIBNAME="docs"
-  export NEXT_PUBLIC_LIBNAME_SHORT="docs"
-  export BASE_PATH=
-  export DIST_DIR=
-  export OUTPUT=
-  export HOME_REDIRECT=
-  export MDX_BASEURL=http://localhost:$_PORT
-  export SOURCECODE_BASEURL="vscode://file$(pwd)"
-  export EDIT_BASEURL="vscode://file$(pwd)/docs"
-  export NEXT_PUBLIC_URL=
-  export ICON=
-  export LOGO=gutenberg.jpg
-  export GITHUB=https://github.com/pmndrs/docs
-  export DISCORD=https://discord.com/channels/740090768164651008/1264328004172255393
-  export CONTRIBUTORS_PAT=
-
-  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-
-  pnpm run dev &
-
-  wait
-)
+```sh title="dev.sh" file="../../dev.sh" collapsible
 ```
 
 Then go to: http://localhost:3000
@@ -244,43 +221,15 @@ MDX=/path/to/library/docs DOCS_CONFIG=/path/to/library/docs.config.ts pnpm dev
 
 ### build
 
-This is [`start.sh`](https://github.com/pmndrs/docs/blob/main/start.sh), same ports:
+Run [`start.sh`](https://github.com/pmndrs/docs/blob/main/start.sh), same ports:
 
-```sh collapsible
-$ (
-  trap 'kill -9 0' SIGINT
+```sh
+$ ./start.sh
+```
 
-  # `next dev` leaves types pointing at `src/app/api`, which the export build moves aside
-  rm -rf out .next/dev/types
+which is:
 
-  export PORT=${PORT:-3000}
-  export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
-
-  export MDX=docs
-  export NEXT_PUBLIC_LIBNAME="docs"
-  export NEXT_PUBLIC_LIBNAME_SHORT="docs"
-  export BASE_PATH=
-  export DIST_DIR=
-  export OUTPUT=export
-  export HOME_REDIRECT=
-  export MDX_BASEURL=http://localhost:$_PORT
-  export SOURCECODE_BASEURL=
-  export EDIT_BASEURL=
-  export NEXT_PUBLIC_URL=
-  export ICON=
-  export LOGO=gutenberg.jpg
-  export GITHUB=https://github.com/pmndrs/docs
-  export DISCORD=https://discord.com/channels/740090768164651008/1264328004172255393
-  export CONTRIBUTORS_PAT=
-
-  pnpm run build
-
-  npx serve $MDX -p $_PORT --no-port-switching --no-clipboard &
-
-  npx serve out -p $PORT &
-
-  wait
-)
+```sh title="start.sh" file="../../start.sh" collapsible
 ```
 
 http://localhost:3000
