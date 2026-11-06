@@ -21,6 +21,13 @@ mkdirSync(page)
 writeFileSync(join(repo, 'dev.sh'), 'echo repo\n')
 writeFileSync(join(outside, 'secret.sh'), 'echo secret\n')
 
+// A project without `.git`, as Vercel builds it: its `package.json` marks the root
+const project = join(outside, 'project')
+const projectPage = join(project, 'docs')
+mkdirSync(projectPage, { recursive: true })
+writeFileSync(join(project, 'package.json'), '{}')
+writeFileSync(join(project, 'dev.sh'), 'echo project\n')
+
 afterAll(() => {
   for (const folder of [dir, outside]) rmSync(folder, { recursive: true, force: true })
 })
@@ -101,6 +108,15 @@ describe('remarkCodeFile, in a repository', () => {
   it('refuses a file out of the repository', async () => {
     await expect(render('```sh file="../../secret.sh"\n```', page)).rejects.toThrow(
       `file="../../secret.sh" is outside the repository holding the page: ${repo}`,
+    )
+  })
+
+  it('takes the nearest `package.json` as the root without a `.git`', async () => {
+    expect((await render('```sh file="../dev.sh"\n```', projectPage)).html).toContain(
+      'echo project',
+    )
+    await expect(render('```sh file="../../secret.sh"\n```', projectPage)).rejects.toThrow(
+      `is outside the repository holding the page: ${project}`,
     )
   })
 })
