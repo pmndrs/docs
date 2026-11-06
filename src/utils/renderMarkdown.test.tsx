@@ -64,7 +64,10 @@ describe('renderMarkdown', () => {
     vi.stubEnv('SOURCECODE_BASEURL', 'https://github.com/pmndrs/docs/tree/main')
     const markdown = await renderMarkdown(
       '[index](../../src/components/mdx/index.tsx) and [img](./img.mdx)',
-      { relFilePath: '/authoring/introduction.mdx' },
+      {
+        relFilePath: '/authoring/introduction.mdx',
+        file: join(process.cwd(), 'docs/authoring/introduction.mdx'),
+      },
     )
 
     expect(markdown).toContain(
@@ -290,7 +293,7 @@ describe('renderMarkdown', () => {
     try {
       writeFileSync(join(dir, 'dev.sh'), 'echo dev\n')
       const markdown = await renderMarkdown('```sh title="dev.sh" file="dev.sh"\nstale copy\n```', {
-        dir,
+        file: join(dir, 'page.mdx'),
       })
 
       expect(markdown).toContain('echo dev')

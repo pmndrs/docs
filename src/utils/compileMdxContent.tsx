@@ -60,7 +60,7 @@ import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
-import { mdxRepoPath } from '@/utils/mdxRepoPath'
+import { mdxFolder } from '@/utils/originalPath'
 import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
@@ -124,7 +124,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         remarkPlugins: [remarkGFM, remarkCodeFile(dirname(absoluteFilePath))],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
-          rehypeRepoLink(relFilePath, mdxRepoPath(), process.env.SOURCECODE_BASEURL),
+          rehypeRepoLink(absoluteFilePath, mdxFolder(), process.env.SOURCECODE_BASEURL),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),

@@ -57,45 +57,6 @@ export default function resolveMdxUrl(src: string, mdFile: string, baseUrl?: str
 }
 
 /**
- * The URL of the repository file a relative link of an MDX page points to, when that file is out
- * of the MDX folder: on GitHub, such a link resolves on the branch viewed, but the website only
- * serves the MDX folder. So it is resolved, with `resolveMdxUrl`, under `sourcecodeBaseUrl`
- * (`SOURCECODE_BASEURL`, the repository's tree on the branch deployed).
- *
- * Any other `href` is returned as is: a link staying in the MDX folder (another page, an asset),
- * one with a scheme, protocol-relative, root-relative or an anchor, and every link without a
- * `sourcecodeBaseUrl` or a known `mdxRepoPath`.
- *
- * @param href - The link as written in the MDX file
- * @param mdFile - The MDX file, relative to the MDX folder, e.g. `/authoring/introduction.mdx`
- * @param mdxRepoPath - The MDX folder, relative to the repository root, e.g. `docs` (`''`: the root)
- * @param sourcecodeBaseUrl - The repository's tree, e.g. `https://github.com/pmndrs/docs/tree/main`
- * @example repoFileUrl('../../src/a.ts', '/authoring/introduction.mdx', 'docs', 'https://github.com/pmndrs/docs/tree/main') // "https://github.com/pmndrs/docs/tree/main/src/a.ts"
- */
-export function repoFileUrl(
-  href: string,
-  mdFile: string,
-  mdxRepoPath: string | undefined,
-  sourcecodeBaseUrl: string | undefined,
-) {
-  if (!sourcecodeBaseUrl || mdxRepoPath === undefined) return href
-  // Relative only: no scheme, and not `//host`, `/path` or `#anchor`
-  if (!href || /^([a-z][a-z\d+.-]*:|\/|#)/i.test(href)) return href
-
-  const folder = mdxRepoPath.replace(/^\/+|\/+$/g, '')
-  // At the repository root, no link can leave the MDX folder
-  if (!folder) return href
-
-  // Prefixed by the MDX folder, `..` can go up to the repository root, where `resolveMdxUrl` stops
-  const url = resolveMdxUrl(href, `${folder}/${mdFile.replace(/^\/+/, '')}`, sourcecodeBaseUrl)
-  const { pathname } = new URL(url)
-  const folderPath = new URL(resolveMdxUrl(folder, 'index.mdx', sourcecodeBaseUrl)).pathname
-  const inFolder = pathname === folderPath || pathname.startsWith(`${folderPath}/`)
-
-  return inFolder ? href : url
-}
-
-/**
  * The file in the MDX folder that `src` points to: the reverse of `resolveMdxUrl`, for a `src`
  * under `baseUrl`. `undefined` for any other `src`, which is not in the MDX folder.
  *

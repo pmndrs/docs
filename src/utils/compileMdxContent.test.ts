@@ -191,7 +191,7 @@ describe('compileMdxContent', () => {
         {
           ...{ baseUrl, title, url, tableOfContents, entries },
           relFilePath: '/authoring/introduction.mdx',
-          absoluteFilePath,
+          absoluteFilePath: join(process.cwd(), 'docs/authoring/introduction.mdx'),
         },
       )
       const $ = load(renderToString(result.content))

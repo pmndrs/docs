@@ -18,8 +18,7 @@ import remarkStringify from 'remark-stringify'
 import { unified } from 'unified'
 import type { parseDocsMetadata } from './docs'
 import { markdownComponents } from './markdownComponents'
-import { mdxRepoPath } from './mdxRepoPath'
-import { originalPath } from './originalPath'
+import { mdxFolder, originalPath } from './originalPath'
 import { markdownHandlers, rehypePreserveCodeMeta, remarkAutolinks } from './markdownSyntax'
 
 type ParsedDoc = Awaited<ReturnType<typeof parseDocsMetadata>>[number]
@@ -38,7 +37,7 @@ export async function renderMarkdown(
     entries = [],
     relFilePath = '',
     baseUrl,
-    dir,
+    file,
   }: {
     /** Consumer components, static alternatives and expression values. */
     config?: DocsConfig
@@ -48,8 +47,8 @@ export async function renderMarkdown(
     relFilePath?: string
     /** Base URL for document assets. */
     baseUrl?: string
-    /** Folder of the current document, against which a fence's `file=` is resolved. */
-    dir?: string
+    /** Absolute path of the current document, as written: a fence's `file=` and a link to a repository file are resolved against its folder. */
+    file?: string
   } = {},
 ) {
   const components = { ...markdownComponents({ entries, relFilePath, baseUrl }) }
@@ -78,11 +77,15 @@ export async function renderMarkdown(
       blockJS: false,
       scope: config.scope,
       mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkAutolinks, ...(dir ? [remarkCodeFile(dir)] : [])],
+        remarkPlugins: [
+          remarkGfm,
+          remarkAutolinks,
+          ...(file ? [remarkCodeFile(dirname(file))] : []),
+        ],
         rehypePlugins: [
           rehypePreserveCodeMeta,
           rehypeLink(process.env.BASE_PATH),
-          rehypeRepoLink(relFilePath, mdxRepoPath(), process.env.SOURCECODE_BASEURL),
+          ...(file ? [rehypeRepoLink(file, mdxFolder(), process.env.SOURCECODE_BASEURL)] : []),
           // Only renames to `Img`: its markdown twin resolves the src, `src={expression}` included, which rehypeImg cannot.
           rehypeImg(relFilePath, undefined),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
@@ -141,7 +144,7 @@ export async function renderDocMarkdown(
         entries: docs,
         relFilePath: `/${relative(root, doc.file).split('\\').join('/')}`,
         baseUrl: process.env.MDX_BASEURL,
-        dir: dirname(originalPath(doc.file)),
+        file: originalPath(doc.file),
       },
     )
   } catch (error) {
