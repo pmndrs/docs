@@ -13,8 +13,8 @@ import { LiveView } from './LiveView'
  * and the same `prefers-color-scheme` anywhere.
  *
  * Left out of the static export and of the npm package, with its events endpoint (`./events`) and
- * along with `src/app/api` (see `next-build.sh`, `src/cli/website.ts` and the `files` of
- * `package.json`): it is docs.pmnd.rs's own page, beside the server it watches.
+ * along with `src/app/api` (see `src/cli/website.ts` and the `files` of `package.json`):
+ * it is docs.pmnd.rs's own page, beside the server it watches.
  */
 
 export const metadata: Metadata = {

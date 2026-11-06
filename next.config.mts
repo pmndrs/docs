@@ -57,9 +57,10 @@ const configModule = docsConfig ?? `${appDir}/src/config.ts`
 const dependencyRoot = dirname(createRequire(import.meta.url).resolve('next/package.json'))
 
 const basePath = process.env.BASE_PATH || ''
-const distDir = process.env.DIST_DIR || undefined
+// Set only by the CLI (`withNextExport` in src/cli/website.ts): a static export goes through it.
+const distDir = process.env.PMNDRS_DIST_DIR || undefined
 // Next validates the environment value when it loads this configuration.
-const output = (process.env.OUTPUT || undefined) as NextConfig['output']
+const output = (process.env.PMNDRS_OUTPUT || undefined) as NextConfig['output']
 
 /**
  * Each page's markdown at the page's own URL plus `.md`, e.g. `/getting-started/introduction.md`.
@@ -68,8 +69,8 @@ const output = (process.env.OUTPUT || undefined) as NextConfig['output']
  * sit beside `[...slug]/page.tsx`. A default (`afterFiles`) rewrite is checked before dynamic
  * routes, so the `[...slug]` catch-all never sees these paths.
  *
- * Server only: a static export has no rewrites (Next warns about them), and `next-build.sh` and
- * the CLI move the exported files to the same URLs instead.
+ * Server only: a static export has no rewrites (Next warns about them), and the CLI moves
+ * the exported files to the same URLs instead.
  */
 async function rewrites() {
   return [

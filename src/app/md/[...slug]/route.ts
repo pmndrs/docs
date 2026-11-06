@@ -7,7 +7,7 @@ import { getSiteMarkdown } from '@/utils/site-markdown'
 //
 // A route handler cannot sit next to `[...slug]/page.tsx`, hence its own `/md` prefix -- an
 // internal one. A server build rewrites `/<path>.md` to `/md/<path>.md` (`next.config.mts`), and
-// a static export moves the files from `md/` to `<path>.md` (`next-build.sh` and the CLI's
+// a static export moves the files from `md/` to `<path>.md` (the CLI's
 // `src/cli/website.ts`). It stays out of `/api`, which the static export leaves behind.
 //
 

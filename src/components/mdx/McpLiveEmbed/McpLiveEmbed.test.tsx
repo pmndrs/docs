@@ -8,7 +8,7 @@ afterEach(() => {
 
 describe('McpLiveEmbed', () => {
   it("embeds the app's own view, under its basePath, where the app is served", () => {
-    vi.stubEnv('OUTPUT', '')
+    vi.stubEnv('PMNDRS_OUTPUT', '')
     vi.stubEnv('BASE_PATH', '/docs')
     const html = renderToStaticMarkup(<McpLiveEmbed />)
     expect(html).toContain('<iframe src="/docs/mcp/live?embed"')
@@ -16,7 +16,7 @@ describe('McpLiveEmbed', () => {
   })
 
   it('embeds the view docs.pmnd.rs serves in a static export, which has none', () => {
-    vi.stubEnv('OUTPUT', 'export')
+    vi.stubEnv('PMNDRS_OUTPUT', 'export')
     vi.stubEnv('BASE_PATH', '/docs')
     const html = renderToStaticMarkup(<McpLiveEmbed />)
     expect(html).toContain('<iframe src="https://docs.pmnd.rs/mcp/live?embed"')
