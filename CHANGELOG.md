@@ -1,5 +1,13 @@
 # @pmndrs/docs
 
+## 4.30.1
+
+### Patch Changes
+
+- [#746](https://github.com/pmndrs/docs/pull/746) [`8025a88`](https://github.com/pmndrs/docs/commit/8025a88bb0b92d399bf5d385184fa37a81cceab3) Thanks [@abernier](https://github.com/abernier)! - Dependencies bumped to their latest minor and patch releases (React 19.3.1, Mermaid 12.3, lucide-react 1.70, Tailwind CSS 4.3.4, among others)
+
+- [#742](https://github.com/pmndrs/docs/pull/742) [`19ff37a`](https://github.com/pmndrs/docs/commit/19ff37a521a141361681e9aa91670cb32b2e09e8) Thanks [@abernier](https://github.com/abernier)! - Next.js 16.4.5, for its security fixes (16.4.0 is affected by GHSA-2464-fhr4-w9xw, among others)
+
 ## 4.30.0
 
 ### Minor Changes
