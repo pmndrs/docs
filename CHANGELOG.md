@@ -1,5 +1,15 @@
 # @pmndrs/docs
 
+## 4.31.0
+
+### Minor Changes
+
+- [#749](https://github.com/pmndrs/docs/pull/749) [`100c3ee`](https://github.com/pmndrs/docs/commit/100c3eeb2432d7d9aa57b782a01037925e391d72) Thanks [@abernier](https://github.com/abernier)! - A relative link to a repository file out of the MDX folder, e.g. `[index.tsx](../../src/components/mdx/index.tsx)`, now links to that file on GitHub, on the branch deployed, under `SOURCECODE_BASEURL`, on the website and in its Markdown exports alike. It already resolved on GitHub; on the site it was a 404.
+
+### Patch Changes
+
+- [#750](https://github.com/pmndrs/docs/pull/750) [`8d5baa3`](https://github.com/pmndrs/docs/commit/8d5baa35cd37466f48b8635e0a78055d37e331a6) Thanks [@abernier](https://github.com/abernier)! - The copy button of a code block copies the whole block, not just its first part
+
 ## 4.30.1
 
 ### Patch Changes
