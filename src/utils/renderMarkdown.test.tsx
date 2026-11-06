@@ -202,8 +202,8 @@ describe('renderMarkdown', () => {
       '<ScrollArea className="h-72"><p>Scrolled content</p><ScrollBar orientation="horizontal" /></ScrollArea>',
     )
 
+    expect(markdown).toBe(await renderMarkdown('<p>Scrolled content</p>'))
     expect(markdown).toContain('Scrolled content')
-    expect(markdown).not.toContain('scroll-area')
   })
 
   it('awaits custom server components and permits a static alternative to an opaque client component', async () => {

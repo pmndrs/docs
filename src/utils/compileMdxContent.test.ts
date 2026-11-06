@@ -255,7 +255,7 @@ describe('compileMdxContent', () => {
     expect(html).toContain('data-slot="carousel-next"')
   })
 
-  it('compiles ScrollArea, its content and an extra scrollbar in the HTML', async () => {
+  it('compiles ScrollArea, its content in the viewport, a ScrollBar written in it included', async () => {
     const source = [
       '<ScrollArea className="h-72">',
       '',
@@ -273,10 +273,11 @@ describe('compileMdxContent', () => {
       tableOfContents,
       entries,
     })
-    const html = renderToString(result.content)
-    expect(html).toContain('data-slot="scroll-area"')
-    expect(html).toContain('data-slot="scroll-area-viewport"')
-    expect(html).toMatch(/<p[^>]*>Vue is a progressive framework.<\/p>/)
+    // An undefined ScrollBar would make MDX throw here: rendering proves it compiles.
+    const $ = load(renderToString(result.content))
+    const viewport = $('[data-slot="scroll-area"] [data-slot="scroll-area-viewport"]')
+    expect(viewport).toHaveLength(1)
+    expect(viewport.find('p').text()).toBe('Vue is a progressive framework.')
   })
 
   it('renders a Tabs with a syncKey as one without: its defaultValue, until hydrated', async () => {

@@ -13,8 +13,8 @@ import type { ComponentProps } from 'react'
 
 /**
  * A box that scrolls its content, with a custom scrollbar. It needs a size to scroll within,
- * e.g. `h-72`. A vertical scrollbar is always there: add a `<ScrollBar orientation="horizontal" />`
- * for horizontal content.
+ * e.g. `h-72`. The vertical scrollbar is built in, shown when the content overflows vertically: add
+ * a `<ScrollBar orientation="horizontal" />` for horizontal content.
  */
 export function ScrollArea({ className, ...props }: ComponentProps<typeof UiScrollArea>) {
   return <UiScrollArea className={cn('my-6', className)} {...props} />

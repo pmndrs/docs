@@ -16,40 +16,44 @@ nav: 20
 On the element that scrolls, the one with `overflow-y-auto`:
 
 ```jsx
-<div className="h-72 scroll-fade overflow-y-auto rounded-2xl border">
-  <div className="flex flex-col gap-1.5 p-1.5">
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+<div className="overflow-hidden rounded-2xl border">
+  <div className="h-72 scroll-fade overflow-y-auto">
+    <div className="flex flex-col gap-1.5 p-1.5">
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+    </div>
   </div>
 </div>
 ```
 
 result:
 
-<div className="h-72 scroll-fade overflow-y-auto rounded-2xl border">
-  <div className="flex flex-col gap-1.5 p-1.5">
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+<div className="overflow-hidden rounded-2xl border">
+  <div className="h-72 scroll-fade overflow-y-auto">
+    <div className="flex flex-col gap-1.5 p-1.5">
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+    </div>
   </div>
 </div>
 
-At the top, only the bottom edge fades; mid-scroll, both; at the end, only the top. Content that does not overflow does not fade.
+At the top, only the bottom edge fades; mid-scroll, both; at the end, only the top. Content that does not overflow does not fade. In browsers without `animation-timeline: scroll()`, both edges fade, always.
 
 The fade is a mask: it dissolves the content, and the border of the element with it. For a crisp border, put it on a wrapper.
 
