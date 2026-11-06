@@ -13,16 +13,7 @@ import {
   type PackageManagerCommands,
 } from '@/utils/packageManagers'
 import { CheckIcon, CopyIcon, SquareTerminalIcon } from 'lucide-react'
-import {
-  ComponentProps,
-  isValidElement,
-  ReactNode,
-  UIEvent,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from 'react'
+import { ComponentProps, ReactNode, UIEvent, useEffect, useId, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { CodeFileIcon } from './CodeFileIcon'
 
@@ -70,6 +61,7 @@ export const Code = ({
   const [open, setOpen] = useState(false)
   const clipId = useId()
   const clipRef = useRef<HTMLDivElement>(null)
+  const preRef = useRef<HTMLPreElement>(null)
   const [overflows, setOverflows] = useState(true)
 
   // Measured closed, clipped to its first lines: whether the code goes past them. Open, it fits
@@ -116,7 +108,9 @@ export const Code = ({
       collapsible={collapses}
       controls={clipId}
       open={open}
-      getText={() => extractTextFromChildren(children)}
+      // The rendered text, not a walk of `children`: under RSC, their lines are lazy chunks that are
+      // not React elements, and would be dropped
+      getText={() => preRef.current?.textContent ?? ''}
     />
   )
 
@@ -124,7 +118,7 @@ export const Code = ({
   // masks the scroller and everything it paints. The header, the actions and the fade of a
   // collapsed block, siblings, stay unmasked.
   const pre = (
-    <pre {...props} className={cn(className, preClassName)}>
+    <pre {...props} ref={preRef} className={cn(className, preClassName)}>
       {children}
     </pre>
   )
@@ -314,24 +308,4 @@ function CopyButton({ getText, className }: { getText: () => string; className?:
       {copied ? <CheckIcon /> : <CopyIcon />}
     </Button>
   )
-}
-
-// Recursive function to extract text content from React nodes
-const extractTextFromChildren = (children: ReactNode): string => {
-  if (typeof children === 'string') {
-    return children
-  }
-
-  if (Array.isArray(children)) {
-    return children.map(extractTextFromChildren).join('')
-  }
-
-  if (isValidElement(children)) {
-    const props = children.props as Record<string, unknown>
-    if ('children' in props) {
-      return extractTextFromChildren(props.children as ReactNode)
-    }
-  }
-
-  return ''
 }
