@@ -1,5 +1,8 @@
+import { repositoryRoot } from '@/utils/repositoryRoot'
 import type { Root } from 'hast'
+import { dirname } from 'node:path'
 import { visit } from 'unist-util-visit'
+import { repoFileUrl } from './repoFileUrl'
 
 //
 // MD link
@@ -35,11 +38,35 @@ import { visit } from 'unist-util-visit'
 //   children: [...]
 // }
 
+/** The page being compiled, to point its relative links out of the MDX folder at the repository. */
+type RepoLinkOptions = {
+  /** Absolute path of the MDX file, as written */
+  file: string
+  /** Absolute path of the MDX folder, as written */
+  mdxFolder: string | undefined
+  /** The repository's tree on the branch deployed */
+  SOURCECODE_BASEURL: string | undefined
+}
+
+/**
+ * Resolves the links of a page: Markdown links, `<a href>` and `<Badge href>` alike. A link
+ * starting with `/` gets `BASE_PATH` prepended; with `repo`, a relative link to a repository file
+ * out of the MDX folder, e.g. `[index.tsx](../../src/components/mdx/index.tsx)`, points at that
+ * file on GitHub (see `repoFileUrl`). Any other link is left as is.
+ *
+ * @param BASE_PATH - Prefix of the website's paths
+ * @param repo - The page being compiled, for its links to repository files
+ */
 // https://unifiedjs.com/learn/guide/create-a-rehype-plugin/
-export function rehypeLink(BASE_PATH: string | undefined) {
+export function rehypeLink(BASE_PATH: string | undefined, repo?: RepoLinkOptions) {
   return () => (tree: Root) => {
-    // Only process if BASE_PATH is defined and not empty
-    if (!BASE_PATH) return
+    const root = repo && repositoryRoot(dirname(repo.file))
+
+    function resolveHref(href: string) {
+      if (href.startsWith('/')) return BASE_PATH ? BASE_PATH + href : href
+      if (!repo) return href
+      return repoFileUrl(href, repo.file, repo.mdxFolder, repo.SOURCECODE_BASEURL, root)
+    }
 
     visit(tree, null, function (node) {
       const isMDLink = 'tagName' in node && node.tagName === 'a'
@@ -47,31 +74,16 @@ export function rehypeLink(BASE_PATH: string | undefined) {
       const isHTMLLink = 'name' in node && (node.name === 'a' || node.name === 'Badge')
 
       if (isMDLink) {
-        //
-        // Resolve links starting with /
-        //
-
-        const oldHref = node.properties.href
-        if (typeof oldHref === 'string' && oldHref.startsWith('/')) {
-          node.properties.href = BASE_PATH + oldHref
-        }
+        const href = node.properties.href
+        if (typeof href === 'string') node.properties.href = resolveHref(href)
       }
 
       if (isHTMLLink) {
-        //
-        // Resolve links starting with /
-        //
-
         const hrefAttr = node.attributes
-          .filter((node) => 'name' in node)
+          .filter((attr) => 'name' in attr)
           .find((attr) => attr.name === 'href')
 
-        if (hrefAttr) {
-          const oldHref = hrefAttr?.value
-
-          if (typeof oldHref === 'string' && oldHref.startsWith('/'))
-            hrefAttr.value = BASE_PATH + oldHref
-        }
+        if (typeof hrefAttr?.value === 'string') hrefAttr.value = resolveHref(hrefAttr.value)
       }
     })
   }

@@ -59,6 +59,25 @@ describe('renderMarkdown', () => {
     expect(markdown).toContain('![External](https://images.example.com/preview.png)')
   })
 
+  it('links a repository file out of the MDX folder to SOURCECODE_BASEURL', async () => {
+    vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+    vi.stubEnv('SOURCECODE_BASEURL', 'https://github.com/pmndrs/docs/tree/main')
+    const markdown = await renderMarkdown(
+      '[index](../../src/components/mdx/index.tsx) and [img](./img.mdx) <a href="../../README.md">readme</a> <Badge href="../../README.md">badge</Badge>',
+      {
+        relFilePath: '/authoring/introduction.mdx',
+        file: join(process.cwd(), 'docs/authoring/introduction.mdx'),
+      },
+    )
+
+    expect(markdown).toContain(
+      '[index](https://github.com/pmndrs/docs/tree/main/src/components/mdx/index.tsx)',
+    )
+    expect(markdown).toContain('[img](./img.mdx)')
+    expect(markdown).toContain('[readme](https://github.com/pmndrs/docs/tree/main/README.md)')
+    expect(markdown).toContain('[badge](https://github.com/pmndrs/docs/tree/main/README.md)')
+  })
+
   it('evaluates scoped table cells, mapped rows, links and commands as Markdown', async () => {
     const source = [
       '# Foundations',
@@ -276,7 +295,7 @@ describe('renderMarkdown', () => {
     try {
       writeFileSync(join(dir, 'dev.sh'), 'echo dev\n')
       const markdown = await renderMarkdown('```sh title="dev.sh" file="dev.sh"\nstale copy\n```', {
-        dir,
+        file: join(dir, 'page.mdx'),
       })
 
       expect(markdown).toContain('echo dev')

@@ -14,3 +14,11 @@ export function originalPath(path: string) {
   if (!isInside(copy, path)) return path
   return join(PMNDRS_MDX_SOURCE, relative(copy, path))
 }
+
+/**
+ * The MDX folder (`MDX`) as written, rather than the CLI's copy of it; `undefined` without `MDX`.
+ */
+export function mdxFolder() {
+  const { MDX } = process.env
+  return MDX ? originalPath(resolve(MDX)) : undefined
+}
