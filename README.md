@@ -15,20 +15,7 @@ $ npx @pmndrs/docs drei/performances/instances     # straight to a page
 $ npx @pmndrs/docs search instanced mesh           # one result per line, on stdout
 ```
 
-`↑↓` drives whichever pane has the focus — the list of pages, or the page itself. `⏎` or `⇥`
-hands the focus over, `esc` or `⇥` hands it back, and the lit border says where it is — the
-wheel moves whichever pane it points at, focus or no focus. `←→` changes library, `b` folds the sidebar away, `/` searches every library at once, `o` opens the
-page in a browser, `q` quits. Links inside a page are clickable wherever the terminal honours
-OSC 8 hyperlinks — iTerm2, Ghostty, WezTerm, Kitty, Windows Terminal.
-
-`search` is the half a pipe or an agent can use: results read `{lib} {path} - {title}`, the
-shape the [MCP server](https://docs.pmnd.rs) publishes its index in, and nothing found exits 1.
-`--in drei` narrows to one library, `--in drei/performances/instances` to the matching lines of
-one page.
-
-Both read the published `llms-full.txt` of each library, cached for an hour under
-`~/.cache/pmndrs-docs` — `--refresh` fetches again. Outside a terminal, a page target is
-written to stdout, so `npx @pmndrs/docs drei/performances/instances | glow` works.
+See [read](docs/getting-started/introduction.mdx#read) for keys, `search` and caching.
 
 ## Build
 
@@ -38,38 +25,7 @@ $ npx @pmndrs/docs@latest build docs out                    # one .html per .mdx
 $ npx @pmndrs/docs@latest build docs out --format website   # the whole website, statically exported
 ```
 
-Both formats use the same Next.js build and static export. `--format fragment` (the default)
-extracts the compiled MDX from that export: no layout, no stylesheet, no script. Mermaid
-diagrams stay fenced blocks, and Sandpack shows its code without the editor.
-
-Rendering a document runs `next build`, including a single file or stdin. For those inputs,
-stdout contains only the HTML; build logs go to stderr. esbuild is used only to package the
-CLI for publication, not to load consumer components or render documents.
-
-`build --help` lists every website option — `--libname`, `--base-path`, `--icon`, `--theme-*`… Each
-one falls back to the environment variable it maps to, the same ones
-[configuration](docs/getting-started/introduction.mdx#configuration) documents.
-
-To use your repository's React components and shared data in MDX, add `docs.config.ts` in the current working directory. Use `--config path/to/config.ts` or `DOCS_CONFIG` for another location; the flag takes precedence.
-See [custom components and data](docs/authoring/custom-components.mdx) for the configuration,
-website rendering, and HTML fragment behavior.
-
-<details>
-<summary>Preview a folder of MDX, served</summary>
-
-```sh
-$ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
-  MDX="docs" \
-  ICON="🥑" \
-  sh
-```
-
-Builds the website, then serves it — alongside the MDX folder itself, so relative assets
-resolve while you edit. Any option from
-[configuration](docs/getting-started/introduction.mdx#configuration) goes in the same way, and
-`VERSION` picks a published version of the CLI.
-
-</details>
+See [CLI](docs/getting-started/introduction.mdx#cli) for formats, flags, previewing and `docs.config.ts`.
 
 # Releasing
 
