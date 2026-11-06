@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
-import { dirname, relative } from 'node:path'
+import { realpathSync } from 'node:fs'
+import { dirname, relative, resolve } from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import { commonRoot, resolveDocsConfig } from './src/config.resolve.ts'
@@ -81,15 +82,27 @@ async function rewrites() {
 }
 
 /**
+ * Turbopack's root, widened to the folders it reads outside the app: the consumer module, and the
+ * MDX folder `pmndrs-docs dev` links in for Tailwind to scan, which Turbopack follows to where it
+ * really is. Undefined when neither is set, for Next to infer it.
+ */
+function turbopackRoot() {
+  const mdx = process.env.MDX ? realpathSync(resolve(process.env.MDX)) : undefined
+  if (!docsConfig && !mdx) return undefined
+  let root = commonRoot(appDir, dependencyRoot)
+  if (docsConfig) root = commonRoot(root, dirname(docsConfig))
+  if (mdx) root = commonRoot(root, mdx)
+  return root
+}
+
+/**
  * Website configuration, including the consumer's statically imported MDX components.
  */
 const nextConfig = {
   productionBrowserSourceMaps: true,
   // A static import lets Next preserve each consumer component's server/client boundary.
   turbopack: {
-    root: docsConfig
-      ? commonRoot(commonRoot(appDir, dependencyRoot), dirname(docsConfig))
-      : undefined,
+    root: turbopackRoot(),
     resolveAlias: {
       'pmndrs-docs-config': `./${relative(appDir, configModule).split('\\').join('/')}`,
     },

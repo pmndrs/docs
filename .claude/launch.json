@@ -3,9 +3,12 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "./dev.sh",
+      "runtimeExecutable": "pnpm",
       "port": 3000,
-      "autoPort": true
+      "autoPort": true,
+      "runtimeArgs": [
+        "dev"
+      ]
     },
     {
       "name": "start",

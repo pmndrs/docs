@@ -18,6 +18,7 @@
     "@types/d3-sankey": "^0.12.5",
     "@types/d3-selection": "^3.0.12",
     "@types/d3-transition": "^3.0.9",
+    "@types/serve-handler": "^6.1.4",
     "autoprefixer": "^10.6.1",
     "chromatic": "^18.12.0",
     "d3-ease": "^3.0.1",
@@ -87,6 +88,7 @@
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
     "sanitize-html": "^2.18.0",
+    "serve-handler": "^6.1.7",
     "tailwind-merge": "^3.7.0",
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.4.0",
@@ -97,7 +99,7 @@
     "zod": "^4.6.7"
   },
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next",
+    "dev": "node scripts/build-cli.mjs && node bin/pmndrs-docs.mjs dev --libname docs --libname-short docs --logo gutenberg.jpg --github https://github.com/pmndrs/docs --discord https://discord.com/channels/740090768164651008/1264328004172255393",
     "start": "next start",
     "build": "./next-build.sh",
     "format": "prettier -w src/ registry/",

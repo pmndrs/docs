@@ -1,9 +1,12 @@
 import { resolveDocsConfig } from '../config.resolve'
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readdir, rm, symlink, writeFile } from 'node:fs/promises'
+import { createServer } from 'node:http'
 import { createRequire } from 'node:module'
-import { dirname, join, resolve } from 'node:path'
+import type { AddressInfo } from 'node:net'
+import { dirname, join, resolve, sep } from 'node:path'
+import serveHandler from 'serve-handler'
 
 /** Published application files needed by a Next build. */
 const APP_FILES = [
@@ -22,6 +25,20 @@ const MDX_DIR = 'docs'
 
 /** Parent of the temporary application copies. */
 const WORK_DIR = '.pmndrs-docs'
+
+/** The application copy `dev` serves, kept between runs, under `WORK_DIR`. */
+const DEV_DIR = 'dev'
+
+/**
+ * Empties a folder, but for one entry.
+ * @param dir - Folder, created if absent.
+ * @param kept - Name of the entry left in place.
+ */
+async function rmExcept(dir: string, kept: string) {
+  await mkdir(dir, { recursive: true })
+  const entries = (await readdir(dir)).filter((name) => name !== kept)
+  await Promise.all(entries.map((name) => rm(join(dir, name), { recursive: true, force: true })))
+}
 
 /**
  * Finds a writable project location outside the installed package's node_modules directory.
@@ -46,14 +63,18 @@ const isExcluded = (path: string) =>
 /**
  * Copies the application and optional documentation into an isolated Next project.
  * @param packageRoot - Installed package or checkout containing the application.
- * @param mdx - Documentation directory copied to Tailwind's static source path.
+ * @param mdx - Documentation directory placed at Tailwind's static source path.
+ * @param link - For `dev`: link the documentation rather than copy it, so Tailwind rescans its
+ * edits, in a lasting folder rather than a temporary one.
  */
-async function stageApp(packageRoot: string, mdx?: string) {
+async function stageApp(packageRoot: string, mdx?: string, { link = false } = {}) {
   const parent = findWorkDir(packageRoot)
   if (!parent) throw new Error('Cannot find the `next` package to build the documentation with')
 
   await mkdir(parent, { recursive: true })
-  const workDir = await mkdtemp(join(parent, 'app-'))
+  const workDir = link ? join(parent, DEV_DIR) : await mkdtemp(join(parent, 'app-'))
+  // Next's cache outlives a restart: what Turbopack compiled, and what Next remembers.
+  if (link) await rmExcept(workDir, '.next')
   try {
     await Promise.all(
       APP_FILES.filter((path) => existsSync(join(packageRoot, path))).map((path) =>
@@ -63,7 +84,8 @@ async function stageApp(packageRoot: string, mdx?: string) {
         }),
       ),
     )
-    if (mdx) await cp(mdx, join(workDir, MDX_DIR), { recursive: true })
+    if (mdx && link) await symlink(resolve(mdx), join(workDir, MDX_DIR))
+    else if (mdx) await cp(mdx, join(workDir, MDX_DIR), { recursive: true })
     return workDir
   } catch (error) {
     await rm(workDir, { recursive: true, force: true })
@@ -96,6 +118,91 @@ export async function buildWebsite({
     await mkdir(outDir, { recursive: true })
     await cp(exportDir, outDir, { recursive: true, filter: (source) => !isLeftOut(source) })
     if (existsSync(markdownDir)) await cp(markdownDir, outDir, { recursive: true })
+  })
+}
+
+/**
+ * Whether this package is an installed dependency rather than its own checkout. Turbopack refuses
+ * a project under node_modules, so only an installed package has to be copied out to run.
+ * @param packageRoot - Installed package or checkout containing the application.
+ */
+const isInstalled = (packageRoot: string) => packageRoot.split(sep).includes('node_modules')
+
+/**
+ * Serves a folder as it is on disk, on a free port, for the assets the MDX references.
+ * @param folder - Documentation directory.
+ */
+async function serveFolder(folder: string) {
+  const server = createServer((request, response) => {
+    // The site and the assets are on different ports: a page fetching one is cross-origin.
+    response.setHeader('Access-Control-Allow-Origin', '*')
+    // Files as they are named: a clean URL would redirect `foo/index.html` and lose its query.
+    return serveHandler(request, response, { public: folder, cleanUrls: false })
+  })
+  await new Promise<void>((resolve) => server.listen(0, resolve))
+  return { server, url: `http://localhost:${(server.address() as AddressInfo).port}` }
+}
+
+/**
+ * Serves the website from the documentation as it is written, with `next dev`.
+ *
+ * The app is staged as for a build, with the documentation linked rather than copied, so the
+ * stylesheet's Tailwind `@source` scans the pages and rescans them as they change. This
+ * package's own checkout serving its own `docs` runs in place instead, to keep `src`
+ * hot-reloading. Unless `MDX_BASEURL` says where they are, the MDX folder's assets are served
+ * alongside, on a free port.
+ * @param options - MDX folder, port, consumer configuration, and website environment.
+ */
+export async function devWebsite({
+  packageRoot,
+  mdx,
+  port,
+  env,
+  configPath = resolveDocsConfig(process.cwd(), env.DOCS_CONFIG ?? process.env.DOCS_CONFIG),
+}: {
+  packageRoot: string
+  mdx: string
+  port: number
+  configPath?: string
+  env: Record<string, string | undefined>
+}) {
+  const inPlace = !isInstalled(packageRoot) && resolve(mdx) === join(packageRoot, MDX_DIR)
+  const workDir = inPlace ? packageRoot : await stageApp(packageRoot, mdx, { link: true })
+  const assets = env.MDX_BASEURL ? undefined : await serveFolder(mdx)
+
+  const environment = {
+    ...process.env,
+    // Where the "source code" and "edit this page" links open: the editor, on this machine
+    SOURCECODE_BASEURL: `vscode://file${process.cwd()}`,
+    EDIT_BASEURL: `vscode://file${resolve(mdx)}`,
+    ...Object.fromEntries(Object.entries(env).filter(([, value]) => value !== undefined)),
+    MDX_BASEURL: env.MDX_BASEURL ?? assets?.url,
+    // A caller's production build (a bundler run in the same process) must not leak into Next's
+    // dev server: its MDX would take React's production JSX runtime into a development React.
+    NODE_ENV: 'development',
+    DOCS_CONFIG: configPath ? resolve(configPath) : '',
+    // Read where they are written: the link only exists for Tailwind.
+    MDX: resolve(mdx),
+  } satisfies NodeJS.ProcessEnv
+
+  const next = createRequire(import.meta.url).resolve('next/dist/bin/next')
+  const child = spawn(process.execPath, [next, 'dev', workDir, '--port', String(port)], {
+    cwd: workDir,
+    env: environment,
+    stdio: 'inherit',
+  })
+
+  const stop = () => child.kill('SIGTERM')
+  process.once('SIGINT', stop)
+  process.once('SIGTERM', stop)
+
+  await new Promise<void>((resolve, reject) => {
+    child.once('error', reject)
+    child.once('close', (code, signal) => {
+      assets?.server.close()
+      if (code === 0 || signal === 'SIGTERM' || signal === 'SIGINT') resolve()
+      else reject(new Error(`Next dev server stopped (${signal ?? `exit ${code}`})`))
+    })
   })
 }
 

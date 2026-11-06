@@ -12,7 +12,7 @@ import { resolveTarget } from './browse.target'
 import { buildFragments, renderFragment } from './fragments'
 import * as gitInfo from './git-info'
 import { resolveVersionEnv } from './version-env'
-import { buildWebsite } from './website'
+import { buildWebsite, devWebsite } from './website'
 
 /** This package, wherever installed: `dist/cli.mjs` is one folder below its root. */
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -152,11 +152,13 @@ function display(path: string) {
   return rel.length < path.length ? rel : path
 }
 
-async function run(input: string | undefined, output: string | undefined, opts: OptionValues) {
-  const website = opts.format === 'website'
-  const configPath = resolveDocsConfig(process.cwd(), opts.config)
-  const from = input ? resolve(process.cwd(), input) : undefined
-  const isDirectory = from ? (await stat(from)).isDirectory() : false
+/**
+ * The website options given, as the environment variables the app reads them as.
+ * @param opts - Parsed options of a command that takes the website options.
+ * @param configPath - Consumer module, if any.
+ * @param checkout - Folder the version is described from (default: the working directory).
+ */
+function websiteEnv(opts: OptionValues, configPath: string | undefined, checkout?: string) {
   const env: Record<string, string | undefined> = { DOCS_CONFIG: configPath ?? '' }
   for (const option of websiteOptions) {
     env[option.envVar!] = opts[option.attributeName()]
@@ -166,13 +168,17 @@ async function run(input: string | undefined, output: string | undefined, opts: 
   // Set every version variable, including empty ones, so Next does not resolve them again.
   const versionEnv = resolveVersionEnv(
     { ...process.env, ...env },
-    {
-      cwd: from ? (isDirectory ? from : dirname(from)) : process.cwd(),
-      git: gitInfo,
-      assertValidUrlTemplate,
-    },
+    { cwd: checkout ?? process.cwd(), git: gitInfo, assertValidUrlTemplate },
   )
-  Object.assign(env, versionEnv)
+  return Object.assign(env, versionEnv)
+}
+
+async function run(input: string | undefined, output: string | undefined, opts: OptionValues) {
+  const website = opts.format === 'website'
+  const configPath = resolveDocsConfig(process.cwd(), opts.config)
+  const from = input ? resolve(process.cwd(), input) : undefined
+  const isDirectory = from ? (await stat(from)).isDirectory() : false
+  const env = websiteEnv(opts, configPath, from ? (isDirectory ? from : dirname(from)) : undefined)
   const fragmentOptions = { packageRoot, env }
 
   //
@@ -268,6 +274,50 @@ build.addOption(
   new Option('--libname-dotsuffix-label <label>', 'Deprecated and ignored').hideHelp(),
 )
 build.addOption(new Option('--libname-dotsuffix-href <url>', 'Deprecated and ignored').hideHelp())
+
+//
+// dev -- the same website, served from the MDX folder as it is being written
+//
+
+async function runDev(input: string | undefined, opts: OptionValues) {
+  const configPath = resolveDocsConfig(process.cwd(), opts.config)
+  const mdx = resolve(process.cwd(), input ?? process.env.MDX ?? 'docs')
+  if (!(await stat(mdx)).isDirectory()) throw new Error(`${display(mdx)} is not a folder`)
+
+  await devWebsite({
+    packageRoot,
+    mdx,
+    port: Number(opts.port),
+    env: websiteEnv(opts, configPath, mdx),
+    configPath,
+  })
+}
+
+const dev = new Command('dev')
+  .description('Serve the website from a folder of MDX, live, as it is written')
+  .addOption(
+    new Option(
+      '--config <path>',
+      'Consumer components and scope (default: docs.config.ts in cwd)',
+    ).env('DOCS_CONFIG'),
+  )
+  .argument('[in]', 'MDX folder (default: $MDX, or "docs")')
+  .addOption(new Option('--port <port>', 'Port to serve on').env('PORT').default('3000'))
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ pmndrs-docs dev                                       the "docs" folder, on port 3000
+  $ pmndrs-docs dev docs --libname "React Three Fiber"    named, as the header shows it
+
+The website is the one \`build --format website\` exports, served by \`next dev\`: edit a page,
+and it reloads. The folder's own files (images, ...) are served on a free port, unless
+--mdx-baseurl says where they are.
+`,
+  )
+  .action(runDev)
+
+for (const option of websiteOptions) dev.addOption(option)
 
 //
 // browse & search -- the published documentation, rather than a folder of MDX
@@ -426,6 +476,7 @@ const program = new Command()
   // them is what CI is after, and CI spells out what it wants.
   .addCommand(browse, { isDefault: true })
   .addCommand(searchCommand)
+  .addCommand(dev)
   .addCommand(build)
   .addCommand(versionUrl)
 
