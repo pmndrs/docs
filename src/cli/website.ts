@@ -35,7 +35,11 @@ function findWorkDir(packageRoot: string) {
   }
 }
 
-/** Dynamic MCP routes and development-only modules do not belong in a static export. */
+/**
+ * Dynamic MCP routes and development-only modules do not belong in a static export. Keep the
+ * routes in step with the `!` entries of `files` in package.json, which leave them out of the
+ * package.
+ */
 const isExcluded = (path: string) =>
   /\.(test|stories)\.[jt]sx?$/.test(path) ||
   path.endsWith('src/app/api') ||
@@ -133,8 +137,9 @@ export async function withNextExport<T>(
     ...process.env,
     ...Object.fromEntries(Object.entries(env).filter(([, value]) => value !== undefined)),
     BASE_PATH: basePath,
-    DIST_DIR: distDir,
-    OUTPUT: 'export',
+    // Internal to the CLI: the static export goes through here only
+    PMNDRS_DIST_DIR: distDir,
+    PMNDRS_OUTPUT: 'export',
     NODE_ENV: 'production',
     // Next imports the original consumer module, preserving its server/client boundaries.
     DOCS_CONFIG: configPath ? resolve(configPath) : '',

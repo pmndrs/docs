@@ -57,9 +57,10 @@ const configModule = docsConfig ?? `${appDir}/src/config.ts`
 const dependencyRoot = dirname(createRequire(import.meta.url).resolve('next/package.json'))
 
 const basePath = process.env.BASE_PATH || ''
-const distDir = process.env.DIST_DIR || undefined
+// Set only by the CLI (`withNextExport` in src/cli/website.ts): a static export goes through it.
+const distDir = process.env.PMNDRS_DIST_DIR || undefined
 // Next validates the environment value when it loads this configuration.
-const output = (process.env.OUTPUT || undefined) as NextConfig['output']
+const output = (process.env.PMNDRS_OUTPUT || undefined) as NextConfig['output']
 
 /**
  * Each page's markdown at the page's own URL plus `.md`, e.g. `/getting-started/introduction.md`.

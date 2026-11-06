@@ -8,7 +8,7 @@ import { a as Link } from '@/components/mdx'
  * under its `basePath`, which an iframe `src` does not get by itself.
  */
 function mcpLiveUrl() {
-  if (process.env.OUTPUT === 'export') return 'https://docs.pmnd.rs/mcp/live'
+  if (process.env.PMNDRS_OUTPUT === 'export') return 'https://docs.pmnd.rs/mcp/live'
 
   return `${process.env.BASE_PATH || ''}/mcp/live`
 }
