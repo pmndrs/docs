@@ -1,4 +1,3 @@
-[![](https://img.shields.io/badge/docs--playwright-171c23.svg?style=flat&colorA=000000&colorB=000000&logo=chromatic&logoColor=ffffff)](https://www.chromatic.com/library?appId=696fd126f0e504f96615dec9&branch=main)
 [![](https://img.shields.io/badge/docs--storybook-171c23.svg?style=flat&colorA=000000&colorB=000000&logo=chromatic&logoColor=ffffff)](https://www.chromatic.com/library?appId=6977e41687a50b30c4349650&branch=main)
 
 [![](docs/getting-started/gutenberg.jpg)](docs/getting-started/introduction.mdx)
@@ -82,23 +81,6 @@ TL;DR — site-only tweak: skip. Anything consumers see (workflow, build behavio
 
 # Test
 
-Visual tests are performed in the cloud, through [chromatic-playwright.yml](.github/workflows/chromatic-playwright.yml) and [chromatic-storybook.yml](.github/workflows/chromatic-storybook.yml).
+Visual tests are performed in the cloud, through [chromatic-storybook.yml](.github/workflows/chromatic-storybook.yml).
 
-- `pnpm run lgtm` — fast gate: types, lint, registry validation, unit tests.
-- `pnpm run LGTM` — full gate CI runs: `lgtm` + Playwright.
-
-Playwright checks that the [custom components example](docs/authoring/custom-components.mdx)
-renders the configured data and responds to interaction.
-
-Screenshots Playwright writes locally are throwaway — Chromatic holds the baselines.
-
-<details>
-
-You can also replay locally:
-
-```sh
-$ pnpm run LGTM
-$ npx chromatic --playwright --project-token $CHROMATIC_PROJECT_TOKEN
-```
-
-</details>
+- `pnpm run lgtm` — the gate CI runs ([lgtm.yml](.github/workflows/lgtm.yml)): types, lint, registry validation, unit tests.

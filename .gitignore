@@ -28,16 +28,6 @@ temp/
 
 tsconfig.tsbuildinfo
 
-# Playwright
-test-results/
-playwright-report/
-playwright/.cache/
-# rewritten on every run (`updateSnapshots: 'all'`), Chromatic holds the baselines
-*-snapshots/
-
-# Chromatic
-chromatic-archives/
-
 *storybook.log
 *archive.log
 storybook-static
