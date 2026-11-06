@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { libs } from '@/libs'
+import { fetchPageCount } from './page.count'
 import { FileTextIcon } from 'lucide-react'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
@@ -42,9 +43,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Page() {
+export default async function Page() {
   const HOME_REDIRECT = process.env.HOME_REDIRECT
   if (HOME_REDIRECT) redirect(HOME_REDIRECT)
+
+  // After the redirect: a site that redirects its home page has nothing to count.
+  const count = await fetchPageCount()
 
   return (
     <>
@@ -57,6 +61,11 @@ export default function Page() {
             </Link>
             .<Link href="https://pmnd.rs">pmnd.rs</Link>
           </header>
+          {count && (
+            <p className="mt-2 text-center text-sm text-muted-foreground lg:text-left">
+              {count.pages} pages across {count.libraries} libraries
+            </p>
+          )}
 
           <section className="mt-8 lg:mt-10">
             <Gha keyword="TIP" title="MCP-server">

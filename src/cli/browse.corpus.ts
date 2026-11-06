@@ -4,7 +4,7 @@
 // One GET returns everything a library has -- 200 kB for drei -- so there is nothing finer
 // to fetch and nothing to paginate. What is worth spending code on is not re-fetching it.
 
-import { libs } from '@/libs'
+import { libs, type Library } from '@/libs'
 import { homepage } from '@/package.json'
 import * as cheerio from 'cheerio'
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
@@ -32,22 +32,33 @@ export interface Page {
 }
 
 /**
- * The libraries `browse` can read.
+ * A registry entry, with the base its dump is fetched from.
  *
- * `llms_full` is the whole filter -- a site not built with this generator 404s on that file.
  * Most sites live under a path of their own (`pmndrs.github.io/drei`), so the whole URL is the
  * base, not its origin. A relative entry is this site's own (`docs` points at one of its pages
  * rather than at a site), and that one is served from the homepage.
+ *
+ * @param name The entry's key in `libs`.
+ * @param lib The entry itself.
+ */
+export function toLib(name: string, lib: Library): Lib {
+  return {
+    name,
+    title: lib.title,
+    description: lib.description,
+    base: lib.docs_url.startsWith('http') ? lib.docs_url.replace(/\/+$/, '') : homepage,
+  }
+}
+
+/**
+ * The libraries `browse` can read.
+ *
+ * `llms_full` is the whole filter -- a site not built with this generator 404s on that file.
  */
 export function readableLibs(): Lib[] {
   return Object.entries(libs)
     .filter(([, lib]) => 'llms_full' in lib && lib.llms_full)
-    .map(([name, lib]) => ({
-      name,
-      title: lib.title,
-      description: lib.description,
-      base: lib.docs_url.startsWith('http') ? lib.docs_url.replace(/\/+$/, '') : homepage,
-    }))
+    .map(([name, lib]) => toLib(name, lib))
 }
 
 /** Read per call rather than once: a test points it somewhere disposable. */
