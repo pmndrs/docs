@@ -58,7 +58,9 @@ main :target {
 .post-container > * {
   @apply me-auto ms-auto block max-w-[calc(100%-2*var(--rgrid-m))] lg:max-w-4xl;
 
-  &.sandpack {
+  /* `full-bleed` (docs/authoring/full-bleed.mdx): the whole width of the article from `xl`, past
+   * the reading column, as `Sandpack` does. */
+  &.full-bleed {
     @apply xl:max-w-none;
   }
 
