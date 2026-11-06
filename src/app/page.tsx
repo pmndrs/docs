@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/card'
 import { libs } from '@/libs'
 import { fetchPageCount } from './page.count'
+import { PageCountLine } from './page.count.view'
 import { FileTextIcon } from 'lucide-react'
 import { svg } from '@/utils/icon'
 import { Metadata } from 'next'
@@ -43,12 +44,21 @@ export const metadata: Metadata = {
   },
 }
 
+// Regenerated hourly, as the dumps it counts are cached: the count and the time it shows were
+// made together. `REFRESH_SECONDS`, spelled out: Next reads this value without running the file.
+export const revalidate = 3600
+
 export default async function Page() {
   const HOME_REDIRECT = process.env.HOME_REDIRECT
   if (HOME_REDIRECT) redirect(HOME_REDIRECT)
 
   // After the redirect: a site that redirects its home page has nothing to count.
   const count = await fetchPageCount()
+  // A static export has no `src/app/api` (src/cli/website.ts leaves it out), hence no recount.
+  const refreshUrl =
+    process.env.PMNDRS_OUTPUT === 'export'
+      ? undefined
+      : `${process.env.BASE_PATH || ''}/api/page-count`
 
   return (
     <>
@@ -61,11 +71,7 @@ export default async function Page() {
             </Link>
             .<Link href="https://pmnd.rs">pmnd.rs</Link>
           </header>
-          {count && (
-            <p className="mt-2 text-center text-sm text-muted-foreground lg:text-left">
-              {count.pages} pages across {count.libraries} libraries
-            </p>
-          )}
+          {count && <PageCountLine count={count} refreshUrl={refreshUrl} />}
 
           <section className="mt-8 lg:mt-10">
             <Gha keyword="TIP" title="MCP-server">

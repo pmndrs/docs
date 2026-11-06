@@ -3,20 +3,36 @@
 
 import { parseDump, toLib, type Lib } from '@/cli/browse.corpus'
 import { libs } from '@/libs'
+import { REFRESH_SECONDS } from './page.count.time'
 
 /** Past this, a site is left out of the count rather than holding the page up. */
-const TIMEOUT_MS = 5_000
+const TIMEOUT_MS = 10_000
 
-/** A library's dump, as fetched. */
+/** On every dump fetch the count makes: `revalidateTag` with it forces a recount. */
+export const PAGE_COUNT_TAG = 'page-count'
+
+/** A library's dump, as fetched: no `text` when the site did not answer with one. */
 interface Dump {
   lib: Lib
-  text: string
+  text?: string
 }
 
-/** What the home page says: so many pages, across so many libraries. */
+/** One library's share of the count. */
+interface LibCount {
+  name: string
+  title: string
+  /** 0 when its dump could not be read, or had no page in it. */
+  pages: number
+}
+
+/** What the home page says: so many pages, across so many libraries, counted at such a time. */
 export interface PageCount {
   pages: number
   libraries: number
+  /** Every counted library, the most pages first; those that could not be read last, at 0. */
+  libs: LibCount[]
+  /** When the dumps were read, as an ISO string. */
+  countedAt: string
 }
 
 /**
@@ -38,37 +54,47 @@ export function countedLibs(): Lib[] {
  * A dump with no page in it does not count as a library: a site answering its 404 with a 200
  * would otherwise be one.
  *
- * @param dumps The dumps that were fetched.
+ * @param dumps The dump of every counted library, read or not.
+ * @param countedAt When they were read.
  */
-export function countPages(dumps: Dump[]): PageCount | undefined {
-  const counts = dumps.map(({ lib, text }) => parseDump(lib, text).length).filter((n) => n > 0)
-  if (counts.length === 0) return undefined
+export function countPages(dumps: Dump[], countedAt: Date): PageCount | undefined {
+  const counts = dumps
+    .map(({ lib, text }) => ({
+      name: lib.name,
+      title: lib.title,
+      pages: text ? parseDump(lib, text).length : 0,
+    }))
+    .sort((a, b) => b.pages - a.pages)
+  const read = counts.filter((lib) => lib.pages > 0)
+  if (read.length === 0) return undefined
 
   return {
-    pages: counts.reduce((sum, n) => sum + n, 0),
-    libraries: counts.length,
+    pages: read.reduce((sum, lib) => sum + lib.pages, 0),
+    libraries: read.length,
+    libs: counts,
+    countedAt: countedAt.toISOString(),
   }
 }
 
-/** The dump of `lib`, or `undefined` when the site does not answer with one in time. */
-async function fetchDump(lib: Lib): Promise<Dump | undefined> {
+/** The dump of `lib`, without its text when the site does not answer with one in time. */
+async function fetchDump(lib: Lib): Promise<Dump> {
   try {
     const response = await fetch(`${lib.base}/llms-full.txt`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: REFRESH_SECONDS, tags: [PAGE_COUNT_TAG] },
       signal: AbortSignal.timeout(TIMEOUT_MS),
     })
-    if (!response.ok) return undefined
+    if (!response.ok) return { lib }
     return { lib, text: await response.text() }
   } catch {
-    return undefined
+    return { lib }
   }
 }
 
 /**
  * How many pages every counted library serves, fetched in parallel and cached for an hour. A
- * site that fails -- a 404, a timeout, no network at all -- is skipped, never thrown.
+ * site that fails -- a 404, a timeout, no network at all -- counts for 0, never throws.
  */
 export async function fetchPageCount(): Promise<PageCount | undefined> {
   const dumps = await Promise.all(countedLibs().map(fetchDump))
-  return countPages(dumps.filter((dump) => dump !== undefined))
+  return countPages(dumps, new Date())
 }
