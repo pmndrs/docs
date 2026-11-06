@@ -98,7 +98,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next",
     "start": "next start",
-    "build": "./next-build.sh",
+    "build": "next build",
     "format": "prettier -w src/ registry/",
     "lint": "eslint 'src/**/*.{ts,tsx}' registry/ && prettier . --check",
     "check-registry": "shadcn registry validate ./registry.json",

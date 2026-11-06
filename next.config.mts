@@ -68,8 +68,8 @@ const output = (process.env.OUTPUT || undefined) as NextConfig['output']
  * sit beside `[...slug]/page.tsx`. A default (`afterFiles`) rewrite is checked before dynamic
  * routes, so the `[...slug]` catch-all never sees these paths.
  *
- * Server only: a static export has no rewrites (Next warns about them), and `next-build.sh` and
- * the CLI move the exported files to the same URLs instead.
+ * Server only: a static export has no rewrites (Next warns about them), and the CLI moves
+ * the exported files to the same URLs instead.
  */
 async function rewrites() {
   return [

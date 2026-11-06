@@ -52,7 +52,7 @@ export async function GET() {
   const { ICON, MDX } = process.env
 
   // No icon configured: nothing to publish. A static export writes this body all the same, so
-  // `next-build.sh` and the CLI's `src/cli/website.ts` remove the file.
+  // the CLI's `src/cli/website.ts` removes the file.
   if (!ICON) return new Response('Not Found', { status: 404 })
 
   let body: string

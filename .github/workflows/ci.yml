@@ -162,8 +162,6 @@ jobs:
             --build-env NEXT_PUBLIC_LIBNAME="docs" \
             --build-env NEXT_PUBLIC_LIBNAME_SHORT="docs" \
             --build-env BASE_PATH= \
-            --build-env DIST_DIR= \
-            --build-env OUTPUT= \
             --build-env HOME_REDIRECT= \
             --build-env MDX_BASEURL="https://github.com/${{ github.repository }}/raw/$GIT_BRANCH/docs" \
             --build-env EDIT_BASEURL="https://github.com/${{ github.repository }}/edit/$GIT_BRANCH/docs" \
