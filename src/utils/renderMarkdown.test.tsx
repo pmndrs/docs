@@ -59,6 +59,20 @@ describe('renderMarkdown', () => {
     expect(markdown).toContain('![External](https://images.example.com/preview.png)')
   })
 
+  it('links a repository file out of the MDX folder to SOURCECODE_BASEURL', async () => {
+    vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+    vi.stubEnv('SOURCECODE_BASEURL', 'https://github.com/pmndrs/docs/tree/main')
+    const markdown = await renderMarkdown(
+      '[index](../../src/components/mdx/index.tsx) and [img](./img.mdx)',
+      { relFilePath: '/authoring/introduction.mdx' },
+    )
+
+    expect(markdown).toContain(
+      '[index](https://github.com/pmndrs/docs/tree/main/src/components/mdx/index.tsx)',
+    )
+    expect(markdown).toContain('[img](./img.mdx)')
+  })
+
   it('evaluates scoped table cells, mapped rows, links and commands as Markdown', async () => {
     const source = [
       '# Foundations',

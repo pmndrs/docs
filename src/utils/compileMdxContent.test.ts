@@ -182,6 +182,31 @@ describe('compileMdxContent', () => {
     expect(html).toMatch(/<p[^>]*>Check <a[^>]*href="#section"[^>]*>this link<\/a><\/p>/)
   })
 
+  it('links a repository file out of the MDX folder to SOURCECODE_BASEURL', async () => {
+    vi.stubEnv('MDX', join(process.cwd(), 'docs'))
+    vi.stubEnv('SOURCECODE_BASEURL', 'https://github.com/pmndrs/docs/tree/main')
+    try {
+      const result = await compileMdxContent(
+        '[index](../../src/components/mdx/index.tsx) [img](./img) <a href="../../README.md">readme</a>',
+        {
+          ...{ baseUrl, title, url, tableOfContents, entries },
+          relFilePath: '/authoring/introduction.mdx',
+          absoluteFilePath,
+        },
+      )
+      const $ = load(renderToString(result.content))
+      expect($('a:contains("index")').attr('href')).toBe(
+        'https://github.com/pmndrs/docs/tree/main/src/components/mdx/index.tsx',
+      )
+      expect($('a:contains("img")').attr('href')).toBe('./img')
+      expect($('a:contains("readme")').attr('href')).toBe(
+        'https://github.com/pmndrs/docs/tree/main/README.md',
+      )
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
+
   it('compiles Tabs, with markdown in a TabsContent', async () => {
     const source = [
       '<Tabs defaultValue="vue">',

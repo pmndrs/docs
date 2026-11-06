@@ -46,6 +46,7 @@ import { Img } from '@/components/mdx/Img'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { Intro } from '@/components/mdx/Intro'
 import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
+import { rehypeRepoLink } from '@/components/mdx/Link/rehypeRepoLink'
 import { Keypoints, KeypointsItem } from '@/registry/keypoints/keypoints'
 import { McpLiveEmbed } from '@/components/mdx/McpLiveEmbed'
 import { Mermaid } from '@/components/mdx/Mermaid'
@@ -59,6 +60,7 @@ import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/mdx/Tabs'
 import { rehypeToc } from '@/components/mdx/Toc/rehypeToc'
+import { mdxRepoPath } from '@/utils/mdxRepoPath'
 import { rehypeInlineFlow } from '@/utils/rehypeInlineFlow'
 import type { DocToC } from '@/app/[...slug]/DocsContext'
 import { compileMDX } from 'next-mdx-remote/rsc'
@@ -122,6 +124,7 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         remarkPlugins: [remarkGFM, remarkCodeFile(dirname(absoluteFilePath))],
         rehypePlugins: [
           rehypeLink(process.env.BASE_PATH),
+          rehypeRepoLink(relFilePath, mdxRepoPath(), process.env.SOURCECODE_BASEURL),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),

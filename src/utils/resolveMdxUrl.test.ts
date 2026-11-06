@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import path from 'node:path'
-import resolveMdxUrl, { isPathBaseUrl, mdxFilePath, socialImageUrl } from './resolveMdxUrl'
+import resolveMdxUrl, {
+  isPathBaseUrl,
+  mdxFilePath,
+  repoFileUrl,
+  socialImageUrl,
+} from './resolveMdxUrl'
 
 describe('resolveMdxUrl', () => {
   const baseUrl = 'http://localhost:8080/foo/bar'
@@ -364,5 +369,57 @@ describe('socialImageUrl', () => {
     for (const image of ['', 'https://example.com/a.png', '//example.com/a.png']) {
       expect(socialImageUrl(image, '/integral', 'https://example.com')).toBe(image)
     }
+  })
+})
+
+describe('repoFileUrl', () => {
+  const base = 'https://github.com/pmndrs/docs/tree/main'
+  const mdFile = '/authoring/introduction.mdx'
+
+  it('links a file out of the MDX folder to the repository', () => {
+    expect(repoFileUrl('../../src/components/mdx/index.tsx', mdFile, 'docs', base)).toBe(
+      `${base}/src/components/mdx/index.tsx`,
+    )
+    expect(repoFileUrl('../../.github/workflows/build.yml#L172', mdFile, 'docs', base)).toBe(
+      `${base}/.github/workflows/build.yml#L172`,
+    )
+    expect(repoFileUrl('../README.md', '/index.mdx', 'docs', base)).toBe(`${base}/README.md`)
+  })
+
+  it('resolves under a nested MDX folder, with or without slashes around it', () => {
+    for (const folder of ['packages/a/docs', '/packages/a/docs/']) {
+      expect(repoFileUrl('../../src/a.ts', mdFile, folder, base)).toBe(
+        `${base}/packages/a/src/a.ts`,
+      )
+    }
+  })
+
+  it('leaves a link staying in the MDX folder as is', () => {
+    for (const href of ['./img.mdx', 'img.mdx', '../getting-started/introduction', '..', '.']) {
+      expect(repoFileUrl(href, mdFile, 'docs', base)).toBe(href)
+    }
+  })
+
+  it('leaves an absolute, root-relative, protocol-relative or anchor link as is', () => {
+    for (const href of [
+      'https://example.com/a',
+      'mailto:a@example.com',
+      '//example.com/a',
+      '/getting-started/introduction',
+      '#configuration',
+      '',
+    ]) {
+      expect(repoFileUrl(href, mdFile, 'docs', base)).toBe(href)
+    }
+  })
+
+  it('leaves the link as is without a base or a known MDX folder', () => {
+    expect(repoFileUrl('../../src/a.ts', mdFile, 'docs', undefined)).toBe('../../src/a.ts')
+    expect(repoFileUrl('../../src/a.ts', mdFile, 'docs', '')).toBe('../../src/a.ts')
+    expect(repoFileUrl('../../src/a.ts', mdFile, undefined, base)).toBe('../../src/a.ts')
+  })
+
+  it('leaves every link as is when the MDX folder is the repository root', () => {
+    expect(repoFileUrl('../../src/a.ts', mdFile, '', base)).toBe('../../src/a.ts')
   })
 })

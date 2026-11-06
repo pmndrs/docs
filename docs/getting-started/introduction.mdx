@@ -65,7 +65,7 @@ Environment variables configure the website. For MDX extensions, add `docs.confi
 | `BASE_PATH`                           | Base path for the final URL                                                                                                                                              | `/react-three-fiber`                                                                             |
 | `HOME_REDIRECT`                       | Where the home should redirect                                                                                                                                           | `/getting-started/introduction`                                                                  |
 | `MDX_BASEURL`                         | Base URL for inlining relative images, or a path (e.g. `/react-three-fiber`) for root-relative ones                                                                      | `http://localhost:60141`or `https://github.com/pmndrs/react-three-fiber/raw/master/docs`         |
-| `SOURCECODE_BASEURL`                  | Base URL for `sourcecode:` code path                                                                                                                                     | `https://github.com/pmndrs/react-three-fiber/tree/main`                                          |
+| `SOURCECODE_BASEURL`                  | Base URL for `sourcecode:` code path, and for relative links to repository files out of `MDX`                                                                            | `https://github.com/pmndrs/react-three-fiber/tree/main`                                          |
 | `EDIT_BASEURL`                        | Base URL for displaying "Edit this page" URLs                                                                                                                            | `https://github.com/pmndrs/react-three-fiber/edit/master/docs`                                   |
 | `NEXT_PUBLIC_URL`                     | Final URL of the published website                                                                                                                                       | `https://pmndrs.github.io/react-three-fiber`                                                     |
 | `ICON`                                | Emoji or image to use as (fav)icon (path local to `MDX`)<br/>NB: also published at `/icon.svg`, which the libraries menu of the other pmndrs docs sites shows            | `🇨🇭` or `/icon.png` or `/favicon.ico`                                                            |
@@ -123,7 +123,7 @@ becomes (for a `MDX_BASEURL=http://localhost:60141` value):
 `http://localhost:60141` being the `MDX` folder served.
 
 > [!TIP]
-> When deployed on GitHub Pages, `MDX_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](.github/workflows/build.yml) rule.
+> When deployed on GitHub Pages, `MDX_BASEURL` will typically value something like `https://github.com/pmndrs/uikit/raw/main/docs`, thanks to [`build.yml`](../../.github/workflows/build.yml) rule.
 
 `MDX_BASEURL` can also be a path only, root-relative, such as `/react-three-fiber` (or `/` for a site served at the root of its domain): the `MDX` folder then has to be served at that path, on the same host as the website. URLs then come out root-relative too:
 
