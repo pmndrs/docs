@@ -1,5 +1,11 @@
 # @pmndrs/docs
 
+## 4.30.0
+
+### Minor Changes
+
+- [#737](https://github.com/pmndrs/docs/pull/737) [`147dfa6`](https://github.com/pmndrs/docs/commit/147dfa696bb1486535cd98d5f8fabdf52451a832) Thanks [@abernier](https://github.com/abernier)! - A fence's `file="..."` fills the code block with a file, relative to the page, e.g. ` ```sh file="../../dev.sh" `: the page shows the file as it is, rather than a copy of it that drifts. The path may lead out of the MDX folder.
+
 ## 4.29.0
 
 ### Minor Changes
