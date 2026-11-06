@@ -17,6 +17,14 @@
  * is handed a folder from anywhere and stages it here. */
 @source '../../docs/**/*.{md,mdx}';
 
+/* shadcn's `scroll-fade` utilities (docs/authoring/scroll-fade.mdx), emitted whether or not a page
+ * uses them: docs served from elsewhere (`MDX=/path/to/docs pnpm dev`, fragments) are not scanned.
+ * The direction and edge ones, and the sizes of the spacing scale up to 24, for every edge:
+ * arbitrary values (`scroll-fade-[15%]`) and variants (`md:scroll-fade-none`) still need a scan. */
+@source inline('scroll-fade{,-x,-y,-t,-b,-l,-r,-s,-e,-none}');
+@source inline('scroll-fade{,-t,-b,-s,-e}-{0..12}');
+@source inline('scroll-fade{,-t,-b,-s,-e}-{14,16,20,24}');
+
 /* The M3 utilities: `bg-surface-dim`, `text-on-surface-variant`, and the four
  * roles of each custom colour named here: the seven pmndrs ones (`src/lib/md3.ts`),
  * then our alert colours (`src/lib/mtb.ts`). */
