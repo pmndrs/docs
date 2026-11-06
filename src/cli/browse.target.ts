@@ -1,8 +1,7 @@
 // What a target on the command line points at.
 //
-// One grammar, two callers: `browse [target]` starts there, and `search --in <target>` narrows
-// to it. A target that resolves to nothing is not an error -- it becomes the search query,
-// which is the screen that can actually answer it.
+// `search --in <target>` narrows to it: a library, or one page of a library. A target that
+// resolves to nothing is not an error here -- the caller says what it means.
 
 import type { Lib, Page } from './browse.corpus'
 

@@ -29,7 +29,6 @@
     "eslint-config-next": "^16.4.0",
     "eslint-plugin-storybook": "^10.6.2",
     "husky": "^9.1.7",
-    "ink-testing-library": "^4.0.0",
     "lint-staged": "^17.6.0",
     "msw": "^3.0.3",
     "prettier": "^3.9.10",
@@ -65,7 +64,6 @@
     "gray-matter": "^4.0.3",
     "hast-util-to-mdast": "^10.1.2",
     "image-size": "^2.0.4",
-    "ink": "^8.0.0",
     "lodash-es": "^4.18.1",
     "lucide-react": "^1.55.0",
     "match-sorter": "^8.3.0",
@@ -119,7 +117,7 @@
     "node": "^22.18.0 || >=23.6.0"
   },
   "packageManager": "pnpm@10.28.1",
-  "description": "Generate pmndrs-standardized documentation — HTML fragments, or the whole website — from a folder of MDX.",
+  "description": "Generate pmndrs-standardized documentation \u2014 HTML fragments, or the whole website \u2014 from a folder of MDX.",
   "homepage": "https://docs.pmnd.rs",
   "repository": {
     "type": "git",

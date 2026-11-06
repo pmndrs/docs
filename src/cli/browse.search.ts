@@ -1,4 +1,4 @@
-// Ranked search over the corpus, for the `/` field of the reader and for the `search` verb.
+// Ranked search over the corpus, for the `search` verb and the MCP server's `search_docs`.
 
 import { matchSorter } from 'match-sorter'
 import type { Page } from './browse.corpus'

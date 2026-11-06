@@ -7,29 +7,19 @@
 
 # Usage
 
-## Read
+## Search
 
 ```sh
-$ npx @pmndrs/docs                                 # the reader: every library, every page
-$ npx @pmndrs/docs drei                            # straight into one
-$ npx @pmndrs/docs drei/performances/instances     # straight to a page
-$ npx @pmndrs/docs search instanced mesh           # one result per line, on stdout
+$ npx @pmndrs/docs search instanced mesh                                 # every library, one result per line
+$ npx @pmndrs/docs search instances --in drei                            # one library
+$ npx @pmndrs/docs search useFrame --in drei/performances/instances      # the matching lines of one page
 ```
 
-`↑↓` drives whichever pane has the focus — the list of pages, or the page itself. `⏎` or `⇥`
-hands the focus over, `esc` or `⇥` hands it back, and the lit border says where it is — the
-wheel moves whichever pane it points at, focus or no focus. `←→` changes library, `b` folds the sidebar away, `/` searches every library at once, `o` opens the
-page in a browser, `q` quits. Links inside a page are clickable wherever the terminal honours
-OSC 8 hyperlinks — iTerm2, Ghostty, WezTerm, Kitty, Windows Terminal.
+Results read `{lib} {path} - {title}`, the shape the [MCP server](https://docs.pmnd.rs)
+publishes its index in, so a pipe or an agent can use them; nothing found exits 1.
 
-`search` is the half a pipe or an agent can use: results read `{lib} {path} - {title}`, the
-shape the [MCP server](https://docs.pmnd.rs) publishes its index in, and nothing found exits 1.
-`--in drei` narrows to one library, `--in drei/performances/instances` to the matching lines of
-one page.
-
-Both read the published `llms-full.txt` of each library, cached for an hour under
-`~/.cache/pmndrs-docs` — `--refresh` fetches again. Outside a terminal, a page target is
-written to stdout, so `npx @pmndrs/docs drei/performances/instances | glow` works.
+It reads the published `llms-full.txt` of each library, cached for an hour under
+`~/.cache/pmndrs-docs` — `--refresh` fetches again.
 
 ## Build
 

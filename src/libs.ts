@@ -2,7 +2,7 @@
  * The pmndrs libraries this site indexes.
  *
  * Deliberately free of Next imports -- the icons live in `src/libs-icons.ts`, imported the Next
- * way. Everything that is not a browser reads this module: the MCP route, the `browse` CLI, a
+ * way. Everything that is not a browser reads this module: the MCP route, the `search` CLI, a
  * script, a test.
  */
 

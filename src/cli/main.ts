@@ -270,10 +270,10 @@ build.addOption(
 build.addOption(new Option('--libname-dotsuffix-href <url>', 'Deprecated and ignored').hideHelp())
 
 //
-// browse & search -- the published documentation, rather than a folder of MDX
+// search -- the published documentation, rather than a folder of MDX
 //
 
-/** Every page of every readable library, with a word on stderr while it is fetched. */
+/** Every page of every searchable library, with a word on stderr while it is fetched. */
 async function readCorpus(opts: OptionValues): Promise<Page[]> {
   if (process.stderr.isTTY) process.stderr.write('reading the published documentation…\r')
   try {
@@ -281,26 +281,6 @@ async function readCorpus(opts: OptionValues): Promise<Page[]> {
   } finally {
     if (process.stderr.isTTY) process.stderr.write('\x1b[2K')
   }
-}
-
-async function runBrowse(target: string | undefined, opts: OptionValues) {
-  const pages = await readCorpus(opts)
-  const resolved = target ? resolveTarget(target, pages) : undefined
-
-  // A pipe cannot answer a keystroke. It can still be handed the page it asked for.
-  if (opts.print || !process.stdin.isTTY || !process.stdout.isTTY) {
-    if (resolved?.kind !== 'page') {
-      throw new Error(
-        'browse needs a terminal. Name a page to write it to stdout, or use `search`.',
-      )
-    }
-    process.stdout.write(`${resolved.page.body}\n`)
-    return
-  }
-
-  // Loaded here and nowhere else: `build` has no business paying for a terminal UI toolkit
-  const { browse } = await import('./browse')
-  await browse(pages, resolved)
 }
 
 async function runSearch(words: string[], opts: OptionValues) {
@@ -333,34 +313,6 @@ async function runSearch(words: string[], opts: OptionValues) {
 }
 
 const refresh = new Option('--refresh', 'Fetch the documentation again, ignoring the cache')
-
-const browse = new Command('browse')
-  .description('Read the published pmndrs documentation, in the terminal')
-  .argument(
-    '[target]',
-    'A library, a page (`drei/performances/instances`), or anything else, which is searched for',
-  )
-  .addOption(refresh)
-  .addOption(new Option('--print', 'Write the page to stdout instead of opening the reader'))
-  .addHelpText(
-    'after',
-    `
-Examples:
-  $ pmndrs-docs browse                                the libraries, and their pages
-  $ pmndrs-docs browse drei                           straight into drei
-  $ pmndrs-docs browse drei/performances/instances    straight to the page
-  $ pmndrs-docs browse instanced mesh                 the search, already typed
-
-↑↓ drives whichever pane has the focus — the list of pages, or the page itself. ⏎ or tab hands
-the focus over, esc or tab hands it back, and the lit border says where it is; space scrolls
-the page by the screen, and the wheel moves whichever pane it points at. ←→ changes library,
-b folds the sidebar away, / searches every library at once, o opens the page in a browser,
-q quits. Links inside a page are clickable wherever the terminal honours OSC 8 hyperlinks.
-
-Outside a terminal, a page target is written to stdout.
-`,
-  )
-  .action(runBrowse)
 
 const searchCommand = new Command('search')
   .description('Search the published pmndrs documentation, one result per line')
@@ -422,9 +374,6 @@ const program = new Command()
   .name('pmndrs-docs')
   .description('Compile pmndrs-flavored MDX — Gha, Code, Sandpack, Mermaid, Keypoints…')
   .version(version)
-  // Reading the docs is what someone typing `pmndrs-docs` on its own is after; compiling
-  // them is what CI is after, and CI spells out what it wants.
-  .addCommand(browse, { isDefault: true })
   .addCommand(searchCommand)
   .addCommand(build)
   .addCommand(versionUrl)

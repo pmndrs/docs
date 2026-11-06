@@ -1,6 +1,5 @@
 import { CopyPage } from '@/components/CopyPage'
 import { cn } from '@/lib/utils'
-import { cliCommand, resolveLibKey } from '@/utils/cliCommand'
 import { socialImageUrl } from '@/utils/resolveMdxUrl'
 import { getData, getSiteDocs } from '@/utils/site-docs'
 import { withoutTrailingSlash } from '@/utils/version'
@@ -53,7 +52,6 @@ export default async function Page({ params }: Props) {
   const absolutePageUrl = NEXT_PUBLIC_URL
     ? `${withoutTrailingSlash(NEXT_PUBLIC_URL)}${doc.url}`
     : undefined
-  const command = cliCommand(resolveLibKey({ url: NEXT_PUBLIC_URL, basePath: BASE_PATH }), doc.url)
 
   return (
     <>
@@ -68,7 +66,6 @@ export default async function Page({ params }: Props) {
               pageUrl={pageUrl}
               absolutePageUrl={absolutePageUrl}
               libname={NEXT_PUBLIC_LIBNAME}
-              command={command}
             />
           </div>
         </div>

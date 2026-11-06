@@ -1,7 +1,4 @@
-// What the reader looks like when nothing is watching: one result per line, on stdout.
-//
-// This is the half an agent or a pipe can use, and it is why `search` is a verb of its own
-// rather than a key inside the reader -- neither can drive a full screen.
+// The `search` verb's output: one result per line, on stdout, for an agent or a pipe.
 
 import type { Page } from './browse.corpus'
 import type { Match } from './browse.search'

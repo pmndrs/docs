@@ -1,4 +1,4 @@
-// The corpus `browse` and `search` read: one `llms-full.txt` per library, parsed into pages
+// The corpus `search` reads: one `llms-full.txt` per library, parsed into pages
 // and cached on disk.
 //
 // One GET returns everything a library has -- 200 kB for drei -- so there is nothing finer
@@ -32,7 +32,7 @@ export interface Page {
 }
 
 /**
- * The libraries `browse` can read.
+ * The libraries `search` can read.
  *
  * `llms_full` is the whole filter -- a site not built with this generator 404s on that file.
  * Most sites live under a path of their own (`pmndrs.github.io/drei`), so the whole URL is the
@@ -93,7 +93,7 @@ async function dump(lib: Lib, { refresh = false }: FetchOptions = {}): Promise<s
 /**
  * Each page carries a generated preamble -- its URL, then its description -- ahead of the
  * markdown. `webUrl` reconstructs the first, and the second is worth searching on its own,
- * so neither belongs in the body a reader renders.
+ * so neither belongs in the body.
  */
 const PREAMBLE = /^URL:.*\n(?:Description:(.*)\n)?\n?/
 

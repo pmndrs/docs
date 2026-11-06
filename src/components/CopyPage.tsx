@@ -10,13 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  ChevronDownIcon,
-  ClipboardCheckIcon,
-  ClipboardIcon,
-  FileTextIcon,
-  SquareTerminalIcon,
-} from 'lucide-react'
+import { ChevronDownIcon, ClipboardCheckIcon, ClipboardIcon, FileTextIcon } from 'lucide-react'
 import { useCopied } from '@/hooks/useCopied'
 import { getPromptUrl } from '@/utils/promptUrl'
 import { useSyncExternalStore } from 'react'
@@ -60,23 +54,19 @@ async function copyMarkdown(markdownUrl: string) {
  * @param pageUrl - the page itself, as a path on this site (`<basePath>/<path>`)
  * @param absolutePageUrl - the same, absolute, when the build knows the site's public URL
  * @param libname - the library the docs are about, for the chatbot prompts
- * @param command - the CLI command opening this page, e.g. `npx @pmndrs/docs drei/loaders/gltf`
  */
 export function CopyPage({
   markdownUrl,
   pageUrl,
   absolutePageUrl,
   libname,
-  command,
 }: {
   markdownUrl: string
   pageUrl: string
   absolutePageUrl?: string
   libname?: string
-  command: string
 }) {
   const [pageCopied, setPageCopied] = useCopied()
-  const [commandCopied, setCommandCopied] = useCopied()
 
   // Chatbots need an absolute URL, which only the browser knows when the build was not told it
   const origin = useOrigin()
@@ -91,15 +81,6 @@ export function CopyPage({
     try {
       await copyMarkdown(markdownUrl)
       setPageCopied(true)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleCopyCommand = async () => {
-    try {
-      await navigator.clipboard.writeText(command)
-      setCommandCopied(true)
     } catch (error) {
       console.error(error)
     }
@@ -136,10 +117,6 @@ export function CopyPage({
             >
               <FileTextIcon />
               View as Markdown
-            </DropdownMenuItem>
-            <DropdownMenuItem closeOnClick={false} onClick={handleCopyCommand} title={command}>
-              {commandCopied ? <ClipboardCheckIcon /> : <SquareTerminalIcon />}
-              {commandCopied ? 'Copied' : 'View in CLI'}
             </DropdownMenuItem>
             {url && (
               <>

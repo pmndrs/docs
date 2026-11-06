@@ -1,4 +1,4 @@
-// Bundles the CLI and its Ink terminal UI. Next handles all MDX rendering, CSS and images.
+// Bundles the CLI. Next handles all MDX rendering, CSS and images.
 
 import * as esbuild from 'esbuild'
 import { dirname, resolve } from 'node:path'
