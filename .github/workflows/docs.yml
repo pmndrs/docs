@@ -18,29 +18,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
         with:
           sparse-checkout: package.json
           sparse-checkout-cone-mode: false
       - name: Wait for npm `latest` to match package.json
+        timeout-minutes: 20
         run: |
           expected=$(node -p "require('./package.json').version")
-          deadline=$(( $(date +%s) + 20 * 60 ))
-          while true; do
-            # `--prefer-online` revalidates every poll instead of trusting npm's cached packument;
-            # a failed request is just another miss, retried until the deadline
-            latest=$(npm view @pmndrs/docs dist-tags.latest --prefer-online) || latest='unreachable'
-            if [ "$latest" = "$expected" ]; then
-              echo "npm latest is $expected"
-              exit 0
-            fi
-            if [ "$(date +%s)" -ge "$deadline" ]; then
-              echo "::error::npm latest is still $latest after 20 min, expected $expected"
-              exit 1
-            fi
-            echo "npm latest is $latest, waiting for $expected"
+          # `--prefer-online` revalidates every poll instead of trusting npm's cached packument;
+          # a failed request yields an empty string, just another miss
+          until [ "$(npm view @pmndrs/docs dist-tags.latest --prefer-online)" = "$expected" ]; do
+            echo "waiting for $expected on npm"
             sleep 15
           done
 
