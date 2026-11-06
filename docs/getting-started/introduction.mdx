@@ -242,6 +242,7 @@ $ cd ~/code/pmndrs/react-three-fiber
 $ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
   MDX="docs" \
   NEXT_PUBLIC_LIBNAME="React Three Fiber" \
+  HOME_REDIRECT="/getting-started/introduction" \
   ICON="🇨🇭" \
   sh
 ```
@@ -281,11 +282,11 @@ $ npx @pmndrs/docs drei/performances/instances     # one page
 $ npx @pmndrs/docs search instanced mesh           # one result per line, on stdout
 ```
 
-`↑↓` scrolls the focused pane, `⇥` switches pane, `←→` changes library, `/` searches, `o` opens
-the page in a browser, `q` quits.
+`↑↓` moves in the focused pane, `⇥` switches pane, `←→` changes library, `/` searches, `o` opens
+the page in a browser, `q` quits. `npx @pmndrs/docs browse --help` lists every key.
 
 `search` prints `{lib} {path} - {title}` and exits 1 when nothing matches; `--in drei` narrows
-it to one library.
+it to one library, `--in drei/performances/instances` to the matching lines of one page.
 
 Pages come from each library's `llms-full.txt`, cached for an hour (`--refresh` refetches).
 Piped, a page goes to stdout: `npx @pmndrs/docs drei/performances/instances | glow`.
