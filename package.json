@@ -111,7 +111,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build:cli": "node scripts/build-cli.mjs",
-    "prepack": "node scripts/build-cli.mjs"
+    "prepack": "pnpm run build:cli"
   },
   "engines": {
     "node": "^22.18.0 || >=23.6.0"
