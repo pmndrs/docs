@@ -11,10 +11,4 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
-  test: {
-    exclude: [
-      'node_modules',
-      '**/page.test.{ts,tsx}', // exclude Playwright page tests
-    ],
-  },
 })

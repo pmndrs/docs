@@ -1,0 +1,17 @@
+name: 'LGTM'
+
+on: push
+
+jobs:
+  lgtm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      # The repo's gate: types, lint, registry validation, unit tests
+      - run: pnpm run lgtm
