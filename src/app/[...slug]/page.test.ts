@@ -1508,3 +1508,39 @@ test.describe('shadcn compositions', () => {
     for (const padding of calloutSpacings) expect(padding).toBeCloseTo(codePadding, 1)
   })
 })
+
+//
+// Full-bleed: a top-level block with `full-bleed` takes the whole width of the article from the
+// `xl` breakpoint, past the reading column every other block is capped to. Only a viewport wide
+// enough for the article to be wider than that column shows the difference, so the test sets
+// its own, past both projects' widths
+//
+
+test.describe('full-bleed', () => {
+  test.use({ disableAutoSnapshot: true })
+
+  test('a full-bleed block, Sandpack included, is as wide as the article, past the reading column', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 2200, height: 1000 })
+
+    await page.goto('/authoring/full-bleed')
+    await page.waitForLoadState('networkidle')
+    const article = page.locator('article.post-container')
+    const fullBleed = article.locator(':scope > .full-bleed').first()
+    const plain = article.locator(':scope > .full-bleed ~ div:not(.full-bleed)').first()
+    const articleBox = (await article.boundingBox())!
+    const fullBleedBox = (await fullBleed.boundingBox())!
+    const plainBox = (await plain.boundingBox())!
+    expect(fullBleedBox.width).toBeCloseTo(articleBox.width, 0)
+    expect(fullBleedBox.width).toBeGreaterThan(plainBox.width)
+
+    await page.goto('/authoring/sandpack')
+    await page.waitForLoadState('networkidle')
+    const sandpackArticle = page.locator('article.post-container')
+    const sandpack = sandpackArticle.locator(':scope > .sandpack').first()
+    const sandpackArticleBox = (await sandpackArticle.boundingBox())!
+    const sandpackBox = (await sandpack.boundingBox())!
+    expect(sandpackBox.width).toBeCloseTo(sandpackArticleBox.width, 0)
+  })
+})

@@ -197,6 +197,15 @@ describe('renderMarkdown', () => {
     expect(markdown).not.toContain('Next slide')
   })
 
+  it('exports ScrollArea content in full without scrollbars', async () => {
+    const markdown = await renderMarkdown(
+      '<ScrollArea className="h-72"><p>Scrolled content</p><ScrollBar orientation="horizontal" /></ScrollArea>',
+    )
+
+    expect(markdown).toBe(await renderMarkdown('<p>Scrolled content</p>'))
+    expect(markdown).toContain('Scrolled content')
+  })
+
   it('awaits custom server components and permits a static alternative to an opaque client component', async () => {
     async function ServerValue({ value }: { value: string }) {
       const resolved = await Promise.resolve(value)

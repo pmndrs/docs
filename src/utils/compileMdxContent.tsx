@@ -52,6 +52,7 @@ import { rehypeMermaid } from '@/components/mdx/Mermaid/rehypeMermaid'
 import { Backers, Contributors } from '@/components/mdx/People'
 import { Sandpack } from '@/components/mdx/Sandpack'
 import { rehypeSandpack } from '@/components/mdx/Sandpack/rehypeSandpack'
+import { ScrollArea, ScrollBar } from '@/components/mdx/ScrollArea'
 import { Step, Steps } from '@/components/mdx/Steps'
 import { Summary } from '@/components/mdx/Summary'
 import { rehypeSummary } from '@/components/mdx/Summary/rehypeSummary'
@@ -160,6 +161,8 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
         McpLiveEmbed,
         Mermaid,
         Sandpack,
+        ScrollArea,
+        ScrollBar,
         Step,
         Steps,
         Summary,

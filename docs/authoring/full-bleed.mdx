@@ -1,0 +1,28 @@
+---
+title: "`full-bleed`"
+description: A block as wide as the article, past the reading column
+sourcecode: docs/authoring/full-bleed.mdx
+nav: 21
+---
+
+<Intro>
+  A block as wide as the article, past the reading column.
+</Intro>
+
+Every block of a page is no wider than the reading column. With `full-bleed` in its `className`, a block takes the whole width of the article instead, from the `xl` breakpoint, without the side margin other blocks keep: it reaches the article's edges. The difference only shows on a screen wide enough for the article to be wider than the column.
+
+## Usage
+
+On a block at the top level of the page, not nested in another one:
+
+```jsx
+<div className="full-bleed flex h-40 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">full-bleed</div>
+```
+
+result:
+
+<div className="full-bleed flex h-40 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">full-bleed</div>
+
+compared to a block without it:
+
+<div className="flex h-40 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">default</div>

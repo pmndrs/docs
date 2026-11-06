@@ -87,7 +87,7 @@ export const Sandpack = async ({
   }
 
   return (
-    <div className={cn(className, 'sandpack')}>
+    <div className={cn(className, 'sandpack full-bleed')}>
       <SandpackProvider
         {...props}
         theme={{

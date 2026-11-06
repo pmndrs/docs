@@ -1,0 +1,100 @@
+---
+title: "`scroll-fade`"
+description: A fade on the edges of a scroll container, that follows the scroll position
+sourcecode: docs/authoring/scroll-fade.mdx
+nav: 20
+---
+
+<Intro>
+  A fade on the edges of a scroll container, where there is more content to scroll to.
+</Intro>
+
+[shadcn's `scroll-fade`](https://ui.shadcn.com/docs/utils/scroll-fade) utility classes, available in any `className`: see its page for every class (`scroll-fade-t`, `scroll-fade-<number>`, `scroll-fade-none`…).
+
+## Usage
+
+On the element that scrolls, the one with `overflow-y-auto`:
+
+```jsx
+<div className="overflow-hidden rounded-2xl border">
+  <div className="h-72 scroll-fade overflow-y-auto">
+    <div className="flex flex-col gap-1.5 p-1.5">
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+    </div>
+  </div>
+</div>
+```
+
+result:
+
+<div className="overflow-hidden rounded-2xl border">
+  <div className="h-72 scroll-fade overflow-y-auto">
+    <div className="flex flex-col gap-1.5 p-1.5">
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
+      <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+    </div>
+  </div>
+</div>
+
+At the top, only the bottom edge fades; mid-scroll, both; at the end, only the top. Content that does not overflow does not fade. In browsers without `animation-timeline: scroll()`, both edges fade, always.
+
+The fade is a mask: it dissolves the content, and the border of the element with it. For a crisp border, put it on a wrapper.
+
+## Horizontal
+
+`scroll-fade-x`, on the element with `overflow-x-auto`:
+
+```jsx
+<div className="scroll-fade-x overflow-x-auto">
+  <div className="flex w-max gap-1.5">
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Design</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Engineering</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Marketing</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Product</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Research</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Sales</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Support</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Operations</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Finance</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Legal</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">People</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Security</div>
+  </div>
+</div>
+```
+
+result:
+
+<div className="scroll-fade-x overflow-x-auto">
+  <div className="flex w-max gap-1.5">
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Design</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Engineering</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Marketing</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Product</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Research</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Sales</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Support</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Operations</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Finance</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Legal</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">People</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Security</div>
+  </div>
+</div>
