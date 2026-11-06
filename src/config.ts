@@ -94,7 +94,9 @@ const docsConfigSchema = z.object({
   markdownComponents: z
     .record(z.string(), component)
     .optional()
-    .describe('Server-renderable alternatives used only in Markdown exports.'),
+    .describe(
+      'Server-renderable alternatives used only in Markdown exports. They override built-in and configured components and must stay free of client components.',
+    ),
   scope: z
     .preprocess(
       (value, context) => {
