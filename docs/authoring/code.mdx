@@ -105,6 +105,24 @@ result:
 The copy button copies the whole block, collapsed or not. A `collapsible` block short enough to
 show whole stays as it is.
 
+## From a file
+
+A `file="..."` fills the block with a file, relative to the page, so the page shows the file as it
+is rather than a copy of it that drifts. The fence stays empty:
+
+````md
+```tsx title="Example.tsx" file="Example.tsx" collapsible
+```
+````
+
+result:
+
+```tsx title="Example.tsx" file="Example.tsx" collapsible
+```
+
+A file that cannot be read fails the build. The path may lead out of the MDX folder, e.g.
+`file="../../dev.sh"` for a script at the root of the repository.
+
 ## Line numbers and highlights
 
 Line numbers/highlights are supported:

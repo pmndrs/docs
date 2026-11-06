@@ -141,13 +141,18 @@ export async function withNextExport<T>(
     MDX: source ? dirname(source.absoluteFilePath) : (env.MDX ?? process.env.MDX),
     PMNDRS_FRAGMENT_INPUT: '',
     PMNDRS_FRAGMENT_PATH: '',
+    PMNDRS_MDX_SOURCE: '',
   } satisfies NodeJS.ProcessEnv
   // Fragments have no stylesheet to scan. Read their original MDX paths so references such
   // as Sandpack folder="../examples" can still reach files outside the documentation root.
   const workDir = await stageApp(packageRoot, fragments ? undefined : environment.MDX)
 
   try {
-    if (!fragments && environment.MDX) environment.MDX = join(workDir, MDX_DIR)
+    if (!fragments && environment.MDX) {
+      // A fence's `file=` resolves against the folder as written, not the copy.
+      environment.PMNDRS_MDX_SOURCE = resolve(environment.MDX)
+      environment.MDX = join(workDir, MDX_DIR)
+    }
 
     if (fragments) {
       await cp(join(workDir, 'src/fragments/layout.tsx'), join(workDir, 'src/app/layout.tsx'))
