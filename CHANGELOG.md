@@ -1,5 +1,17 @@
 # @pmndrs/docs
 
+## 4.29.0
+
+### Minor Changes
+
+- [#732](https://github.com/pmndrs/docs/pull/732) [`80feab7`](https://github.com/pmndrs/docs/commit/80feab746599238785e23e8a2a371b129e05b9cd) Thanks [@abernier](https://github.com/abernier)! - `full-bleed` class: a top-level block of a page as wide as the article from `xl`, past the reading column, as `Sandpack` already was (which now uses it). Documented in the authoring section.
+
+- [#732](https://github.com/pmndrs/docs/pull/732) [`80feab7`](https://github.com/pmndrs/docs/commit/80feab746599238785e23e8a2a371b129e05b9cd) Thanks [@abernier](https://github.com/abernier)! - `ScrollArea` MDX component: shadcn's ScrollArea (Base UI), with `ScrollBar`, documented in the authoring section. In the markdown export of a page, its content is written out in full.
+
+### Patch Changes
+
+- [#732](https://github.com/pmndrs/docs/pull/732) [`80feab7`](https://github.com/pmndrs/docs/commit/80feab746599238785e23e8a2a371b129e05b9cd) Thanks [@abernier](https://github.com/abernier)! - shadcn's `scroll-fade` utilities, already available in any `className`, documented in the authoring section.
+
 ## 4.28.0
 
 ### Minor Changes
