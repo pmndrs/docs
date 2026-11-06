@@ -40,10 +40,9 @@ jobs:
       # run" per push to the Release PR, so on every merge to main. An App installation token
       # is a trusted identity, so those runs start on their own.
       #
-      # Minted before the checkout rather than beside the step that needs it: `actions/checkout`
-      # persists its own token in the remote URL, and that is the credential `changesets/action`
-      # pushes the branch with. Pass it here or the push carries `github-actions[bot]` whatever
-      # the API calls use.
+      # `changesets/action` pushes through the GitHub API with its `github-token` input. Minted
+      # before the checkout all the same: `actions/checkout` persists its own token in the remote
+      # URL, and that is the credential the major-tag step below pushes with.
       #
       # `continue-on-error` so this degrades instead of breaking: wherever the App is not
       # installed, every use below falls back to the default token.
@@ -114,17 +113,20 @@ jobs:
       # npm auth is trusted publishing (OIDC), so there is no `NPM_TOKEN` — the `id-token:
       # write` permission above is what signs the publish. The trusted publisher declared on
       # npmjs.com names *this* workflow file, so renaming or moving it breaks publishing with
-      # ENEEDAUTH. Setting an `NPM_TOKEN` secret would break it too: `changesets/action` then
-      # writes an `.npmrc` and skips OIDC entirely.
+      # ENEEDAUTH.
+      #
+      # v2, not v1: v1 detects what was published by parsing `changeset publish` stdout, which
+      # Changesets CLI v3 no longer prints. On v1 every publish still reached npm but reported
+      # `published: false`, so no `vX.Y.Z` tag, no GitHub release, no major tag move. v2 reads
+      # the `CHANGESETS_OUTPUT` file instead; `pnpm run release` inherits that variable.
       - name: Create Release Pull Request or Publish
         id: changesets
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          publish: pnpm run release
-          createGithubReleases: true
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+          publish-script: pnpm run release
+          create-github-releases: true
+          github-token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
 
       # `changesets/action` pushes `vX.Y.Z` and opens the GitHub release itself. The floating
       # major alias is the one thing it does not do, and it is what consumers pinning
