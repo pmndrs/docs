@@ -25,24 +25,7 @@ $ npx @pmndrs/docs@latest build docs out                    # one .html per .mdx
 $ npx @pmndrs/docs@latest build docs out --format website   # the whole website, statically exported
 ```
 
-See [CLI](docs/getting-started/introduction.mdx#cli) for formats, flags and `docs.config.ts`.
-
-<details>
-<summary>Preview a folder of MDX, served</summary>
-
-```sh
-$ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
-  MDX="docs" \
-  ICON="🥑" \
-  sh
-```
-
-Builds the website, then serves it — alongside the MDX folder itself, so relative assets
-resolve while you edit. Any option from
-[configuration](docs/getting-started/introduction.mdx#configuration) goes in the same way, and
-`VERSION` picks a published version of the CLI.
-
-</details>
+See [CLI](docs/getting-started/introduction.mdx#cli) for formats, flags, previewing and `docs.config.ts`.
 
 # Releasing
 

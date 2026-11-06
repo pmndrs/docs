@@ -239,29 +239,19 @@ The published CLI builds without cloning the engine. If your custom components i
 
 ```sh
 $ cd ~/code/pmndrs/react-three-fiber
-$ (
-  trap 'kill -9 0' SIGINT
-
-  export PORT=${PORT:-3000}
-  export _PORT=$(node -e 'const s = require("net").createServer().listen(0, () => { console.log(String(s.address().port)); s.close() })')
-
-  export NEXT_PUBLIC_LIBNAME="React Three Fiber"
-  export NEXT_PUBLIC_LIBNAME_SHORT="r3f"
-  export BASE_PATH=/toto
-  export HOME_REDIRECT=/getting-started/introduction
-  export MDX_BASEURL=http://localhost:$_PORT
-  export ICON=🇨🇭
-  export GITHUB=https://github.com/pmndrs/react-three-fiber
-
-  npx -y @pmndrs/docs@latest build docs docs/out --format website
-
-  npx serve docs -p $_PORT --no-port-switching --no-clipboard &
-
-  npx -y serve docs/out -p $PORT &
-
-  wait
-)
+$ curl -sL https://raw.githubusercontent.com/pmndrs/docs/refs/heads/main/preview.sh | \
+  MDX="docs" \
+  NEXT_PUBLIC_LIBNAME="React Three Fiber" \
+  ICON="🇨🇭" \
+  sh
 ```
+
+which is:
+
+```sh title="preview.sh" file="../../preview.sh" collapsible
+```
+
+Any [configuration](#configuration) variable goes in the same way; `VERSION` picks a published version of the CLI.
 
 Then go to: http://localhost:3000
 
