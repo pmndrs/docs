@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, expect, test } from 'vitest'
-import { commonRoot, resolveDocsConfig } from './config.resolve'
+import { commonRoot, isInside, resolveDocsConfig } from './config.resolve'
 
 const roots: string[] = []
 
@@ -47,4 +47,13 @@ test('uses the renderer default when the conventional file is absent', async () 
 test('keeps sibling consumer and app modules inside the bundler root', () => {
   expect(commonRoot('/workspace/app', '/workspace/consumer/docs')).toBe('/workspace')
   expect(commonRoot('/workspace/app', '/workspace/app/config')).toBe('/workspace/app')
+})
+
+test('tells a path inside a root from one outside', () => {
+  expect(isInside('/workspace', '/workspace')).toBe(true)
+  expect(isInside('/workspace', '/workspace/app/page.mdx')).toBe(true)
+  expect(isInside('/workspace', '/workspace/..drafts/page.mdx')).toBe(true)
+  expect(isInside('/workspace/app', '/workspace')).toBe(false)
+  expect(isInside('/workspace/app', '/workspace/other')).toBe(false)
+  expect(isInside('/workspace/app', '/workspace/app-2')).toBe(false)
 })

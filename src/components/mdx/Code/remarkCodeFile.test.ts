@@ -1,20 +1,47 @@
+import type { Code, Root } from 'mdast'
 import { compileMDX } from 'next-mdx-remote/rsc'
-import { mkdtempSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { visit } from 'unist-util-visit'
+import { afterAll, describe, expect, it } from 'vitest'
 import { parseFile, remarkCodeFile } from './remarkCodeFile'
 
 const dir = mkdtempSync(join(tmpdir(), 'remark-code-file-'))
 writeFileSync(join(dir, 'dev.sh'), '#!/bin/sh\necho dev\n')
+writeFileSync(join(dir, 'crlf.sh'), 'echo one\r\necho two\r\n')
 
-async function render(source: string) {
+// A repository, `.git` and all, with a page inside and a file beside it
+const outside = mkdtempSync(join(tmpdir(), 'remark-code-file-outside-'))
+const repo = join(outside, 'repo')
+const page = join(repo, 'docs')
+mkdirSync(join(repo, '.git'), { recursive: true })
+mkdirSync(page)
+writeFileSync(join(repo, 'dev.sh'), 'echo repo\n')
+writeFileSync(join(outside, 'secret.sh'), 'echo secret\n')
+
+afterAll(() => {
+  for (const folder of [dir, outside]) rmSync(folder, { recursive: true, force: true })
+})
+
+/**
+ * Compiles a page of `folder`, keeping the code nodes as the plugin leaves them.
+ */
+async function render(source: string, folder = dir) {
+  const codes: Code[] = []
   const { content } = await compileMDX({
     source,
-    options: { mdxOptions: { remarkPlugins: [remarkCodeFile(dir)] } },
+    options: {
+      mdxOptions: {
+        remarkPlugins: [
+          remarkCodeFile(folder),
+          () => (tree: Root) => visit(tree, 'code', (node) => void codes.push({ ...node })),
+        ],
+      },
+    },
   })
-  return renderToStaticMarkup(content)
+  return { html: renderToStaticMarkup(content), codes }
 }
 
 describe('parseFile', () => {
@@ -37,34 +64,43 @@ describe('parseFile', () => {
 
 describe('remarkCodeFile', () => {
   it('fills the block with the file, replacing what the fence holds', async () => {
-    const html = await render('```sh file="dev.sh"\nstale copy\n```')
+    const { html } = await render('```sh file="dev.sh"\nstale copy\n```')
     expect(html).toContain('#!/bin/sh\necho dev')
     expect(html).not.toContain('stale copy')
   })
 
   it('leaves a block without `file=` as it is', async () => {
-    expect(await render('```sh\necho hi\n```')).toContain('echo hi')
+    const { html, codes } = await render('```sh title="x.sh"\necho hi\n```')
+    expect(html).toContain('echo hi')
+    expect(codes[0]?.meta).toBe('title="x.sh"')
   })
 
   it('fails on a file it cannot read', async () => {
     await expect(render('```sh file="missing.sh"\n```')).rejects.toThrow(/missing\.sh/)
   })
+
+  it('drops the trailing line break of a CRLF file', async () => {
+    const { codes } = await render('```sh file="crlf.sh"\n```')
+    expect(codes[0]?.value).toBe('echo one\r\necho two')
+  })
+
+  it('keeps the rest of the meta, without `file=`', async () => {
+    const { codes } = await render('```sh {2} title="x.sh" file="dev.sh" collapsible\n```')
+    expect(codes[0]?.meta).toBe('{2} title="x.sh" collapsible')
+    expect((await render('```sh file="dev.sh"\n```')).codes[0]?.meta).toBeNull()
+  })
 })
 
-describe('remarkCodeFile, on a copy of the MDX folder', () => {
-  it('resolves against the folder as written', async () => {
-    const copy = mkdtempSync(join(tmpdir(), 'remark-code-file-copy-'))
-    process.env.MDX = copy
-    process.env.PMNDRS_MDX_SOURCE = dir
-    try {
-      const { content } = await compileMDX({
-        source: '```sh file="dev.sh"\n```',
-        options: { mdxOptions: { remarkPlugins: [remarkCodeFile(copy)] } },
-      })
-      expect(renderToStaticMarkup(content)).toContain('echo dev')
-    } finally {
-      delete process.env.MDX
-      delete process.env.PMNDRS_MDX_SOURCE
-    }
+describe('remarkCodeFile, in a repository', () => {
+  it('reads a file of the repository, out of the page folder', async () => {
+    expect((await render('```sh file="../dev.sh"\n```', page)).html).toContain('echo repo')
+    const absolute = join(repo, 'dev.sh')
+    expect((await render(`\`\`\`sh file="${absolute}"\n\`\`\``, page)).html).toContain('echo repo')
+  })
+
+  it('refuses a file out of the repository', async () => {
+    await expect(render('```sh file="../../secret.sh"\n```', page)).rejects.toThrow(
+      `file="../../secret.sh" is outside the repository holding the page: ${repo}`,
+    )
   })
 })

@@ -17,13 +17,15 @@ import remarkStringify from 'remark-stringify'
 import { unified } from 'unified'
 import type { parseDocsMetadata } from './docs'
 import { markdownComponents } from './markdownComponents'
+import { originalPath } from './originalPath'
 import { markdownHandlers, rehypePreserveCodeMeta, remarkAutolinks } from './markdownSyntax'
 
 type ParsedDoc = Awaited<ReturnType<typeof parseDocsMetadata>>[number]
 
 /**
- * Compiles trusted MDX into document-only Markdown. Code nodes stay literal; expressions
- * and JSX are evaluated with the same scope as the website before semantic serialization.
+ * Compiles trusted MDX into document-only Markdown. Code nodes stay literal, but for a fence's
+ * `file=`, which is filled with that file; expressions and JSX are evaluated with the same scope
+ * as the website before semantic serialization.
  * @param source - MDX without frontmatter
  * @param options - Consumer extensions and document context
  */
@@ -136,7 +138,7 @@ export async function renderDocMarkdown(
         entries: docs,
         relFilePath: `/${relative(root, doc.file).split('\\').join('/')}`,
         baseUrl: process.env.MDX_BASEURL,
-        dir: dirname(doc.file),
+        dir: dirname(originalPath(doc.file)),
       },
     )
   } catch (error) {

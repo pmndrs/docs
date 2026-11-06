@@ -1,5 +1,7 @@
 import { renderToHtml } from '@/test-utils'
 import { load } from 'cheerio'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -132,6 +134,37 @@ describe('compileMdxContent', () => {
     // The fade's button, a pointer shortcut, is no second control
     expect(html).toMatch(/<button[^>]*tabindex="-1"[^>]*aria-hidden="true"[^>]*>Expand</)
     expect(html.match(/>Expand</g)).toHaveLength(2)
+  })
+
+  it('fills a code block with its `file=`, keeping its title, collapsible flag and highlights', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'compile-mdx-content-'))
+    try {
+      writeFileSync(join(dir, 'x.sh'), 'echo one\necho two\n')
+      const result = await compileMdxContent(
+        '```sh title="x.sh" file="x.sh" {2} collapsible\nstale copy\n```',
+        {
+          relFilePath,
+          absoluteFilePath: join(dir, 'page.mdx'),
+          baseUrl,
+          title,
+          url,
+          tableOfContents,
+          entries,
+        },
+      )
+      const html = renderToString(result.content)
+      expect(html).toContain('echo')
+      expect(html).not.toContain('stale copy')
+      const header = html.slice(0, html.indexOf('<pre'))
+      expect(header).toContain('x.sh')
+      expect(html).toMatch(/<div[^>]*data-closed[^>]*>/)
+      // The second line, highlighted
+      const lines = html.match(/<span class="code-line[^"]*">/g) ?? []
+      expect(lines[1]).toContain('highlight-line')
+      expect(lines[0]).not.toContain('highlight-line')
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
   })
 
   it('compiles MDX with links', async () => {
