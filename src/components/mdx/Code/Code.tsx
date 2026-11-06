@@ -30,7 +30,7 @@ const codeColors = cn(codeBackground, codeText)
 
 const preClassName = 'overflow-x-auto scroll-fade-x no-scrollbar p-(--pad) font-mono text-sm'
 
-export type CodeProps = ComponentProps<'pre'> &
+export type CodeProps = Omit<ComponentProps<'pre'>, 'ref'> &
   Partial<PackageManagerCommands> & {
     /** Collapsed to its first lines, with a button to expand it, when longer than them */
     collapsible?: boolean
