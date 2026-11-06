@@ -280,6 +280,26 @@ A single file or stdin writes HTML to stdout and build logs to stderr. These inp
 run a full Next.js build. Consumer components and data use the same `docs.config.ts` as
 the website.
 
+### read
+
+The same CLI reads every pmndrs library in the terminal:
+
+```sh
+$ npx @pmndrs/docs                                 # every library, every page
+$ npx @pmndrs/docs drei                            # one library
+$ npx @pmndrs/docs drei/performances/instances     # one page
+$ npx @pmndrs/docs search instanced mesh           # one result per line, on stdout
+```
+
+`↑↓` scrolls the focused pane, `⇥` switches pane, `←→` changes library, `/` searches, `o` opens
+the page in a browser, `q` quits.
+
+`search` prints `{lib} {path} - {title}` and exits 1 when nothing matches; `--in drei` narrows
+it to one library.
+
+Pages come from each library's `llms-full.txt`, cached for an hour (`--refresh` refetches).
+Piped, a page goes to stdout: `npx @pmndrs/docs drei/performances/instances | glow`.
+
 ## Agents
 
 `llms.txt` dumps and the pmndrs MCP server moved to their own page: [Agents](/agents/introduction).
