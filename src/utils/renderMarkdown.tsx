@@ -4,7 +4,6 @@ import { rehypeInlineFlow } from './rehypeInlineFlow'
 import type { DocsConfig } from '@/config'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
-import { rehypeRepoLink } from '@/components/mdx/Link/rehypeRepoLink'
 import { remarkCodeFile } from '@/components/mdx/Code/remarkCodeFile'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import { dirname, relative } from 'node:path'
@@ -84,8 +83,12 @@ export async function renderMarkdown(
         ],
         rehypePlugins: [
           rehypePreserveCodeMeta,
-          rehypeLink(process.env.BASE_PATH),
-          ...(file ? [rehypeRepoLink(file, mdxFolder(), process.env.SOURCECODE_BASEURL)] : []),
+          rehypeLink(
+            process.env.BASE_PATH,
+            file
+              ? { file, mdxFolder: mdxFolder(), SOURCECODE_BASEURL: process.env.SOURCECODE_BASEURL }
+              : undefined,
+          ),
           // Only renames to `Img`: its markdown twin resolves the src, `src={expression}` included, which rehypeImg cannot.
           rehypeImg(relFilePath, undefined),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),

@@ -83,7 +83,7 @@ Plus:
 - any [GitHub Flavored Markdown](https://github.github.com/gfm/) syntax.
 - all exported [`components/mdx/index.tsx`](../../src/components/mdx/index.tsx) MDX components.
 
-A relative link to a file of the repository out of the `MDX` folder, like the one above (`[...](../../src/components/mdx/index.tsx)`), links to that file on GitHub, on the branch deployed, under [`SOURCECODE_BASEURL`](/getting-started/introduction#configuration:~:text=SOURCECODE_BASEURL). It works on GitHub as is. A link staying in the `MDX` folder, to another page or an asset, is left as is.
+A relative link to a file of the repository out of the `MDX` folder, like the one above, links to that file on GitHub, on the branch deployed, under [`SOURCECODE_BASEURL`](/getting-started/introduction#configuration:~:text=SOURCECODE_BASEURL). Its path starts from the repository root: the nearest folder with a `.git`, else (built without `.git`) the nearest with a `package.json`, which in a monorepo may be a workspace package. It works on GitHub as is. A link staying in the `MDX` folder, to another page or an asset, is left as is.
 
 See the following pages for detailed documentation on each custom component.
 

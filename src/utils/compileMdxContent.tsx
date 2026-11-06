@@ -46,7 +46,6 @@ import { Img } from '@/components/mdx/Img'
 import { rehypeImg } from '@/components/mdx/Img/rehypeImg'
 import { Intro } from '@/components/mdx/Intro'
 import { rehypeLink } from '@/components/mdx/Link/rehypeLink'
-import { rehypeRepoLink } from '@/components/mdx/Link/rehypeRepoLink'
 import { Keypoints, KeypointsItem } from '@/registry/keypoints/keypoints'
 import { McpLiveEmbed } from '@/components/mdx/McpLiveEmbed'
 import { Mermaid } from '@/components/mdx/Mermaid'
@@ -123,8 +122,11 @@ export async function compileMdxContent(source: string, options: CompileMdxConte
       mdxOptions: {
         remarkPlugins: [remarkGFM, remarkCodeFile(dirname(absoluteFilePath))],
         rehypePlugins: [
-          rehypeLink(process.env.BASE_PATH),
-          rehypeRepoLink(absoluteFilePath, mdxFolder(), process.env.SOURCECODE_BASEURL),
+          rehypeLink(process.env.BASE_PATH, {
+            file: absoluteFilePath,
+            mdxFolder: mdxFolder(),
+            SOURCECODE_BASEURL: process.env.SOURCECODE_BASEURL,
+          }),
           rehypeInlineFlow(['Badge', 'Color'], { except: ['ColorGroup'] }),
           rehypeImg(relFilePath, baseUrl),
           rehypeCodesandbox(relFilePath, baseUrl),

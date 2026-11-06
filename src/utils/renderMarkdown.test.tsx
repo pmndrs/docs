@@ -63,7 +63,7 @@ describe('renderMarkdown', () => {
     vi.stubEnv('MDX', join(process.cwd(), 'docs'))
     vi.stubEnv('SOURCECODE_BASEURL', 'https://github.com/pmndrs/docs/tree/main')
     const markdown = await renderMarkdown(
-      '[index](../../src/components/mdx/index.tsx) and [img](./img.mdx)',
+      '[index](../../src/components/mdx/index.tsx) and [img](./img.mdx) <a href="../../README.md">readme</a> <Badge href="../../README.md">badge</Badge>',
       {
         relFilePath: '/authoring/introduction.mdx',
         file: join(process.cwd(), 'docs/authoring/introduction.mdx'),
@@ -74,6 +74,8 @@ describe('renderMarkdown', () => {
       '[index](https://github.com/pmndrs/docs/tree/main/src/components/mdx/index.tsx)',
     )
     expect(markdown).toContain('[img](./img.mdx)')
+    expect(markdown).toContain('[readme](https://github.com/pmndrs/docs/tree/main/README.md)')
+    expect(markdown).toContain('[badge](https://github.com/pmndrs/docs/tree/main/README.md)')
   })
 
   it('evaluates scoped table cells, mapped rows, links and commands as Markdown', async () => {

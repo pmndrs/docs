@@ -187,7 +187,7 @@ describe('compileMdxContent', () => {
     vi.stubEnv('SOURCECODE_BASEURL', 'https://github.com/pmndrs/docs/tree/main')
     try {
       const result = await compileMdxContent(
-        '[index](../../src/components/mdx/index.tsx) [img](./img) <a href="../../README.md">readme</a>',
+        '[index](../../src/components/mdx/index.tsx) [img](./img) <a href="../../README.md">readme</a> <Badge href="../../README.md">badge</Badge>',
         {
           ...{ baseUrl, title, url, tableOfContents, entries },
           relFilePath: '/authoring/introduction.mdx',
@@ -200,6 +200,9 @@ describe('compileMdxContent', () => {
       )
       expect($('a:contains("img")').attr('href')).toBe('./img')
       expect($('a:contains("readme")').attr('href')).toBe(
+        'https://github.com/pmndrs/docs/tree/main/README.md',
+      )
+      expect($('a:contains("badge")').attr('href')).toBe(
         'https://github.com/pmndrs/docs/tree/main/README.md',
       )
     } finally {
