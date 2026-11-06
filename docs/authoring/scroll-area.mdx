@@ -83,42 +83,4 @@ result:
   <ScrollBar orientation="horizontal" />
 </ScrollArea>
 
-## With a fade
-
-[`scroll-fade`](/authoring/scroll-fade) goes on the element that scrolls, the viewport inside the `ScrollArea`: a `*:data-[slot=scroll-area-viewport]:` prefix reaches it.
-
-```jsx
-<ScrollArea className="h-72 rounded-2xl border *:data-[slot=scroll-area-viewport]:scroll-fade">
-  <div className="flex flex-col gap-1.5 p-1.5">
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
-  </div>
-</ScrollArea>
-```
-
-result:
-
-<ScrollArea className="h-72 rounded-2xl border *:data-[slot=scroll-area-viewport]:scroll-fade">
-  <div className="flex flex-col gap-1.5 p-1.5">
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
-    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
-  </div>
-</ScrollArea>
-
 In the markdown export of a page, the content is written out in full, without the box.

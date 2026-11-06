@@ -69,13 +69,3 @@ export const Horizontal: Story = {
     </ScrollArea>
   ),
 }
-
-/**
- * shadcn's `scroll-fade` on the viewport: its edges fade where there is more to scroll to.
- */
-export const WithFade: Story = {
-  args: {
-    className: 'h-72 w-64 rounded-2xl border *:data-[slot=scroll-area-viewport]:scroll-fade',
-  },
-  render: Default.render,
-}
