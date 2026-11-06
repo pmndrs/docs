@@ -224,6 +224,8 @@ export function markdownComponents({
         {children}
       </div>
     ),
+    ScrollArea: Content,
+    ScrollBar: () => null,
     Step: ({ children }: ChildrenProps) => <h3>{children}</h3>,
     Steps: Content,
     Summary: ({ children }: ChildrenProps) => (

@@ -1,0 +1,124 @@
+---
+title: "`ScrollArea`"
+description: A box that scrolls its content, with a custom scrollbar
+sourcecode: docs/authoring/scroll-area.mdx
+nav: 19
+---
+
+<Intro>
+  A box of a given size that scrolls its content, with a custom scrollbar.
+</Intro>
+
+Same API as [shadcn `ScrollArea`](https://ui.shadcn.com/docs/components/base/scroll-area), built on [Base UI](https://base-ui.com/react/components/scroll-area).
+
+## Usage
+
+It needs a size to scroll within, e.g. `h-72`:
+
+```md
+<ScrollArea className="h-72 rounded-2xl border">
+  <div className="p-4">
+
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+
+  </div>
+</ScrollArea>
+```
+
+result:
+
+<ScrollArea className="h-72 rounded-2xl border">
+  <div className="p-4">
+
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+
+  </div>
+</ScrollArea>
+
+Markdown inside needs a blank line before and after it, as in any JSX tag.
+
+## Horizontal
+
+Add a `<ScrollBar orientation="horizontal" />`, and keep the content on one line (`w-max`):
+
+```jsx
+<ScrollArea className="rounded-2xl border">
+  <div className="flex w-max gap-4 p-4">
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">5</div>
+  </div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+```
+
+result:
+
+<ScrollArea className="rounded-2xl border">
+  <div className="flex w-max gap-4 p-4">
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">1</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">2</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">3</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">4</div>
+    <div className="flex h-40 w-56 items-center justify-center rounded-2xl bg-surface-container text-3xl font-bold">5</div>
+  </div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+
+## With a fade
+
+[`scroll-fade`](/authoring/scroll-fade) goes on the element that scrolls, the viewport inside the `ScrollArea`: a `*:data-[slot=scroll-area-viewport]:` prefix reaches it.
+
+```jsx
+<ScrollArea className="h-72 rounded-2xl border *:data-[slot=scroll-area-viewport]:scroll-fade">
+  <div className="flex flex-col gap-1.5 p-1.5">
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+  </div>
+</ScrollArea>
+```
+
+result:
+
+<ScrollArea className="h-72 rounded-2xl border *:data-[slot=scroll-area-viewport]:scroll-fade">
+  <div className="flex flex-col gap-1.5 p-1.5">
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 1</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 2</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 3</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 4</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 5</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 6</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 7</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 8</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 9</div>
+    <div className="rounded-lg bg-surface-container px-3 py-2.5">Item 10</div>
+  </div>
+</ScrollArea>
+
+In the markdown export of a page, the content is written out in full, without the box.

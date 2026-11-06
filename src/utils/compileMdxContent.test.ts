@@ -255,6 +255,30 @@ describe('compileMdxContent', () => {
     expect(html).toContain('data-slot="carousel-next"')
   })
 
+  it('compiles ScrollArea, its content and an extra scrollbar in the HTML', async () => {
+    const source = [
+      '<ScrollArea className="h-72">',
+      '',
+      '  Vue is a progressive framework.',
+      '',
+      '  <ScrollBar orientation="horizontal" />',
+      '</ScrollArea>',
+    ].join('\n')
+    const result = await compileMdxContent(source, {
+      relFilePath,
+      absoluteFilePath,
+      baseUrl,
+      title,
+      url,
+      tableOfContents,
+      entries,
+    })
+    const html = renderToString(result.content)
+    expect(html).toContain('data-slot="scroll-area"')
+    expect(html).toContain('data-slot="scroll-area-viewport"')
+    expect(html).toMatch(/<p[^>]*>Vue is a progressive framework.<\/p>/)
+  })
+
   it('renders a Tabs with a syncKey as one without: its defaultValue, until hydrated', async () => {
     const tabs = (syncKey: string) =>
       [
